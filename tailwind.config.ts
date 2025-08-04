@@ -19,9 +19,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'heading': ['Times New Roman', 'serif'],
-				'body': ['Arial', 'sans-serif'],
-				'sans': ['Inter', 'system-ui', 'sans-serif'],
+				'heading': ['Peduncle', 'Times New Roman', 'serif'],
+				'body': ['Peduncle', 'Arial', 'sans-serif'],
+				'sans': ['Peduncle', 'Inter', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				// MSC Brand Colors

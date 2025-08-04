@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Peduncle Font */
+@font-face {
+  font-family: 'Peduncle';
+  src: url('/fonts/peduncle.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* MSC Design System - Med Service Centre Brand Colors & Typography */
 
 @layer base {
@@ -107,7 +116,7 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Peduncle', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
   
   /* Typography - MSC Brand Fonts */
