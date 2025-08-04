@@ -1,4 +1,5 @@
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
+import mscLogo from '../../assets/msc-logo.png';
 
 interface FooterProps {
   language: 'ru' | 'en' | 'uz';
@@ -80,8 +81,8 @@ const Footer = ({ language }: FooterProps) => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-white/20 hexagon flex items-center justify-center">
-                <span className="text-white font-bold">MSC</span>
+              <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-white/20 hexagon flex items-center justify-center p-2">
+                <img src={mscLogo} alt="MSC Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h3 className="font-heading text-xl font-bold">{t.company}</h3>
