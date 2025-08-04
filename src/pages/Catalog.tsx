@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Heart, ShoppingCart } from "lucide-react";
+import { Search, Filter, Heart, Eye } from "lucide-react";
 
 interface CatalogProps {
   language: 'ru' | 'en' | 'uz';
@@ -172,12 +173,13 @@ const translations = {
   features: { ru: "Особенности", en: "Features", uz: "Xususiyatlar" },
   inStock: { ru: "В наличии", en: "In Stock", uz: "Mavjud" },
   outOfStock: { ru: "Под заказ", en: "On Order", uz: "Buyurtma bo'yicha" },
-  addToCart: { ru: "В корзину", en: "Add to Cart", uz: "Savatga qo'shish" },
-  requestQuote: { ru: "Запросить цену", en: "Request Quote", uz: "Narx so'rash" },
+  details: { ru: "Подробнее", en: "Details", uz: "Batafsil" },
+  requestQuote: { ru: "Запросить КП", en: "Request Quote", uz: "KP so'rash" },
   noProducts: { ru: "Товары не найдены", en: "No products found", uz: "Mahsulotlar topilmadi" }
 };
 
 const Catalog = ({ language }: CatalogProps) => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -292,9 +294,12 @@ const Catalog = ({ language }: CatalogProps) => {
                   </div>
                   
                   <div className="flex gap-2">
-                    <Button className="flex-1" disabled={!product.inStock}>
-                      <ShoppingCart className="h-4 w-4 mr-2" />
-                      {translations.addToCart[language]}
+                    <Button 
+                      className="flex-1" 
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    >
+                      <Eye className="h-4 w-4 mr-2" />
+                      {translations.details[language]}
                     </Button>
                     <Button variant="outline">
                       {translations.requestQuote[language]}

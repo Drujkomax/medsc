@@ -8,6 +8,7 @@ import Header from "./components/Layout/Header";
 import Footer from "./components/Layout/Footer";
 import Home from "./pages/Home";
 import Catalog from "./pages/Catalog";
+import ProductDetail from "./pages/ProductDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,7 +27,8 @@ const App = () => {
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Home language={language} />} />
-                <Route path="/catalog" element={<Catalog language={language} />} />
+          <Route path="/catalog" element={<Catalog language={language} />} />
+          <Route path="/product/:id" element={<ProductDetail language={language} />} />
                 <Route path="/services" element={<div className="py-20 text-center">Services Page - Coming Soon</div>} />
                 <Route path="/cases" element={<div className="py-20 text-center">Cases Page - Coming Soon</div>} />
                 <Route path="/about" element={<div className="py-20 text-center">About Page - Coming Soon</div>} />
