@@ -18,7 +18,20 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'heading': ['Times New Roman', 'serif'],
+				'body': ['Arial', 'sans-serif'],
+				'sans': ['Inter', 'system-ui', 'sans-serif'],
+			},
 			colors: {
+				// MSC Brand Colors
+				'msc-primary': 'hsl(var(--msc-primary))',
+				'msc-accent': 'hsl(var(--msc-accent))', 
+				'msc-bg': 'hsl(var(--msc-bg))',
+				'msc-text': 'hsl(var(--msc-text))',
+				'msc-text-light': 'hsl(var(--msc-text-light))',
+				
+				// Semantic tokens
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
