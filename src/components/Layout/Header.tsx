@@ -42,7 +42,7 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
             <img 
               src="/lovable-uploads/0ff46ba0-2874-4bf0-beff-e2a8c1383492.png" 
               alt="MSC Logo" 
-              className="w-12 h-12 object-contain"
+              className="w-24 h-24 object-contain"
             />
             <div className="hidden sm:block">
               <h1 className="font-heading text-xl font-bold text-msc-primary">
