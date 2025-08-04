@@ -171,14 +171,16 @@ const Home = ({ language }: HomeProps) => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-msc-primary via-msc-primary/95 to-msc-accent/90 text-white py-20 lg:py-32 overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="grid grid-cols-8 gap-4 h-full">
-            {Array.from({ length: 64 }).map((_, i) => (
-              <div key={i} className="hexagon bg-white/20 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
-            ))}
-          </div>
-        </div>
+        {/* Background Ornament Pattern */}
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: 'url(/lovable-uploads/b1f4e833-72c2-4eee-8faf-0d24b8f3eb79.png)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '200px 200px',
+            backgroundPosition: 'center'
+          }}
+        />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
