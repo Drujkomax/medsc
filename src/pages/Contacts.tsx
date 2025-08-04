@@ -110,142 +110,132 @@ const Contacts = ({ language }: ContactsProps) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="space-y-8">
-            {/* Phone */}
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg text-foreground">{t.phone}</h3>
-                    <Button 
-                      variant="link" 
-                      className="p-0 h-auto text-msc-primary hover:text-msc-accent text-lg"
-                      onClick={handlePhoneClick}
-                    >
-                      +998 (71) 237-33-08
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Contact Methods Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {/* Phone */}
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handlePhoneClick}>
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Phone className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{t.phone}</h3>
+              <p className="text-msc-primary text-lg font-medium">+998 (71) 237-33-08</p>
+            </CardContent>
+          </Card>
 
-            {/* Email */}
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg text-foreground">{t.email}</h3>
-                    <Button 
-                      variant="link" 
-                      className="p-0 h-auto text-msc-primary hover:text-msc-accent text-lg"
-                      onClick={handleEmailClick}
-                    >
-                      info@medsc.uz
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Email */}
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleEmailClick}>
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Mail className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{t.email}</h3>
+              <p className="text-msc-primary text-lg font-medium">info@medsc.uz</p>
+            </CardContent>
+          </Card>
 
-            {/* Address */}
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg text-foreground">{t.address}</h3>
-                    <p className="text-muted-foreground">{t.fullAddress}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Address */}
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{t.address}</h3>
+              <p className="text-muted-foreground text-lg">{t.fullAddress}</p>
+            </CardContent>
+          </Card>
 
-            {/* Working Hours */}
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg text-foreground mb-3">{t.workingHours}</h3>
-                <div className="space-y-1">
-                  <p className="text-muted-foreground">{t.workingHoursText}</p>
-                  <p className="text-muted-foreground">{t.weekend}</p>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Telegram */}
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleTelegramClick}>
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-xl text-foreground mb-2">Telegram</h3>
+              <p className="text-msc-primary text-lg font-medium">@medservice_centre</p>
+            </CardContent>
+          </Card>
 
-            {/* Social Networks */}
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg text-foreground mb-4">{t.socialNetworks}</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button 
-                    variant="outline" 
-                    className="justify-start space-x-2"
-                    onClick={handleTelegramClick}
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>Telegram</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="justify-start space-x-2"
-                    onClick={handleWhatsAppClick}
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>WhatsApp</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="justify-start space-x-2"
-                    onClick={handleFacebookClick}
-                  >
-                    <Facebook className="w-5 h-5" />
-                    <span>Facebook</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="justify-start space-x-2"
-                    onClick={handleInstagramClick}
-                  >
-                    <Instagram className="w-5 h-5" />
-                    <span>Instagram</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="justify-start space-x-2 col-span-2"
-                    onClick={handleYouTubeClick}
-                  >
-                    <Youtube className="w-5 h-5" />
-                    <span>YouTube</span>
-                  </Button>
+          {/* WhatsApp */}
+          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleWhatsAppClick}>
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="font-semibold text-xl text-foreground mb-2">WhatsApp</h3>
+              <p className="text-msc-primary text-lg font-medium">+998 90 944 34 82</p>
+            </CardContent>
+          </Card>
+
+          {/* Working Hours */}
+          <Card className="hover:shadow-lg transition-shadow duration-300">
+            <CardContent className="p-8 text-center">
+              <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-8 h-8 bg-white rounded text-msc-primary font-bold flex items-center justify-center text-sm">
+                  9-6
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+              <h3 className="font-semibold text-xl text-foreground mb-2">{t.workingHours}</h3>
+              <div className="space-y-1">
+                <p className="text-muted-foreground">{t.workingHoursText}</p>
+                <p className="text-muted-foreground text-sm">{t.weekend}</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Social Networks Row */}
+        <div className="mb-16">
+          <h3 className="font-semibold text-2xl text-foreground text-center mb-8">{t.socialNetworks}</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="h-16 justify-center space-x-3 text-lg"
+              onClick={handleFacebookClick}
+            >
+              <Facebook className="w-6 h-6" />
+              <span>Facebook</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="h-16 justify-center space-x-3 text-lg"
+              onClick={handleInstagramClick}
+            >
+              <Instagram className="w-6 h-6" />
+              <span>Instagram</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="h-16 justify-center space-x-3 text-lg"
+              onClick={handleYouTubeClick}
+            >
+              <Youtube className="w-6 h-6" />
+              <span>YouTube</span>
+            </Button>
           </div>
+        </div>
 
-          {/* Contact Form */}
-          <div>
-            <Card className="sticky top-8">
-              <CardContent className="p-8">
-                <h3 className="font-semibold text-2xl text-foreground mb-2">{t.contactForm}</h3>
-                <p className="text-muted-foreground mb-6">{t.formDescription}</p>
-                
-                <form className="space-y-4">
+        {/* Contact Form */}
+        <div className="max-w-2xl mx-auto">
+          <Card>
+            <CardContent className="p-8">
+              <div className="text-center mb-8">
+                <h3 className="font-semibold text-3xl text-foreground mb-2">{t.contactForm}</h3>
+                <p className="text-muted-foreground text-lg">{t.formDescription}</p>
+              </div>
+              
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
                       {t.name}
                     </label>
                     <input 
                       type="text" 
-                      className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                      className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
                       required
                     />
                   </div>
@@ -256,40 +246,40 @@ const Contacts = ({ language }: ContactsProps) => {
                     </label>
                     <input 
                       type="tel" 
-                      className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                      className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
                       required
                     />
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      {t.emailField}
-                    </label>
-                    <input 
-                      type="email" 
-                      className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
-                      required
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      {t.message}
-                    </label>
-                    <textarea 
-                      rows={4}
-                      className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
-                      placeholder="Ваше сообщение..."
-                    ></textarea>
-                  </div>
-                  
-                  <Button type="submit" className="w-full bg-msc-primary hover:bg-msc-accent">
-                    {t.send}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {t.emailField}
+                  </label>
+                  <input 
+                    type="email" 
+                    className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {t.message}
+                  </label>
+                  <textarea 
+                    rows={5}
+                    className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                    placeholder="Ваше сообщение..."
+                  ></textarea>
+                </div>
+                
+                <Button type="submit" size="lg" className="w-full bg-msc-primary hover:bg-msc-accent text-lg py-3">
+                  {t.send}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
