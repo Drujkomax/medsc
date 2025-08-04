@@ -173,12 +173,12 @@ const Home = ({ language }: HomeProps) => {
       <section className="relative bg-gradient-to-br from-msc-primary via-msc-primary/95 to-msc-accent/90 text-white py-20 lg:py-32 overflow-hidden">
         {/* Background Ornament Pattern */}
         <div 
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-15"
           style={{
-            backgroundImage: 'url(/lovable-uploads/b1f4e833-72c2-4eee-8faf-0d24b8f3eb79.png)',
+            backgroundImage: 'url(/lovable-uploads/03ea2be0-f8ce-44d3-ae67-4ba5f09cc744.png)',
             backgroundRepeat: 'repeat',
-            backgroundSize: '200px 200px',
-            backgroundPosition: 'center'
+            backgroundSize: 'auto 100px',
+            backgroundPosition: '0 0'
           }}
         />
 
