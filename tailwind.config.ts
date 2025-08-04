@@ -24,12 +24,13 @@ export default {
 				'sans': ['Inter', 'system-ui', 'sans-serif'],
 			},
 			colors: {
-				// MSC Brand Colors
-				'msc-primary': 'hsl(var(--msc-primary))',
-				'msc-accent': 'hsl(var(--msc-accent))', 
+				// MSC Brand Colors - based on company logo
+				'msc-primary': 'hsl(var(--msc-primary))', /* Navy blue from logo */
+				'msc-accent': 'hsl(var(--msc-accent))', /* Light blue accent */
 				'msc-bg': 'hsl(var(--msc-bg))',
 				'msc-text': 'hsl(var(--msc-text))',
 				'msc-text-light': 'hsl(var(--msc-text-light))',
+				'msc-ornament': 'hsl(var(--msc-ornament))',
 				
 				// Semantic tokens
 				border: 'hsl(var(--border))',

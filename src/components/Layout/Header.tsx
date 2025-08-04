@@ -38,10 +38,12 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-msc-primary to-msc-accent hexagon flex items-center justify-center">
-              <span className="text-white font-bold text-sm">MSC</span>
-            </div>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/0ff46ba0-2874-4bf0-beff-e2a8c1383492.png" 
+              alt="MSC Logo" 
+              className="w-12 h-12 object-contain"
+            />
             <div className="hidden sm:block">
               <h1 className="font-heading text-xl font-bold text-msc-primary">
                 Med Service Centre

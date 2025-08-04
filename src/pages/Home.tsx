@@ -172,14 +172,21 @@ const Home = ({ language }: HomeProps) => {
               </Button>
             </div>
 
-            {/* Hero Animation */}
+            {/* Hero Logo Display */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
-                <div className="w-64 h-64 lg:w-80 lg:h-80 bg-gradient-to-br from-msc-accent to-white/20 hexagon-border animate-glow" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-4xl lg:text-6xl font-bold mb-2">MSC</div>
-                    <div className="text-sm lg:text-base opacity-80">Medical Excellence</div>
+                <div className="w-64 h-64 lg:w-80 lg:h-80 flex items-center justify-center">
+                  <img 
+                    src="/lovable-uploads/0ff46ba0-2874-4bf0-beff-e2a8c1383492.png" 
+                    alt="MSC Logo" 
+                    className="w-full h-full object-contain animate-glow"
+                  />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="text-center mt-20">
+                    <div className="text-sm lg:text-base text-white/80 font-medium">
+                      Medical Excellence
+                    </div>
                   </div>
                 </div>
               </div>
