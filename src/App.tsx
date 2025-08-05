@@ -63,7 +63,7 @@ const App = () => {
                     <Route path="/contacts" element={<Contacts language={language} />} />
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/login" element={<Auth />} />
-                    <Route path="/access-denied" element={<div className="py-20 text-center">Access Denied</div>} />
+                    
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>
