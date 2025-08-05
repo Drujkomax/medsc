@@ -39,19 +39,11 @@ const Auth = () => {
       });
 
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка входа',
-            description: 'Неверный email или пароль',
-          });
-        } else {
-          toast({
-            variant: 'destructive',
-            title: 'Ошибка',
-            description: error.message,
-          });
-        }
+        toast({
+          variant: 'destructive',
+          title: 'Доступ запрещен',
+          description: 'Доступ имеют только сотрудники компании Med Service Centre',
+        });
       } else {
         toast({
           title: 'Успешно',

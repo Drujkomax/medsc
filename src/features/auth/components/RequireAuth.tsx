@@ -21,7 +21,7 @@ const RequireAuth = ({ children, requiredRole = 'user' }: RequireAuthProps) => {
       }
 
       if (requiredRole === 'admin' && role !== 'admin') {
-        navigate('/access-denied');
+        navigate('/auth');
         return;
       }
     }
