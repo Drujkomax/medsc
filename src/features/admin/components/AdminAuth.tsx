@@ -13,8 +13,6 @@ const AdminAuth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -23,29 +21,13 @@ const AdminAuth = () => {
     try {
       const { supabase } = await import('@/integrations/supabase/client');
       
-      if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/admin`
-          }
-        });
-        
-        if (error) {
-          setError(error.message);
-        } else {
-          setError('Проверьте email для подтверждения регистрации');
-        }
-      } else {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        
-        if (error) {
-          setError(error.message);
-        }
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      
+      if (error) {
+        setError(error.message);
       }
     } catch (err) {
       setError('Произошла ошибка при входе');
@@ -59,13 +41,10 @@ const AdminAuth = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold">
-            {isSignUp ? 'Регистрация' : 'Вход в админку'}
+            Вход в админку
           </CardTitle>
           <CardDescription>
-            {isSignUp 
-              ? 'Создайте аккаунт для доступа к админской панели'
-              : 'Введите данные для входа в админскую панель'
-            }
+            Введите данные для входа в админскую панель
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -105,25 +84,8 @@ const AdminAuth = () => {
               disabled={isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isSignUp ? 'Зарегистрироваться' : 'Войти'}
+              Войти
             </Button>
-
-            <div className="text-center">
-              <Button
-                type="button"
-                variant="link"
-                onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setError('');
-                }}
-                disabled={isLoading}
-              >
-                {isSignUp 
-                  ? 'Уже есть аккаунт? Войти'
-                  : 'Нет аккаунта? Зарегистрироваться'
-                }
-              </Button>
-            </div>
           </form>
         </CardContent>
       </Card>

@@ -30,7 +30,7 @@ const AdminWrapper = () => {
   // Если авторизован и админ - показываем админскую панель
   return (
     <Routes>
-      <Route index element={<AdminAuth />} />
+      <Route path="login" element={<AdminAuth />} />
       <Route path="/*" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
