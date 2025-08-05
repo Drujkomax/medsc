@@ -1,96 +1,84 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { useClients } from '@/hooks/useClients';
+import AddClientDialog from '@/features/crm/components/AddClientDialog';
 import { 
   Search, 
-  Plus, 
-  Phone, 
-  Mail, 
-  Building,
   Edit,
-  Trash2
+  Trash2,
+  Eye,
+  User,
+  Phone,
+  Mail,
+  Building
 } from 'lucide-react';
 
-// Моковые данные клиентов
-const mockClients = [
-  {
-    id: 1,
-    name: 'ООО "МедЦентр Плюс"',
-    contactPerson: 'Иванов Алексей Петрович',
-    phone: '+998 71 123-45-67',
-    email: 'ivanov@medcenter.uz',
-    status: 'active',
-    lastContact: '2024-01-15',
-    deals: 3,
-    revenue: 2500000
-  },
-  {
-    id: 2,
-    name: 'Республиканская больница',
-    contactPerson: 'Петрова Мария Ивановна',
-    phone: '+998 71 987-65-43',
-    email: 'petrova@hospital.uz',
-    status: 'potential',
-    lastContact: '2024-01-10',
-    deals: 1,
-    revenue: 850000
-  },
-  {
-    id: 3,
-    name: 'Диагностический центр "Здоровье"',
-    contactPerson: 'Сидоров Дмитрий Александрович',
-    phone: '+998 71 555-33-22',
-    email: 'sidorov@health.uz',
-    status: 'active',
-    lastContact: '2024-01-18',
-    deals: 5,
-    revenue: 4200000
-  }
-];
-
 const Clients = () => {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const { clients, loading, addClient, deleteClient } = useClients();
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'potential'>('all');
 
-  const getStatusBadge = (status: string) => {
-    const variants = {
-      active: 'default',
-      potential: 'secondary',
-    } as const;
-    
-    const labels = {
-      active: 'Активный',
-      potential: 'Потенциальный',
-    };
+  const filteredClients = clients.filter(client =>
+    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    client.company?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    return (
-      <Badge variant={variants[status as keyof typeof variants] || 'secondary'}>
-        {labels[status as keyof typeof labels] || status}
-      </Badge>
-    );
+  const handleAddClient = async (clientData: Parameters<typeof addClient>[0]) => {
+    try {
+      await addClient(clientData);
+      toast({
+        title: t('common.success'),
+        description: 'Клиент успешно добавлен',
+      });
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: 'Ошибка при добавлении клиента',
+        variant: 'destructive',
+      });
+    }
   };
 
-  const filteredClients = mockClients.filter(client => {
-    const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         client.contactPerson.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || client.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const handleDeleteClient = async (id: string) => {
+    try {
+      await deleteClient(id);
+      toast({
+        title: t('common.success'),
+        description: 'Клиент успешно удален',
+      });
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: 'Ошибка при удалении клиента',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p>{t('common.loading')}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold">Клиенты</h2>
-          <p className="text-muted-foreground">Управление базой клиентов</p>
+          <h2 className="text-3xl font-bold">{t('clients.title')}</h2>
+          <p className="text-muted-foreground">{t('clients.subtitle')}</p>
         </div>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          Добавить клиента
-        </Button>
+        <AddClientDialog onAddClient={handleAddClient} />
       </div>
 
       {/* Filters */}
@@ -101,85 +89,71 @@ const Clients = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Поиск клиентов..."
+                  placeholder={t('clients.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant={statusFilter === 'all' ? 'default' : 'outline'}
-                onClick={() => setStatusFilter('all')}
-                size="sm"
-              >
-                Все
-              </Button>
-              <Button
-                variant={statusFilter === 'active' ? 'default' : 'outline'}
-                onClick={() => setStatusFilter('active')}
-                size="sm"
-              >
-                Активные
-              </Button>
-              <Button
-                variant={statusFilter === 'potential' ? 'default' : 'outline'}
-                onClick={() => setStatusFilter('potential')}
-                size="sm"
-              >
-                Потенциальные
-              </Button>
-            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Clients List */}
-      <div className="grid gap-4">
+      {/* Clients Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredClients.map((client) => (
           <Card key={client.id} className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div className="space-y-2">
-                  <CardTitle className="text-xl">{client.name}</CardTitle>
-                  <div className="flex items-center space-x-2">
-                    <Building className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">{client.contactPerson}</span>
-                    {getStatusBadge(client.status)}
+            <CardHeader className="pb-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <User className="w-6 h-6 text-primary" />
                   </div>
-                </div>
-                <div className="flex space-x-2">
-                  <Button variant="outline" size="sm">
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  <div>
+                    <CardTitle className="text-lg">{client.name}</CardTitle>
+                    {client.company && (
+                      <p className="text-sm text-muted-foreground flex items-center">
+                        <Building className="w-4 h-4 mr-1" />
+                        {client.company}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="flex items-center space-x-2">
-                  <Phone className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">{client.phone}</span>
+              <div className="space-y-3">
+                <div className="flex items-center text-sm">
+                  <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span>{client.email}</span>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm">{client.email}</span>
+                <div className="flex items-center text-sm">
+                  <Phone className="w-4 h-4 mr-2 text-muted-foreground" />
+                  <span>{client.phone}</span>
                 </div>
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Сделок: </span>
-                  <span className="font-medium">{client.deals}</span>
+                {client.lastContact && (
+                  <div className="text-sm text-muted-foreground">
+                    {t('clients.lastContact')}: {new Date(client.lastContact).toLocaleDateString()}
+                  </div>
+                )}
+                <div className="flex space-x-2 pt-2">
+                  <Button variant="outline" size="sm" className="flex-1">
+                    <Eye className="w-4 h-4 mr-1" />
+                    {t('common.view')}
+                  </Button>
+                  <Button variant="outline" size="sm" className="flex-1">
+                    <Edit className="w-4 h-4 mr-1" />
+                    {t('common.edit')}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handleDeleteClient(client.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
                 </div>
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Выручка: </span>
-                  <span className="font-medium">{client.revenue.toLocaleString()} сум</span>
-                </div>
-              </div>
-              <div className="mt-4 text-sm text-muted-foreground">
-                Последний контакт: {new Date(client.lastContact).toLocaleDateString('ru-RU')}
               </div>
             </CardContent>
           </Card>
@@ -189,7 +163,7 @@ const Clients = () => {
       {filteredClients.length === 0 && (
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground">Клиенты не найдены</p>
+            <p className="text-muted-foreground">{t('clients.notFound')}</p>
           </CardContent>
         </Card>
       )}
