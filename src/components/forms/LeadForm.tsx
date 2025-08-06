@@ -186,15 +186,22 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                 <Phone className="w-4 h-4" />
                 {t.phone} *
               </Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleInputChange('phone', e.target.value)}
-                required
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
-                placeholder="+998 XX XXX XX XX"
-              />
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
+                  <span className="text-lg">🇺🇿</span>
+                  <span className="text-msc-text">+998</span>
+                  <span className="text-msc-text/40">|</span>
+                </div>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange('phone', e.target.value)}
+                  required
+                  className="border-msc-primary/20 focus:border-msc-accent transition-colors pl-20"
+                  placeholder="XX XXX XX XX"
+                />
+              </div>
             </div>
 
             {/* Equipment Type */}
