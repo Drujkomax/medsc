@@ -1,10 +1,31 @@
 import { useState, useEffect } from 'react';
-import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
 import LeadForm from '@/components/forms/LeadForm';
+// MSC brand icons
+import catXray from '@/assets/icons/msc-cat-xray.png';
+import catSurgery from '@/assets/icons/msc-cat-surgery.png';
+import catLab from '@/assets/icons/msc-cat-lab.png';
+import catMonitor from '@/assets/icons/msc-cat-monitor.png';
+import whyWarranty from '@/assets/icons/msc-why-warranty.png';
+import whySupport from '@/assets/icons/msc-why-support.png';
+import whyInstallation from '@/assets/icons/msc-why-installation.png';
+import whyLogistics from '@/assets/icons/msc-why-logistics.png';
 
+const WhyWarrantyIcon = ({ className = 'w-8 h-8' }: { className?: string }) => (
+  <img src={whyWarranty} alt="Warranty" className={className} />
+);
+const WhySupportIcon = ({ className = 'w-8 h-8' }: { className?: string }) => (
+  <img src={whySupport} alt="24/7 Support" className={className} />
+);
+const WhyInstallationIcon = ({ className = 'w-8 h-8' }: { className?: string }) => (
+  <img src={whyInstallation} alt="Fast Installation" className={className} />
+);
+const WhyLogisticsIcon = ({ className = 'w-8 h-8' }: { className?: string }) => (
+  <img src={whyLogistics} alt="Logistics" className={className} />
+);
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
 }
@@ -32,39 +53,39 @@ const Home = ({ language }: HomeProps) => {
         title: 'Категории оборудования',
         subtitle: 'Широкий спектр медицинского оборудования для всех направлений',
         items: [
-          { name: 'Диагностическое оборудование', count: '150+ товаров', icon: '🔬' },
-          { name: 'Хирургическое оборудование', count: '80+ товаров', icon: '⚕️' },
-          { name: 'Реабилитационное оборудование', count: '60+ товаров', icon: '🏥' },
-          { name: 'Лабораторное оборудование', count: '90+ товаров', icon: '🧪' },
-          { name: 'Стоматологическое оборудование', count: '70+ товаров', icon: '🦷' },
-          { name: 'Офтальмологическое оборудование', count: '40+ товаров', icon: '👁️' },
+          { name: 'Диагностическое оборудование', count: '150+ товаров', icon: <img src={catXray} alt="Диагностическое оборудование" className="w-12 h-12 mx-auto" /> },
+          { name: 'Хирургическое оборудование', count: '80+ товаров', icon: <img src={catSurgery} alt="Хирургическое оборудование" className="w-12 h-12 mx-auto" /> },
+          { name: 'Реабилитационное оборудование', count: '60+ товаров', icon: <img src={catMonitor} alt="Реабилитационное оборудование" className="w-12 h-12 mx-auto" /> },
+          { name: 'Лабораторное оборудование', count: '90+ товаров', icon: <img src={catLab} alt="Лабораторное оборудование" className="w-12 h-12 mx-auto" /> },
+          { name: 'Стоматологическое оборудование', count: '70+ товаров', icon: <img src={catXray} alt="Стоматологическое оборудование" className="w-12 h-12 mx-auto" /> },
+          { name: 'Офтальмологическое оборудование', count: '40+ товаров', icon: <img src={catLab} alt="Офтальмологическое оборудование" className="w-12 h-12 mx-auto" /> },
         ]
       },
       advantages: {
         title: 'Почему выбирают нас',
         subtitle: 'Комплексный подход к решению медицинских задач',
-        items: [
-          {
-            icon: Shield,
-            title: 'Гарантия качества',
-            description: 'Работаем только с сертифицированным оборудованием ведущих мировых производителей'
-          },
-          {
-            icon: Headphones,
-            title: 'Сервис 24/7',
-            description: 'Круглосуточная техническая поддержка и оперативное решение любых вопросов'
-          },
-          {
-            icon: Zap,
-            title: 'Быстрая установка',
-            description: 'Профессиональная команда инженеров обеспечивает быструю инсталляцию и настройку'
-          },
-          {
-            icon: Globe,
-            title: 'Логистика по всему Узбекистану',
-            description: 'Доставка и установка оборудования в любой регион страны'
-          }
-        ]
+          items: [
+            {
+              icon: WhyWarrantyIcon,
+              title: 'Гарантия качества',
+              description: 'Работаем только с сертифицированным оборудованием ведущих мировых производителей'
+            },
+            {
+              icon: WhySupportIcon,
+              title: 'Сервис 24/7',
+              description: 'Круглосуточная техническая поддержка и оперативное решение любых вопросов'
+            },
+            {
+              icon: WhyInstallationIcon,
+              title: 'Быстрая установка',
+              description: 'Профессиональная команда инженеров обеспечивает быструю инсталляцию и настройку'
+            },
+            {
+              icon: WhyLogisticsIcon,
+              title: 'Логистика по всему Узбекистану',
+              description: 'Доставка и установка оборудования в любой регион страны'
+            }
+          ]
       }
     },
     en: {
@@ -92,28 +113,28 @@ const Home = ({ language }: HomeProps) => {
       advantages: {
         title: 'Why Choose Us',
         subtitle: 'Comprehensive approach to medical solutions',
-        items: [
-          {
-            icon: Shield,
-            title: 'Quality Guarantee',
-            description: 'We work only with certified equipment from leading global manufacturers'
-          },
-          {
-            icon: Headphones,
-            title: '24/7 Service',
-            description: 'Round-the-clock technical support and quick resolution of any issues'
-          },
-          {
-            icon: Zap,
-            title: 'Fast Installation',
-            description: 'Professional team of engineers ensures quick installation and setup'
-          },
-          {
-            icon: Globe,
-            title: 'Logistics throughout Uzbekistan',
-            description: 'Delivery and installation of equipment in any region of the country'
-          }
-        ]
+          items: [
+            {
+              icon: WhyWarrantyIcon,
+              title: 'Quality Guarantee',
+              description: 'We work only with certified equipment from leading global manufacturers'
+            },
+            {
+              icon: WhySupportIcon,
+              title: '24/7 Service',
+              description: 'Round-the-clock technical support and quick resolution of any issues'
+            },
+            {
+              icon: WhyInstallationIcon,
+              title: 'Fast Installation',
+              description: 'Professional team of engineers ensures quick installation and setup'
+            },
+            {
+              icon: WhyLogisticsIcon,
+              title: 'Logistics throughout Uzbekistan',
+              description: 'Delivery and installation of equipment in any region of the country'
+            }
+          ]
       }
     },
     uz: {

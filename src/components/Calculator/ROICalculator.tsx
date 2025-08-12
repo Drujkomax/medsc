@@ -3,7 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, TrendingUp, DollarSign, Clock } from 'lucide-react';
+import iconCalculator from '@/assets/icons/msc-icon-calculator.png';
+import iconTrend from '@/assets/icons/msc-icon-trend.png';
+import iconMoney from '@/assets/icons/msc-icon-money.png';
+import iconTime from '@/assets/icons/msc-icon-time.png';
 
 interface ROICalculatorProps {
   language: 'ru' | 'en' | 'uz';
@@ -105,7 +108,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
     <Card className="w-full max-w-4xl bg-white/95 backdrop-blur-sm border-2 border-msc-accent/20 shadow-xl animate-fade-in hover-scale transition-transform transition-shadow hover:shadow-2xl hover:border-msc-accent/40">
       <CardHeader className="text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">
-          <Calculator className="w-8 h-8 text-msc-accent" />
+          <img src={iconCalculator} alt={t.title} className="w-8 h-8" />
           <CardTitle className="font-heading text-2xl text-msc-primary">
             {t.title}
           </CardTitle>
@@ -235,7 +238,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gradient-to-r from-msc-primary/5 to-msc-accent/5 rounded-lg">
           {/* Payback Period */}
            <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md transition-colors">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
+            <img src={iconTime} alt={t.paybackPeriod} className="w-8 h-8 mx-auto mb-2" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.paybackPeriod}</h3>
             <p className={`text-3xl font-bold transition-colors ${getROIColor(months)}`}>
               {months} {t.months}
@@ -247,7 +250,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
 
           {/* Monthly Profit */}
            <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md transition-colors">
-            <DollarSign className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
+            <img src={iconMoney} alt={t.monthlyProfit} className="w-8 h-8 mx-auto mb-2" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.monthlyProfit}</h3>
              <p className="text-2xl font-bold text-msc-primary transition-colors group-hover:text-msc-accent">
               {t.currency}{monthlyProfit.toLocaleString()}
@@ -256,7 +259,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
 
           {/* Yearly Profit */}
           <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md transition-colors">
-            <TrendingUp className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
+            <img src={iconTrend} alt={t.yearlyProfit} className="w-8 h-8 mx-auto mb-2" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.yearlyProfit}</h3>
             <p className="text-2xl font-bold text-msc-primary transition-colors group-hover:text-msc-accent">
               {t.currency}{yearlyProfit.toLocaleString()}
