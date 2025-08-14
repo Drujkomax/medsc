@@ -220,6 +220,10 @@ const Home = ({ language }: HomeProps) => {
                 <Button
                   size="lg"
                   className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg"
+                  onClick={() => {
+                    const calculatorSection = document.querySelector('#roi-calculator-section');
+                    calculatorSection?.scrollIntoView({ behavior: 'smooth' });
+                  }}
                 >
                   {t.hero.cta}
                   <ArrowRight className="ml-2 w-5 h-5" />
@@ -262,7 +266,7 @@ const Home = ({ language }: HomeProps) => {
       </section>
 
       {/* ROI Calculator Section */}
-      <section className="py-20 bg-gradient-to-br from-msc-bg to-msc-accent/5">
+      <section id="roi-calculator-section" className="py-20 bg-gradient-to-br from-msc-bg to-msc-accent/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
