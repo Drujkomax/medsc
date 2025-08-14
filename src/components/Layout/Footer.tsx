@@ -82,7 +82,7 @@ const Footer = ({ language }: FooterProps) => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-white/20 hexagon flex items-center justify-center p-2">
-                <img src="/lovable-uploads/6f7b99dd-8480-47e4-9b49-e8659a051bc6.png" alt="MSC Logo" className="w-full h-full object-contain" />
+                <img src="/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png" alt="MSC Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h3 className="font-heading text-xl font-bold">{t.company}</h3>

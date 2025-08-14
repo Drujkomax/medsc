@@ -60,7 +60,7 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <img 
-              src="/lovable-uploads/42a2ddc3-1794-469d-9034-e0cf076378fc.png" 
+              src="/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png" 
               alt="Med Service Centre" 
               className="h-12 w-auto object-contain"
             />
