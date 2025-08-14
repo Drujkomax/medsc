@@ -18,7 +18,7 @@ const LogoutButton = () => {
         title: t('common.success'),
         description: 'Вы успешно вышли из системы',
       });
-      navigate('/auth');
+      navigate('/');
     } catch (error) {
       toast({
         variant: 'destructive',
