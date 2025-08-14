@@ -176,8 +176,7 @@ const Footer = ({ language }: FooterProps) => {
             </p>
             <div className="flex gap-4 text-sm">
               <a 
-                href="/Условия использования и дисклеймер Med Service Centre.docx" 
-                download
+                href="/services"
                 className="text-white/60 hover:text-msc-accent transition-colors"
               >
                 {language === 'ru' ? 'Условия использования' : 
@@ -185,8 +184,7 @@ const Footer = ({ language }: FooterProps) => {
                  'Foydalanish shartlari'}
               </a>
               <a 
-                href="/Каталог (1).pdf" 
-                download
+                href="/services"
                 className="text-white/60 hover:text-msc-accent transition-colors"
               >
                 {language === 'ru' ? 'Каталог MSC' : 
