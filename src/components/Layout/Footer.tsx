@@ -1,5 +1,5 @@
 import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
-import mscLogo from '../../assets/msc-logo.png';
+
 
 interface FooterProps {
   language: 'ru' | 'en' | 'uz';
@@ -82,7 +82,7 @@ const Footer = ({ language }: FooterProps) => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <img 
-                src="/lovable-uploads/f5c3dd5e-1f26-44b2-b83a-e44ca979092f.png" 
+                src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png" 
                 alt="MSC Logo" 
                 className="w-16 h-16 object-contain" 
               />
