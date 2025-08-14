@@ -177,10 +177,14 @@ const LeadForm: React.FC<LeadFormProps> = ({
         {/* Trust Elements */}
         <div className="bg-gradient-to-r from-msc-primary/10 to-msc-accent/10 p-4 border-b animate-fade-in">
           <div className="text-center">
-            <h3 className="text-sm font-semibold text-msc-text animate-pulse">
+            <h3 className="text-sm font-semibold text-msc-text">
               Получите консультацию на тему<br />
-              <span className="text-msc-primary font-bold drop-shadow-lg shadow-msc-primary/50 animate-[pulse_2s_ease-in-out_infinite]">
-                "Как эффективно окупить оборудование в 2025 году?"
+              <span className="text-msc-primary font-bold drop-shadow-lg shadow-msc-primary/50">
+                "Как эффективно окупить оборудование{" "}
+                <span className="relative inline-block overflow-hidden">
+                  <span className="animate-[typewriter_3s_ease-in-out_infinite] inline-block whitespace-nowrap">в 2025</span>
+                </span>
+                {" "}году?"
               </span>
             </h3>
           </div>
