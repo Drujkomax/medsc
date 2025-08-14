@@ -289,7 +289,7 @@ const Home = ({ language }: HomeProps) => {
               className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg shadow-lg"
               onClick={() => setShowConsultationForm(true)}
             >
-              {language === 'ru' ? 'Запросить коммерческое предложение' : language === 'en' ? 'Request Commercial Offer' : 'Shaxsiy tijorat taklifini oling'}
+              {language === 'ru' ? 'Свяжитесь с нами' : language === 'en' ? 'Contact Us' : 'Biz bilan bog\'laning'}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <p className="text-sm text-msc-text-light mt-2">
