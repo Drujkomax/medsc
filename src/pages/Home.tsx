@@ -119,16 +119,16 @@ const Home = ({ language }: HomeProps) => {
     uz: {
       hero: {
         title: 'Med Service Centre',
-        subtitle: "O'zbekistondagi yetakchi tibbiy asbob-uskunalar integratori",
-        description: "Tibbiy asbob-uskunalarni yetkazib berish, o'rnatish, xodimlarni o'qitish va texnik xizmat ko'rsatish. 8 yillik tajriba va 300+ muvaffaqiyatli loyihalar.",
-        cta: 'ROI hisoblash',
-        experience: '8 yil tajriba',
-        projects: '300+ loyiha',
+        subtitle: "O'zbekistondagi yetakchi tibbiy uskunalar integratori",
+        description: "Biz 8 yillik tajribaga ega bo'lib, 300+ muvaffaqiyatli loyiha va yuzlab mamnun mijozlar bilan faxrlanamiz. Faoliyatimiz tibbiy uskunalarni yetkazib berish, o'rnatish, xodimlarni o'qitish va texnik xizmat ko'rsatishni qamrab oladi.",
+        cta: 'ROI hisoblagich',
+        experience: 'Yillik tajriba',
+        projects: 'Muvaffaqiyatli loyiha',
         clients: 'Mamnun mijozlar'
       },
       categories: {
-        title: 'Asbob-uskunalar toifalari',
-        subtitle: 'Barcha tibbiy yo\'nalishlar uchun keng assortimentdagi tibbiy asbob-uskunalar',
+        title: 'Uskuna toifalari',
+        subtitle: 'Biz barcha yo\'nalishlar uchun keng assortimentdagi tibbiy uskunalarni taklif qilamiz',
         items: [
           { name: 'Diagnostika uskunalari', count: '150+ mahsulot', icon: '🔬' },
           { name: 'Jarrohlik uskunalari', count: '80+ mahsulot', icon: '⚕️' },
@@ -139,28 +139,28 @@ const Home = ({ language }: HomeProps) => {
         ]
       },
       advantages: {
-        title: 'Nega bizni tanlaydilar',
+        title: 'Nega bizni tanlashadi?',
         subtitle: 'Tibbiy masalalarni hal qilishda kompleks yondashuv',
         items: [
           {
             icon: Shield,
             title: 'Sifat kafolati',
-            description: 'Biz faqat yetakchi jahon ishlab chiqaruvchilarning sertifikatlangan uskunalari bilan ishlaymiz'
+            description: 'Biz faqat yetakchi jahon ishlab chiqaruvchilarining sertifikatlangan uskunalari bilan ishlaymiz.'
           },
           {
             icon: Headphones,
-            title: '24/7 xizmat',
-            description: 'Kundalik texnik yordam va har qanday savollarni tezkor hal qilish'
+            title: '24/7 texnik yordam',
+            description: 'Har qanday muammo bo\'yicha kunu-tun qo\'llab-quvvatlash.'
           },
           {
             icon: Zap,
             title: 'Tezkor o\'rnatish',
-            description: 'Professional muhandislar jamoasi tez o\'rnatish va sozlashni ta\'minlaydi'
+            description: 'Tajribali muhandislar jamoamiz uskunani tez va sifatli o\'rnatadi.'
           },
           {
             icon: Globe,
-            title: "Butun O'zbekiston bo'yicha logistika",
-            description: 'Mamlakatning istalgan hududiga uskunalarni yetkazib berish va o\'rnatish'
+            title: 'Respublika bo\'ylab logistika',
+            description: 'O\'zbekistonning istalgan hududiga yetkazib berish va montaj.'
           }
         ]
       }
@@ -266,14 +266,14 @@ const Home = ({ language }: HomeProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {language === 'ru' ? 'Рассчитайте окупаемость' : language === 'en' ? 'Calculate Your ROI' : 'ROI ni hisoblang'}
+              {language === 'ru' ? 'Рассчитайте окупаемость' : language === 'en' ? 'Calculate Your ROI' : 'Sizning tibbiy uskunangiz qancha muddatda o\'zini oqlashini biling'}
             </h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
               {language === 'ru' 
                 ? 'Узнайте, за какой период окупится ваше медицинское оборудование'
                 : language === 'en'
                 ? 'Find out how long it will take for your medical equipment to pay for itself'
-                : 'Tibbiy asbob-uskunangiz qancha vaqtda o\'zini oqlashini bilib oling'
+                : 'Uskuna narxi va protseduralar sonini kiritib, o\'zini oqlash muddatini bilib oling'
               }
             </p>
           </div>
@@ -289,7 +289,7 @@ const Home = ({ language }: HomeProps) => {
               className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg shadow-lg"
               onClick={() => setShowConsultationForm(true)}
             >
-              {language === 'ru' ? 'Запросить коммерческое предложение' : language === 'en' ? 'Request Commercial Offer' : 'Tijoriy taklif so\'rash'}
+              {language === 'ru' ? 'Запросить коммерческое предложение' : language === 'en' ? 'Request Commercial Offer' : 'Shaxsiy tijorat taklifini oling'}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <p className="text-sm text-msc-text-light mt-2">
@@ -355,7 +355,7 @@ const Home = ({ language }: HomeProps) => {
       <section className="py-20 bg-gradient-to-br from-msc-primary to-msc-accent text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-heading text-3xl lg:text-4xl font-bold mb-4">
-            {language === 'ru' ? 'Готовы начать сотрудничество?' : language === 'en' ? 'Ready to Start Cooperation?' : 'Hamkorlikni boshlashga tayyormisiz?'}
+            {language === 'ru' ? 'Готовы начать сотрудничество?' : language === 'en' ? 'Ready to Start Cooperation?' : 'Hamkorlikka tayyormisiz?'}
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
             {language === 'ru' 
