@@ -249,13 +249,16 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   required
-                  className={`border-msc-primary/20 focus:border-msc-accent transition-colors pl-20 ${phoneError ? 'border-red-500' : ''}`}
+                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-20 ${phoneError ? 'border-red-500' : ''}`}
                   placeholder="XX XXX XX XX"
                   maxLength={12} // 9 digits + 3 spaces (XX XXX XX XX)
                 />
-                {phoneError && (
-                  <p className="text-red-500 text-xs mt-1">{phoneError}</p>
-                )}
+                {/* Fixed height container for error message */}
+                <div className="h-5 mt-1">
+                  <p className={`text-red-500 text-xs transition-opacity duration-200 ${phoneError ? 'opacity-100' : 'opacity-0'}`}>
+                    {phoneError || '\u00A0'}
+                  </p>
+                </div>
               </div>
             </div>
 
