@@ -226,9 +226,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 required
-                className="border-msc-primary/20 focus:border-msc-accent transition-colors"
+                className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-12"
                 placeholder={t.name}
               />
+              <div className="h-6"></div>
             </div>
 
             {/* Phone */}
@@ -238,10 +239,10 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                 {t.phone} *
               </Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none">
+                <div className="absolute left-3 top-3 flex items-center gap-2 pointer-events-none">
                   <span className="text-lg">🇺🇿</span>
-                  <span className="text-msc-text">+998</span>
-                  <span className="text-msc-text/40">|</span>
+                  <span className="text-msc-text font-medium">+998</span>
+                  <div className="w-px h-4 bg-msc-primary/20 mx-1"></div>
                 </div>
                 <Input
                   id="phone"
@@ -249,15 +250,17 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   required
-                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-20 ${phoneError ? 'border-red-500' : ''}`}
+                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-24 h-12 ${phoneError ? 'border-red-500' : ''}`}
                   placeholder="XX XXX XX XX"
-                  maxLength={12} // 9 digits + 3 spaces (XX XXX XX XX)
+                  maxLength={12}
                 />
                 {/* Fixed height container for error message */}
-                <div className="h-5 mt-1">
-                  <p className={`text-red-500 text-xs transition-opacity duration-200 ${phoneError ? 'opacity-100' : 'opacity-0'}`}>
-                    {phoneError || '\u00A0'}
-                  </p>
+                <div className="h-6 mt-1">
+                  {phoneError && (
+                    <p className="text-red-500 text-xs animate-in slide-in-from-top-1 duration-200">
+                      {phoneError}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -266,7 +269,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
             <div className="space-y-2">
               <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
               <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)} required>
-                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent">
+                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-12 transition-all duration-200">
                   <SelectValue placeholder={t.equipmentType} />
                 </SelectTrigger>
                 <SelectContent>
@@ -275,6 +278,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   ))}
                 </SelectContent>
               </Select>
+              <div className="h-6"></div>
             </div>
 
             {/* Submit Button */}
