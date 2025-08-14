@@ -22,7 +22,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
   const content = {
     ru: {
       title: 'ROI Калькулятор',
-      subtitle: 'Рассчитайте окупаемость медицинского оборудования',
+      subtitle: 'ROI (Return on Investment) — показатель возврата инвестиций, который помогает оценить прибыльность и сроки окупаемости медицинского оборудования',
       equipmentPrice: 'Стоимость оборудования',
       proceduresMonth: 'Процедур в месяц',
       profitProcedure: 'Прибыль с процедуры',
@@ -39,7 +39,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
     },
     en: {
       title: 'ROI Calculator',
-      subtitle: 'Calculate medical equipment return on investment',
+      subtitle: 'ROI (Return on Investment) is a profitability metric that helps evaluate the financial return and payback period of medical equipment investments',
       equipmentPrice: 'Equipment Price',
       proceduresMonth: 'Procedures per Month',
       profitProcedure: 'Profit per Procedure',
@@ -56,7 +56,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
     },
     uz: {
       title: 'ROI Kalkulyatori',
-      subtitle: 'Tibbiy asbob-uskunalardan daromadni hisoblang',
+      subtitle: 'ROI (Return on Investment) - bu investitsiya rentabellik ko\'rsatkichi bo\'lib, tibbiy asbob-uskunalardan foydalanish daromadliligi va o\'zini oqlash muddatini baholashga yordam beradi',
       equipmentPrice: 'Uskunalar narxi',
       proceduresMonth: 'Oylik protseduralar',
       profitProcedure: 'Prоtseduradan foyda',
