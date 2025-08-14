@@ -191,31 +191,29 @@ const LeadForm: React.FC<LeadFormProps> = ({
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name */}
             <div className="space-y-1">
-              <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium text-xs">
-                <User className="w-3 h-3" />
+              <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium">
+                <User className="w-4 h-4" />
                 {t.name} *
               </Label>
-              <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10" placeholder={t.name} />
+              <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-11" placeholder={t.name} />
             </div>
 
             {/* Phone */}
             <div className="space-y-1">
-              <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium text-xs">
-                <Phone className="w-3 h-3" />
+              <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium">
+                <Phone className="w-4 h-4" />
                 {t.phone} *
               </Label>
               <div className="relative">
-                <div className="absolute left-3 top-2.5 flex items-center gap-2 pointer-events-none">
-                  <span className="text-sm">🇺🇿</span>
-                  <span className="text-msc-text font-medium text-sm">+998</span>
-                  <div className="w-px h-3 bg-msc-primary/20 mx-1"></div>
+                <div className="absolute left-3 top-3 flex items-center gap-2 pointer-events-none">
+                  <span className="text-lg">🇺🇿</span>
+                  <span className="text-msc-text font-medium">+998</span>
+                  <div className="w-px h-4 bg-msc-primary/20 mx-1"></div>
                 </div>
-                <Input id="phone" type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-20 h-10 ${phoneError ? 'border-red-500' : ''}`} placeholder="XX XXX XX XX" maxLength={12} />
-                <div className="h-5 flex items-center">
-                  {phoneError && <p className="text-red-500 text-xs animate-in slide-in-from-top-1 duration-200">
-                      {phoneError}
-                    </p>}
-                </div>
+                <Input id="phone" type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-24 h-11 ${phoneError ? 'border-red-500' : ''}`} placeholder="XX XXX XX XX" maxLength={12} />
+                {phoneError && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">
+                    {phoneError}
+                  </p>}
               </div>
             </div>
 
