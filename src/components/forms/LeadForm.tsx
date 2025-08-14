@@ -176,15 +176,11 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
         {/* Trust Elements */}
         <div className="bg-msc-primary/5 p-4 border-b">
-          <div className="flex justify-center gap-6 text-sm text-msc-text">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">⚡</span>
-              <span>{t.trust1}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-lg">🛡️</span>
-              <span>{t.trust2}</span>
-            </div>
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-msc-text">
+              Получите консультацию на тему<br />
+              <span className="text-msc-primary">"Как эффективно окупить оборудование в 2025 году?"</span>
+            </h3>
           </div>
         </div>
 
