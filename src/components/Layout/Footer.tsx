@@ -101,7 +101,7 @@ const Footer = ({ language }: FooterProps) => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-msc-accent" />
-                <span>info@msc.uz</span>
+                <span>info@medsc.uz</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-msc-accent" />
