@@ -214,9 +214,9 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
 
         {/* Form */}
         <div className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium">
                 <User className="w-4 h-4" />
                 {t.name} *
@@ -226,14 +226,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 required
-                className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-12"
+                className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-11"
                 placeholder={t.name}
               />
-              <div className="h-6"></div>
             </div>
 
             {/* Phone */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium">
                 <Phone className="w-4 h-4" />
                 {t.phone} *
@@ -250,26 +249,23 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   required
-                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-24 h-12 ${phoneError ? 'border-red-500' : ''}`}
+                  className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-24 h-11 ${phoneError ? 'border-red-500' : ''}`}
                   placeholder="XX XXX XX XX"
                   maxLength={12}
                 />
-                {/* Fixed height container for error message */}
-                <div className="h-6 mt-1">
-                  {phoneError && (
-                    <p className="text-red-500 text-xs animate-in slide-in-from-top-1 duration-200">
-                      {phoneError}
-                    </p>
-                  )}
-                </div>
+                {phoneError && (
+                  <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">
+                    {phoneError}
+                  </p>
+                )}
               </div>
             </div>
 
             {/* Equipment Type */}
-            <div className="space-y-2">
+            <div className="space-y-1">
               <Label className="text-msc-text font-medium">{t.equipmentType} *</Label>
               <Select value={formData.equipmentType} onValueChange={(value) => handleInputChange('equipmentType', value)} required>
-                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-12 transition-all duration-200">
+                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-11 transition-all duration-200">
                   <SelectValue placeholder={t.equipmentType} />
                 </SelectTrigger>
                 <SelectContent>
@@ -278,14 +274,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   ))}
                 </SelectContent>
               </Select>
-              <div className="h-6"></div>
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-6 text-lg transition-all duration-300 shadow-lg mt-6"
+              className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-5 text-lg transition-all duration-300 shadow-lg mt-4"
             >
               {isSubmitting ? (
                 <div className="flex items-center gap-2">
