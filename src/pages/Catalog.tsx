@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Heart, Eye, Loader2 } from "lucide-react";
+import { Search, Filter, Heart, Eye, Loader2, Package } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
+import { toast } from 'sonner';
 
 interface CatalogProps {
   language: 'ru' | 'en' | 'uz';
@@ -149,11 +150,20 @@ const Catalog = ({ language }: CatalogProps) => {
             {filteredProducts.map((product) => (
               <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div className="relative overflow-hidden rounded-t-lg">
-                  <img
-                    src={product.image || '/placeholder.svg'}
-                    alt={product.name[language]}
-                    className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  {product.image ? (
+                    <img
+                      src={product.image}
+                      alt={product.name[language]}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder.svg';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-muted flex items-center justify-center">
+                      <Package className="w-16 h-16 text-muted-foreground" />
+                    </div>
+                  )}
                   <div className="absolute top-4 right-4 flex gap-2">
                     <Button
                       size="sm"
@@ -204,7 +214,13 @@ const Catalog = ({ language }: CatalogProps) => {
                       <Eye className="h-4 w-4 mr-2" />
                       {translations.details[language]}
                     </Button>
-                    <Button variant="outline">
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        // Implement contact form or quote request
+                        toast.success('Запрос отправлен! Мы свяжемся с вами в ближайшее время.');
+                      }}
+                    >
                       {translations.requestQuote[language]}
                     </Button>
                   </div>

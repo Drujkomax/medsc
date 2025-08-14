@@ -60,7 +60,17 @@
     },
     "notFound": "Товары не найдены",
     "sum": "сум",
-    "pieces": "шт."
+    "pieces": "шт.",
+    "categories": {
+      "diagnostic": "Диагностическое",
+      "surgical": "Хирургическое", 
+      "monitoring": "Мониторинг",
+      "laboratory": "Лабораторное",
+      "rehabilitation": "Реабилитационное",
+      "dental": "Стоматологическое",
+      "ophthalmology": "Офтальмологическое",
+      "furniture": "Медицинская мебель"
+    }
   },
   "clients": {
     "title": "Клиенты",

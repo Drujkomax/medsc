@@ -12,8 +12,9 @@ import {
   Package,
   Loader2
 } from 'lucide-react';
-import { useAdminProducts } from '@/hooks/useProducts';
+import { useAdminProducts, Product } from '@/hooks/useProducts';
 import { AddProductDialog } from '../components/AddProductDialog';
+import { EditProductDialog } from '../components/EditProductDialog';
 
 const getCategoryLabel = (category: string) => {
   const categoryLabels = {
@@ -33,6 +34,7 @@ const getCategoryLabel = (category: string) => {
 const AdminProducts = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { products, loading, error } = useAdminProducts();
 
   const getStatusBadge = (status: string) => {
@@ -182,16 +184,21 @@ const AdminProducts = () => {
                   {product.description.ru}
                 </p>
                 
-                <div className="flex space-x-2 pt-2">
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Eye className="w-4 h-4 mr-1" />
-                    {t('common.view')}
-                  </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
-                    <Edit className="w-4 h-4 mr-1" />
-                    {t('common.edit')}
-                  </Button>
-                </div>
+                  <div className="flex space-x-2 pt-2">
+                    <Button variant="outline" size="sm" className="flex-1">
+                      <Eye className="w-4 h-4 mr-1" />
+                      {t('common.view')}
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => setEditingProduct(product)}
+                    >
+                      <Edit className="w-4 h-4 mr-1" />
+                      {t('common.edit')}
+                    </Button>
+                  </div>
               </div>
             </CardContent>
           </Card>
@@ -205,6 +212,12 @@ const AdminProducts = () => {
           </CardContent>
         </Card>
       )}
+
+      <EditProductDialog 
+        product={editingProduct}
+        open={!!editingProduct}
+        onOpenChange={(open) => !open && setEditingProduct(null)}
+      />
     </div>
   );
 };
