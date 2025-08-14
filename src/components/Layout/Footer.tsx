@@ -160,8 +160,13 @@ const Footer = ({ language }: FooterProps) => {
             <h4 className="font-semibold text-lg mb-4">{t.services}</h4>
             <ul className="space-y-2">
               {t.servicesList.map((service, index) => (
-                <li key={index} className="text-white/80 text-sm">
-                  {service}
+                <li key={index}>
+                  <a 
+                    href="/services"
+                    className="text-white/80 text-sm hover:text-msc-accent transition-colors"
+                  >
+                    {service}
+                  </a>
                 </li>
               ))}
             </ul>
