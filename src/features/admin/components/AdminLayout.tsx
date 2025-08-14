@@ -23,7 +23,7 @@ const AdminLayout = () => {
   
   const navigation = [
     { name: t('admin.dashboard'), href: '/admin', icon: BarChart3 },
-    { name: t('admin.clients'), href: '/admin/clients', icon: Users },
+    { name: 'Лиды', href: '/admin/leads', icon: Users },
     { name: t('admin.products'), href: '/admin/products', icon: ShoppingBag },
     { name: 'Услуги', href: '/admin/services', icon: Settings },
     { name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare },

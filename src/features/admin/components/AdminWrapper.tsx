@@ -4,7 +4,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import AdminAuth from './AdminAuth';
 import AdminLayout from './AdminLayout';
 import Dashboard from '../pages/Dashboard';
-import Clients from '../../crm/pages/Clients';
+import Leads from '../../crm/pages/Leads';
 import AdminProducts from '../../products/pages/AdminProducts';
 import AddProduct from '../../products/pages/AddProduct';
 import EditProduct from '../../products/pages/EditProduct';
@@ -40,7 +40,7 @@ const AdminWrapper = () => {
       <Route path="/*" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="clients" element={<Clients />} />
+        <Route path="leads" element={<Leads />} />
         <Route path="products" element={<AdminProducts />} />
         <Route path="products/add" element={<AddProduct />} />
         <Route path="products/edit/:id" element={<EditProduct />} />

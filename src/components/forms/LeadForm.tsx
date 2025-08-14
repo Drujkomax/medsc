@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useLeads } from '@/hooks/useLeads';
+import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength } from '@/lib/phoneValidation';
 import { Phone, User, MessageSquare, Send, X } from 'lucide-react';
 
 interface LeadFormProps {
@@ -13,6 +15,7 @@ interface LeadFormProps {
 
 const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
   const { toast } = useToast();
+  const { addLead } = useLeads();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -20,6 +23,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
 
   const texts = {
     ru: {
@@ -84,15 +88,51 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
   const t = texts[language];
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'phone') {
+      // Format and validate phone number
+      if (!isValidUzbekPhoneLength(value)) return; // Prevent input beyond max length
+      
+      const formatted = formatUzbekPhoneNumber(value);
+      setFormData(prev => ({ ...prev, [field]: formatted }));
+      
+      // Validate phone number
+      if (formatted && !validateUzbekPhoneNumber(formatted)) {
+        setPhoneError(language === 'ru' 
+          ? 'Неверный формат номера' 
+          : language === 'en' 
+          ? 'Invalid phone format' 
+          : 'Noto\'g\'ri telefon formati');
+      } else {
+        setPhoneError('');
+      }
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate phone number before submission
+    if (formData.phone && !validateUzbekPhoneNumber(formData.phone)) {
+      setPhoneError(language === 'ru' 
+        ? 'Неверный формат номера' 
+        : language === 'en' 
+        ? 'Invalid phone format' 
+        : 'Noto\'g\'ri telefon formati');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      console.log('Form submitted:', formData);
+      await addLead({
+        name: formData.name,
+        phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
+        notes: formData.equipmentType ? `Тип оборудования: ${t.equipmentTypes[formData.equipmentType as keyof typeof t.equipmentTypes]}` : undefined,
+        source: 'website_form',
+        stage: 'new'
+      });
       
       toast({
         title: language === 'ru' ? 'Заявка отправлена!' : language === 'en' ? 'Request sent!' : 'Ariza jo\'natildi!',
@@ -108,6 +148,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
         phone: '',
         equipmentType: ''
       });
+      setPhoneError('');
 
       if (onClose) onClose();
     } catch (error) {
@@ -198,9 +239,13 @@ const LeadForm: React.FC<LeadFormProps> = ({ language, onClose }) => {
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   required
-                  className="border-msc-primary/20 focus:border-msc-accent transition-colors pl-20"
+                  className={`border-msc-primary/20 focus:border-msc-accent transition-colors pl-20 ${phoneError ? 'border-red-500' : ''}`}
                   placeholder="XX XXX XX XX"
+                  maxLength={11} // 9 digits + 2 spaces
                 />
+                {phoneError && (
+                  <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+                )}
               </div>
             </div>
 
