@@ -109,7 +109,14 @@ const Footer = ({ language }: FooterProps) => {
               </div>
               <div className="flex items-center space-x-3">
                 <MessageCircle className="w-5 h-5 text-msc-accent" />
-                <span>@msc_uzbekistan</span>
+                <a 
+                  href="https://t.me/medservice_centre" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-msc-accent transition-colors"
+                >
+                  @medservice_centre
+                </a>
               </div>
             </div>
           </div>
