@@ -296,7 +296,7 @@ const Home = ({ language }: HomeProps) => {
               {language === 'ru' ? 'Свяжитесь с нами' : language === 'en' ? 'Contact Us' : 'Biz bilan bog\'laning'}
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <p className="text-sm text-msc-text-light mt-2">
+            <p className="text-lg font-semibold text-msc-primary mt-3 leading-relaxed">
               {language === 'ru' ? 'Получите консультацию "Как быстро окупить оборудование в 2025" за 24 часа!' : language === 'en' ? 'Get consultation "How to quickly pay back equipment in 2025" in 24 hours!' : '"2025 yilda uskunani tez qanday to\'lash" bo\'yicha 24 soat ichida maslahat oling!'}
             </p>
           </div>
