@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe } from 'lucide-react';
+import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
@@ -34,12 +34,12 @@ const Home = ({ language }: HomeProps) => {
         title: 'Категории оборудования',
         subtitle: 'Широкий спектр медицинского оборудования для всех направлений',
         items: [
-          { name: 'Диагностическое оборудование', icon: '🔬', category: 'diagnostic' },
-          { name: 'Хирургическое оборудование', icon: '⚕️', category: 'surgical' },
-          { name: 'Реабилитационное оборудование', icon: '🏥', category: 'rehabilitation' },
-          { name: 'Лабораторное оборудование', icon: '🧪', category: 'laboratory' },
-          { name: 'Стоматологическое оборудование', icon: '🦷', category: 'dental' },
-          { name: 'Офтальмологическое оборудование', icon: '👁️', category: 'ophthalmology' },
+          { name: 'Диагностическое оборудование', icon: Stethoscope, category: 'diagnostic' },
+          { name: 'Хирургическое оборудование', icon: Scissors, category: 'surgical' },
+          { name: 'Реабилитационное оборудование', icon: Heart, category: 'rehabilitation' },
+          { name: 'Лабораторное оборудование', icon: TestTube, category: 'laboratory' },
+          { name: 'Стоматологическое оборудование', icon: Smile, category: 'dental' },
+          { name: 'Офтальмологическое оборудование', icon: Eye, category: 'ophthalmology' },
         ]
       },
       advantages: {
@@ -83,12 +83,12 @@ const Home = ({ language }: HomeProps) => {
         title: 'Equipment Categories',
         subtitle: 'Wide range of medical equipment for all medical fields',
         items: [
-          { name: 'Diagnostic Equipment', icon: '🔬', category: 'diagnostic' },
-          { name: 'Surgical Equipment', icon: '⚕️', category: 'surgical' },
-          { name: 'Rehabilitation Equipment', icon: '🏥', category: 'rehabilitation' },
-          { name: 'Laboratory Equipment', icon: '🧪', category: 'laboratory' },
-          { name: 'Dental Equipment', icon: '🦷', category: 'dental' },
-          { name: 'Ophthalmology Equipment', icon: '👁️', category: 'ophthalmology' },
+          { name: 'Diagnostic Equipment', icon: Stethoscope, category: 'diagnostic' },
+          { name: 'Surgical Equipment', icon: Scissors, category: 'surgical' },
+          { name: 'Rehabilitation Equipment', icon: Heart, category: 'rehabilitation' },
+          { name: 'Laboratory Equipment', icon: TestTube, category: 'laboratory' },
+          { name: 'Dental Equipment', icon: Smile, category: 'dental' },
+          { name: 'Ophthalmology Equipment', icon: Eye, category: 'ophthalmology' },
         ]
       },
       advantages: {
@@ -132,12 +132,12 @@ const Home = ({ language }: HomeProps) => {
         title: 'Uskuna toifalari',
         subtitle: 'Biz barcha yo\'nalishlar uchun keng assortimentdagi tibbiy uskunalarni taklif qilamiz',
         items: [
-          { name: 'Diagnostika uskunalari', icon: '🔬', category: 'diagnostic' },
-          { name: 'Jarrohlik uskunalari', icon: '⚕️', category: 'surgical' },
-          { name: 'Reabilitatsiya uskunalari', icon: '🏥', category: 'rehabilitation' },
-          { name: 'Laboratoriya uskunalari', icon: '🧪', category: 'laboratory' },
-          { name: 'Stomatologiya uskunalari', icon: '🦷', category: 'dental' },
-          { name: 'Oftalmologiya uskunalari', icon: '👁️', category: 'ophthalmology' },
+          { name: 'Diagnostika uskunalari', icon: Stethoscope, category: 'diagnostic' },
+          { name: 'Jarrohlik uskunalari', icon: Scissors, category: 'surgical' },
+          { name: 'Reabilitatsiya uskunalari', icon: Heart, category: 'rehabilitation' },
+          { name: 'Laboratoriya uskunalari', icon: TestTube, category: 'laboratory' },
+          { name: 'Stomatologiya uskunalari', icon: Smile, category: 'dental' },
+          { name: 'Oftalmologiya uskunalari', icon: Eye, category: 'ophthalmology' },
         ]
       },
       advantages: {
@@ -321,7 +321,9 @@ const Home = ({ language }: HomeProps) => {
                 onClick={() => navigate(`/catalog?category=${category.category}`)}
               >
                 <CardContent className="p-6 text-center">
-                  <div className="text-4xl mb-4">{category.icon}</div>
+                  <div className="w-16 h-16 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <category.icon className="w-8 h-8 text-white" />
+                  </div>
                   <h3 className="font-semibold text-lg text-msc-primary mb-2">{category.name}</h3>
                 </CardContent>
               </Card>
