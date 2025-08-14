@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { Phone, Mail, MapPin, Send } from 'lucide-react';
 
 
 interface FooterProps {
@@ -97,18 +97,35 @@ const Footer = ({ language }: FooterProps) => {
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-msc-accent" />
-                <span>+998 (71) 237-33-08</span>
+                <a 
+                  href="tel:+998712373308"
+                  className="hover:text-msc-accent transition-colors"
+                >
+                  +998 (71) 237-33-08
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-msc-accent" />
-                <span>info@medsc.uz</span>
+                <a 
+                  href="mailto:info@medsc.uz"
+                  className="hover:text-msc-accent transition-colors"
+                >
+                  info@medsc.uz
+                </a>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-5 h-5 text-msc-accent" />
-                <span>{t.address}</span>
+                <a 
+                  href="https://yandex.ru/maps/?text=г. Ташкент, Мирзо Улугбекский р-н, ул. Асака, 32"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-msc-accent transition-colors"
+                >
+                  {t.address}
+                </a>
               </div>
               <div className="flex items-center space-x-3">
-                <MessageCircle className="w-5 h-5 text-msc-accent" />
+                <Send className="w-5 h-5 text-msc-accent" />
                 <a 
                   href="https://t.me/medservice_centre" 
                   target="_blank" 
