@@ -124,7 +124,7 @@ const KanbanBoard = () => {
   }
 
   return (
-    <div className="p-6 h-full overflow-auto">
+    <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Канбан доска лидов</h1>
         <Button onClick={() => openLeadModal()}>
@@ -134,7 +134,8 @@ const KanbanBoard = () => {
       </div>
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex gap-6 overflow-x-auto pb-4">
+        <div className="overflow-x-auto">
+          <div className="flex gap-6 pb-4 min-w-max">
           {stages.map((stage) => (
             <div key={stage.id} className="bg-gray-50 rounded-lg p-4 min-w-80 flex-shrink-0">
               <div className="flex items-center mb-4">
@@ -205,6 +206,7 @@ const KanbanBoard = () => {
               </Droppable>
             </div>
           ))}
+          </div>
         </div>
       </DragDropContext>
 
