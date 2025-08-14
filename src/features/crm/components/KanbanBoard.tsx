@@ -124,7 +124,7 @@ const KanbanBoard = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 h-full overflow-auto">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Канбан доска лидов</h1>
         <Button onClick={() => openLeadModal()}>
