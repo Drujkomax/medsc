@@ -293,7 +293,7 @@ const Home = ({ language }: HomeProps) => {
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <p className="text-sm text-msc-text-light mt-2">
-              {language === 'ru' ? 'Мы расскажем вам как быстро окупить оборудование за 24 часа!' : language === 'en' ? 'We will tell you how to quickly pay back equipment in 24 hours!' : 'Biz sizga uskunani 24 soat ichida tez qanday qilib to\'lashni aytamiz!'}
+              {language === 'ru' ? 'Получите консультацию "Как быстро окупить оборудование в 2025" за 24 часа!' : language === 'en' ? 'Get consultation "How to quickly pay back equipment in 2025" in 24 hours!' : '"2025 yilda uskunani tez qanday to\'lash" bo\'yicha 24 soat ichida maslahat oling!'}
             </p>
           </div>
         </div>
