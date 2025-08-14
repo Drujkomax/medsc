@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -159,23 +160,23 @@ const LeadForm: React.FC<LeadFormProps> = ({
   return <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom-4">
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-msc-primary to-msc-accent text-white p-6 rounded-t-2xl">
-          <button onClick={onClose} className="absolute top-4 right-4 text-white/80 hover:text-white transition-colors">
-            <X className="w-6 h-6" />
+        <div className="relative bg-gradient-to-r from-msc-primary to-msc-accent text-white p-4 rounded-t-2xl">
+          <button onClick={onClose} className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors">
+            <X className="w-5 h-5" />
           </button>
           
           <div className="text-center">
-            <h2 className="font-heading text-2xl font-bold mb-2 flex items-center justify-center gap-2">
-              <MessageSquare className="w-6 h-6" />
+            <h2 className="font-heading text-lg font-bold mb-1 flex items-center justify-center gap-2">
+              <MessageSquare className="w-5 h-5" />
               {t.title}
             </h2>
             
-            <p className="text-white/80 text-xs mt-1">{t.description}</p>
+            <p className="text-white/80 text-xs">{t.description}</p>
           </div>
         </div>
 
         {/* Trust Elements */}
-        <div className="bg-gradient-to-r from-msc-primary/10 to-msc-accent/10 p-4 border-b animate-fade-in">
+        <div className="bg-gradient-to-r from-msc-primary/10 to-msc-accent/10 p-3 border-b animate-fade-in">
           <div className="text-center">
             <h3 className="text-sm font-semibold text-msc-text">
               Получите консультацию на тему<br />
@@ -187,30 +188,30 @@ const LeadForm: React.FC<LeadFormProps> = ({
         </div>
 
         {/* Form */}
-        <div className="p-6">
+        <div className="p-5">
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name */}
             <div className="space-y-1">
-              <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium">
+              <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium text-sm">
                 <User className="w-4 h-4" />
                 {t.name} *
               </Label>
-              <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-11" placeholder={t.name} />
+              <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10" placeholder={t.name} />
             </div>
 
             {/* Phone */}
             <div className="space-y-1">
-              <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium">
+              <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium text-sm">
                 <Phone className="w-4 h-4" />
                 {t.phone} *
               </Label>
               <div className="relative">
-                <div className="absolute left-3 top-3 flex items-center gap-2 pointer-events-none">
-                  <span className="text-lg">🇺🇿</span>
-                  <span className="text-msc-text font-medium">+998</span>
-                  <div className="w-px h-4 bg-msc-primary/20 mx-1"></div>
+                <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
+                  <span className="text-base">🇺🇿</span>
+                  <span className="text-msc-text font-medium text-sm">+998</span>
+                  <div className="w-px h-3 bg-msc-primary/20 mx-1"></div>
                 </div>
-                <Input id="phone" type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-24 h-11 ${phoneError ? 'border-red-500' : ''}`} placeholder="XX XXX XX XX" maxLength={12} />
+                <Input id="phone" type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={`border-msc-primary/20 focus:border-msc-accent transition-all duration-200 pl-20 h-10 ${phoneError ? 'border-red-500' : ''}`} placeholder="XX XXX XX XX" maxLength={12} />
                 {phoneError && <p className="text-red-500 text-xs mt-1 animate-in slide-in-from-top-1 duration-200">
                     {phoneError}
                   </p>}
@@ -219,12 +220,12 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
             {/* Equipment Type */}
             <div className="space-y-1">
-              <Label className="flex items-center gap-2 text-msc-text font-medium">
+              <Label className="flex items-center gap-2 text-msc-text font-medium text-sm">
                 <Settings className="w-4 h-4" />
                 {t.equipmentType} *
               </Label>
               <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
-                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-11 transition-all duration-200">
+                <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-10 transition-all duration-200">
                   <SelectValue placeholder={t.equipmentType} />
                 </SelectTrigger>
                 <SelectContent>
@@ -234,12 +235,12 @@ const LeadForm: React.FC<LeadFormProps> = ({
             </div>
 
             {/* Submit Button */}
-            <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-5 text-lg transition-all duration-300 shadow-lg mt-4">
+            <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-5 text-base transition-all duration-300 shadow-lg mt-4">
               {isSubmitting ? <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   {language === 'ru' ? 'Отправка...' : language === 'en' ? 'Sending...' : 'Jo\'natilmoqda...'}
                 </div> : <div className="flex items-center gap-2">
-                  <Send className="w-5 h-5" />
+                  <Send className="w-4 h-4" />
                   {t.submit}
                 </div>}
             </Button>
