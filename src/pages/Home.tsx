@@ -293,7 +293,7 @@ const Home = ({ language }: HomeProps) => {
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
             <p className="text-sm text-msc-text-light mt-2">
-              {language === 'ru' ? 'Получите персональное предложение за 24 часа' : language === 'en' ? 'Get a personalized offer within 24 hours' : '24 soat ichida shaxsiy taklif oling'}
+              {language === 'ru' ? 'Мы расскажем вам как быстро окупить оборудование за 24 часа!' : language === 'en' ? 'We will tell you how to quickly pay back equipment in 24 hours!' : 'Biz sizga uskunani 24 soat ichida tez qanday qilib to\'lashni aytamiz!'}
             </p>
           </div>
         </div>
