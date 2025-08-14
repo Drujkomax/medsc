@@ -102,7 +102,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
 
 
   return (
-    <Card className="w-full max-w-4xl bg-white/95 backdrop-blur-sm border-2 border-msc-accent/20 shadow-xl animate-fade-in hover-scale transition-transform transition-shadow hover:shadow-2xl hover:border-msc-accent/40">
+    <Card className="w-full max-w-4xl bg-white/95 backdrop-blur-sm border-2 border-msc-accent/20 shadow-xl animate-fade-in hover-scale transition-all duration-300 hover:shadow-2xl hover:border-msc-accent/40 hover:bg-white">
       <CardHeader className="text-center">
         <div className="flex items-center justify-center space-x-2 mb-2">
           <Calculator className="w-8 h-8 text-msc-accent" />
@@ -117,7 +117,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
         {/* Input Controls */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Equipment Price */}
-          <div className="group/ctrl space-y-3 rounded-lg p-4 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 transition-colors">
+           <div className="group/ctrl space-y-3 rounded-lg p-4 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
             <Label className="text-msc-text font-medium transition-colors group-hover/ctrl:text-msc-primary">{t.equipmentPrice}</Label>
             <div className="space-y-2">
               <Slider
@@ -129,7 +129,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                 max={500000}
                 min={0}
                 step={1000}
-                className="w-full transition-colors"
+                className="w-full transition-all duration-300 hover:scale-[1.02]"
               />
               <div className="flex items-center space-x-2">
                 <span className="text-msc-accent font-medium">{t.currency}</span>
@@ -149,14 +149,14 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                   }}
                   min={0}
                   max={500000}
-                   className="border-msc-accent/30 focus:border-msc-accent focus-visible:ring-2 focus-visible:ring-msc-accent/40 hover:border-msc-accent/50 transition-colors"
+                   className="border-msc-accent/30 focus:border-msc-accent focus-visible:ring-2 focus-visible:ring-msc-accent/40 hover:border-msc-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-sm"
                 />
               </div>
             </div>
           </div>
 
           {/* Procedures per Month */}
-          <div className="group/ctrl space-y-3 rounded-lg p-4 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 transition-colors">
+           <div className="group/ctrl space-y-3 rounded-lg p-4 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
             <Label className="text-msc-text font-medium transition-colors group-hover/ctrl:text-msc-primary">{t.proceduresMonth}</Label>
             <div className="space-y-2">
               <Slider
@@ -168,7 +168,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                 max={1000}
                 min={0}
                 step={1}
-                className="w-full transition-colors"
+                className="w-full transition-all duration-300 hover:scale-[1.02]"
               />
               <Input
                 type="number"
@@ -186,13 +186,13 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                 }}
                 min={0}
                 max={1000}
-                className="border-msc-accent/30 focus:border-msc-accent focus-visible:ring-2 focus-visible:ring-msc-accent/40 hover:border-msc-accent/50 transition-colors"
+                className="border-msc-accent/30 focus:border-msc-accent focus-visible:ring-2 focus-visible:ring-msc-accent/40 hover:border-msc-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-sm"
               />
             </div>
           </div>
 
           {/* Profit per Procedure */}
-          <div className="group/ctrl space-y-3 rounded-lg p-4 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 transition-colors">
+          <div className="group/ctrl space-y-3 rounded-lg p-4 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 transition-all duration-300 hover:shadow-md hover:scale-[1.02]">
             <Label className="text-msc-text font-medium transition-colors group-hover/ctrl:text-msc-primary">{t.profitProcedure}</Label>
             <div className="space-y-2">
               <Slider
@@ -204,7 +204,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                 max={1000}
                 min={0}
                 step={1}
-                className="w-full transition-colors"
+                className="w-full transition-all duration-300 hover:scale-[1.02]"
               />
               <div className="flex items-center space-x-2">
                 <span className="text-msc-accent font-medium">{t.currency}</span>
@@ -224,7 +224,7 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
                   }}
                   min={0}
                   max={1000}
-                  className="border-msc-accent/30 focus:border-msc-accent focus-visible:ring-2 focus-visible:ring-msc-accent/40 hover:border-msc-accent/50 transition-colors"
+                  className="border-msc-accent/30 focus:border-msc-accent focus-visible:ring-2 focus-visible:ring-msc-accent/40 hover:border-msc-accent/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-sm"
                 />
               </div>
             </div>
@@ -234,8 +234,8 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
         {/* Results */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gradient-to-r from-msc-primary/5 to-msc-accent/5 rounded-lg">
           {/* Payback Period */}
-           <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md transition-colors">
-            <Clock className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
+           <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-all duration-300 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md">
+            <Clock className="w-8 h-8 mx-auto mb-2 text-msc-accent transition-all duration-300 group-hover:scale-110 group-hover:text-msc-primary" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.paybackPeriod}</h3>
             <p className={`text-3xl font-bold transition-colors ${getROIColor(months)}`}>
               {months} {t.months}
@@ -246,8 +246,8 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
           </div>
 
           {/* Monthly Profit */}
-           <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md transition-colors">
-            <DollarSign className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
+           <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-all duration-300 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md">
+            <DollarSign className="w-8 h-8 mx-auto mb-2 text-msc-accent transition-all duration-300 group-hover:scale-110 group-hover:text-msc-primary" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.monthlyProfit}</h3>
              <p className="text-2xl font-bold text-msc-primary transition-colors group-hover:text-msc-accent">
               {t.currency}{monthlyProfit.toLocaleString()}
@@ -255,8 +255,8 @@ const ROICalculator = ({ language }: ROICalculatorProps) => {
           </div>
 
           {/* Yearly Profit */}
-          <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-shadow border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md transition-colors">
-            <TrendingUp className="w-8 h-8 mx-auto mb-2 text-msc-accent" />
+          <div className="group text-center p-4 bg-white rounded-lg shadow-sm hover-scale transition-all duration-300 border border-transparent hover:border-msc-accent/30 hover:bg-msc-accent/5 hover:shadow-md">
+            <TrendingUp className="w-8 h-8 mx-auto mb-2 text-msc-accent transition-all duration-300 group-hover:scale-110 group-hover:text-msc-primary" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.yearlyProfit}</h3>
             <p className="text-2xl font-bold text-msc-primary transition-colors group-hover:text-msc-accent">
               {t.currency}{yearlyProfit.toLocaleString()}
