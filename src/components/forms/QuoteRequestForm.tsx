@@ -291,20 +291,6 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
                 </div>
               </div>
 
-              {/* Company */}
-              <div className="space-y-1">
-                <Label htmlFor="company" className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                  <Building2 className="w-4 h-4" />
-                  {t.company}
-                </Label>
-                <Input 
-                  id="company" 
-                  value={formData.company} 
-                  onChange={e => handleInputChange('company', e.target.value)} 
-                  className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10" 
-                  placeholder={t.company} 
-                />
-              </div>
 
               {/* Equipment Type */}
               {!product && (
