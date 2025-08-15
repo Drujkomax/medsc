@@ -12,6 +12,7 @@ import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ProductImageUpload';
+import { countries } from '@/utils/countries';
 
 const categories = [
   { value: 'diagnostic', label: 'Диагностическое оборудование' },
@@ -41,6 +42,7 @@ const AddProduct = () => {
     name: { ru: '', en: '', uz: '' },
     description: { ru: '', en: '', uz: '' },
     category: '',
+    country: '',
     status: 'draft',
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
@@ -65,6 +67,7 @@ const AddProduct = () => {
         name: formData.name,
         description: formData.description,
         category: formData.category,
+        country: formData.country,
         status: formData.status as 'active' | 'draft' | 'archived',
         features: formData.features,
         images: formData.images
@@ -326,6 +329,31 @@ const AddProduct = () => {
                       {categories.map((category) => (
                         <SelectItem key={category.value} value={category.value}>
                           {category.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="country">Страна-производитель</Label>
+                  <Select 
+                    value={formData.country} 
+                    onValueChange={(value) => setFormData(prev => ({
+                      ...prev,
+                      country: value
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите страну" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map(country => (
+                        <SelectItem key={country.code} value={country.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>{country.name.ru}</span>
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -14,6 +14,7 @@ export interface Product {
     uz: string;
   };
   category: string;
+  country: string | null;
   images: {
     cover: string | null;
     gallery: string[];

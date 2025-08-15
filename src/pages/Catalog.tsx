@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Filter, Heart, Eye, Loader2, Package } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
 import { toast } from 'sonner';
+import { getCountryFlag } from '@/utils/countries';
 
 interface CatalogProps {
   language: 'ru' | 'en' | 'uz';
@@ -191,7 +192,14 @@ const Catalog = ({ language }: CatalogProps) => {
                 </div>
                 
                 <CardHeader>
-                  <CardTitle className="text-lg">{product.name[language]}</CardTitle>
+                  <div className="flex items-start justify-between mb-2">
+                    <CardTitle className="text-lg flex-1">{product.name[language]}</CardTitle>
+                    {product.country && (
+                      <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2">
+                        <span className="text-sm">{getCountryFlag(product.country)}</span>
+                      </div>
+                    )}
+                  </div>
                   <CardDescription>{product.description[language]}</CardDescription>
                 </CardHeader>
                 

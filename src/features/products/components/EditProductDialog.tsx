@@ -11,6 +11,7 @@ import { Loader2 } from 'lucide-react';
 import { useProducts, Product } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ImageUpload';
+import { countries } from '@/utils/countries';
 
 const categories = [
   { value: 'diagnostic', label: { ru: 'Диагностическое', en: 'Diagnostic', uz: 'Diagnostika' } },
@@ -38,6 +39,7 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
     name: { ru: '', en: '', uz: '' },
     description: { ru: '', en: '', uz: '' },
     category: '',
+    country: '',
     images: { cover: null as string | null, gallery: [null, null] as (string | null)[] },
     features: { ru: [''], en: [''], uz: [''] },
     status: 'active' as 'active' | 'draft' | 'archived'
@@ -49,6 +51,7 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
         name: product.name,
         description: product.description,
         category: product.category,
+        country: product.country || '',
         images: product.images || { cover: null, gallery: [null, null] },
         features: product.features || { ru: [''], en: [''], uz: [''] },
         status: product.status
@@ -223,21 +226,41 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
                 </div>
               </div>
 
-              {/* Category */}
-              <div>
-                <Label htmlFor="category">Категория</Label>
-                <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Выберите категорию" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map(category => (
-                      <SelectItem key={category.value} value={category.value}>
-                        {category.label.ru}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              {/* Category and Country */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="category">Категория</Label>
+                  <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите категорию" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map(category => (
+                        <SelectItem key={category.value} value={category.value}>
+                          {category.label.ru}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="country">Страна-производитель</Label>
+                  <Select value={formData.country} onValueChange={(value) => setFormData(prev => ({ ...prev, country: value }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите страну" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map(country => (
+                        <SelectItem key={country.code} value={country.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>{country.name.ru}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </CardContent>
           </Card>
