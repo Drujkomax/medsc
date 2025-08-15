@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye } from 'lucide-react';
+import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
@@ -241,26 +241,64 @@ const Home = ({ language }: HomeProps) => {
               </div>
             </div>
 
-            {/* Hero Animation - Logo Video */}
+            {/* Process Flow */}
             <div className="flex justify-center lg:justify-end">
-              <div className="relative w-64 h-64 lg:w-80 lg:h-80">
-                <video 
-                  autoPlay 
-                  loop 
-                  muted 
-                  playsInline
-                  className="w-full h-full object-contain"
-                >
-                  <source src="/logo-animation.mp4" type="video/mp4" />
-                  <source src="/logo-animation.webm" type="video/webm" />
-                  {/* Fallback if video doesn't load */}
-                  <div className="w-full h-full bg-gradient-to-br from-msc-accent to-white/20 hexagon-border animate-glow flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="text-4xl lg:text-6xl font-bold mb-2">MSC</div>
-                      <div className="text-sm lg:text-base opacity-80">Medical Excellence</div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 max-w-md">
+                <div className="space-y-4">
+                  {/* Process step 1 */}
+                  <div className="flex items-center gap-3 text-white">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <FileText className="w-5 h-5 text-white" />
                     </div>
+                    <span className="font-medium text-sm lg:text-base">
+                      {language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif'}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
                   </div>
-                </video>
+                  
+                  {/* Process step 2 */}
+                  <div className="flex items-center gap-3 text-white">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <Truck className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="font-medium text-sm lg:text-base">
+                      {language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish'}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
+                  </div>
+                  
+                  {/* Process step 3 */}
+                  <div className="flex items-center gap-3 text-white">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <Settings className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="font-medium text-sm lg:text-base">
+                      {language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish'}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
+                  </div>
+                  
+                  {/* Process step 4 */}
+                  <div className="flex items-center gap-3 text-white">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <GraduationCap className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="font-medium text-sm lg:text-base">
+                      {language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish'}
+                    </span>
+                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
+                  </div>
+                  
+                  {/* Process step 5 */}
+                  <div className="flex items-center gap-3 text-white">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <Wrench className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="font-medium text-sm lg:text-base">
+                      {language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat'}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
