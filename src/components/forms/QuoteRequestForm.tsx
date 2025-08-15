@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import TelegramPopup from '@/components/forms/TelegramPopup';
+import CountdownTimer from '@/components/common/CountdownTimer';
 import { useLeads } from '@/hooks/useLeads';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 import { Phone, User, MessageSquare, Send, X, Settings, Package, Building2 } from 'lucide-react';
@@ -238,12 +239,9 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
             </div>
           )}
 
-          {/* Trust Elements */}
-          <div className="bg-gradient-to-r from-green-50 to-blue-50 p-3 border-b">
-            <div className="flex justify-center gap-6 text-xs">
-              <span className="text-green-600 font-medium">{t.trust1}</span>
-              <span className="text-blue-600 font-medium">{t.trust2}</span>
-            </div>
+          {/* Countdown Timer */}
+          <div className="bg-gradient-to-r from-red-50 to-orange-50 p-3 border-b">
+            <CountdownTimer minutes={5} />
           </div>
 
           {/* Form */}
