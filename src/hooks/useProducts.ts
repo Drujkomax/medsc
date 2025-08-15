@@ -24,7 +24,6 @@ export interface Product {
     uz: string[];
   } | null;
   status: 'active' | 'draft' | 'archived';
-  in_stock: boolean;
   created_at: string;
   updated_at: string;
 }

@@ -47,8 +47,6 @@ const translations = {
   search: { ru: "Поиск по каталогу...", en: "Search catalog...", uz: "Katalogda qidirish..." },
   category: { ru: "Категория", en: "Category", uz: "Kategoriya" },
   features: { ru: "Особенности", en: "Features", uz: "Xususiyatlar" },
-  inStock: { ru: "В наличии", en: "In Stock", uz: "Mavjud" },
-  outOfStock: { ru: "Под заказ", en: "On Order", uz: "Buyurtma bo'yicha" },
   details: { ru: "Подробнее", en: "Details", uz: "Batafsil" },
   requestQuote: { ru: "Запросить КП", en: "Request Quote", uz: "KP so'rash" },
   noProducts: { ru: "Товары не найдены", en: "No products found", uz: "Mahsulotlar topilmadi" }
@@ -185,11 +183,8 @@ const Catalog = ({ language }: CatalogProps) => {
                       />
                     </Button>
                   </div>
-                  <div className="absolute top-4 left-4 flex gap-2">
-                    <Badge variant={product.in_stock ? "default" : "secondary"}>
-                      {product.in_stock ? translations.inStock[language] : translations.outOfStock[language]}
-                    </Badge>
-                    <Badge variant="outline">
+                  <div className="absolute top-4 left-4">
+                    <Badge variant="default">
                       {getCategoryTag(product.category, language)}
                     </Badge>
                   </div>

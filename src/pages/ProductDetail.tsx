@@ -168,11 +168,6 @@ const ProductDetail = ({ language }: ProductDetailProps) => {
                   />
                 </Button>
               </div>
-              <div className="absolute top-4 left-4">
-                <Badge variant={product.in_stock ? "default" : "secondary"}>
-                  {product.in_stock ? translations.inStock[language] : translations.outOfStock[language]}
-                </Badge>
-              </div>
             </div>
 
             {/* Gallery */}

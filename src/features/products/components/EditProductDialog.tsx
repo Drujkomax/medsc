@@ -40,8 +40,7 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
     category: '',
     images: { cover: null as string | null, gallery: [null, null] as (string | null)[] },
     features: { ru: [''], en: [''], uz: [''] },
-    status: 'active' as 'active' | 'draft' | 'archived',
-    in_stock: true
+    status: 'active' as 'active' | 'draft' | 'archived'
   });
 
   useEffect(() => {
@@ -52,8 +51,7 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
         category: product.category,
         images: product.images || { cover: null, gallery: [null, null] },
         features: product.features || { ru: [''], en: [''], uz: [''] },
-        status: product.status,
-        in_stock: product.in_stock
+        status: product.status
       });
     }
   }, [product]);
@@ -341,14 +339,7 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
               <CardTitle>Настройки товара</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center space-x-6">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={formData.in_stock}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, in_stock: checked }))}
-                  />
-                  <Label>В наличии</Label>
-                </div>
+              <div>
                 <div>
                   <Label htmlFor="status">Статус</Label>
                   <Select value={formData.status} onValueChange={(value: 'active' | 'draft' | 'archived') => setFormData(prev => ({ ...prev, status: value }))}>

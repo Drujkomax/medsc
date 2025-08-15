@@ -44,7 +44,6 @@ const EditProduct = () => {
     description: { ru: '', en: '', uz: '' },
     category: '',
     status: 'draft',
-    in_stock: true,
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
   });
@@ -56,7 +55,6 @@ const EditProduct = () => {
         description: product.description,
         category: product.category,
         status: product.status,
-        in_stock: product.in_stock,
         features: product.features || { ru: [''], en: [''], uz: [''] },
         images: product.images || { cover: null, gallery: [] }
       });
@@ -107,7 +105,6 @@ const EditProduct = () => {
         description: formData.description,
         category: formData.category,
         status: formData.status as 'active' | 'draft' | 'archived',
-        in_stock: formData.in_stock,
         features: formData.features,
         images: formData.images
       });
@@ -396,17 +393,6 @@ const EditProduct = () => {
                   </Select>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="in-stock"
-                    checked={formData.in_stock}
-                    onCheckedChange={(checked) => setFormData(prev => ({
-                      ...prev,
-                      in_stock: checked
-                    }))}
-                  />
-                  <Label htmlFor="in-stock">В наличии</Label>
-                </div>
               </CardContent>
             </Card>
           </div>
