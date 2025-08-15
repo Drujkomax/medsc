@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, Eye, Loader2, Package } from "lucide-react";
+import { Search, Filter, Heart, Eye, Loader2, Package } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
 import { toast } from 'sonner';
 
@@ -57,6 +57,7 @@ const Catalog = ({ language }: CatalogProps) => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
+  const [favorites, setFavorites] = useState<string[]>([]);
   
   const { products, loading, error } = useProducts();
 
@@ -75,19 +76,12 @@ const Catalog = ({ language }: CatalogProps) => {
     return matchesSearch && matchesCategory;
   });
 
-  // Marketing badges for products
-  const getMarketingBadge = (productId: string, language: 'ru' | 'en' | 'uz') => {
-    const badges = [
-      { ru: 'ЛУЧШИЙ', en: 'BEST', uz: 'ENG YAXSHI', color: 'bg-yellow-500' },
-      { ru: 'ХИТ', en: 'HIT', uz: 'HIT', color: 'bg-red-500' },
-      { ru: 'ТОПОВЫЙ', en: 'TOP CHOICE', uz: 'TOP TANLOV', color: 'bg-blue-500' },
-      { ru: 'ПОПУЛЯРНЫЙ', en: 'POPULAR', uz: 'MASHHUR', color: 'bg-green-500' },
-      { ru: 'ЛИДЕР', en: 'LEADER', uz: 'YETAKCHI', color: 'bg-purple-500' }
-    ];
-    
-    // Use product id hash to consistently assign badges
-    const badgeIndex = parseInt(productId.slice(-1), 16) % badges.length;
-    return badges[badgeIndex];
+  const toggleFavorite = (productId: string) => {
+    setFavorites(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
   };
 
   if (loading) {
@@ -177,12 +171,17 @@ const Catalog = ({ language }: CatalogProps) => {
                       <Package className="w-16 h-16 text-muted-foreground" />
                     </div>
                   )}
-                  <div className="absolute top-4 right-4">
-                    {Math.random() > 0.3 && ( // Show badge on ~70% of products
-                      <div className={`${getMarketingBadge(product.id, language).color} text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg transform rotate-12 animate-pulse`}>
-                        {getMarketingBadge(product.id, language)[language]}
-                      </div>
-                    )}
+                  <div className="absolute top-4 right-4 flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="bg-background/80 backdrop-blur-sm"
+                      onClick={() => toggleFavorite(product.id)}
+                    >
+                      <Heart 
+                        className={`h-4 w-4 ${favorites.includes(product.id) ? 'fill-red-500 text-red-500' : ''}`} 
+                      />
+                    </Button>
                   </div>
                   <div className="absolute top-4 left-4">
                     <Badge variant="default">
