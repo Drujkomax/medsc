@@ -241,63 +241,88 @@ const Home = ({ language }: HomeProps) => {
               </div>
             </div>
 
-            {/* Process Flow */}
+            {/* Process Cluster */}
             <div className="flex justify-center lg:justify-end">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20 max-w-md">
-                <div className="space-y-4">
-                  {/* Process step 1 */}
-                  <div className="flex items-center gap-3 text-white">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="relative w-80 h-80 lg:w-96 lg:h-96">
+                {/* Central Logo */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 lg:w-40 lg:h-40 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
+                  <img 
+                    src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png" 
+                    alt="Med Service Centre Logo" 
+                    className="w-24 h-24 lg:w-32 lg:h-32 object-contain"
+                  />
+                </div>
+                
+                {/* Process Icons positioned around the logo */}
+                
+                {/* КП - Top */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <FileText className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-medium text-sm lg:text-base">
+                    <span className="text-white text-xs font-medium">
                       {language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif'}
                     </span>
-                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
                   </div>
-                  
-                  {/* Process step 2 */}
-                  <div className="flex items-center gap-3 text-white">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  {/* Connection line */}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-px h-8 bg-gradient-to-b from-white/40 to-transparent"></div>
+                </div>
+                
+                {/* Поставка - Top Right */}
+                <div className="absolute top-8 right-4 transform translate-x-2 -translate-y-2">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <Truck className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-medium text-sm lg:text-base">
+                    <span className="text-white text-xs font-medium">
                       {language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish'}
                     </span>
-                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
                   </div>
-                  
-                  {/* Process step 3 */}
-                  <div className="flex items-center gap-3 text-white">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  {/* Connection line */}
+                  <div className="absolute bottom-2 left-2 w-6 h-6 border-l border-b border-white/40 transform rotate-45"></div>
+                </div>
+                
+                {/* Установка - Right */}
+                <div className="absolute top-1/2 right-0 transform translate-x-2 -translate-y-1/2">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <Settings className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-medium text-sm lg:text-base">
+                    <span className="text-white text-xs font-medium">
                       {language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish'}
                     </span>
-                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
                   </div>
-                  
-                  {/* Process step 4 */}
-                  <div className="flex items-center gap-3 text-white">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  {/* Connection line */}
+                  <div className="absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-4 w-4 h-px bg-gradient-to-l from-white/40 to-transparent"></div>
+                </div>
+                
+                {/* Обучение - Bottom Right */}
+                <div className="absolute bottom-8 right-4 transform translate-x-2 translate-y-2">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <GraduationCap className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-medium text-sm lg:text-base">
+                    <span className="text-white text-xs font-medium">
                       {language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish'}
                     </span>
-                    <ArrowRight className="w-4 h-4 text-white/70 flex-shrink-0" />
                   </div>
-                  
-                  {/* Process step 5 */}
-                  <div className="flex items-center gap-3 text-white">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center flex-shrink-0">
+                  {/* Connection line */}
+                  <div className="absolute top-2 left-2 w-6 h-6 border-l border-t border-white/40 transform -rotate-45"></div>
+                </div>
+                
+                {/* Сервис - Bottom */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-2">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 border border-white/20 text-center min-w-[100px]">
+                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
                       <Wrench className="w-5 h-5 text-white" />
                     </div>
-                    <span className="font-medium text-sm lg:text-base">
+                    <span className="text-white text-xs font-medium">
                       {language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat'}
                     </span>
                   </div>
+                  {/* Connection line */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-px h-8 bg-gradient-to-t from-white/40 to-transparent"></div>
                 </div>
               </div>
             </div>
