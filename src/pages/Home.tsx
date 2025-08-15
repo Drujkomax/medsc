@@ -203,18 +203,18 @@ const Home = ({ language }: HomeProps) => {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-3 gap-6 bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
                 <div className="text-center">
-                  <div className="text-2xl lg:text-3xl font-bold text-msc-accent">8+</div>
-                  <div className="text-sm text-white/80">{t.hero.experience}</div>
+                  <div className="text-2xl lg:text-3xl font-bold text-white">8+</div>
+                  <div className="text-sm text-white/90 font-medium">{t.hero.experience}</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl lg:text-3xl font-bold text-msc-accent">300+</div>
-                  <div className="text-sm text-white/80">{t.hero.projects}</div>
+                  <div className="text-2xl lg:text-3xl font-bold text-white">300+</div>
+                  <div className="text-sm text-white/90 font-medium">{t.hero.projects}</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl lg:text-3xl font-bold text-msc-accent">100%</div>
-                  <div className="text-sm text-white/80">{t.hero.clients}</div>
+                  <div className="text-2xl lg:text-3xl font-bold text-white">100%</div>
+                  <div className="text-sm text-white/90 font-medium">{t.hero.clients}</div>
                 </div>
               </div>
 
