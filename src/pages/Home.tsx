@@ -242,14 +242,14 @@ const Home = ({ language }: HomeProps) => {
             </div>
 
             {/* Process Cluster */}
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-start lg:justify-center">
               <div className="relative w-80 h-80 lg:w-96 lg:h-96">
                 {/* Central Logo */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 lg:w-40 lg:h-40 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 lg:w-48 lg:h-48 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
                   <img 
                     src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png" 
                     alt="Med Service Centre Logo" 
-                    className="w-24 h-24 lg:w-32 lg:h-32 object-contain"
+                    className="w-32 h-32 lg:w-40 lg:h-40 object-contain"
                   />
                 </div>
                 
