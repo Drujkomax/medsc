@@ -256,13 +256,13 @@ const Home = ({ language }: HomeProps) => {
                 {/* Orbital ring */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 lg:w-80 lg:h-80 border border-white/30 rounded-full"></div>
                 
-                {/* Process Icons positioned around the logo */}
+                {/* Process Icons positioned evenly around the logo */}
                 
-                {/* КП - Top */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4">
+                {/* КП - Top (0°) */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ transform: 'translate(-50%, -50%) translate(0px, -140px)' }}>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
-                      <FileText className="w-5 h-5 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                      <FileText className="w-6 h-6 text-white" />
                     </div>
                     <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif'}
@@ -270,11 +270,11 @@ const Home = ({ language }: HomeProps) => {
                   </div>
                 </div>
                 
-                {/* Поставка - Top Right */}
-                <div className="absolute top-6 right-6 transform translate-x-4 -translate-y-4">
+                {/* Поставка - Top Right (60°) */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ transform: 'translate(-50%, -50%) translate(121px, -70px)' }}>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Truck className="w-5 h-5 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Truck className="w-6 h-6 text-white" />
                     </div>
                     <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish'}
@@ -282,11 +282,11 @@ const Home = ({ language }: HomeProps) => {
                   </div>
                 </div>
                 
-                {/* Установка - Bottom Right */}
-                <div className="absolute bottom-6 right-6 transform translate-x-4 translate-y-4">
+                {/* Установка - Bottom Right (120°) */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ transform: 'translate(-50%, -50%) translate(121px, 70px)' }}>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Settings className="w-5 h-5 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Settings className="w-6 h-6 text-white" />
                     </div>
                     <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish'}
@@ -294,11 +294,11 @@ const Home = ({ language }: HomeProps) => {
                   </div>
                 </div>
                 
-                {/* Обучение - Bottom */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-4">
+                {/* Обучение - Bottom (180°) */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ transform: 'translate(-50%, -50%) translate(0px, 140px)' }}>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
-                      <GraduationCap className="w-5 h-5 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                      <GraduationCap className="w-6 h-6 text-white" />
                     </div>
                     <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish'}
@@ -306,11 +306,11 @@ const Home = ({ language }: HomeProps) => {
                   </div>
                 </div>
                 
-                {/* Сервис - Bottom Left */}
-                <div className="absolute bottom-6 left-6 transform -translate-x-4 translate-y-4">
+                {/* Сервис - Bottom Left (240°) */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ transform: 'translate(-50%, -50%) translate(-121px, 70px)' }}>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Wrench className="w-5 h-5 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Wrench className="w-6 h-6 text-white" />
                     </div>
                     <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat'}
@@ -318,11 +318,11 @@ const Home = ({ language }: HomeProps) => {
                   </div>
                 </div>
                 
-                {/* Окупаемость - Top Left */}
-                <div className="absolute top-6 left-6 transform -translate-x-4 -translate-y-4">
+                {/* Окупаемость - Top Left (300°) */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ transform: 'translate(-50%, -50%) translate(-121px, -70px)' }}>
                   <div className="text-center">
-                    <div className="w-10 h-10 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
-                      <TrendingUp className="w-5 h-5 text-white" />
+                    <div className="w-12 h-12 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                      <TrendingUp className="w-6 h-6 text-white" />
                     </div>
                     <span className="text-white text-xs font-medium block">
                       {language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik'}
