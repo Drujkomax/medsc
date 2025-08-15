@@ -116,7 +116,7 @@ const Catalog = ({ language }: CatalogProps) => {
       <div 
         className="relative py-16 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/lovable-uploads/b2e18245-6dd0-4f0b-9350-278c51dd482a.png')`
+          backgroundImage: `url('/lovable-uploads/4c70d2a2-2735-43a5-904b-62be351fa867.png')`
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>
