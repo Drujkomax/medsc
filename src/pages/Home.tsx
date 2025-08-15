@@ -245,13 +245,16 @@ const Home = ({ language }: HomeProps) => {
             <div className="flex justify-start lg:justify-center">
               <div className="relative w-80 h-80 lg:w-96 lg:h-96">
                 {/* Central Logo */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 lg:w-48 lg:h-48 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 lg:w-48 lg:h-48 flex items-center justify-center">
                   <img 
                     src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png" 
                     alt="Med Service Centre Logo" 
                     className="w-32 h-32 lg:w-40 lg:h-40 object-contain"
                   />
                 </div>
+                
+                {/* Orbital ring */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 lg:w-80 lg:h-80 border border-white/30 rounded-full"></div>
                 
                 {/* Process Icons positioned around the logo */}
                 
@@ -265,8 +268,6 @@ const Home = ({ language }: HomeProps) => {
                       {language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif'}
                     </span>
                   </div>
-                  {/* Connection line */}
-                  <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-px h-12 bg-gradient-to-b from-white/60 to-white/20"></div>
                 </div>
                 
                 {/* Поставка - Top Right */}
@@ -279,8 +280,6 @@ const Home = ({ language }: HomeProps) => {
                       {language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish'}
                     </span>
                   </div>
-                  {/* Connection line */}
-                  <div className="absolute bottom-0 left-0 w-8 h-8 border-l-2 border-b-2 border-white/40 transform rotate-45 origin-bottom-left"></div>
                 </div>
                 
                 {/* Установка - Bottom Right */}
@@ -293,8 +292,6 @@ const Home = ({ language }: HomeProps) => {
                       {language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish'}
                     </span>
                   </div>
-                  {/* Connection line */}
-                  <div className="absolute top-0 left-0 w-8 h-8 border-l-2 border-t-2 border-white/40 transform -rotate-45 origin-top-left"></div>
                 </div>
                 
                 {/* Обучение - Bottom */}
@@ -307,8 +304,6 @@ const Home = ({ language }: HomeProps) => {
                       {language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish'}
                     </span>
                   </div>
-                  {/* Connection line */}
-                  <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 w-px h-12 bg-gradient-to-t from-white/60 to-white/20"></div>
                 </div>
                 
                 {/* Сервис - Bottom Left */}
@@ -321,8 +316,6 @@ const Home = ({ language }: HomeProps) => {
                       {language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat'}
                     </span>
                   </div>
-                  {/* Connection line */}
-                  <div className="absolute top-0 right-0 w-8 h-8 border-r-2 border-t-2 border-white/40 transform rotate-45 origin-top-right"></div>
                 </div>
                 
                 {/* Окупаемость - Top Left */}
@@ -335,8 +328,6 @@ const Home = ({ language }: HomeProps) => {
                       {language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik'}
                     </span>
                   </div>
-                  {/* Connection line */}
-                  <div className="absolute bottom-0 right-0 w-8 h-8 border-r-2 border-b-2 border-white/40 transform -rotate-45 origin-bottom-right"></div>
                 </div>
               </div>
             </div>
