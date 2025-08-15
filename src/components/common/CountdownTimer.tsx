@@ -30,13 +30,11 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ minutes }) => {
   };
 
   return (
-    <div className="text-center">
-      <div className="bg-black/90 rounded-lg px-4 py-3 shadow-lg border border-gray-800 w-full">
-        <div className="text-3xl font-mono font-bold text-green-400 tracking-wider filter drop-shadow-sm">
-          {formatTime(timeLeft)}
-        </div>
+    <div className="bg-black/90 text-center py-4 px-4 w-full">
+      <div className="text-3xl font-mono font-bold text-green-400 tracking-wider filter drop-shadow-sm mb-2">
+        {formatTime(timeLeft)}
       </div>
-      <div className="text-xs text-msc-text/70 mt-2 font-medium">
+      <div className="text-xs text-white/70 font-medium">
         ⏰ Время действия предложения
       </div>
     </div>

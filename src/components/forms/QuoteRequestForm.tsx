@@ -240,9 +240,7 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
           )}
 
           {/* Countdown Timer */}
-          <div className="bg-gradient-to-r from-red-50 to-orange-50 p-3 border-b">
-            <CountdownTimer minutes={5} />
-          </div>
+          <CountdownTimer minutes={5} />
 
           {/* Form */}
           <div className="p-5">
