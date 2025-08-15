@@ -175,7 +175,7 @@ const Home = ({ language }: HomeProps) => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section 
-        className="relative text-white py-12 lg:py-32 overflow-hidden"
+        className="relative text-white py-20 lg:py-32 overflow-hidden"
         style={{
           backgroundImage: 'url(/lovable-uploads/41f0d478-2266-4aba-bc99-7b40bd7b049e.png)',
           backgroundSize: 'cover',
