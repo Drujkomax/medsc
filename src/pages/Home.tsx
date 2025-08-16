@@ -243,7 +243,7 @@ const Home = ({ language }: HomeProps) => {
 
             {/* Process Cluster */}
             <div className="flex justify-start lg:justify-center">
-              <div className="relative w-80 h-80 lg:w-96 lg:h-96">
+              <div className="relative w-96 h-96 lg:w-[28rem] lg:h-[28rem]">
                 {/* Central Logo */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 lg:w-48 lg:h-48 flex items-center justify-center">
                   <img 
