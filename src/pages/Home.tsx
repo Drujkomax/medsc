@@ -277,7 +277,7 @@ const Home = ({ language }: HomeProps) => {
                           transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`
                         }}
                       >
-                        <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
+                        <div className="text-center">
                           <div className="w-20 h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg hover:scale-110 transition-transform">
                             <IconComponent className="w-14 h-14 text-white" />
                           </div>
