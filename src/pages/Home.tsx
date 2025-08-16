@@ -243,13 +243,13 @@ const Home = ({ language }: HomeProps) => {
 
             {/* Process Cluster */}
             <div className="flex justify-start lg:justify-center">
-              <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]">
+              <div className="relative w-68 h-68 md:w-76 md:h-76 lg:w-[26rem] lg:h-[26rem]">
                 {/* Central Logo */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 lg:w-56 lg:h-56 flex items-center justify-center z-10">
                   <img 
                     src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png" 
                     alt="Med Service Centre Logo" 
-                    className="w-44 h-44 lg:w-52 lg:h-52 object-contain"
+                    className="w-40 h-40 lg:w-48 lg:h-48 object-contain"
                   />
                 </div>
                 
@@ -265,7 +265,7 @@ const Home = ({ language }: HomeProps) => {
                     { icon: TrendingUp, label: language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik', angle: 300 }
                   ].map((item, index) => {
                     const IconComponent = item.icon;
-                    const radius = 180; // Distance from center
+                    const radius = 160; // Distance from center
                     const x = Math.cos((item.angle - 90) * Math.PI / 180) * radius;
                     const y = Math.sin((item.angle - 90) * Math.PI / 180) * radius;
                     
@@ -278,8 +278,8 @@ const Home = ({ language }: HomeProps) => {
                         }}
                       >
                         <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
-                          <div className="w-20 h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg hover:scale-110 transition-transform">
-                            <IconComponent className="w-14 h-14 text-white" />
+                          <div className="w-18 h-18 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg hover:scale-110 transition-transform">
+                            <IconComponent className="w-12 h-12 text-white" />
                           </div>
                           <span className="text-white text-sm font-medium block whitespace-nowrap">
                             {item.label}
