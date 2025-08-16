@@ -242,8 +242,8 @@ const Home = ({ language }: HomeProps) => {
             </div>
 
             {/* Process Cluster */}
-            <div className="flex justify-start lg:justify-center">
-              <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]">
+            <div className="flex justify-center">
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]">
                 {/* Central Logo */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10">
                   <img 
@@ -280,7 +280,7 @@ const Home = ({ language }: HomeProps) => {
                         <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
                           <div className="relative">
                             <div className="w-20 h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform">
-                              <IconComponent className="w-14 h-14 text-white" />
+                              <IconComponent className="w-12 h-12 text-white" />
                             </div>
                             <span className="text-white text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-2">
                               {item.label}
