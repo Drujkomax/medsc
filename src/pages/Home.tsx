@@ -243,7 +243,7 @@ const Home = ({ language }: HomeProps) => {
 
             {/* Process Cluster */}
             <div className="flex justify-start lg:justify-center">
-              <div className="relative w-72 h-72 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]">
+              <div className="relative w-96 h-96 lg:w-[28rem] lg:h-[28rem]">
                 {/* Central Logo */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10">
                   <img 
@@ -253,41 +253,89 @@ const Home = ({ language }: HomeProps) => {
                   />
                 </div>
                 
-                {/* Rotating Orbit Container */}
-                <div className="absolute inset-0 animate-[spin_20s_linear_infinite]">
-                  {/* Process Icons positioned in perfect circle */}
-                  {[
-                    { icon: FileText, label: language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif', angle: 0 },
-                    { icon: Truck, label: language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish', angle: 60 },
-                    { icon: Settings, label: language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish', angle: 120 },
-                    { icon: GraduationCap, label: language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish', angle: 180 },
-                    { icon: Wrench, label: language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat', angle: 240 },
-                    { icon: TrendingUp, label: language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik', angle: 300 }
-                  ].map((item, index) => {
-                    const IconComponent = item.icon;
-                    const radius = 180; // Distance from center
-                    const x = Math.cos((item.angle - 90) * Math.PI / 180) * radius;
-                    const y = Math.sin((item.angle - 90) * Math.PI / 180) * radius;
-                    
-                    return (
-                      <div
-                        key={index}
-                        className="absolute top-1/2 left-1/2"
-                        style={{
-                          transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`
-                        }}
-                      >
-                        <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
-                          <div className="w-20 h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg hover:scale-110 transition-transform">
-                            <IconComponent className="w-14 h-14 text-white" />
-                          </div>
-                          <span className="text-white text-sm font-medium block whitespace-nowrap">
-                            {item.label}
-                          </span>
-                        </div>
+                {/* Process Icons positioned around the logo in circular orbit */}
+                {/* КП - Top (0°) */}
+                <div className="absolute top-1/2 left-1/2 w-full h-full animate-spin" style={{ animationDuration: '20s' }}>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ top: '20px' }}>
+                    <div className="text-center -rotate-[var(--rotation)] animate-[counter-rotate_20s_linear_infinite]" style={{ '--rotation': '0deg' } as any}>
+                      <div className="w-18 h-18 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                        <FileText className="w-12 h-12 text-white" />
                       </div>
-                    );
-                  })}
+                      <span className="text-white text-xs font-medium block">
+                        {language === 'ru' ? 'КП' : language === 'en' ? 'Quote' : 'Taklif'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Поставка - Top Right (60°) */}
+                <div className="absolute top-1/2 left-1/2 w-full h-full animate-spin" style={{ animationDuration: '20s', animationDelay: '-3.33s' }}>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ top: '20px' }}>
+                    <div className="text-center animate-[counter-rotate_20s_linear_infinite]" style={{ animationDelay: '3.33s' }}>
+                      <div className="w-18 h-18 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Truck className="w-12 h-12 text-white" />
+                      </div>
+                      <span className="text-white text-xs font-medium block">
+                        {language === 'ru' ? 'Поставка' : language === 'en' ? 'Supply' : 'Yetkazish'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Установка - Bottom Right (120°) */}
+                <div className="absolute top-1/2 left-1/2 w-full h-full animate-spin" style={{ animationDuration: '20s', animationDelay: '-6.67s' }}>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ top: '20px' }}>
+                    <div className="text-center animate-[counter-rotate_20s_linear_infinite]" style={{ animationDelay: '6.67s' }}>
+                      <div className="w-18 h-18 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Settings className="w-12 h-12 text-white" />
+                      </div>
+                      <span className="text-white text-xs font-medium block">
+                        {language === 'ru' ? 'Установка' : language === 'en' ? 'Installation' : 'O\'rnatish'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Обучение - Bottom (180°) */}
+                <div className="absolute top-1/2 left-1/2 w-full h-full animate-spin" style={{ animationDuration: '20s', animationDelay: '-10s' }}>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ top: '20px' }}>
+                    <div className="text-center animate-[counter-rotate_20s_linear_infinite]" style={{ animationDelay: '10s' }}>
+                      <div className="w-18 h-18 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                        <GraduationCap className="w-12 h-12 text-white" />
+                      </div>
+                      <span className="text-white text-xs font-medium block">
+                        {language === 'ru' ? 'Обучение' : language === 'en' ? 'Training' : 'O\'qitish'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Сервис - Bottom Left (240°) */}
+                <div className="absolute top-1/2 left-1/2 w-full h-full animate-spin" style={{ animationDuration: '20s', animationDelay: '-13.33s' }}>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ top: '20px' }}>
+                    <div className="text-center animate-[counter-rotate_20s_linear_infinite]" style={{ animationDelay: '13.33s' }}>
+                      <div className="w-18 h-18 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Wrench className="w-12 h-12 text-white" />
+                      </div>
+                      <span className="text-white text-xs font-medium block">
+                        {language === 'ru' ? 'Сервис' : language === 'en' ? 'Service' : 'Xizmat'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Окупаемость - Top Left (300°) */}
+                <div className="absolute top-1/2 left-1/2 w-full h-full animate-spin" style={{ animationDuration: '20s', animationDelay: '-16.67s' }}>
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2" style={{ top: '20px' }}>
+                    <div className="text-center animate-[counter-rotate_20s_linear_infinite]" style={{ animationDelay: '16.67s' }}>
+                      <div className="w-18 h-18 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                        <TrendingUp className="w-12 h-12 text-white" />
+                      </div>
+                      <span className="text-white text-xs font-medium block">
+                        {language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
