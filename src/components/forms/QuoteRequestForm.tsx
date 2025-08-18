@@ -174,7 +174,6 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
         phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
         company: formData.company || undefined,
         notes,
-        source: 'website_form',
         stage: 'new'
       });
 

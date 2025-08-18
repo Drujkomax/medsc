@@ -3,7 +3,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Phone, Mail, Building, DollarSign, Eye } from 'lucide-react';
+import { Plus, Phone, Building, Eye } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import LeadModal from './LeadModal';
@@ -11,13 +11,12 @@ import LeadModal from './LeadModal';
 interface Lead {
   id: string;
   name: string;
-  email?: string;
   phone?: string;
   company?: string;
   stage: string;
-  value?: number;
   notes?: string;
   created_at: string;
+  updated_at: string;
   assigned_to?: string;
 }
 
@@ -180,18 +179,6 @@ const KanbanBoard = () => {
                                   <div className="flex items-center">
                                     <Phone className="mr-1 h-3 w-3" />
                                     {lead.phone}
-                                  </div>
-                                )}
-                                {lead.email && (
-                                  <div className="flex items-center">
-                                    <Mail className="mr-1 h-3 w-3" />
-                                    {lead.email}
-                                  </div>
-                                )}
-                                {lead.value && (
-                                  <div className="flex items-center font-medium text-green-600">
-                                    <DollarSign className="mr-1 h-3 w-3" />
-                                    {formatCurrency(lead.value)}
                                   </div>
                                 )}
                               </div>

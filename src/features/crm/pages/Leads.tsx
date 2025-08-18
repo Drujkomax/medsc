@@ -14,10 +14,8 @@ import {
   Eye,
   User,
   Phone,
-  Mail,
   Building,
   Calendar,
-  TrendingUp,
   Filter
 } from 'lucide-react';
 
@@ -40,7 +38,6 @@ const Leads = () => {
   const filteredLeads = leads.filter(lead => {
     const matchesSearch = 
       lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       lead.phone?.includes(searchTerm) ||
       lead.company?.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -188,24 +185,12 @@ const Leads = () => {
               </CardHeader>
               <CardContent className="space-y-2 md:space-y-3">
                 <div className="space-y-2">
-                  {lead.email && (
-                    <div className="flex items-center text-xs md:text-sm">
-                      <Mail className="w-3 h-3 md:w-4 md:h-4 mr-2 text-muted-foreground" />
-                      <span className="truncate">{lead.email}</span>
-                    </div>
-                  )}
-                  {lead.phone && (
-                    <div className="flex items-center text-xs md:text-sm">
-                      <Phone className="w-3 h-3 md:w-4 md:h-4 mr-2 text-muted-foreground" />
-                      <span className="truncate">{lead.phone}</span>
-                    </div>
-                  )}
-                  {lead.source && (
-                    <div className="flex items-center text-xs md:text-sm">
-                      <TrendingUp className="w-3 h-3 md:w-4 md:h-4 mr-2 text-muted-foreground" />
-                      <span className="truncate">Источник: {lead.source === 'website_form' ? 'Форма сайта' : lead.source}</span>
-                    </div>
-                  )}
+                   {lead.phone && (
+                     <div className="flex items-center text-xs md:text-sm">
+                       <Phone className="w-3 h-3 md:w-4 md:h-4 mr-2 text-muted-foreground" />
+                       <span className="truncate">{lead.phone}</span>
+                     </div>
+                   )}
                   <div className="flex items-center text-xs md:text-sm text-muted-foreground">
                     <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-2" />
                     <span>Создан: {new Date(lead.created_at).toLocaleDateString('ru-RU')} в {new Date(lead.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>

@@ -135,7 +135,6 @@ const LeadForm: React.FC<LeadFormProps> = ({
         name: formData.name,
         phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
         notes: formData.equipmentType ? `Тип оборудования: ${t.equipmentTypes[formData.equipmentType as keyof typeof t.equipmentTypes]}` : undefined,
-        source: 'website_form',
         stage: 'new'
       });
       toast({

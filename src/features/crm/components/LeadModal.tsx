@@ -11,13 +11,12 @@ import { useToast } from '@/hooks/use-toast';
 interface Lead {
   id: string;
   name: string;
-  email?: string;
   phone?: string;
   company?: string;
   stage: string;
-  value?: number;
   notes?: string;
-  source?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface LeadModalProps {
@@ -38,13 +37,10 @@ const stages = [
 const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     phone: '',
     company: '',
     stage: 'new',
-    value: '',
-    notes: '',
-    source: ''
+    notes: ''
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -53,24 +49,18 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
     if (lead) {
       setFormData({
         name: lead.name || '',
-        email: lead.email || '',
         phone: lead.phone || '',
         company: lead.company || '',
         stage: lead.stage || 'new',
-        value: lead.value?.toString() || '',
-        notes: lead.notes || '',
-        source: lead.source || ''
+        notes: lead.notes || ''
       });
     } else {
       setFormData({
         name: '',
-        email: '',
         phone: '',
         company: '',
         stage: 'new',
-        value: '',
-        notes: '',
-        source: ''
+        notes: ''
       });
     }
   }, [lead, isOpen]);
@@ -82,13 +72,10 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
     try {
       const leadData = {
         name: formData.name,
-        email: formData.email || null,
         phone: formData.phone || null,
         company: formData.company || null,
         stage: formData.stage,
-        value: formData.value ? parseFloat(formData.value) : null,
-        notes: formData.notes || null,
-        source: formData.source || null
+        notes: formData.notes || null
       };
 
       if (lead) {
@@ -155,16 +142,6 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
           </div>
 
           <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => handleChange('email', e.target.value)}
-            />
-          </div>
-
-          <div>
             <Label htmlFor="phone">Телефон</Label>
             <Input
               id="phone"
@@ -196,26 +173,6 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
                 ))}
               </SelectContent>
             </Select>
-          </div>
-
-          <div>
-            <Label htmlFor="value">Сумма сделки ($)</Label>
-            <Input
-              id="value"
-              type="number"
-              value={formData.value}
-              onChange={(e) => handleChange('value', e.target.value)}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="source">Источник</Label>
-            <Input
-              id="source"
-              value={formData.source}
-              onChange={(e) => handleChange('source', e.target.value)}
-              placeholder="Сайт, реклама, рекомендация..."
-            />
           </div>
 
           <div>
