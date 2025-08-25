@@ -115,15 +115,17 @@ const Leads = () => {
 
   const handleStageChange = async (leadId: string, newStage: string) => {
     try {
+      console.log('Changing lead stage:', { leadId, newStage });
       await changeLeadStage(leadId, newStage);
       toast({
         title: 'Успешно',
         description: 'Статус лида обновлен',
       });
     } catch (error) {
+      console.error('Stage change error:', error);
       toast({
         title: 'Ошибка',
-        description: 'Ошибка при обновлении статуса',
+        description: `Ошибка при обновлении статуса: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`,
         variant: 'destructive',
       });
     }

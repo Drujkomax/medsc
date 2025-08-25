@@ -67,17 +67,24 @@ export const useLeads = () => {
 
   const updateLead = async (id: string, leadData: Partial<Omit<Lead, 'id' | 'created_at' | 'updated_at'>>) => {
     try {
+      console.log('Updating lead:', { id, leadData });
       const { data, error } = await supabase
         .from('leads')
         .update(leadData)
         .eq('id', id)
         .select()
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Update lead error:', error);
+        throw error;
+      }
+      
+      console.log('Lead updated successfully:', data);
       await fetchLeads(); // Refresh the list
       return data;
     } catch (err) {
+      console.error('updateLead error:', err);
       throw new Error(err instanceof Error ? err.message : 'Ошибка при обновлении лида');
     }
   };
