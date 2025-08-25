@@ -1,9 +1,9 @@
-import KanbanBoard from '../../crm/components/KanbanBoard';
+import RoleBasedDashboard from '../components/Dashboard/RoleBasedDashboard';
 
 const Dashboard = () => {
   return (
     <div className="space-y-6">
-      <KanbanBoard />
+      <RoleBasedDashboard />
     </div>
   );
 };
