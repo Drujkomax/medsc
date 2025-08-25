@@ -31,6 +31,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
     email: '',
     name: '',
     role: '',
+    password: '',
     isActive: true
   });
 
@@ -46,6 +47,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
         email: employee.email,
         name: employee.name || '',
         role: employee.role || '',
+        password: '',
         isActive: true // По умолчанию активен
       });
     }
@@ -64,6 +66,24 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
         .eq('user_id', employee.id);
 
       if (roleError) throw roleError;
+
+      // Обновляем email если изменился
+      if (formData.email !== employee.email) {
+        const { error: emailError } = await supabase.auth.admin.updateUserById(
+          employee.id,
+          { email: formData.email }
+        );
+        if (emailError) throw emailError;
+      }
+
+      // Обновляем пароль если указан
+      if (formData.password.trim()) {
+        const { error: passwordError } = await supabase.auth.admin.updateUserById(
+          employee.id,
+          { password: formData.password }
+        );
+        if (passwordError) throw passwordError;
+      }
 
       // Сохраняем имя в локальном хранилище для отображения
       // TODO: Создать таблицу profiles в будущем для хранения дополнительных данных
@@ -102,12 +122,9 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              disabled={true} // Email нельзя изменить
-              className="bg-muted"
+              disabled={loading}
+              placeholder="Введите email сотрудника"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Email нельзя изменить после создания
-            </p>
           </div>
 
           <div>
@@ -120,6 +137,21 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
               placeholder="Введите имя сотрудника"
               disabled={loading}
             />
+          </div>
+
+          <div>
+            <Label htmlFor="password">Новый пароль</Label>
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+              placeholder="Оставьте пустым, чтобы не менять пароль"
+              disabled={loading}
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              Оставьте поле пустым, если не хотите менять пароль
+            </p>
           </div>
 
           <div>

@@ -159,6 +159,34 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
     return getActionLabel(log.action);
   };
 
+  // Группируем логи по дням
+  const groupLogsByDate = (logs: ActivityLog[]) => {
+    const grouped: { [key: string]: ActivityLog[] } = {};
+    
+    logs.forEach(log => {
+      const date = new Date(log.created_at).toLocaleDateString('ru-RU');
+      if (!grouped[date]) {
+        grouped[date] = [];
+      }
+      grouped[date].push(log);
+    });
+    
+    return grouped;
+  };
+
+  // Получаем сводку за день
+  const getDailySummary = (logs: ActivityLog[]) => {
+    const summary = {
+      totalActions: logs.length,
+      leads: logs.filter(log => log.action.includes('lead')).length,
+      products: logs.filter(log => log.action.includes('product')).length,
+      clients: logs.filter(log => log.action.includes('client')).length,
+      logins: logs.filter(log => log.action === 'login').length
+    };
+    
+    return summary;
+  };
+
   if (!employee) return null;
 
   return (
@@ -290,37 +318,61 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
                         <p className="text-muted-foreground">Нет записей активности</p>
                       </div>
                     ) : (
-                      <div className="space-y-3 max-h-96 overflow-y-auto">
-                        {activityLogs.map((log, index) => (
-                          <div key={log.id} className="flex items-start gap-3 p-4 bg-card rounded-lg border hover:shadow-sm transition-shadow">
-                            <div className="flex flex-col items-center">
-                              <div className="w-3 h-3 bg-primary rounded-full flex-shrink-0" />
-                              {index !== activityLogs.length - 1 && (
-                                <div className="w-px h-8 bg-border mt-2" />
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between gap-2">
-                                <div className="flex-1">
-                                  <p className="font-medium text-foreground leading-tight">
-                                    {getActionDescription(log)}
-                                  </p>
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                                    <Calendar className="h-3 w-3" />
-                                    {new Date(log.created_at).toLocaleDateString('ru-RU', {
-                                      day: '2-digit',
-                                      month: 'short',
-                                      year: 'numeric'
-                                    })} в {new Date(log.created_at).toLocaleTimeString('ru-RU', {
-                                      hour: '2-digit',
-                                      minute: '2-digit'
-                                    })}
+                      <div className="space-y-6 max-h-96 overflow-y-auto">
+                        {Object.entries(groupLogsByDate(activityLogs))
+                          .sort(([a], [b]) => new Date(b.split('.').reverse().join('-')).getTime() - new Date(a.split('.').reverse().join('-')).getTime())
+                          .map(([date, logs]) => {
+                            const summary = getDailySummary(logs);
+                            return (
+                              <div key={date} className="border border-border rounded-lg overflow-hidden">
+                                {/* Заголовок дня с сводкой */}
+                                <div className="bg-muted/50 p-4 border-b">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="font-semibold text-foreground flex items-center gap-2">
+                                      <Calendar className="h-4 w-4" />
+                                      {date}
+                                    </h4>
+                                    <div className="flex gap-4 text-sm text-muted-foreground">
+                                      <span>Всего: {summary.totalActions}</span>
+                                      {summary.leads > 0 && <span>Лиды: {summary.leads}</span>}
+                                      {summary.products > 0 && <span>Товары: {summary.products}</span>}
+                                      {summary.clients > 0 && <span>Клиенты: {summary.clients}</span>}
+                                      {summary.logins > 0 && <span>Входы: {summary.logins}</span>}
+                                    </div>
                                   </div>
                                 </div>
+                                
+                                {/* Список действий за день */}
+                                <div className="p-4 space-y-3">
+                                  {logs.map((log, index) => (
+                                    <div key={log.id} className="flex items-start gap-3">
+                                      <div className="flex flex-col items-center">
+                                        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-2" />
+                                        {index !== logs.length - 1 && (
+                                          <div className="w-px h-6 bg-border mt-1" />
+                                        )}
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-start justify-between gap-2">
+                                          <div className="flex-1">
+                                            <p className="text-sm text-foreground leading-tight">
+                                              {getActionDescription(log)}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                              {new Date(log.created_at).toLocaleTimeString('ru-RU', {
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                              })}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        ))}
+                            );
+                          })}
                       </div>
                     )}
                   </CardContent>
