@@ -122,7 +122,7 @@ const Leads = () => {
       const { error } = await supabase
         .from('leads')
         .update({ 
-          assigned_to: assigneeId,
+          assigned_to: assigneeId === 'unassigned' ? null : assigneeId,
           assigned_by: user?.id 
         })
         .eq('id', leadId);
@@ -131,7 +131,7 @@ const Leads = () => {
 
       toast({
         title: 'Успешно',
-        description: 'Лид назначен сотруднику',
+        description: assigneeId === 'unassigned' ? 'Лид снят с назначения' : 'Лид назначен сотруднику',
       });
       refetch();
     } catch (error) {
@@ -295,21 +295,21 @@ const Leads = () => {
                    <RoleBasedAccess permissions={['assign_leads']}>
                      <div className="space-y-2">
                        <Label className="text-xs font-medium">Назначить продавцу:</Label>
-                       <Select 
-                         value={lead.assigned_to || ''} 
-                         onValueChange={(value) => handleAssignLead(lead.id, value)}
-                       >
+                        <Select 
+                          value={lead.assigned_to || 'unassigned'} 
+                          onValueChange={(value) => handleAssignLead(lead.id, value)}
+                        >
                          <SelectTrigger className="h-8 text-xs">
                            <SelectValue placeholder="Выберите продавца" />
                          </SelectTrigger>
-                         <SelectContent>
-                           <SelectItem value="">Не назначен</SelectItem>
-                           {employees.map((employee) => (
-                             <SelectItem key={employee.id} value={employee.id}>
-                               {employee.email}
-                             </SelectItem>
-                           ))}
-                         </SelectContent>
+                          <SelectContent>
+                            <SelectItem value="unassigned">Не назначен</SelectItem>
+                            {employees.map((employee) => (
+                              <SelectItem key={employee.id} value={employee.id}>
+                                {employee.email}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
                        </Select>
                      </div>
                    </RoleBasedAccess>
