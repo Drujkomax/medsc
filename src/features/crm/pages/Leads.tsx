@@ -42,15 +42,15 @@ const Leads = () => {
   const [activeTab, setActiveTab] = useState('hybrid');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
-  const stages = {
-    new: { label: 'Новый', color: 'bg-blue-500' },
-    contacted: { label: 'Связались', color: 'bg-yellow-500' },
-    qualified: { label: 'Квалифицирован', color: 'bg-purple-500' },
-    proposal: { label: 'Предложение', color: 'bg-orange-500' },
-    negotiation: { label: 'Переговоры', color: 'bg-indigo-500' },
-    closed: { label: 'Закрыт', color: 'bg-green-500' },
-    lost: { label: 'Потерян', color: 'bg-red-500' }
-  };
+  const leadStages = [
+    { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
+    { value: 'contacted', label: 'Связались', count: 0, color: 'bg-yellow-500' },
+    { value: 'qualified', label: 'Квалифицированы', count: 0, color: 'bg-purple-500' },
+    { value: 'proposal', label: 'Предложение', count: 0, color: 'bg-orange-500' },
+    { value: 'negotiation', label: 'Переговоры', count: 0, color: 'bg-indigo-500' },
+    { value: 'closed', label: 'Закрыты', count: 0, color: 'bg-green-500' },
+    { value: 'lost', label: 'Потеряны', count: 0, color: 'bg-red-500' },
+  ];
 
   useEffect(() => {
     if (hasPermission('assign_leads')) {
@@ -148,8 +148,8 @@ const Leads = () => {
     );
   }
 
-  const leadCounts = Object.keys(stages).reduce((acc, stage) => {
-    acc[stage] = leads.filter(lead => lead.stage === stage && !lead.archived).length;
+  const leadCounts = leadStages.reduce((acc, stage) => {
+    acc[stage.value] = leads.filter(lead => lead.stage === stage.value && !lead.archived).length;
     return acc;
   }, {} as Record<string, number>);
 
@@ -186,14 +186,14 @@ const Leads = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-4">
-        {Object.entries(stages).map(([stage, config]) => (
-          <Card key={stage}>
+        {leadStages.map((stage) => (
+          <Card key={stage.value}>
             <CardContent className="p-2 md:p-4">
               <div className="flex items-center space-x-1 md:space-x-2">
-                <div className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${config.color}`} />
+                <div className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${stage.color}`} />
                 <div>
-                  <p className="text-xs md:text-sm font-medium leading-tight">{config.label}</p>
-                  <p className="text-lg md:text-2xl font-bold">{leadCounts[stage] || 0}</p>
+                  <p className="text-xs md:text-sm font-medium leading-tight">{stage.label}</p>
+                  <p className="text-lg md:text-2xl font-bold">{leadCounts[stage.value] || 0}</p>
                 </div>
               </div>
             </CardContent>
@@ -224,9 +224,9 @@ const Leads = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Все статусы</SelectItem>
-                  {Object.entries(stages).map(([stage, config]) => (
-                    <SelectItem key={stage} value={stage}>
-                      {config.label}
+                  {leadStages.map((stage) => (
+                    <SelectItem key={stage.value} value={stage.value}>
+                      {stage.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

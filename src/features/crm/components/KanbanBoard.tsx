@@ -4,61 +4,45 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Phone, Building, Eye } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { useLeads } from '@/hooks/useLeads';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useAuth } from '@/hooks/useAuth';
+import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useToast } from '@/hooks/use-toast';
 import LeadModal from './LeadModal';
+import { DuplicateAlert } from './DuplicateAlert';
 
-interface Lead {
-  id: string;
-  name: string;
-  phone?: string;
-  company?: string;
-  stage: string;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-  assigned_to?: string;
-}
-
+// Unified lead stages
 const stages = [
   { id: 'new', title: 'Новый лид', color: 'bg-blue-500' },
-  { id: 'called', title: 'Позвонил', color: 'bg-yellow-500' },
-  { id: 'thinking', title: 'Думает', color: 'bg-orange-500' },
-  { id: 'successful', title: 'Успешный', color: 'bg-green-500' },
+  { id: 'contacted', title: 'Связались', color: 'bg-yellow-500' },
+  { id: 'qualified', title: 'Квалифицирован', color: 'bg-purple-500' },
+  { id: 'proposal', title: 'Предложение', color: 'bg-orange-500' },
+  { id: 'negotiation', title: 'Переговоры', color: 'bg-indigo-500' },
+  { id: 'closed', title: 'Закрыт', color: 'bg-green-500' },
   { id: 'lost', title: 'Потерян', color: 'bg-red-500' }
 ];
 
 const KanbanBoard = () => {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [selectedLead, setSelectedLead] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { leads, loading, changeLeadStage, refetch } = useLeads();
+  const { hasPermission } = useUserPermissions();
+  const { user } = useAuth();
+  const { duplicateGroups } = useDuplicateDetection(leads);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchLeads();
-  }, []);
-
-  const fetchLeads = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('leads')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setLeads(data || []);
-    } catch (error) {
-      console.error('Error fetching leads:', error);
-      toast({
-        title: "Ошибка",
-        description: "Не удалось загрузить лиды",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+  // Filter out archived leads and apply user access permissions
+  const visibleLeads = leads.filter(lead => {
+    if (lead.archived) return false;
+    
+    // If user is salesperson, only show assigned leads
+    if (!hasPermission('view_all_leads') && lead.assigned_to !== user?.id) {
+      return false;
     }
-  };
+    
+    return true;
+  });
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -68,21 +52,25 @@ const KanbanBoard = () => {
 
     const leadId = draggableId;
     const newStage = destination.droppableId;
+    
+    // Check if user has permission to change stage
+    const lead = visibleLeads.find(l => l.id === leadId);
+    if (!lead) return;
+    
+    const canEdit = hasPermission('manage_all_leads') || 
+                   (hasPermission('view_all_leads') && lead.assigned_to === user?.id);
+    
+    if (!canEdit) {
+      toast({
+        title: "Нет прав",
+        description: "У вас нет прав для изменения этапа этого лида",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
-      const { error } = await supabase
-        .from('leads')
-        .update({ stage: newStage })
-        .eq('id', leadId);
-
-      if (error) throw error;
-
-      setLeads(prev =>
-        prev.map(lead =>
-          lead.id === leadId ? { ...lead, stage: newStage } : lead
-        )
-      );
-
+      await changeLeadStage(leadId, newStage);
       toast({
         title: "Успешно",
         description: "Этап лида обновлен",
@@ -98,10 +86,10 @@ const KanbanBoard = () => {
   };
 
   const getLeadsByStage = (stageId: string) => {
-    return leads.filter(lead => lead.stage === stageId);
+    return visibleLeads.filter(lead => lead.stage === stageId);
   };
 
-  const openLeadModal = (lead?: Lead) => {
+  const openLeadModal = (lead?: any) => {
     setSelectedLead(lead || null);
     setIsModalOpen(true);
   };
@@ -126,11 +114,22 @@ const KanbanBoard = () => {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Канбан доска лидов</h1>
-        <Button onClick={() => openLeadModal()}>
-          <Plus className="mr-2 h-4 w-4" />
-          Добавить лид
-        </Button>
+        {hasPermission('manage_all_leads') && (
+          <Button onClick={() => openLeadModal()}>
+            <Plus className="mr-2 h-4 w-4" />
+            Добавить лид
+          </Button>
+        )}
       </div>
+      
+      {/* Duplicate alerts */}
+      {duplicateGroups.length > 0 && (
+        <div className="mb-6 space-y-2">
+          {duplicateGroups.slice(0, 3).map((group, index) => (
+            <DuplicateAlert key={index} duplicateGroup={group} />
+          ))}
+        </div>
+      )}
 
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="overflow-x-auto">
@@ -201,7 +200,7 @@ const KanbanBoard = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         lead={selectedLead}
-        onSave={fetchLeads}
+        onSave={refetch}
       />
     </div>
   );

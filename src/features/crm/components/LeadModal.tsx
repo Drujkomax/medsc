@@ -28,9 +28,11 @@ interface LeadModalProps {
 
 const stages = [
   { value: 'new', label: 'Новый лид' },
-  { value: 'called', label: 'Позвонил' },
-  { value: 'thinking', label: 'Думает' },
-  { value: 'successful', label: 'Успешный' },
+  { value: 'contacted', label: 'Связались' },
+  { value: 'qualified', label: 'Квалифицирован' },
+  { value: 'proposal', label: 'Предложение' },
+  { value: 'negotiation', label: 'Переговоры' },
+  { value: 'closed', label: 'Закрыт' },
   { value: 'lost', label: 'Потерян' }
 ];
 

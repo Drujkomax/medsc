@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Lead } from '@/hooks/useLeads';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useAuth } from '@/hooks/useAuth';
 import { DuplicateAlert } from './DuplicateAlert';
 import { Eye, Edit, Archive, MoreVertical, Phone, Building2, Calendar, User } from 'lucide-react';
 import { useState } from 'react';
@@ -23,8 +24,9 @@ const stages = [
   { value: 'contacted', label: 'Связались', color: 'bg-yellow-500' },
   { value: 'qualified', label: 'Квалифицирован', color: 'bg-purple-500' },
   { value: 'proposal', label: 'Предложение', color: 'bg-orange-500' },
+  { value: 'negotiation', label: 'Переговоры', color: 'bg-indigo-500' },
   { value: 'closed', label: 'Закрыт', color: 'bg-green-500' },
-  { value: 'lost', label: 'Проигран', color: 'bg-red-500' },
+  { value: 'lost', label: 'Потерян', color: 'bg-red-500' },
 ];
 
 export const LeadHybridCard = ({ 
@@ -37,13 +39,14 @@ export const LeadHybridCard = ({
 }: LeadHybridCardProps) => {
   const { getDuplicatesForLead } = useDuplicateDetection(allLeads);
   const { hasPermission } = useUserPermissions();
+  const { user } = useAuth();
   const [showDuplicates, setShowDuplicates] = useState(false);
   
   const duplicates = getDuplicatesForLead(lead.id);
   const currentStage = stages.find(s => s.value === lead.stage);
   
   const canEdit = hasPermission('manage_all_leads') || 
-                 (hasPermission('view_all_leads') && lead.assigned_to === 'current_user_id');
+                 (hasPermission('view_all_leads') && lead.assigned_to === user?.id);
   
   const canArchive = hasPermission('manage_all_leads');
 
