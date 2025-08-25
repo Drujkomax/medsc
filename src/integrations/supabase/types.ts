@@ -254,12 +254,26 @@ export type Database = {
         Args: { lead_id: string; user_id: string }
         Returns: undefined
       }
+      create_first_director: {
+        Args: { director_email: string }
+        Returns: Json
+      }
       create_user_invite: {
         Args: {
           invite_email: string
           invite_role: Database["public"]["Enums"]["app_role"]
         }
         Returns: Json
+      }
+      get_pending_invites: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }[]
       }
       get_user_role: {
         Args: { _user_id: string }

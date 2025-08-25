@@ -14,6 +14,7 @@ import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 import AuthPage from "./pages/Auth";
 import RegisterWithInvite from "./pages/RegisterWithInvite";
+import CreateFirstDirector from "./pages/CreateFirstDirector";
 
 // Admin Components
 import AdminWrapper from "./features/admin/components/AdminWrapper";
@@ -41,6 +42,7 @@ const App = () => {
                 <main className="flex-1">
                   <Routes>
                     <Route path="/" element={<Home language={language} />} />
+                    <Route path="/setup-director" element={<CreateFirstDirector />} />
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/catalog" element={<Catalog language={language} />} />
                     <Route path="/product/:id" element={<ProductDetail language={language} />} />
