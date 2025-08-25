@@ -13,6 +13,9 @@ export interface Lead {
   created_at: string;
   updated_at: string;
   closed_at?: string;
+  archived?: boolean;
+  archived_at?: string;
+  archived_by?: string;
 }
 
 export const useLeads = () => {
@@ -93,6 +96,21 @@ export const useLeads = () => {
     }
   };
 
+  const archiveLead = async (id: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Пользователь не авторизован');
+
+      const { error } = await supabase
+        .rpc('archive_lead', { lead_id: id, user_id: user.id });
+
+      if (error) throw error;
+      await fetchLeads(); // Refresh the list
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'Ошибка при архивировании лида');
+    }
+  };
+
   const changeLeadStage = async (id: string, stage: string) => {
     return updateLead(id, { 
       stage,
@@ -111,6 +129,7 @@ export const useLeads = () => {
     addLead,
     updateLead,
     deleteLead,
+    archiveLead,
     changeLeadStage,
     refetch: fetchLeads
   };

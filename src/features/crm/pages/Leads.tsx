@@ -3,34 +3,44 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { useLeads } from '@/hooks/useLeads';
+import { useLeads, Lead } from '@/hooks/useLeads';
+import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
+import { LeadHybridCard } from '../components/LeadHybridCard';
+import KanbanBoard from '../components/KanbanBoard';
+import { DuplicateAlert } from '../components/DuplicateAlert';
 import { 
   Search, 
   Edit,
-  Trash2,
+  Archive,
   Eye,
   User,
   Phone,
   Building,
   Calendar,
-  Filter
+  Filter,
+  AlertTriangle,
+  LayoutGrid,
+  Kanban as KanbanIcon
 } from 'lucide-react';
 
 const Leads = () => {
   const { toast } = useToast();
-  const { leads, loading, deleteLead, changeLeadStage, refetch } = useLeads();
+  const { leads, loading, deleteLead, archiveLead, changeLeadStage, refetch } = useLeads();
+  const { duplicateGroups, hasDuplicates } = useDuplicateDetection(leads);
   const { hasPermission, role } = useUserPermissions();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [employees, setEmployees] = useState<Array<{id: string, email: string, role: string}>>([]);
+  const [activeTab, setActiveTab] = useState('hybrid');
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
   const stages = {
     new: { label: 'Новый', color: 'bg-blue-500' },
@@ -70,6 +80,9 @@ const Leads = () => {
   };
 
   const filteredLeads = leads.filter(lead => {
+    // Filter out archived leads
+    if (lead.archived) return false;
+    
     // Продавцы видят только назначенных им лидов
     if (role === 'salesperson' && lead.assigned_to !== user?.id) {
       return false;
@@ -85,17 +98,17 @@ const Leads = () => {
     return matchesSearch && matchesStage;
   });
 
-  const handleDeleteLead = async (id: string) => {
+  const handleArchiveLead = async (id: string) => {
     try {
-      await deleteLead(id);
+      await archiveLead(id);
       toast({
         title: 'Успешно',
-        description: 'Лид успешно удален',
+        description: 'Лид архивирован',
       });
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Ошибка при удалении лида',
+        description: 'Ошибка при архивировании лида',
         variant: 'destructive',
       });
     }
@@ -117,31 +130,14 @@ const Leads = () => {
     }
   };
 
-  const handleAssignLead = async (leadId: string, assigneeId: string) => {
-    try {
-      const { error } = await supabase
-        .from('leads')
-        .update({ 
-          assigned_to: assigneeId === 'unassigned' ? null : assigneeId,
-          assigned_by: user?.id 
-        })
-        .eq('id', leadId);
+  const handleViewLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    // TODO: Open view modal
+  };
 
-      if (error) throw error;
-
-      toast({
-        title: 'Успешно',
-        description: assigneeId === 'unassigned' ? 'Лид снят с назначения' : 'Лид назначен сотруднику',
-      });
-      refetch();
-    } catch (error) {
-      console.error('Error assigning lead:', error);
-      toast({
-        title: 'Ошибка',
-        description: 'Ошибка при назначении лида',
-        variant: 'destructive',
-      });
-    }
+  const handleEditLead = (lead: Lead) => {
+    setSelectedLead(lead);
+    // TODO: Open edit modal
   };
 
   if (loading) {
@@ -153,7 +149,7 @@ const Leads = () => {
   }
 
   const leadCounts = Object.keys(stages).reduce((acc, stage) => {
-    acc[stage] = leads.filter(lead => lead.stage === stage).length;
+    acc[stage] = leads.filter(lead => lead.stage === stage && !lead.archived).length;
     return acc;
   }, {} as Record<string, number>);
 
@@ -166,6 +162,27 @@ const Leads = () => {
           <p className="text-muted-foreground">Управление заявками клиентов</p>
         </div>
       </div>
+
+      {/* Duplicate Alerts */}
+      {hasDuplicates && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="h-5 w-5 text-orange-600" />
+            <h3 className="text-lg font-semibold">Обнаружены дубликаты</h3>
+          </div>
+          {duplicateGroups.slice(0, 3).map((group, index) => (
+            <DuplicateAlert 
+              key={index} 
+              duplicateGroup={group}
+            />
+          ))}
+          {duplicateGroups.length > 3 && (
+            <p className="text-sm text-muted-foreground">
+              И еще {duplicateGroups.length - 3} групп дубликатов...
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-4">
@@ -219,127 +236,39 @@ const Leads = () => {
         </CardContent>
       </Card>
 
-      {/* Leads Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-        {filteredLeads.map((lead) => {
-          const stageConfig = stages[lead.stage as keyof typeof stages] || stages.new;
-          
-          return (
-            <Card key={lead.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="pb-3 md:pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-2 md:space-x-3">
-                    <div className="w-8 h-8 md:w-12 md:h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <User className="w-4 h-4 md:w-6 md:h-6 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-base md:text-lg">{lead.name}</CardTitle>
-                      {lead.company && (
-                        <p className="text-xs md:text-sm text-muted-foreground flex items-center">
-                          <Building className="w-2 h-2 md:w-3 md:h-3 mr-1" />
-                          {lead.company}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <Badge 
-                    className={`${stageConfig.color} text-white text-xs`}
-                  >
-                    {stageConfig.label}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-2 md:space-y-3">
-                <div className="space-y-2">
-                   {lead.phone && (
-                     <div className="flex items-center text-xs md:text-sm">
-                       <Phone className="w-3 h-3 md:w-4 md:h-4 mr-2 text-muted-foreground" />
-                       <span className="truncate">{lead.phone}</span>
-                     </div>
-                   )}
-                  <div className="flex items-center text-xs md:text-sm text-muted-foreground">
-                    <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-2" />
-                    <span>Создан: {new Date(lead.created_at).toLocaleDateString('ru-RU')} в {new Date(lead.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</span>
-                  </div>
-                  
-                  {lead.notes && (
-                    <div className="text-xs md:text-sm bg-muted p-2 rounded">
-                      <strong>Заметки:</strong> <span className="break-words">{lead.notes}</span>
-                    </div>
-                  )}
+      {/* View Toggle */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="hybrid" className="flex items-center gap-2">
+            <LayoutGrid className="w-4 h-4" />
+            Гибридный вид
+          </TabsTrigger>
+          <TabsTrigger value="kanban" className="flex items-center gap-2">
+            <KanbanIcon className="w-4 h-4" />
+            Канбан
+          </TabsTrigger>
+        </TabsList>
 
-                   {/* Stage Change */}
-                   <div className="space-y-2">
-                     <Label className="text-xs font-medium">Изменить статус:</Label>
-                     <Select 
-                       value={lead.stage} 
-                       onValueChange={(value) => handleStageChange(lead.id, value)}
-                     >
-                       <SelectTrigger className="h-8 text-xs">
-                         <SelectValue />
-                       </SelectTrigger>
-                       <SelectContent>
-                         {Object.entries(stages).map(([stage, config]) => (
-                           <SelectItem key={stage} value={stage}>
-                             <div className="flex items-center space-x-2">
-                               <div className={`w-2 h-2 rounded-full ${config.color}`} />
-                               <span>{config.label}</span>
-                             </div>
-                           </SelectItem>
-                         ))}
-                       </SelectContent>
-                     </Select>
-                   </div>
+        <TabsContent value="hybrid" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+            {filteredLeads.map((lead) => (
+              <LeadHybridCard 
+                key={lead.id}
+                lead={lead}
+                allLeads={leads}
+                onView={handleViewLead}
+                onEdit={handleEditLead}
+                onArchive={handleArchiveLead}
+                onStageChange={handleStageChange}
+              />
+            ))}
+          </div>
+        </TabsContent>
 
-                   {/* Lead Assignment */}
-                   <RoleBasedAccess permissions={['assign_leads']}>
-                     <div className="space-y-2">
-                       <Label className="text-xs font-medium">Назначить продавцу:</Label>
-                        <Select 
-                          value={lead.assigned_to || 'unassigned'} 
-                          onValueChange={(value) => handleAssignLead(lead.id, value)}
-                        >
-                         <SelectTrigger className="h-8 text-xs">
-                           <SelectValue placeholder="Выберите продавца" />
-                         </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="unassigned">Не назначен</SelectItem>
-                            {employees.map((employee) => (
-                              <SelectItem key={employee.id} value={employee.id}>
-                                {employee.email}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                       </Select>
-                     </div>
-                   </RoleBasedAccess>
-
-                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 pt-2">
-                    <Button variant="outline" size="sm" className="flex-1 text-xs">
-                      <Eye className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                      Просмотр
-                    </Button>
-                    <Button variant="outline" size="sm" className="flex-1 text-xs">
-                      <Edit className="w-3 h-3 md:w-4 md:h-4 mr-1" />
-                      Редактировать
-                    </Button>
-                     <RoleBasedAccess permissions={['manage_all_leads']}>
-                       <Button 
-                         variant="outline" 
-                         size="sm" 
-                         onClick={() => handleDeleteLead(lead.id)}
-                         className="sm:flex-none"
-                       >
-                         <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
-                       </Button>
-                     </RoleBasedAccess>
-                </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+        <TabsContent value="kanban">
+          <KanbanBoard />
+        </TabsContent>
+      </Tabs>
 
       {filteredLeads.length === 0 && (
         <Card>
