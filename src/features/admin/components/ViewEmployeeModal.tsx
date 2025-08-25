@@ -117,14 +117,46 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
 
   const getActionLabel = (action: string) => {
     const actions: Record<string, string> = {
-      'login': 'Вход в систему',
-      'logout': 'Выход из системы',
-      'lead_create': 'Создание лида',
-      'lead_update': 'Обновление лида',
-      'lead_assign': 'Назначение лида',
-      'lead_close': 'Закрытие лида'
+      'login': '🔐 Вход в систему',
+      'logout': '🚪 Выход из системы',
+      'lead_create': '➕ Создал нового лида',
+      'lead_update': '✏️ Обновил данные лида',
+      'lead_assign': '👤 Назначил лида',
+      'lead_close': '✅ Закрыл лида',
+      'product_create': '📦 Добавил товар',
+      'product_update': '🔄 Обновил товар',
+      'client_create': '👥 Добавил клиента',
+      'quote_send': '📄 Отправил коммерческое предложение'
     };
-    return actions[action] || action;
+    return actions[action] || `🔧 ${action}`;
+  };
+
+  const getActionDescription = (log: ActivityLog) => {
+    if (log.details) {
+      try {
+        const details = typeof log.details === 'string' ? JSON.parse(log.details) : log.details;
+        
+        switch (log.action) {
+          case 'lead_create':
+            return `Создал лида "${details.name || details.company || 'Без названия'}"`;
+          case 'lead_update':
+            return `Обновил лида "${details.name || details.company || 'ID: ' + details.id}"`;
+          case 'lead_assign':
+            return `Назначил лида "${details.name || 'ID: ' + details.lead_id}" на сотрудника`;
+          case 'lead_close':
+            return `Закрыл лида "${details.name || 'ID: ' + details.id}" со статусом "${details.status || 'завершен'}"`;
+          case 'product_create':
+            return `Добавил товар "${details.name || 'Без названия'}"`;
+          case 'client_create':
+            return `Добавил клиента "${details.name || details.company || 'Без названия'}"`;
+          default:
+            return getActionLabel(log.action);
+        }
+      } catch (e) {
+        return getActionLabel(log.action);
+      }
+    }
+    return getActionLabel(log.action);
   };
 
   if (!employee) return null;
@@ -259,27 +291,33 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
                       </div>
                     ) : (
                       <div className="space-y-3 max-h-96 overflow-y-auto">
-                        {activityLogs.map((log) => (
-                          <div key={log.id} className="flex items-start gap-3 p-3 border rounded-lg">
-                            <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between">
-                                <p className="font-medium">{getActionLabel(log.action)}</p>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                  <Calendar className="h-3 w-3" />
-                                  {new Date(log.created_at).toLocaleDateString('ru-RU')} {new Date(log.created_at).toLocaleTimeString('ru-RU')}
+                        {activityLogs.map((log, index) => (
+                          <div key={log.id} className="flex items-start gap-3 p-4 bg-card rounded-lg border hover:shadow-sm transition-shadow">
+                            <div className="flex flex-col items-center">
+                              <div className="w-3 h-3 bg-primary rounded-full flex-shrink-0" />
+                              {index !== activityLogs.length - 1 && (
+                                <div className="w-px h-8 bg-border mt-2" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1">
+                                  <p className="font-medium text-foreground leading-tight">
+                                    {getActionDescription(log)}
+                                  </p>
+                                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
+                                    <Calendar className="h-3 w-3" />
+                                    {new Date(log.created_at).toLocaleDateString('ru-RU', {
+                                      day: '2-digit',
+                                      month: 'short',
+                                      year: 'numeric'
+                                    })} в {new Date(log.created_at).toLocaleTimeString('ru-RU', {
+                                      hour: '2-digit',
+                                      minute: '2-digit'
+                                    })}
+                                  </div>
                                 </div>
                               </div>
-                              {log.target_type && (
-                                <p className="text-sm text-muted-foreground">
-                                  Тип: {log.target_type}
-                                </p>
-                              )}
-                              {log.details && (
-                                <p className="text-sm text-muted-foreground">
-                                  {JSON.stringify(log.details)}
-                                </p>
-                              )}
                             </div>
                           </div>
                         ))}

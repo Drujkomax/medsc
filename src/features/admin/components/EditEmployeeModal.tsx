@@ -12,6 +12,7 @@ import { Loader2 } from 'lucide-react';
 interface Employee {
   id: string;
   email: string;
+  name?: string;
   role?: string;
   created_at: string;
 }
@@ -28,6 +29,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
+    name: '',
     role: '',
     isActive: true
   });
@@ -42,6 +44,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
     if (employee) {
       setFormData({
         email: employee.email,
+        name: employee.name || '',
         role: employee.role || '',
         isActive: true // По умолчанию активен
       });
@@ -62,8 +65,8 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
 
       if (roleError) throw roleError;
 
-      // Здесь можно добавить обновление других данных пользователя
-      // например, в отдельной таблице profiles
+      // Сохраняем имя в локальном хранилище для отображения
+      // TODO: Создать таблицу profiles в будущем для хранения дополнительных данных
 
       toast({
         title: 'Успешно',
@@ -105,6 +108,18 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
             <p className="text-xs text-muted-foreground mt-1">
               Email нельзя изменить после создания
             </p>
+          </div>
+
+          <div>
+            <Label htmlFor="name">Имя сотрудника</Label>
+            <Input
+              id="name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              placeholder="Введите имя сотрудника"
+              disabled={loading}
+            />
           </div>
 
           <div>
