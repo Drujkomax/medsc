@@ -71,7 +71,12 @@ const Footer = ({ language }: FooterProps) => {
     }
   };
 
-  const t = content[language];
+  const t = content[language] || content['ru']; // Fallback to Russian if language is undefined
+
+  // Early return if content is not available
+  if (!t) {
+    return null;
+  }
 
   return (
     <footer className="bg-msc-primary text-white">

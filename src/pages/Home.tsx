@@ -56,7 +56,12 @@ const Home = ({ language }: HomeProps) => {
     }
   };
 
-  const t = content[language];
+  const t = content[language] || content['ru']; // Fallback to Russian if language is undefined
+
+  // Early return if content is not available
+  if (!t) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen">

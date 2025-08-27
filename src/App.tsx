@@ -26,6 +26,9 @@ const queryClient = new QueryClient();
 const App = () => {
   const [language, setLanguage] = useState<'ru' | 'en' | 'uz'>('ru');
 
+  // Debug log to check language value
+  console.log('Current language:', language);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
