@@ -28,7 +28,10 @@ import {
   Home,
   MessageSquare,
   Settings,
-  Columns3
+  Columns3,
+  UserCheck,
+  HandCoins,
+  CheckSquare
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -42,6 +45,9 @@ export function AdminSidebar() {
     const baseItems = [
       { name: t('admin.dashboard'), href: '/admin', icon: BarChart3, permission: null },
       { name: t('navigation2.leads'), href: '/admin/leads', icon: Users, permission: null },
+      { name: t('admin.clients'), href: '/admin/clients', icon: UserCheck, permission: null },
+      { name: t('admin.deals'), href: '/admin/deals', icon: HandCoins, permission: null },
+      { name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare, permission: null },
       { name: t('navigation2.kanban'), href: '/admin/kanban', icon: Columns3, permission: null },
     ];
 

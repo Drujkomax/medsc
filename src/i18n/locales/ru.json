@@ -15,7 +15,9 @@
     "back": "Назад",
     "next": "Далее",
     "previous": "Предыдущий",
-    "close": "Закрыть"
+    "close": "Закрыть",
+    "confirmDelete": "Вы уверены, что хотите удалить {{name}}?",
+    "unknown": "Неизвестно"
   },
   "navigation": {
     "home": "Главная",
@@ -86,11 +88,20 @@
     "addClient": "Добавить клиента",
     "searchPlaceholder": "Поиск клиентов...",
     "name": "Имя",
-    "email": "Email",
+    "email": "Email", 
     "phone": "Телефон",
     "company": "Компания",
     "lastContact": "Последний контакт",
-    "notFound": "Клиенты не найдены"
+    "notFound": "Клиенты не найдены",
+    "notFoundDescription": "Попробуйте изменить фильтры или добавить нового клиента",
+    "total": "Всего клиентов",
+    "withCompany": "С компанией",
+    "thisMonth": "За этот месяц",
+    "createdAt": "Создан",
+    "deleted": "Клиент удален",
+    "added": "Клиент добавлен",
+    "updated": "Клиент обновлен",
+    "editClient": "Редактировать клиента"
   },
   "deals": {
     "title": "Сделки",
@@ -107,9 +118,18 @@
       "qualified": "Квалифицирован",
       "proposal": "Предложение",
       "negotiation": "Переговоры",
-      "closed": "Закрыта"
+      "closed": "Закрыта",
+      "lost": "Потеряна"
     },
-    "notFound": "Сделки не найдены"
+    "notFound": "Сделки не найдены",
+    "notFoundDescription": "Попробуйте изменить фильтры или добавить новую сделку",
+    "totalValue": "Общая стоимость",
+    "closedValue": "Закрыто на сумму",
+    "total": "Всего сделок",
+    "closed": "Закрытых",
+    "filterByStage": "Фильтр по этапу",
+    "createdAt": "Создана",
+    "deleted": "Сделка удалена"
   },
   "tasks": {
     "title": "Задачи",
@@ -132,7 +152,16 @@
       "high": "Высокий",
       "urgent": "Срочный"
     },
-    "notFound": "Задачи не найдены"
+    "notFound": "Задачи не найдены",
+    "notFoundDescription": "Попробуйте изменить фильтры или добавить новую задачу",
+    "pending": "В ожидании",
+    "inProgress": "В работе",
+    "completed": "Завершенных",
+    "overdue": "Просрочено",
+    "filterByStatus": "Фильтр по статусу",
+    "filterByPriority": "Фильтр по приоритету",
+    "createdAt": "Создана",
+    "deleted": "Задача удалена"
   },
   "dashboard": {
     "title": "Дашборд",

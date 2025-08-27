@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -20,14 +19,14 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useClients } from '@/hooks/useClients';
 import { Client } from '@/types/crm';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { toast } from 'sonner';
 
 const clientSchema = z.object({
   name: z.string().min(2, 'Имя должно содержать минимум 2 символа'),
-  email: z.string().email('Введите корректный email'),
-  phone: z.string().min(10, 'Введите корректный номер телефона'),
+  email: z.string().email('Введите корректный email').optional().or(z.literal('')),
+  phone: z.string().optional(),
   company: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -35,47 +34,62 @@ const clientSchema = z.object({
 type ClientFormData = z.infer<typeof clientSchema>;
 
 interface AddClientDialogProps {
-  onAddClient: (client: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => void;
+  client?: Client;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-const AddClientDialog = ({ onAddClient }: AddClientDialogProps) => {
+const AddClientDialog = ({ client, open, onOpenChange }: AddClientDialogProps) => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const { addClient, updateClient } = useClients();
 
   const form = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      phone: '',
-      company: '',
-      notes: '',
+      name: client?.name || '',
+      email: client?.email || '',
+      phone: client?.phone || '',
+      company: client?.company || '',
+      notes: client?.notes || '',
     },
   });
 
-  const onSubmit = (data: ClientFormData) => {
-    onAddClient({
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      company: data.company || undefined,
-      notes: data.notes || undefined,
-    });
-    form.reset();
-    setOpen(false);
+  const onSubmit = async (data: ClientFormData) => {
+    try {
+      if (client) {
+        await updateClient(client.id, {
+          name: data.name,
+          email: data.email || undefined,
+          phone: data.phone || undefined,
+          company: data.company || undefined,
+          notes: data.notes || undefined,
+        });
+        toast.success(t('clients.updated'));
+      } else {
+        await addClient({
+          name: data.name,
+          email: data.email || undefined,
+          phone: data.phone || undefined,
+          company: data.company || undefined,
+          notes: data.notes || undefined,
+        });
+        toast.success(t('clients.added'));
+      }
+      onOpenChange(false);
+      form.reset();
+    } catch (error) {
+      toast.error(t('common.error'));
+      console.error('Error saving client:', error);
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus className="w-4 h-4 mr-2" />
-          {t('clients.addClient')}
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{t('clients.addClient')}</DialogTitle>
+          <DialogTitle>
+            {client ? t('clients.editClient') : t('clients.addClient')}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -84,7 +98,7 @@ const AddClientDialog = ({ onAddClient }: AddClientDialogProps) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('clients.name')}</FormLabel>
+                  <FormLabel>{t('clients.name')} *</FormLabel>
                   <FormControl>
                     <Input placeholder="Введите имя клиента" {...field} />
                   </FormControl>
@@ -144,12 +158,12 @@ const AddClientDialog = ({ onAddClient }: AddClientDialogProps) => {
                 </FormItem>
               )}
             />
-            <div className="flex justify-end space-x-2">
-              <Button variant="outline" type="button" onClick={() => setOpen(false)}>
+            <div className="flex justify-end gap-3 pt-6">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 {t('common.cancel')}
               </Button>
               <Button type="submit">
-                {t('common.save')}
+                {client ? t('common.save') : t('clients.addClient')}
               </Button>
             </div>
           </form>

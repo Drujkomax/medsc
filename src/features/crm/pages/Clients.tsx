@@ -78,7 +78,7 @@ const Clients = () => {
           <h2 className="text-3xl font-bold">{t('clients.title')}</h2>
           <p className="text-muted-foreground">{t('clients.subtitle')}</p>
         </div>
-        <AddClientDialog onAddClient={handleAddClient} />
+        {/* TODO: Replace with ClientsPage component */}
       </div>
 
       {/* Filters */}
