@@ -70,7 +70,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
         throw new Error('Нет активной сессии');
       }
 
-      const response = await fetch('/supabase/functions/v1/admin-user-management', {
+      const response = await fetch('https://smvbhwaupvbxqxqxzzjx.supabase.co/functions/v1/admin-user-management', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
