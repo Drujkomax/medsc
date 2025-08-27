@@ -249,19 +249,21 @@ const Catalog = () => {
                   
                   <CardHeader className="flex-grow">
                     <div className="flex items-start justify-between mb-2">
-                      <CardTitle className="text-lg flex-1">{product.name[language]}</CardTitle>
+                      <CardTitle className="text-sm sm:text-lg flex-1 line-clamp-2">{product.name[language]}</CardTitle>
                       {product.country && (
                         <div className="bg-black text-white text-xs px-2 py-1 rounded-sm flex items-center gap-1 ml-2">
                           <span className="text-sm">{getCountryFlag(product.country)}</span>
                         </div>
                       )}
                     </div>
-                    <CardDescription>{product.description[language]}</CardDescription>
+                    {/* Hide description on mobile, show on larger screens */}
+                    <CardDescription className="hidden sm:block">{product.description[language]}</CardDescription>
                   </CardHeader>
                   
                   <CardContent className="flex flex-col justify-end mt-auto">
+                    {/* Hide features on mobile, show on larger screens */}
                     {product.features && product.features[language] && product.features[language].length > 0 && (
-                      <div className="mb-4">
+                      <div className="mb-4 hidden sm:block">
                         <h4 className="font-medium mb-2">{translations.features[language]}:</h4>
                         <ul className="text-sm text-muted-foreground space-y-1">
                           {product.features[language].map((feature, index) => (
@@ -276,15 +278,15 @@ const Catalog = () => {
                     
                     <div className="flex flex-col gap-2">
                       <Button 
-                        className="w-full" 
+                        className="w-full text-xs sm:text-sm" 
                         onClick={() => navigate(`/product/${product.id}`)}
                       >
-                        <Eye className="h-4 w-4 mr-2" />
+                        <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                         {translations.details[language]}
                       </Button>
                       <Button 
                         variant="outline"
-                        className="w-full"
+                        className="w-full text-xs sm:text-sm"
                         onClick={() => {
                           setSelectedProduct(product);
                           setShowQuoteForm(true);
