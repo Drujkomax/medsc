@@ -208,7 +208,7 @@ const Catalog = () => {
                     </div>
                   )}
                   
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Button 
                       className="w-full" 
                       onClick={() => navigate(`/product/${product.id}`)}
