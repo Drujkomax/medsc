@@ -157,7 +157,7 @@ const Home = ({ language }: HomeProps) => {
                     { icon: TrendingUp, label: language === 'ru' ? 'Окупаемость' : language === 'en' ? 'ROI' : 'Rentabellik', angle: 300 }
                   ].map((item, index) => {
                     const IconComponent = item.icon;
-                    const radius = 180; // Distance from center
+                    const radius = window.innerWidth < 768 ? 120 : 180; // Distance from center - smaller on mobile
                     const x = Math.cos((item.angle - 90) * Math.PI / 180) * radius;
                     const y = Math.sin((item.angle - 90) * Math.PI / 180) * radius;
                     
@@ -171,10 +171,10 @@ const Home = ({ language }: HomeProps) => {
                       >
                         <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
                           <div className="relative">
-                            <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform">
-                              <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 text-white" />
+                             <div className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform">
+                               <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-white" />
                             </div>
-                            <span className="text-white text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-2">
+                            <span className="text-white text-xs sm:text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-1 sm:mt-2">
                               {item.label}
                             </span>
                           </div>
