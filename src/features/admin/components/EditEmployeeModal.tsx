@@ -170,7 +170,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
               disabled={loading}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Выберите должность" />
+                <SelectValue placeholder={t('employees.selectRole')} />
               </SelectTrigger>
               <SelectContent className="bg-background">
                 {getRoles().map(role => (

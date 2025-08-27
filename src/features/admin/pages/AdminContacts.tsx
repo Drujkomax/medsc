@@ -28,12 +28,23 @@ const AdminContacts = () => {
     setContactData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    // TODO: Implement save functionality with Supabase
-    toast({
-      title: t('admin.contactsSaved'),
-      description: t('admin.contactsSavedDesc'),
-    });
+  const handleSave = async () => {
+    try {
+      // Здесь можно добавить сохранение в Supabase когда будет нужно
+      // const { error } = await supabase.from('contacts').upsert(contactData);
+      // if (error) throw error;
+      
+      toast({
+        title: t('admin.contactsSaved'),
+        description: t('admin.contactsSavedDesc'),
+      });
+    } catch (error) {
+      toast({
+        title: t('common.error'),
+        description: 'Ошибка при сохранении контактов',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -112,7 +123,7 @@ const AdminContacts = () => {
                 id="telegram"
                 value={contactData.telegram}
                 onChange={(e) => handleInputChange('telegram', e.target.value)}
-                placeholder="@username"
+                placeholder={t('admin.telegramPlaceholder')}
               />
             </div>
             <div>
@@ -121,7 +132,7 @@ const AdminContacts = () => {
                 id="whatsapp"
                 value={contactData.whatsapp}
                 onChange={(e) => handleInputChange('whatsapp', e.target.value)}
-                placeholder="+998901234567"
+                placeholder={t('admin.whatsappPlaceholder')}
               />
             </div>
             <div>
@@ -130,7 +141,7 @@ const AdminContacts = () => {
                 id="facebook"
                 value={contactData.facebook}
                 onChange={(e) => handleInputChange('facebook', e.target.value)}
-                placeholder="Page Name"
+                placeholder={t('admin.facebookPlaceholder')}
               />
             </div>
             <div>
@@ -139,7 +150,7 @@ const AdminContacts = () => {
                 id="instagram"
                 value={contactData.instagram}
                 onChange={(e) => handleInputChange('instagram', e.target.value)}
-                placeholder="@username"
+                placeholder={t('admin.instagramPlaceholder')}
               />
             </div>
             <div>
@@ -148,7 +159,7 @@ const AdminContacts = () => {
                 id="youtube"
                 value={contactData.youtube}
                 onChange={(e) => handleInputChange('youtube', e.target.value)}
-                placeholder="Channel Name"
+                placeholder={t('admin.youtubePlaceholder')}
               />
             </div>
           </CardContent>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +30,7 @@ interface User {
 }
 
 const UserManagement = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -274,7 +276,7 @@ const UserManagement = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Поиск по email..."
+                  placeholder={t('admin.searchByEmail')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -284,7 +286,7 @@ const UserManagement = () => {
             <div className="w-48">
               <Select value={selectedRole} onValueChange={setSelectedRole}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Фильтр по роли" />
+                  <SelectValue placeholder={t('admin.filterByRole')} />
                 </SelectTrigger>
                 <SelectContent className="bg-background z-50">
                   <SelectItem value="all">Все роли</SelectItem>
@@ -348,7 +350,7 @@ const UserManagement = () => {
                       >
                         <SelectTrigger className="w-[160px]">
                           <Settings className="w-4 h-4 mr-2" />
-                          <SelectValue placeholder="Изменить роль" />
+                          <SelectValue placeholder={t('admin.changeRole')} />
                         </SelectTrigger>
                         <SelectContent className="bg-background z-50">
                           {roles.map(role => (
