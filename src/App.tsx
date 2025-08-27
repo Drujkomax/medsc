@@ -39,7 +39,7 @@ const App = () => {
             {/* Public Routes - With Header/Footer */}
             <Route path="/*" element={
               <div className="min-h-screen flex flex-col">
-                <Header language={language} onLanguageChange={setLanguage} />
+                <Header />
                 <main className="flex-1">
                   <Routes>
                     <Route path="/" element={<Home language={language} />} />

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
 import LeadForm from '@/components/forms/LeadForm';
+import { useTranslation } from 'react-i18next';
 
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
@@ -29,142 +30,28 @@ const Home = ({ language }: HomeProps) => {
         experience: '8 лет опыта',
         projects: '300+ проектов',
         clients: 'Довольных клиентов'
-      },
-      categories: {
-        title: 'Категории оборудования',
-        subtitle: 'Широкий спектр медицинского оборудования для всех направлений',
-        items: [
-          { name: 'Диагностическое оборудование', icon: Stethoscope, category: 'diagnostic' },
-          { name: 'Хирургическое оборудование', icon: Scissors, category: 'surgical' },
-          { name: 'Реабилитационное оборудование', icon: Heart, category: 'rehabilitation' },
-          { name: 'Лабораторное оборудование', icon: TestTube, category: 'laboratory' },
-          { name: 'Стоматологическое оборудование', icon: Smile, category: 'dental' },
-          { name: 'Офтальмологическое оборудование', icon: Eye, category: 'ophthalmology' },
-        ]
-      },
-      advantages: {
-        title: 'Почему выбирают нас',
-        subtitle: 'Комплексный подход к решению медицинских задач',
-        items: [
-          {
-            icon: Shield,
-            title: 'Гарантия качества',
-            description: 'Работаем только с сертифицированным оборудованием ведущих мировых производителей'
-          },
-          {
-            icon: Headphones,
-            title: 'Сервис 24/7',
-            description: 'Круглосуточная техническая поддержка и оперативное решение любых вопросов'
-          },
-          {
-            icon: Zap,
-            title: 'Быстрая установка',
-            description: 'Профессиональная команда инженеров обеспечивает быструю инсталляцию и настройку'
-          },
-          {
-            icon: Globe,
-            title: 'Логистика по всему Узбекистану',
-            description: 'Доставка и установка оборудования в любой регион страны'
-          }
-        ]
       }
     },
     en: {
       hero: {
         title: 'Med Service Centre',
         subtitle: 'Leading medical equipment integrator in Uzbekistan',
-        description: 'Supply, installation,\nstaff training\nand technical support\nof medical equipment.',
+        description: 'Supply, installation,\nstaff training\nand technical support',
         cta: 'Calculate ROI',
         experience: '8 years experience',
         projects: '300+ projects',
         clients: 'Satisfied clients'
-      },
-      categories: {
-        title: 'Equipment Categories',
-        subtitle: 'Wide range of medical equipment for all medical fields',
-        items: [
-          { name: 'Diagnostic Equipment', icon: Stethoscope, category: 'diagnostic' },
-          { name: 'Surgical Equipment', icon: Scissors, category: 'surgical' },
-          { name: 'Rehabilitation Equipment', icon: Heart, category: 'rehabilitation' },
-          { name: 'Laboratory Equipment', icon: TestTube, category: 'laboratory' },
-          { name: 'Dental Equipment', icon: Smile, category: 'dental' },
-          { name: 'Ophthalmology Equipment', icon: Eye, category: 'ophthalmology' },
-        ]
-      },
-      advantages: {
-        title: 'Why Choose Us',
-        subtitle: 'Comprehensive approach to medical solutions',
-        items: [
-          {
-            icon: Shield,
-            title: 'Quality Guarantee',
-            description: 'We work only with certified equipment from leading global manufacturers'
-          },
-          {
-            icon: Headphones,
-            title: '24/7 Service',
-            description: 'Round-the-clock technical support and quick resolution of any issues'
-          },
-          {
-            icon: Zap,
-            title: 'Fast Installation',
-            description: 'Professional team of engineers ensures quick installation and setup'
-          },
-          {
-            icon: Globe,
-            title: 'Logistics throughout Uzbekistan',
-            description: 'Delivery and installation of equipment in any region of the country'
-          }
-        ]
       }
     },
     uz: {
       hero: {
         title: 'Med Service Centre',
         subtitle: "O'zbekistondagi yetakchi tibbiy uskunalar integratori",
-        description: "Tibbiy uskunalarni yetkazib berish,\no'rnatish, xodimlarni o'qitish\nva texnik xizmat ko'rsatish.",
+        description: "Yetkazib berish,\no'rnatish, xodimlarni o'qitish\nva texnik xizmat",
         cta: 'ROI hisoblagich',
         experience: 'Yillik tajriba',
-        projects: 'Muvaffaqiyatli loyiha',
+        projects: 'Loyiha',
         clients: 'Mamnun mijozlar'
-      },
-      categories: {
-        title: 'Uskuna toifalari',
-        subtitle: 'Biz barcha yo\'nalishlar uchun keng assortimentdagi tibbiy uskunalarni taklif qilamiz',
-        items: [
-          { name: 'Diagnostika uskunalari', icon: Stethoscope, category: 'diagnostic' },
-          { name: 'Jarrohlik uskunalari', icon: Scissors, category: 'surgical' },
-          { name: 'Reabilitatsiya uskunalari', icon: Heart, category: 'rehabilitation' },
-          { name: 'Laboratoriya uskunalari', icon: TestTube, category: 'laboratory' },
-          { name: 'Stomatologiya uskunalari', icon: Smile, category: 'dental' },
-          { name: 'Oftalmologiya uskunalari', icon: Eye, category: 'ophthalmology' },
-        ]
-      },
-      advantages: {
-        title: 'Nega bizni tanlashadi?',
-        subtitle: 'Tibbiy masalalarni hal qilishda kompleks yondashuv',
-        items: [
-          {
-            icon: Shield,
-            title: 'Sifat kafolati',
-            description: 'Biz faqat yetakchi jahon ishlab chiqaruvchilarining sertifikatlangan uskunalari bilan ishlaymiz.'
-          },
-          {
-            icon: Headphones,
-            title: '24/7 texnik yordam',
-            description: 'Har qanday muammo bo\'yicha kunu-tun qo\'llab-quvvatlash.'
-          },
-          {
-            icon: Zap,
-            title: 'Tezkor o\'rnatish',
-            description: 'Tajribali muhandislar jamoamiz uskunani tez va sifatli o\'rnatadi.'
-          },
-          {
-            icon: Globe,
-            title: 'Respublika bo\'ylab logistika',
-            description: 'O\'zbekistonning istalgan hududiga yetkazib berish va montaj.'
-          }
-        ]
       }
     }
   };
@@ -340,15 +227,24 @@ const Home = ({ language }: HomeProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {t.categories.title}
+              {language === 'ru' ? 'Категории оборудования' : language === 'en' ? 'Equipment Categories' : 'Uskuna toifalari'}
             </h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
-              {t.categories.subtitle}
+              {language === 'ru' ? 'Широкий спектр медицинского оборудования для всех направлений' : 
+               language === 'en' ? 'Wide range of medical equipment for all medical fields' : 
+               'Barcha yo\'nalishlar uchun keng assortimentdagi tibbiy uskunalar'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {t.categories.items.map((category, index) => (
+            {[
+              { name: language === 'ru' ? 'Диагностическое оборудование' : language === 'en' ? 'Diagnostic Equipment' : 'Diagnostika uskunalari', icon: Stethoscope, category: 'diagnostic' },
+              { name: language === 'ru' ? 'Хирургическое оборудование' : language === 'en' ? 'Surgical Equipment' : 'Jarrohlik uskunalari', icon: Scissors, category: 'surgical' },
+              { name: language === 'ru' ? 'Реабилитационное оборудование' : language === 'en' ? 'Rehabilitation Equipment' : 'Reabilitatsiya uskunalari', icon: Heart, category: 'rehabilitation' },
+              { name: language === 'ru' ? 'Лабораторное оборудование' : language === 'en' ? 'Laboratory Equipment' : 'Laboratoriya uskunalari', icon: TestTube, category: 'laboratory' },
+              { name: language === 'ru' ? 'Стоматологическое оборудование' : language === 'en' ? 'Dental Equipment' : 'Stomatologiya uskunalari', icon: Smile, category: 'dental' },
+              { name: language === 'ru' ? 'Офтальмологическое оборудование' : language === 'en' ? 'Ophthalmology Equipment' : 'Oftalmologiya uskunalari', icon: Eye, category: 'ophthalmology' },
+            ].map((category, index) => (
               <Card 
                 key={index} 
                 className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-msc-accent/20 cursor-pointer"
@@ -371,15 +267,46 @@ const Home = ({ language }: HomeProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
-              {t.advantages.title}
+              {language === 'ru' ? 'Почему выбирают нас' : language === 'en' ? 'Why Choose Us' : 'Nega bizni tanlashadi?'}
             </h2>
             <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
-              {t.advantages.subtitle}
+              {language === 'ru' ? 'Комплексный подход к решению медицинских задач' : 
+               language === 'en' ? 'Comprehensive approach to medical solutions' : 
+               'Tibbiy masalalarni hal qilishda kompleks yondashuv'}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {t.advantages.items.map((advantage, index) => (
+            {[
+              {
+                icon: Shield,
+                title: language === 'ru' ? 'Гарантия качества' : language === 'en' ? 'Quality Guarantee' : 'Sifat kafolati',
+                description: language === 'ru' ? 'Работаем только с сертифицированным оборудованием ведущих мировых производителей' : 
+                            language === 'en' ? 'We work only with certified equipment from leading global manufacturers' : 
+                            'Faqat yetakchi jahon ishlab chiqaruvchilarining sertifikatlangan uskunalari bilan ishlaymiz'
+              },
+              {
+                icon: Headphones,
+                title: language === 'ru' ? 'Сервис 24/7' : language === 'en' ? '24/7 Service' : '24/7 texnik yordam',
+                description: language === 'ru' ? 'Круглосуточная техническая поддержка и оперативное решение любых вопросов' : 
+                            language === 'en' ? 'Round-the-clock technical support and quick resolution of any issues' : 
+                            'Har qanday muammo bo\'yicha kunu-tun qo\'llab-quvvatlash'
+              },
+              {
+                icon: Zap,
+                title: language === 'ru' ? 'Быстрая установка' : language === 'en' ? 'Fast Installation' : 'Tezkor o\'rnatish',
+                description: language === 'ru' ? 'Профессиональная команда инженеров обеспечивает быструю инсталляцию и настройку' : 
+                            language === 'en' ? 'Professional team of engineers ensures quick installation and setup' : 
+                            'Tajribali muhandislar jamoamiz uskunani tez va sifatli o\'rnatadi'
+              },
+              {
+                icon: Globe,
+                title: language === 'ru' ? 'Логистика по всему Узбекистану' : language === 'en' ? 'Logistics throughout Uzbekistan' : 'Respublika bo\'ylab logistika',
+                description: language === 'ru' ? 'Доставка и установка оборудования в любой регион страны' : 
+                            language === 'en' ? 'Delivery and installation of equipment in any region of the country' : 
+                            'O\'zbekistonning istalgan hududiga yetkazib berish va montaj'
+              }
+            ].map((advantage, index) => (
               <div key={index} className="text-center group">
                 <div className="w-16 h-16 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                   <advantage.icon className="w-8 h-8 text-white" />

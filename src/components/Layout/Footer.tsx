@@ -1,6 +1,5 @@
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
 
-
 interface FooterProps {
   language: 'ru' | 'en' | 'uz';
 }

@@ -8,48 +8,30 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/hooks/useAuth';
+import LogoutButton from '@/components/auth/LogoutButton';
 
-interface HeaderProps {
-  language: 'ru' | 'en' | 'uz';
-  onLanguageChange: (lang: 'ru' | 'en' | 'uz') => void;
-}
-
-const Header = ({ language, onLanguageChange }: HeaderProps) => {
+const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { t, i18n } = useTranslation();
+  const { user } = useAuth();
 
-  const navigation = {
-    ru: [
-      { name: 'Главная', href: '/' },
-      { name: 'Каталог', href: '/catalog' },
-      { name: 'Услуги', href: '/services' },
-      { name: 'Кейсы', href: '/cases' },
-      { name: 'О компании', href: '/about' },
-      { name: 'Контакты', href: '/contacts' },
-    ],
-    en: [
-      { name: 'Home', href: '/' },
-      { name: 'Catalog', href: '/catalog' },
-      { name: 'Services', href: '/services' },
-      { name: 'Cases', href: '/cases' },
-      { name: 'About', href: '/about' },
-      { name: 'Contacts', href: '/contacts' },
-    ],
-    uz: [
-      { name: 'Bosh sahifa', href: '/' },
-      { name: 'Katalog', href: '/catalog' },
-      { name: 'Xizmatlar', href: '/services' },
-      { name: 'Loyihalar', href: '/cases' },
-      { name: 'Kompaniya haqida', href: '/about' },
-      { name: 'Aloqa', href: '/contacts' },
-    ]
-  };
+  const navigation = [
+    { name: t('navigation.home'), href: '/' },
+    { name: t('navigation.catalog'), href: '/catalog' },
+    { name: t('navigation.services'), href: '/services' },
+    { name: t('navigation.contacts'), href: '/contacts' },
+  ];
 
   const languages = [
     { code: 'ru' as const, name: 'Русский', flag: '🇷🇺' },
     { code: 'en' as const, name: 'English', flag: '🇺🇸' },
     { code: 'uz' as const, name: "O'zbekcha", flag: '🇺🇿' },
   ];
+
+  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const isActive = (href: string) => location.pathname === href;
 
@@ -68,7 +50,7 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navigation[language].map((item) => (
+            {navigation.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
@@ -83,7 +65,7 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
             ))}
           </nav>
 
-          {/* Language Toggle & Mobile Menu */}
+          {/* Language Toggle & Auth */}
           <div className="flex items-center space-x-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -92,8 +74,8 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
                   size="sm"
                   className="text-msc-text hover:text-msc-accent"
                 >
-                  {languages.find(lang => lang.code === language)?.flag}
-                  <span className="ml-1">{language.toUpperCase()}</span>
+                  {currentLanguage.flag}
+                  <span className="ml-1">{currentLanguage.code.toUpperCase()}</span>
                   <ChevronDown className="w-3 h-3 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
@@ -101,7 +83,7 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
                 {languages.map((lang) => (
                   <DropdownMenuItem
                     key={lang.code}
-                    onClick={() => onLanguageChange(lang.code)}
+                    onClick={() => i18n.changeLanguage(lang.code)}
                     className="cursor-pointer"
                   >
                     <span className="mr-2">{lang.flag}</span>
@@ -110,6 +92,17 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {user && (
+              <>
+                <Link to="/admin">
+                  <Button variant="outline" size="sm">
+                    {t('navigation.admin')}
+                  </Button>
+                </Link>
+                <LogoutButton />
+              </>
+            )}
 
             {/* Mobile menu button */}
             <Button
@@ -127,7 +120,7 @@ const Header = ({ language, onLanguageChange }: HeaderProps) => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <nav className="flex flex-col space-y-2">
-              {navigation[language].map((item) => (
+              {navigation.map((item) => (
                 <Link
                   key={item.href}
                   to={item.href}
