@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { Search, Filter, Heart, Eye, Loader2, Package } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Search, Filter, Heart, Eye, Loader2, Package, Menu } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
 import { toast } from 'sonner';
 import { getCountryFlag } from '@/utils/countries';
@@ -139,41 +140,89 @@ const Catalog = () => {
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder={translations.search[language]}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full md:w-64">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder={translations.category[language]} />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(categories).map(([key, value]) => (
-                <SelectItem key={key} value={key}>
-                  {value[language]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Desktop Sidebar */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="bg-card rounded-lg border p-6 sticky top-8">
+              <h3 className="font-semibold text-lg mb-4">{translations.category[language]}</h3>
+              <nav className="space-y-2">
+                {Object.entries(categories).map(([key, value]) => (
+                  <button
+                    key={key}
+                    onClick={() => setSelectedCategory(key)}
+                    className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                      selectedCategory === key
+                        ? 'bg-primary text-primary-foreground'
+                        : 'hover:bg-muted'
+                    }`}
+                  >
+                    {value[language]}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </aside>
 
-        {/* Products Grid */}
-        {currentProducts.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-xl text-muted-foreground">{translations.noProducts[language]}</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+          {/* Main Content Area */}
+          <div className="flex-1">
+            {/* Search and Mobile Category Filter */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                <Input
+                  placeholder={translations.search[language]}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              {/* Mobile Category Filter */}
+              <div className="lg:hidden">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant="outline" className="w-full sm:w-auto">
+                      <Menu className="h-4 w-4 mr-2" />
+                      {translations.category[language]}
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent side="left" className="w-80">
+                    <div className="py-6">
+                      <h3 className="font-semibold text-lg mb-4">{translations.category[language]}</h3>
+                      <nav className="space-y-2">
+                        {Object.entries(categories).map(([key, value]) => (
+                          <button
+                            key={key}
+                            onClick={() => {
+                              setSelectedCategory(key);
+                              // Close sheet after selection
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                              selectedCategory === key
+                                ? 'bg-primary text-primary-foreground'
+                                : 'hover:bg-muted'
+                            }`}
+                          >
+                            {value[language]}
+                          </button>
+                        ))}
+                      </nav>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            {currentProducts.length === 0 ? (
+              <div className="text-center py-16">
+                <p className="text-xl text-muted-foreground">{translations.noProducts[language]}</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {currentProducts.map((product) => (
                 <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
                   <div className="relative overflow-hidden rounded-t-lg aspect-[1080/1350]">
@@ -300,6 +349,8 @@ const Catalog = () => {
             )}
           </>
         )}
+          </div>
+        </div>
       </div>
 
       {/* Quote Request Form */}
