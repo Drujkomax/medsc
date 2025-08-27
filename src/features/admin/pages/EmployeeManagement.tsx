@@ -291,7 +291,7 @@ const EmployeeManagement = () => {
           </CardContent>
         </Card>
         
-        {getRoles().map(role => {
+        {getRoles().filter(role => role.value !== 'director').map(role => {
           const count = employees.filter(emp => emp.role === role.value).length;
           return (
             <Card key={role.value}>
