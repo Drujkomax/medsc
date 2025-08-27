@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
+import { getRoleTranslation } from '@/utils/roleTranslations';
 import { 
   Activity, 
   Users, 
@@ -44,6 +46,7 @@ interface ViewEmployeeModalProps {
 }
 
 const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps) => {
+  const { t, i18n } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [stats, setStats] = useState<EmployeeStats>({
@@ -196,7 +199,7 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Просмотр сотрудника
+            {t('employees.viewEmployee')}
           </DialogTitle>
         </DialogHeader>
 
@@ -221,7 +224,7 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
                   <div>
                     <p className="text-sm text-muted-foreground">Должность</p>
                     <Badge variant="secondary">
-                      {getRoleLabel(employee.role)}
+                      {getRoleTranslation(employee.role, i18n.language)}
                     </Badge>
                   </div>
                   <div>

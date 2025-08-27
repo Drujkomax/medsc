@@ -8,6 +8,7 @@ import { useUserRole } from '@/hooks/useUserRole';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
+import { getRoleTranslation } from '@/utils/roleTranslations';
 import {
   Sidebar,
   SidebarContent,
@@ -31,7 +32,7 @@ import {
 } from 'lucide-react';
 
 export function AdminSidebar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const { role } = useUserRole();
   const { hasPermission } = useUserPermissions();
@@ -40,8 +41,8 @@ export function AdminSidebar() {
   const getNavigationItems = () => {
     const baseItems = [
       { name: t('admin.dashboard'), href: '/admin', icon: BarChart3, permission: null },
-      { name: 'Лиды', href: '/admin/leads', icon: Users, permission: null },
-      { name: 'Канбан', href: '/admin/kanban', icon: Columns3, permission: null },
+      { name: t('navigation2.leads'), href: '/admin/leads', icon: Users, permission: null },
+      { name: t('navigation2.kanban'), href: '/admin/kanban', icon: Columns3, permission: null },
     ];
 
     const conditionalItems = [];
@@ -51,7 +52,7 @@ export function AdminSidebar() {
     }
 
     if (hasPermission('manage_services')) {
-      conditionalItems.push({ name: 'Услуги', href: '/admin/services', icon: Settings, permission: 'manage_services' });
+      conditionalItems.push({ name: t('navigation2.services'), href: '/admin/services', icon: Settings, permission: 'manage_services' });
     }
 
     if (hasPermission('manage_contacts')) {
@@ -59,10 +60,8 @@ export function AdminSidebar() {
     }
 
     if (role === 'director') {
-      conditionalItems.push({ name: 'Сотрудники', href: '/admin/employees', icon: Users, permission: null });
+      conditionalItems.push({ name: t('navigation2.employees'), href: '/admin/employees', icon: Users, permission: null });
     }
-
-    // Убираем "Системные пользователи" - это дубль раздела "Сотрудники"
 
     return [...baseItems, ...conditionalItems];
   };
@@ -84,7 +83,7 @@ export function AdminSidebar() {
             <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
               <span className="text-primary-foreground font-bold">MSC</span>
             </div>
-            <span className="font-semibold text-lg">Админ-панель</span>
+            <span className="font-semibold text-lg">{t('navigation2.adminPanel')}</span>
           </div>
           {user?.email && (
             <div className="text-sm text-muted-foreground pl-10">
@@ -96,7 +95,7 @@ export function AdminSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Навигация</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('navigation2.navigation')}</SidebarGroupLabel>
           
           <SidebarGroupContent>
             <SidebarMenu>
@@ -132,11 +131,7 @@ export function AdminSidebar() {
           <div className="flex items-center justify-between">
             <LanguageSwitcher />
             <Badge variant="secondary" className="text-xs">
-              {role === 'director' ? 'Директор' :
-               role === 'sales_manager' ? 'Менеджер продаж' :
-               role === 'admin' ? 'Администратор' :
-               role === 'salesperson' ? 'Продавец' :
-               role || 'Не определена'}
+              {getRoleTranslation(role, i18n.language)}
             </Badge>
           </div>
           <Link to="/">

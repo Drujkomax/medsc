@@ -123,5 +123,73 @@
     "totalDeals": "Total Deals",
     "revenue": "Revenue",
     "pendingTasks": "Pending Tasks"
+  },
+  "employees": {
+    "title": "Employee Management",
+    "subtitle": "Add and manage company employees",
+    "addEmployee": "Add Employee",
+    "addNewEmployee": "Add New Employee",
+    "searchPlaceholder": "Search employees...",
+    "emailLabel": "Employee Email",
+    "nameLabel": "Employee Name",
+    "roleLabel": "Position",
+    "editEmployee": "Edit Employee",
+    "viewEmployee": "View Employee",
+    "employeeStats": {
+      "total": "Total Employees",
+      "salesperson": "Salespersons",
+      "salesManager": "Sales Managers",
+      "admin": "Administrators",
+      "director": "Directors"
+    },
+    "notFound": "No employees found",
+    "notFoundDescription": "Try changing filters or add a new employee",
+    "addedOn": "Added on",
+    "adding": "Adding...",
+    "filterByRole": "Filter by role",
+    "allRoles": "All roles",
+    "inviteSent": "Invitation sent",
+    "inviteSentDescription": "Employee can register using the link",
+    "emailPlaceholder": "Enter employee email",
+    "namePlaceholder": "Enter employee name",
+    "passwordLabel": "New Password",
+    "passwordPlaceholder": "Enter new password",
+    "updated": "Employee data updated",
+    "activityLogs": "Activity Logs",
+    "noActivity": "No activity found",
+    "dailySummary": "Daily Summary",
+    "actions": {
+      "assignedLead": "Assigned lead",
+      "createdDeal": "Created deal",
+      "updatedDeal": "Updated deal",
+      "addedProduct": "Added product"
+    }
+  },
+  "leads": {
+    "title": "Leads",
+    "activeLead": "Active Leads",
+    "newLeads": "New Leads",
+    "myLeads": "My Leads",
+    "myLeadsByStage": "My Leads by Stage"
+  },
+  "services": {
+    "title": "Service Management",
+    "subtitle": "Manage company services and their descriptions"
+  },
+  "navigation2": {
+    "navigation": "Navigation",
+    "adminPanel": "Admin Panel",
+    "leads": "Leads",
+    "kanban": "Kanban",
+    "services": "Services",
+    "employees": "Employees"
+  },
+  "roles": {
+    "director": "Director",
+    "salesManager": "Sales Manager",
+    "admin": "Administrator", 
+    "salesperson": "Salesperson",
+    "user": "User",
+    "notAssigned": "Not assigned"
   }
 }

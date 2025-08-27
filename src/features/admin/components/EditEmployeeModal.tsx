@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
+import { getRoleTranslation } from '@/utils/roleTranslations';
 
 interface Employee {
   id: string;
@@ -25,6 +27,7 @@ interface EditEmployeeModalProps {
 }
 
 const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployeeModalProps) => {
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,11 +38,11 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
     isActive: true
   });
 
-  const roles = [
-    { value: 'salesperson', label: 'Продавец' },
-    { value: 'sales_manager', label: 'Менеджер продаж' },
-    { value: 'admin', label: 'Администратор' },
-    { value: 'director', label: 'Директор' }
+  const getRoles = () => [
+    { value: 'salesperson', label: getRoleTranslation('salesperson', i18n.language) },
+    { value: 'sales_manager', label: getRoleTranslation('sales_manager', i18n.language) },
+    { value: 'admin', label: getRoleTranslation('admin', i18n.language) },
+    { value: 'director', label: getRoleTranslation('director', i18n.language) }
   ];
 
   useEffect(() => {
@@ -95,7 +98,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
 
       toast({
         title: 'Успешно',
-        description: 'Данные сотрудника обновлены',
+        description: t('employees.updated'),
       });
 
       onUpdate();
@@ -116,7 +119,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-background max-w-md">
         <DialogHeader>
-          <DialogTitle>Редактировать сотрудника</DialogTitle>
+          <DialogTitle>{t('employees.editEmployee')}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -128,30 +131,30 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               disabled={loading}
-              placeholder="Введите email сотрудника"
+              placeholder={t('employees.emailPlaceholder')}
             />
           </div>
 
           <div>
-            <Label htmlFor="name">Имя сотрудника</Label>
+            <Label htmlFor="name">{t('employees.nameLabel')}</Label>
             <Input
               id="name"
               type="text"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Введите имя сотрудника"
+              placeholder={t('employees.namePlaceholder')}
               disabled={loading}
             />
           </div>
 
           <div>
-            <Label htmlFor="password">Новый пароль</Label>
+            <Label htmlFor="password">{t('employees.passwordLabel')}</Label>
             <Input
               id="password"
               type="password"
               value={formData.password}
               onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-              placeholder="Оставьте пустым, чтобы не менять пароль"
+              placeholder={t('employees.passwordPlaceholder')}
               disabled={loading}
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -160,7 +163,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
           </div>
 
           <div>
-            <Label htmlFor="role">Должность</Label>
+            <Label htmlFor="role">{t('employees.roleLabel')}</Label>
             <Select 
               value={formData.role} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, role: value }))}
@@ -170,7 +173,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
                 <SelectValue placeholder="Выберите должность" />
               </SelectTrigger>
               <SelectContent className="bg-background">
-                {roles.map(role => (
+                {getRoles().map(role => (
                   <SelectItem key={role.value} value={role.value}>
                     {role.label}
                   </SelectItem>
@@ -192,7 +195,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
           <div className="flex gap-2 pt-4">
             <Button type="submit" className="flex-1" disabled={loading}>
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Сохранить
+              {t('common.save')}
             </Button>
             <Button 
               type="button" 
@@ -200,7 +203,7 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onUpdate }: EditEmployee
               onClick={onClose}
               disabled={loading}
             >
-              Отмена
+              {t('common.cancel')}
             </Button>
           </div>
         </form>

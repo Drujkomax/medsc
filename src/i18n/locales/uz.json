@@ -123,5 +123,73 @@
     "totalDeals": "Jami bitimlar",
     "revenue": "Daromad",
     "pendingTasks": "Ishlanayotgan vazifalar"
+  },
+  "employees": {
+    "title": "Xodimlarni boshqarish",
+    "subtitle": "Kompaniya xodimlarini qo'shish va boshqarish",
+    "addEmployee": "Xodim qo'shish",
+    "addNewEmployee": "Yangi xodim qo'shish",
+    "searchPlaceholder": "Xodimlarni qidirish...",
+    "emailLabel": "Xodim emaili",
+    "nameLabel": "Xodim ismi",
+    "roleLabel": "Lavozim",
+    "editEmployee": "Xodimni tahrirlash",
+    "viewEmployee": "Xodimni ko'rish",
+    "employeeStats": {
+      "total": "Jami xodimlar",
+      "salesperson": "Sotuvchilar",
+      "salesManager": "Sotuv menejerlari",
+      "admin": "Administratorlar",
+      "director": "Direktorlar"
+    },
+    "notFound": "Xodimlar topilmadi",
+    "notFoundDescription": "Filtrlarni o'zgartiring yoki yangi xodim qo'shing",
+    "addedOn": "Qo'shilgan",
+    "adding": "Qo'shilmoqda...",
+    "filterByRole": "Lavozim bo'yicha filtr",
+    "allRoles": "Barcha lavozimlar",
+    "inviteSent": "Taklifnoma yuborildi",
+    "inviteSentDescription": "Xodim havola orqali ro'yxatdan o'tishi mumkin",
+    "emailPlaceholder": "Xodim emailini kiriting",
+    "namePlaceholder": "Xodim ismini kiriting",
+    "passwordLabel": "Yangi parol",
+    "passwordPlaceholder": "Yangi parolni kiriting",
+    "updated": "Xodim ma'lumotlari yangilandi",
+    "activityLogs": "Faollik jurnali",
+    "noActivity": "Faollik topilmadi",
+    "dailySummary": "Kunlik xulosa",
+    "actions": {
+      "assignedLead": "Lead tayinladi",
+      "createdDeal": "Bitim yaratdi",
+      "updatedDeal": "Bitimni yangiladi",
+      "addedProduct": "Mahsulot qo'shdi"
+    }
+  },
+  "leads": {
+    "title": "Leadlar",
+    "activeLead": "Faol leadlar",
+    "newLeads": "Yangi leadlar",
+    "myLeads": "Mening leadlarim",
+    "myLeadsByStage": "Mening leadlarim bosqichlar bo'yicha"
+  },
+  "services": {
+    "title": "Xizmatlarni boshqarish",
+    "subtitle": "Kompaniya xizmatlari va ularning tavsiflarini boshqarish"
+  },
+  "navigation2": {
+    "navigation": "Navigatsiya",
+    "adminPanel": "Admin panel",
+    "leads": "Leadlar",
+    "kanban": "Kanban",
+    "services": "Xizmatlar",
+    "employees": "Xodimlar"
+  },
+  "roles": {
+    "director": "Direktor",
+    "salesManager": "Sotuv menejeri",
+    "admin": "Administrator",
+    "salesperson": "Sotuvchi", 
+    "user": "Foydalanuvchi",
+    "notAssigned": "Tayinlanmagan"
   }
 }

@@ -133,5 +133,73 @@
     "totalDeals": "Всего сделок",
     "revenue": "Выручка",
     "pendingTasks": "Задачи в работе"
+  },
+  "employees": {
+    "title": "Управление сотрудниками",
+    "subtitle": "Добавление и управление сотрудниками компании",
+    "addEmployee": "Добавить сотрудника",
+    "addNewEmployee": "Добавить нового сотрудника",
+    "searchPlaceholder": "Поиск сотрудников...",
+    "emailLabel": "Email сотрудника",
+    "nameLabel": "Имя сотрудника",
+    "roleLabel": "Должность",
+    "editEmployee": "Редактировать сотрудника",
+    "viewEmployee": "Просмотр сотрудника",
+    "employeeStats": {
+      "total": "Всего сотрудников",
+      "salesperson": "Продавцы",
+      "salesManager": "Менеджеры продаж",
+      "admin": "Администраторы",
+      "director": "Директоры"
+    },
+    "notFound": "Сотрудники не найдены",
+    "notFoundDescription": "Попробуйте изменить фильтры или добавить нового сотрудника",
+    "addedOn": "Добавлен",
+    "adding": "Добавление...",
+    "filterByRole": "Фильтр по должности",
+    "allRoles": "Все должности",
+    "inviteSent": "Приглашение отправлено",
+    "inviteSentDescription": "Сотрудник может зарегистрироваться по ссылке",
+    "emailPlaceholder": "Введите email сотрудника",
+    "namePlaceholder": "Введите имя сотрудника",
+    "passwordLabel": "Новый пароль",
+    "passwordPlaceholder": "Введите новый пароль",
+    "updated": "Данные сотрудника обновлены",
+    "activityLogs": "Логи активности",
+    "noActivity": "Активность не найдена",
+    "dailySummary": "Сводка за день",
+    "actions": {
+      "assignedLead": "Назначил лида",
+      "createdDeal": "Создал сделку",
+      "updatedDeal": "Обновил сделку",
+      "addedProduct": "Добавил товар"
+    }
+  },
+  "leads": {
+    "title": "Лиды",
+    "activeLead": "Активные лиды",
+    "newLeads": "Новые лиды",
+    "myLeads": "Мои лиды",
+    "myLeadsByStage": "Мои лиды по этапам"
+  },
+  "services": {
+    "title": "Управление услугами",
+    "subtitle": "Управление услугами компании и их описаниями"
+  },
+  "navigation2": {
+    "navigation": "Навигация",
+    "adminPanel": "Админ-панель",
+    "leads": "Лиды",
+    "kanban": "Канбан",
+    "services": "Услуги",
+    "employees": "Сотрудники"
+  },
+  "roles": {
+    "director": "Директор",
+    "salesManager": "Менеджер продаж", 
+    "admin": "Администратор",
+    "salesperson": "Продавец",
+    "user": "Пользователь",
+    "notAssigned": "Не определена"
   }
 }

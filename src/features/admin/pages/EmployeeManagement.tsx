@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import EditEmployeeModal from '@/features/admin/components/EditEmployeeModal';
 import ViewEmployeeModal from '@/features/admin/components/ViewEmployeeModal';
+import { getRoleTranslation } from '@/utils/roleTranslations';
 import { 
   Users, 
   Plus, 
@@ -30,6 +32,7 @@ interface Employee {
 }
 
 const EmployeeManagement = () => {
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,11 +48,11 @@ const EmployeeManagement = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
-  const roles = [
-    { value: 'salesperson', label: 'Продавец', color: 'bg-blue-100 text-blue-800' },
-    { value: 'sales_manager', label: 'Менеджер продаж', color: 'bg-green-100 text-green-800' },
-    { value: 'admin', label: 'Администратор', color: 'bg-red-100 text-red-800' },
-    { value: 'director', label: 'Директор', color: 'bg-purple-100 text-purple-800' }
+  const getRoles = () => [
+    { value: 'salesperson', label: getRoleTranslation('salesperson', i18n.language), color: 'bg-blue-100 text-blue-800' },
+    { value: 'sales_manager', label: getRoleTranslation('sales_manager', i18n.language), color: 'bg-green-100 text-green-800' },
+    { value: 'admin', label: getRoleTranslation('admin', i18n.language), color: 'bg-red-100 text-red-800' },
+    { value: 'director', label: getRoleTranslation('director', i18n.language), color: 'bg-purple-100 text-purple-800' }
   ];
 
   useEffect(() => {
@@ -152,7 +155,8 @@ const EmployeeManagement = () => {
   });
 
   const getRoleInfo = (role?: string) => {
-    return roles.find(r => r.value === role) || { label: 'Не назначена', color: 'bg-gray-100 text-gray-800' };
+    const roles = getRoles();
+    return roles.find(r => r.value === role) || { label: t('roles.notAssigned'), color: 'bg-gray-100 text-gray-800' };
   };
 
   if (loading) {
@@ -172,37 +176,37 @@ const EmployeeManagement = () => {
         <div>
           <h2 className="text-3xl font-bold flex items-center gap-2">
             <Users className="h-8 w-8" />
-            Управление сотрудниками
+            {t('employees.title')}
           </h2>
-          <p className="text-muted-foreground">Добавление и управление сотрудниками компании</p>
+          <p className="text-muted-foreground">{t('employees.subtitle')}</p>
         </div>
         
         <Dialog open={isAddEmployeeOpen} onOpenChange={setIsAddEmployeeOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Добавить сотрудника
+              {t('employees.addEmployee')}
             </Button>
           </DialogTrigger>
           <DialogContent className="bg-background">
             <DialogHeader>
-              <DialogTitle>Добавить нового сотрудника</DialogTitle>
+              <DialogTitle>{t('employees.addNewEmployee')}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleAddEmployee} className="space-y-4">
               <div>
-                <Label htmlFor="email">Email сотрудника</Label>
+                <Label htmlFor="email">{t('employees.emailLabel')}</Label>
                 <Input
                   id="email"
                   type="email"
                   value={newEmployee.email}
                   onChange={(e) => setNewEmployee(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="employee@medservice.uz"
+                  placeholder={t('employees.emailPlaceholder')}
                   required
                   disabled={addingEmployee}
                 />
               </div>
               <div>
-                <Label htmlFor="role">Должность</Label>
+                <Label htmlFor="role">{t('employees.roleLabel')}</Label>
                 <Select 
                   value={newEmployee.role} 
                   onValueChange={(value) => setNewEmployee(prev => ({ ...prev, role: value }))}
@@ -212,7 +216,7 @@ const EmployeeManagement = () => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
-                    {roles.map(role => (
+                    {getRoles().map(role => (
                       <SelectItem key={role.value} value={role.value}>
                         {role.label}
                       </SelectItem>
@@ -223,7 +227,7 @@ const EmployeeManagement = () => {
               <div className="flex gap-2">
                 <Button type="submit" className="flex-1" disabled={addingEmployee}>
                   {addingEmployee && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {addingEmployee ? 'Добавление...' : 'Добавить сотрудника'}
+                  {addingEmployee ? t('employees.adding') : t('employees.addEmployee')}
                 </Button>
                 <Button 
                   type="button" 
@@ -231,7 +235,7 @@ const EmployeeManagement = () => {
                   onClick={() => setIsAddEmployeeOpen(false)}
                   disabled={addingEmployee}
                 >
-                  Отмена
+                  {t('common.cancel')}
                 </Button>
               </div>
             </form>
@@ -247,7 +251,7 @@ const EmployeeManagement = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Поиск сотрудников..."
+                  placeholder={t('employees.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -257,11 +261,11 @@ const EmployeeManagement = () => {
             <div className="w-48">
               <Select value={selectedRole} onValueChange={setSelectedRole}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Фильтр по должности" />
+                  <SelectValue placeholder={t('employees.filterByRole')} />
                 </SelectTrigger>
                 <SelectContent className="bg-background z-50">
-                  <SelectItem value="all">Все должности</SelectItem>
-                  {roles.map(role => (
+                  <SelectItem value="all">{t('employees.allRoles')}</SelectItem>
+                  {getRoles().map(role => (
                     <SelectItem key={role.value} value={role.value}>
                       {role.label}
                     </SelectItem>
@@ -280,14 +284,14 @@ const EmployeeManagement = () => {
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
               <div>
-                <p className="text-sm text-muted-foreground">Всего сотрудников</p>
+                <p className="text-sm text-muted-foreground">{t('employees.employeeStats.total')}</p>
                 <p className="text-2xl font-bold">{employees.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
         
-        {roles.map(role => {
+        {getRoles().map(role => {
           const count = employees.filter(emp => emp.role === role.value).length;
           return (
             <Card key={role.value}>
@@ -311,9 +315,9 @@ const EmployeeManagement = () => {
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-8">
               <Users className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Сотрудники не найдены</h3>
+              <h3 className="text-lg font-medium mb-2">{t('employees.notFound')}</h3>
               <p className="text-muted-foreground text-center">
-                Попробуйте изменить фильтры или добавить нового сотрудника
+                {t('employees.notFoundDescription')}
               </p>
             </CardContent>
           </Card>
@@ -332,7 +336,7 @@ const EmployeeManagement = () => {
                       <div>
                         <h3 className="font-medium">{employee.email}</h3>
                         <p className="text-sm text-muted-foreground">
-                          Добавлен: {new Date(employee.created_at).toLocaleDateString('ru-RU')}
+                          {t('employees.addedOn')}: {new Date(employee.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'ru-RU')}
                         </p>
                       </div>
                     </div>
@@ -350,7 +354,7 @@ const EmployeeManagement = () => {
                           className="flex items-center gap-1"
                         >
                           <Edit className="w-4 h-4" />
-                          Редактировать
+                          {t('common.edit')}
                         </Button>
                         <Button
                           variant="outline"
@@ -359,7 +363,7 @@ const EmployeeManagement = () => {
                           className="flex items-center gap-1"
                         >
                           <Eye className="w-4 h-4" />
-                          Просмотр
+                          {t('common.view')}
                         </Button>
                       </div>
                     </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -40,13 +41,14 @@ const mockServices = [
 ];
 
 const AdminServices = () => {
+  const { t } = useTranslation();
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Управление услугами</h1>
+          <h1 className="text-3xl font-bold">{t('services.title')}</h1>
           <p className="text-muted-foreground">
-            Управление услугами компании и их описаниями
+            {t('services.subtitle')}
           </p>
         </div>
         <Button>

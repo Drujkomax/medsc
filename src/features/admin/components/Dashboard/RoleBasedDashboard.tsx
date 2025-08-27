@@ -168,7 +168,7 @@ const RoleBasedDashboard = () => {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Активные лиды</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('leads.activeLead')}</CardTitle>
           <Target className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -226,7 +226,7 @@ const RoleBasedDashboard = () => {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Новые лиды</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('leads.newLeads')}</CardTitle>
           <AlertCircle className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -256,7 +256,7 @@ const RoleBasedDashboard = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Мои лиды</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('leads.myLeads')}</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -309,7 +309,7 @@ const RoleBasedDashboard = () => {
       {/* Мои лиды по этапам */}
       <Card className="md:col-span-2 lg:col-span-4">
         <CardHeader>
-          <CardTitle>Мои лиды по этапам</CardTitle>
+          <CardTitle>{t('leads.myLeadsByStage')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
