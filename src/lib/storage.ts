@@ -34,12 +34,13 @@ export const clientStorage = {
     return clients.find(client => client.id === id);
   },
   
-  create: (client: Omit<Client, 'id' | 'createdAt'>): Client => {
+  create: (client: Omit<Client, 'id' | 'created_at' | 'updated_at'>): Client => {
     const clients = clientStorage.getAll();
     const newClient: Client = {
       ...client,
       id: crypto.randomUUID(),
-      createdAt: new Date(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
     clients.push(newClient);
     setStorageData(STORAGE_KEYS.CLIENTS, clients);
@@ -77,15 +78,16 @@ export const dealStorage = {
   
   getByClientId: (clientId: string): Deal[] => {
     const deals = dealStorage.getAll();
-    return deals.filter(deal => deal.clientId === clientId);
+    return deals.filter(deal => deal.client_id === clientId);
   },
   
-  create: (deal: Omit<Deal, 'id' | 'createdAt'>): Deal => {
+  create: (deal: Omit<Deal, 'id' | 'created_at' | 'updated_at'>): Deal => {
     const deals = dealStorage.getAll();
     const newDeal: Deal = {
       ...deal,
       id: crypto.randomUUID(),
-      createdAt: new Date(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
     deals.push(newDeal);
     setStorageData(STORAGE_KEYS.DEALS, deals);
@@ -123,20 +125,21 @@ export const taskStorage = {
   
   getByClientId: (clientId: string): Task[] => {
     const tasks = taskStorage.getAll();
-    return tasks.filter(task => task.clientId === clientId);
+    return tasks.filter(task => task.client_id === clientId);
   },
   
   getByDealId: (dealId: string): Task[] => {
     const tasks = taskStorage.getAll();
-    return tasks.filter(task => task.dealId === dealId);
+    return tasks.filter(task => task.deal_id === dealId);
   },
   
-  create: (task: Omit<Task, 'id' | 'createdAt'>): Task => {
+  create: (task: Omit<Task, 'id' | 'created_at' | 'updated_at'>): Task => {
     const tasks = taskStorage.getAll();
     const newTask: Task = {
       ...task,
       id: crypto.randomUUID(),
-      createdAt: new Date(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
     tasks.push(newTask);
     setStorageData(STORAGE_KEYS.TASKS, tasks);

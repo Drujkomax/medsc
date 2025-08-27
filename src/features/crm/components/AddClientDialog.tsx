@@ -35,7 +35,7 @@ const clientSchema = z.object({
 type ClientFormData = z.infer<typeof clientSchema>;
 
 interface AddClientDialogProps {
-  onAddClient: (client: Omit<Client, 'id' | 'createdAt'>) => void;
+  onAddClient: (client: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => void;
 }
 
 const AddClientDialog = ({ onAddClient }: AddClientDialogProps) => {
