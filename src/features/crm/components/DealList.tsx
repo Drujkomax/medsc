@@ -33,6 +33,7 @@ const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
   });
 
   const getLeadName = (leadId: string) => {
+    if (!leadId) return t('common.unknown');
     const lead = leads.find(l => l.id === leadId);
     return lead?.name || t('common.unknown');
   };
