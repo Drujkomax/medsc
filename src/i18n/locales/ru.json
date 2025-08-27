@@ -153,7 +153,10 @@
     "kanban": {
       "title": "Канбан сделок",
       "subtitle": "Перетаскивайте сделки между этапами"
-    }
+    },
+    "quickCreate": "Быстрое создание",
+    "selectDate": "Выберите дату",
+    "createFollowUpTask": "Создать задачу-напоминание"
   },
   "tasks": {
     "title": "Задачи",
@@ -272,7 +275,35 @@
     "activeLead": "Активные лиды",
     "newLeads": "Новые лиды",
     "myLeads": "Мои лиды",
-    "myLeadsByStage": "Мои лиды по этапам"
+    "estimatedValue": "Ожидаемая стоимость",
+    "myLeadsByStage": "Мои лиды по этапам",
+    "dashboard": "Дашборд",
+    "conversion": "Конверсия",
+    "teamConversion": "Конверсия команды",
+    "overallEfficiency": "Общая эффективность",
+    "requireAttention": "Требуют внимания",
+    "activeLeads": "Активных лидов",
+    "monthResult": "Результат месяца",
+    "closedDeals": "Закрытых сделок",
+    "stageStats": "Статистика по этапам"
+  },
+  "director": {
+    "totalRevenue": "Общая выручка",
+    "monthlyRevenue": "Выручка за месяц",
+    "conversionRate": "Общая конверсия",
+    "avgDealSize": "Средний чек",
+    "allTime": "за всё время",
+    "thisMonth": "в этом месяце",
+    "leadToDeal": "лид в сделку",
+    "average": "в среднем",
+    "salesPipeline": "Воронка продаж",
+    "pipelineValue": "Стоимость воронки",
+    "teamPerformance": "Эффективность команды",
+    "conversion": "конверсия",
+    "quickActions": "Быстрые действия",
+    "viewAllDeals": "Все сделки",
+    "viewAllLeads": "Все лиды",
+    "manageTeam": "Управление командой"
   },
   "services": {
     "title": "Управление услугами",
