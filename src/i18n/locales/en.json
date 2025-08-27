@@ -240,5 +240,36 @@
     "loginError": "Login Error",
     "loginSuccess": "Login successful",
     "generalError": "An error occurred during login"
+  },
+  "leadForm": {
+    "title": "Get Consultation",
+    "subtitle": "From calculation to launch — 14 days",
+    "description": "Full cycle: Quote → Supply → Installation → Training",
+    "name": "Your name",
+    "phone": "Phone",
+    "equipmentType": "Equipment type",
+    "submit": "Submit request",
+    "trust1": "Response within an hour",
+    "trust2": "Ministry of Health license",
+    "equipmentTypes": {
+      "ultrasound": "Ultrasound equipment",
+      "xray": "X-ray equipment",
+      "mri": "MRI equipment",
+      "ct": "CT equipment",
+      "lab": "Laboratory equipment",
+      "other": "Other"
+    }
+  },
+  "telegram": {
+    "title": "Thank you for your request!",
+    "subtitle": "We recommend reading our article",
+    "description": "Detailed analysis of financial aspects of medical equipment acquisition",
+    "button": "Read in Telegram",
+    "skip": "Skip",
+    "features": {
+      "instant": "Instant responses",
+      "expert": "Expert consultation",
+      "free": "Free"
+    }
   }
 }

@@ -353,7 +353,6 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
       {/* Telegram Popup */}
       {showTelegramPopup && (
         <TelegramPopup 
-          language={language} 
           onClose={handleTelegramPopupClose}
         />
       )}

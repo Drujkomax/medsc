@@ -240,5 +240,36 @@
     "loginError": "Kirish xatosi",
     "loginSuccess": "Muvaffaqiyatli kirildi",
     "generalError": "Kirish jarayonida xatolik yuz berdi"
+  },
+  "leadForm": {
+    "title": "Maslahat olish",
+    "subtitle": "Hisoblashdan ishga tushirishgacha — 14 kun",
+    "description": "To'liq tsikl: KP → yetkazish → o'rnatish → o'qitish",
+    "name": "Ismingiz",
+    "phone": "Telefon",
+    "equipmentType": "Asbob-uskuna turi",
+    "submit": "Ariza jo'natish",
+    "trust1": "Bir soat ichida javob",
+    "trust2": "Sog'liqni saqlash vazirligi litsenziyasi",
+    "equipmentTypes": {
+      "ultrasound": "Ultratovush asboblari",
+      "xray": "Rentgen asboblari",
+      "mri": "MRI asboblari",
+      "ct": "KT asboblari",
+      "lab": "Laboratoriya asboblari",
+      "other": "Boshqa"
+    }
+  },
+  "telegram": {
+    "title": "Arizangiz uchun rahmat!",
+    "subtitle": "Maqolamizni o'qishni tavsiya qilamiz",
+    "description": "Tibbiy asbob-uskunalarni sotib olishning moliyaviy jihatlarini batafsil tahlili",
+    "button": "Telegramda o'qish",
+    "skip": "O'tkazib yuborish",
+    "features": {
+      "instant": "Zudlik bilan javoblar",
+      "expert": "Ekspert maslahati",
+      "free": "Bepul"
+    }
   }
 }

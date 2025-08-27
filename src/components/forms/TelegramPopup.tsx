@@ -1,41 +1,14 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { X, ExternalLink, MessageCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface TelegramPopupProps {
-  language: 'ru' | 'en' | 'uz';
   onClose: () => void;
 }
 
-const TelegramPopup: React.FC<TelegramPopupProps> = ({ language, onClose }) => {
-  const content = {
-    ru: {
-      title: 'Спасибо за заявку!',
-      subtitle: 'Рекомендуем прочитать нашу статью',
-      articleTitle: 'Покупать или арендовывать оборудование?',
-      description: 'Подробный анализ финансовых аспектов приобретения медицинского оборудования',
-      buttonText: 'Читать в Telegram',
-      skipText: 'Пропустить'
-    },
-    en: {
-      title: 'Thank you for your request!',
-      subtitle: 'We recommend reading our article',
-      articleTitle: 'Buy or rent equipment?',
-      description: 'Detailed analysis of financial aspects of medical equipment acquisition',
-      buttonText: 'Read in Telegram',
-      skipText: 'Skip'
-    },
-    uz: {
-      title: 'Arizangiz uchun rahmat!',
-      subtitle: 'Maqolamizni o\'qishni tavsiya qilamiz',
-      articleTitle: 'Uskunani sotib olish yoki ijaraga olish?',
-      description: 'Tibbiy asbob-uskunalarni sotib olishning moliyaviy jihatlarini batafsil tahlili',
-      buttonText: 'Telegramda o\'qish',
-      skipText: 'O\'tkazib yuborish'
-    }
-  };
-
-  const t = content[language];
+const TelegramPopup: React.FC<TelegramPopupProps> = ({ onClose }) => {
+  const { t } = useTranslation();
 
   const handleTelegramClick = () => {
     window.open('https://t.me/medservice_centre/7', '_blank');
@@ -59,10 +32,10 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ language, onClose }) => {
               <MessageCircle className="w-8 h-8" />
             </div>
             <h2 className="font-heading text-xl font-bold mb-2">
-              {t.title}
+              {t('telegram.title')}
             </h2>
             <p className="text-blue-100 text-sm">
-              {t.subtitle}
+              {t('telegram.subtitle')}
             </p>
           </div>
         </div>
@@ -71,10 +44,10 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ language, onClose }) => {
         <div className="p-6">
           <div className="text-center mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t.articleTitle}
+              {t('telegram.description')}
             </h3>
             <p className="text-gray-600 text-sm leading-relaxed">
-              {t.description}
+              {t('telegram.description')}
             </p>
           </div>
 
@@ -90,7 +63,7 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ language, onClose }) => {
               </div>
             </div>
             <div className="text-sm text-gray-700 leading-relaxed">
-              📊 {t.articleTitle}
+              📊 {t('telegram.description')}
               <br />
               💡 Экспертный анализ для принятия правильного решения
             </div>
@@ -103,7 +76,7 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ language, onClose }) => {
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-4 text-base transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               <MessageCircle className="w-5 h-5 mr-2" />
-              {t.buttonText}
+              {t('telegram.button')}
               <ExternalLink className="w-4 h-4 ml-2" />
             </Button>
             
@@ -112,7 +85,7 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ language, onClose }) => {
               variant="outline"
               className="w-full py-3 text-gray-600 hover:text-gray-800 border-gray-300"
             >
-              {t.skipText}
+              {t('telegram.skip')}
             </Button>
           </div>
         </div>

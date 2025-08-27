@@ -363,7 +363,6 @@ const Home = ({ language }: HomeProps) => {
       {/* Lead Form Modal */}
       {showConsultationForm && (
         <LeadForm 
-          language={language} 
           onClose={() => setShowConsultationForm(false)} 
         />
       )}

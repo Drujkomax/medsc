@@ -9,20 +9,17 @@ import TelegramPopup from '@/components/forms/TelegramPopup';
 import { useLeads } from '@/hooks/useLeads';
 import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, getFullUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 import { Phone, User, MessageSquare, Send, X, Settings } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+
 interface LeadFormProps {
-  language: 'ru' | 'en' | 'uz';
   onClose?: () => void;
 }
 const LeadForm: React.FC<LeadFormProps> = ({
-  language,
   onClose
 }) => {
-  const {
-    toast
-  } = useToast();
-  const {
-    addLead
-  } = useLeads();
+  const { toast } = useToast();
+  const { addLead } = useLeads();
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -31,66 +28,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [phoneError, setPhoneError] = useState('');
   const [showTelegramPopup, setShowTelegramPopup] = useState(false);
-  const texts = {
-    ru: {
-      title: 'Получить консультацию',
-      subtitle: 'От расчета до запуска — 14 дней',
-      description: 'Полный цикл: КП → поставка → установка → обучение',
-      name: 'Ваше имя',
-      phone: 'Телефон',
-      equipmentType: 'Тип оборудования',
-      submit: 'Отправить заявку',
-      trust1: 'Ответ в течение часа',
-      trust2: 'Лицензия Минздрава РУз',
-      equipmentTypes: {
-        ultrasound: 'УЗИ оборудование',
-        xray: 'Рентген оборудование',
-        mri: 'МРТ оборудование',
-        ct: 'КТ оборудование',
-        lab: 'Лабораторное оборудование',
-        other: 'Другое'
-      }
-    },
-    en: {
-      title: 'Get Consultation',
-      subtitle: 'From calculation to launch — 14 days',
-      description: 'Full cycle: Quote → Supply → Installation → Training',
-      name: 'Your name',
-      phone: 'Phone',
-      equipmentType: 'Equipment type',
-      submit: 'Submit request',
-      trust1: 'Response within an hour',
-      trust2: 'Ministry of Health license',
-      equipmentTypes: {
-        ultrasound: 'Ultrasound equipment',
-        xray: 'X-ray equipment',
-        mri: 'MRI equipment',
-        ct: 'CT equipment',
-        lab: 'Laboratory equipment',
-        other: 'Other'
-      }
-    },
-    uz: {
-      title: 'Maslahat olish',
-      subtitle: 'Hisoblashdan ishga tushirishgacha — 14 kun',
-      description: 'To\'liq tsikl: KP → yetkazish → o\'rnatish → o\'qitish',
-      name: 'Ismingiz',
-      phone: 'Telefon',
-      equipmentType: 'Asbob-uskuna turi',
-      submit: 'Ariza jo\'natish',
-      trust1: 'Bir soat ichida javob',
-      trust2: 'Sog\'liqni saqlash vazirligi litsenziyasi',
-      equipmentTypes: {
-        ultrasound: 'Ultratovush asboblari',
-        xray: 'Rentgen asboblari',
-        mri: 'MRI asboblari',
-        ct: 'KT asboblari',
-        lab: 'Laboratoriya asboblari',
-        other: 'Boshqa'
-      }
-    }
-  };
-  const t = texts[language];
+  const language = i18n.language || 'ru';
   const handleInputChange = (field: string, value: string) => {
     if (field === 'phone') {
       // Format and validate phone number
@@ -134,7 +72,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
       await addLead({
         name: formData.name,
         phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
-        notes: formData.equipmentType ? `Тип оборудования: ${t.equipmentTypes[formData.equipmentType as keyof typeof t.equipmentTypes]}` : undefined,
+        notes: formData.equipmentType ? `Тип оборудования: ${t(`leadForm.equipmentTypes.${formData.equipmentType}`)}` : undefined,
         stage: 'new'
       });
       toast({
@@ -174,14 +112,14 @@ const LeadForm: React.FC<LeadFormProps> = ({
               <X className="w-5 h-5" />
             </button>
             
-            <div className="text-center">
-              <h2 className="font-heading text-lg font-bold mb-1 flex items-center justify-center gap-2">
-                <MessageSquare className="w-5 h-5" />
-                {t.title}
-              </h2>
-              
-              <p className="text-white/80 text-xs">{t.description}</p>
-            </div>
+               <div className="text-center">
+                 <h2 className="font-heading text-lg font-bold mb-1 flex items-center justify-center gap-2">
+                   <MessageSquare className="w-5 h-5" />
+                   {t('leadForm.title')}
+                 </h2>
+                 
+                 <p className="text-white/80 text-xs">{t('leadForm.description')}</p>
+               </div>
           </div>
 
           {/* Trust Elements */}
@@ -201,19 +139,19 @@ const LeadForm: React.FC<LeadFormProps> = ({
             <form onSubmit={handleSubmit} className="space-y-3">
               {/* Name */}
               <div className="space-y-1">
-                <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                  <User className="w-4 h-4" />
-                  {t.name} *
-                </Label>
-                <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10" placeholder={t.name} />
+                 <Label htmlFor="name" className="flex items-center gap-2 text-msc-text font-medium text-sm">
+                   <User className="w-4 h-4" />
+                   {t('leadForm.name')} *
+                 </Label>
+                 <Input id="name" value={formData.name} onChange={e => handleInputChange('name', e.target.value)} required className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 h-10" placeholder={t('leadForm.name')} />
               </div>
 
               {/* Phone */}
               <div className="space-y-1">
-                <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                  <Phone className="w-4 h-4" />
-                  {t.phone} *
-                </Label>
+                 <Label htmlFor="phone" className="flex items-center gap-2 text-msc-text font-medium text-sm">
+                   <Phone className="w-4 h-4" />
+                   {t('leadForm.phone')} *
+                 </Label>
                 <div className="relative">
                   <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
                     <span className="text-base">🇺🇿</span>
@@ -229,18 +167,20 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
               {/* Equipment Type */}
               <div className="space-y-1">
-                <Label className="flex items-center gap-2 text-msc-text font-medium text-sm">
-                  <Settings className="w-4 h-4" />
-                  {t.equipmentType} *
-                </Label>
-                <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
-                  <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-10 transition-all duration-200">
-                    <SelectValue placeholder={t.equipmentType} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(t.equipmentTypes).map(([key, value]) => <SelectItem key={key} value={key}>{value}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                 <Label className="flex items-center gap-2 text-msc-text font-medium text-sm">
+                   <Settings className="w-4 h-4" />
+                   {t('leadForm.equipmentType')} *
+                 </Label>
+                 <Select value={formData.equipmentType} onValueChange={value => handleInputChange('equipmentType', value)} required>
+                   <SelectTrigger className="border-msc-primary/20 focus:border-msc-accent h-10 transition-all duration-200">
+                     <SelectValue placeholder={t('leadForm.equipmentType')} />
+                   </SelectTrigger>
+                   <SelectContent>
+                     {['ultrasound', 'xray', 'mri', 'ct', 'lab', 'other'].map((key) => 
+                       <SelectItem key={key} value={key}>{t(`leadForm.equipmentTypes.${key}`)}</SelectItem>
+                     )}
+                   </SelectContent>
+                 </Select>
               </div>
 
               {/* Submit Button */}
@@ -248,10 +188,10 @@ const LeadForm: React.FC<LeadFormProps> = ({
                 {isSubmitting ? <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     {language === 'ru' ? 'Отправка...' : language === 'en' ? 'Sending...' : 'Jo\'natilmoqda...'}
-                  </div> : <div className="flex items-center gap-2">
-                    <Send className="w-4 h-4" />
-                    {t.submit}
-                  </div>}
+                   </div> : <div className="flex items-center gap-2">
+                     <Send className="w-4 h-4" />
+                     {t('leadForm.submit')}
+                   </div>}
               </Button>
             </form>
           </div>
@@ -261,7 +201,6 @@ const LeadForm: React.FC<LeadFormProps> = ({
       {/* Telegram Popup */}
       {showTelegramPopup && (
         <TelegramPopup 
-          language={language} 
           onClose={handleTelegramPopupClose}
         />
       )}
