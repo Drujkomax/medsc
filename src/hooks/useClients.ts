@@ -14,7 +14,7 @@ export const useClients = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      setClients(data || []);
+      setClients(data as Client[] || []);
     } catch (error) {
       console.error('Error loading clients:', error);
     } finally {
@@ -26,7 +26,7 @@ export const useClients = () => {
     loadClients();
   }, []);
 
-  const addClient = async (clientData: Omit<Client, 'id' | 'createdAt'>) => {
+  const addClient = async (clientData: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { data, error } = await supabase
         .from('clients')
@@ -42,7 +42,7 @@ export const useClients = () => {
         .single();
       
       if (error) throw error;
-      setClients(prev => [...prev, data]);
+      setClients(prev => [...prev, data as Client]);
       return data;
     } catch (error) {
       console.error('Error adding client:', error);
@@ -60,7 +60,7 @@ export const useClients = () => {
           phone: updates.phone,
           company: updates.company,
           notes: updates.notes,
-          last_contact: updates.lastContact
+          last_contact: updates.last_contact
         })
         .eq('id', id)
         .select()
@@ -68,7 +68,7 @@ export const useClients = () => {
       
       if (error) throw error;
       setClients(prev => 
-        prev.map(client => client.id === id ? data : client)
+        prev.map(client => client.id === id ? data as Client : client)
       );
       return data;
     } catch (error) {

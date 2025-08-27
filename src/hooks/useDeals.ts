@@ -14,7 +14,7 @@ export const useDeals = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      setDeals(data || []);
+      setDeals(data as Deal[] || []);
     } catch (error) {
       console.error('Error loading deals:', error);
     } finally {
@@ -26,17 +26,17 @@ export const useDeals = () => {
     loadDeals();
   }, []);
 
-  const addDeal = async (dealData: Omit<Deal, 'id' | 'createdAt'>) => {
+  const addDeal = async (dealData: Omit<Deal, 'id' | 'created_at' | 'updated_at'>) => {
     try {
       const { data, error } = await supabase
         .from('deals')
         .insert([{
           title: dealData.title,
-          client_id: dealData.clientId,
+          client_id: dealData.client_id,
           amount: dealData.amount,
           stage: dealData.stage,
           probability: dealData.probability,
-          close_date: dealData.closeDate,
+          close_date: dealData.close_date,
           notes: dealData.notes,
           created_by: (await supabase.auth.getUser()).data.user?.id
         }])
@@ -44,7 +44,7 @@ export const useDeals = () => {
         .single();
       
       if (error) throw error;
-      setDeals(prev => [...prev, data]);
+      setDeals(prev => [...prev, data as Deal]);
       return data;
     } catch (error) {
       console.error('Error adding deal:', error);
@@ -52,29 +52,44 @@ export const useDeals = () => {
     }
   };
 
-  const updateDeal = (id: string, updates: Partial<Deal>) => {
+  const updateDeal = async (id: string, updates: Partial<Deal>) => {
     try {
-      const updatedDeal = dealStorage.update(id, updates);
-      if (updatedDeal) {
-        setDeals(prev => 
-          prev.map(deal => deal.id === id ? updatedDeal : deal)
-        );
-        return updatedDeal;
-      }
-      return null;
+      const { data, error } = await supabase
+        .from('deals')
+        .update({
+          title: updates.title,
+          client_id: updates.client_id,
+          amount: updates.amount,
+          stage: updates.stage,
+          probability: updates.probability,
+          close_date: updates.close_date,
+          notes: updates.notes
+        })
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      setDeals(prev => 
+        prev.map(deal => deal.id === id ? data as Deal : deal)
+      );
+      return data;
     } catch (error) {
       console.error('Error updating deal:', error);
       throw error;
     }
   };
 
-  const deleteDeal = (id: string) => {
+  const deleteDeal = async (id: string) => {
     try {
-      const success = dealStorage.delete(id);
-      if (success) {
-        setDeals(prev => prev.filter(deal => deal.id !== id));
-      }
-      return success;
+      const { error } = await supabase
+        .from('deals')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
+      setDeals(prev => prev.filter(deal => deal.id !== id));
+      return true;
     } catch (error) {
       console.error('Error deleting deal:', error);
       throw error;
@@ -86,7 +101,7 @@ export const useDeals = () => {
   };
 
   const getDealsByClientId = (clientId: string) => {
-    return deals.filter(deal => deal.clientId === clientId);
+    return deals.filter(deal => deal.client_id === clientId);
   };
 
   return {

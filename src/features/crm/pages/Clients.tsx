@@ -131,9 +131,9 @@ const Clients = () => {
                   <Phone className="w-4 h-4 mr-2 text-muted-foreground" />
                   <span>{client.phone}</span>
                 </div>
-                {client.lastContact && (
+                {client.last_contact && (
                   <div className="text-sm text-muted-foreground">
-                    {t('clients.lastContact')}: {new Date(client.lastContact).toLocaleDateString()}
+                    {t('clients.lastContact')}: {new Date(client.last_contact).toLocaleDateString()}
                   </div>
                 )}
                 <div className="flex space-x-2 pt-2">
