@@ -13,6 +13,7 @@ import AdminKanban from '../pages/AdminKanban';
 import AdminProducts from '../../products/pages/AdminProducts';
 import AddProduct from '../../products/pages/AddProduct';
 import EditProduct from '../../products/pages/EditProduct';
+import ProductPreview from '../../products/pages/ProductPreview';
 import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
 import Employees from '../pages/Employees';
@@ -67,6 +68,7 @@ const AdminWrapper = () => {
         <Route path="products" element={<AdminProducts />} />
         <Route path="products/add" element={<AddProduct />} />
         <Route path="products/edit/:id" element={<EditProduct />} />
+        <Route path="products/preview/:id" element={<ProductPreview />} />
         <Route path="services" element={<AdminServices />} />
         <Route path="contacts" element={<AdminContacts />} />
         <Route path="employees" element={<EmployeeManagement />} />

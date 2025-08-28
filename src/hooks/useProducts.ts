@@ -233,3 +233,41 @@ export const useProduct = (id: string) => {
     refetch: fetchProduct
   };
 };
+
+// Хук для административного доступа к товарам (все статусы)
+export const useAdminProduct = (id: string) => {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error) throw error;
+      setProduct(data as unknown as Product);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Произошла ошибка');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (id) {
+      fetchProduct();
+    }
+  }, [id]);
+
+  return {
+    product,
+    loading,
+    error,
+    refetch: fetchProduct
+  };
+};

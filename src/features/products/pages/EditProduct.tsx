@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
-import { useProducts, useProduct } from '@/hooks/useProducts';
+import { useAdminProducts, useAdminProduct } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ProductImageUpload';
 import { countries } from '@/utils/countries';
@@ -35,8 +35,8 @@ const EditProduct = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { updateProduct } = useProducts();
-  const { product, loading: productLoading, error } = useProduct(id || '');
+  const { updateProduct } = useAdminProducts();
+  const { product, loading: productLoading, error } = useAdminProduct(id || '');
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 

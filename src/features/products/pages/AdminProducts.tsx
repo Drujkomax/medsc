@@ -262,15 +262,22 @@ const AdminProducts = () => {
                       </div>
                     )}
                     
-                      <div className="flex space-x-2 pt-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => navigate(`/product/${product.id}`)}
-                        >
-                          <Eye className="w-4 h-4 mr-1" />
-                          Просмотр
-                        </Button>
+                       <div className="flex space-x-2 pt-2">
+                         <Button 
+                           variant="outline" 
+                           size="sm" 
+                           onClick={() => {
+                             // Для черновиков - предпросмотр, для активных - пользовательский интерфейс
+                             if (product.status === 'draft') {
+                               navigate(`/admin/products/preview/${product.id}`);
+                             } else {
+                               navigate(`/product/${product.id}`);
+                             }
+                           }}
+                         >
+                           <Eye className="w-4 h-4 mr-1" />
+                           {product.status === 'draft' ? 'Предпросмотр' : 'Просмотр'}
+                         </Button>
                         <Button 
                           variant="outline" 
                           size="sm" 
