@@ -51,8 +51,8 @@ const DraftProductCard = ({ product, onDelete, onPublish }: DraftProductCardProp
 
   return (
     <Card className="hover:shadow-md transition-shadow border-l-4 border-l-orange-500">
-      <CardHeader className="pb-4">
-        <div className="aspect-video w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="aspect-[4/5] w-full bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
           {product.images?.cover ? (
             <img 
               src={product.images.cover} 
@@ -61,19 +61,19 @@ const DraftProductCard = ({ product, onDelete, onPublish }: DraftProductCardProp
             />
           ) : (
             <div className="flex flex-col items-center text-gray-400">
-              <Package className="w-12 h-12 mb-2" />
-              <span className="text-sm">Нет изображения</span>
+              <Package className="w-10 h-10 mb-2" />
+              <span className="text-xs">Нет изображения</span>
             </div>
           )}
         </div>
         
         <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Clock className="w-4 h-4 text-orange-500" />
+          <div className="flex-1 min-w-0">
+            <CardTitle className="text-base flex items-center gap-2 line-clamp-2 leading-tight">
+              <Clock className="w-3 h-3 text-orange-500 flex-shrink-0" />
               {product.name.ru || 'Без названия'}
             </CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground mt-1 truncate">
               {product.category ? getCategoryLabel(product.category) : 'Категория не указана'}
             </p>
           </div>
