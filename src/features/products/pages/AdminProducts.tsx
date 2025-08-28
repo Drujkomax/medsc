@@ -14,6 +14,13 @@ import {
 } from 'lucide-react';
 import { useAdminProducts, Product } from '@/hooks/useProducts';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { BulkActions } from '../components/BulkActions';
+import { ProductStats } from '../components/ProductStats';
+import { ExportProducts } from '../components/ExportProducts';
+import { ImportProducts } from '../components/ImportProducts';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const getCategoryLabel = (category: string) => {
   const categoryLabels = {
@@ -33,8 +40,13 @@ const getCategoryLabel = (category: string) => {
 const AdminProducts = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  const { products, loading, error } = useAdminProducts();
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState('grid');
+  const { products, loading, error, deleteProduct, updateProduct } = useAdminProducts();
 
   const getStatusBadge = (status: string) => {
     const variants = {
@@ -56,12 +68,57 @@ const AdminProducts = () => {
     );
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.name.en.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.name.uz.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    getCategoryLabel(product.category).toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter(product => {
+    const matchesSearch = !searchTerm || (
+      product.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.name.en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.name.uz.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getCategoryLabel(product.category).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+    const matchesStatus = !selectedStatus || product.status === selectedStatus;
+    
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+
+  const handleDeleteProduct = async (productId: string) => {
+    if (window.confirm('Вы уверены, что хотите удалить этот товар?')) {
+      try {
+        await deleteProduct(productId);
+        toast({
+          title: 'Успешно!',
+          description: 'Товар удален успешно'
+        });
+      } catch (error) {
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка',
+          description: 'Не удалось удалить товар'
+        });
+      }
+    }
+  };
+
+  const handleBulkAction = async (action: string, productIds: string[]) => {
+    try {
+      if (action === 'delete') {
+        for (const id of productIds) {
+          await deleteProduct(id);
+        }
+      } else if (action === 'activate') {
+        for (const id of productIds) {
+          await updateProduct(id, { status: 'active' });
+        }
+      } else if (action === 'archive') {
+        for (const id of productIds) {
+          await updateProduct(id, { status: 'archived' });
+        }
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
 
   if (loading) {
     return (
@@ -97,47 +154,7 @@ const AdminProducts = () => {
       </div>
 
       {/* Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Package className="w-8 h-8 text-blue-600" />
-              <div>
-                <p className="text-sm text-muted-foreground">Всего товаров</p>
-                <p className="text-2xl font-bold">{products.length}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Package className="w-8 h-8 text-green-600" />
-              <div>
-                <p className="text-sm text-muted-foreground">Активные</p>
-                <p className="text-2xl font-bold">
-                  {products.filter(p => p.status === 'active').length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center space-x-2">
-              <Package className="w-8 h-8 text-gray-600" />
-              <div>
-                <p className="text-sm text-muted-foreground">Черновики</p>
-                <p className="text-2xl font-bold">
-                  {products.filter(p => p.status === 'draft').length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <ProductStats products={products} />
 
       {/* Filters */}
       <Card>
@@ -147,77 +164,143 @@ const AdminProducts = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder={t('products.searchPlaceholder')}
+                  placeholder="Поиск товаров по названию или категории..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
                 />
               </div>
             </div>
+            
+            <div className="flex gap-2">
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Все категории" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все категории</SelectItem>
+                  <SelectItem value="diagnostic">Диагностическое</SelectItem>
+                  <SelectItem value="surgical">Хирургическое</SelectItem>
+                  <SelectItem value="monitoring">Мониторинг</SelectItem>
+                  <SelectItem value="laboratory">Лабораторное</SelectItem>
+                  <SelectItem value="rehabilitation">Реабилитационное</SelectItem>
+                  <SelectItem value="dental">Стоматологическое</SelectItem>
+                  <SelectItem value="ophthalmology">Офтальмологическое</SelectItem>
+                  <SelectItem value="furniture">Медицинская мебель</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="Статус" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Все</SelectItem>
+                  <SelectItem value="active">Активные</SelectItem>
+                  <SelectItem value="draft">Черновики</SelectItem>
+                  <SelectItem value="archived">Архив</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <Card key={product.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-4">
-              <div className="aspect-video w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
-                {product.images?.cover ? (
-                  <img 
-                    src={product.images.cover} 
-                    alt={product.name.ru}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <Package className="w-12 h-12 text-gray-400" />
-                )}
-              </div>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-lg">{product.name.ru}</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">{getCategoryLabel(product.category)}</p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  {getStatusBadge(product.status)}
-                  <Badge variant="outline" className="text-xs">
-                    {getCategoryLabel(product.category)}
-                  </Badge>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {product.description.ru}
-                </p>
-                
-                  <div className="flex space-x-2 pt-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => navigate(`/product/${product.id}`)}
-                    >
-                      <Eye className="w-4 h-4 mr-1" />
-                      {t('common.view')}
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => navigate(`/admin/products/edit/${product.id}`)}
-                    >
-                      <Edit className="w-4 h-4 mr-1" />
-                      {t('common.edit')}
-                    </Button>
+      {/* Products Content */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="grid">Сетка товаров</TabsTrigger>
+          <TabsTrigger value="bulk">Массовые операции</TabsTrigger>
+          <TabsTrigger value="export">Экспорт</TabsTrigger>
+          <TabsTrigger value="import">Импорт</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="grid" className="space-y-6">
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map((product) => (
+              <Card key={product.id} className="hover:shadow-md transition-shadow">
+                <CardHeader className="pb-4">
+                  <div className="aspect-video w-full bg-gray-100 rounded-md mb-4 flex items-center justify-center overflow-hidden">
+                    {product.images?.cover ? (
+                      <img 
+                        src={product.images.cover} 
+                        alt={product.name.ru}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Package className="w-12 h-12 text-gray-400" />
+                    )}
                   </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="text-lg">{product.name.ru}</CardTitle>
+                      <p className="text-sm text-muted-foreground mt-1">{getCategoryLabel(product.category)}</p>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      {getStatusBadge(product.status)}
+                      <Badge variant="outline" className="text-xs">
+                        {getCategoryLabel(product.category)}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {product.description.ru}
+                    </p>
+                    
+                      <div className="flex space-x-2 pt-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => navigate(`/product/${product.id}`)}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          Просмотр
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Изменить
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleDeleteProduct(product.id)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Удалить
+                        </Button>
+                      </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="bulk" className="space-y-6">
+          <BulkActions
+            products={filteredProducts}
+            selectedProducts={selectedProducts}
+            onSelectionChange={setSelectedProducts}
+            onBulkAction={handleBulkAction}
+          />
+        </TabsContent>
+
+        <TabsContent value="export" className="space-y-6">
+          <ExportProducts products={filteredProducts} />
+        </TabsContent>
+
+        <TabsContent value="import" className="space-y-6">
+          <ImportProducts />
+        </TabsContent>
+      </Tabs>
 
       {filteredProducts.length === 0 && (
         <Card>

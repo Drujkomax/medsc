@@ -136,14 +136,47 @@ export const useAdminProducts = () => {
     }
   };
 
+  const deleteProduct = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await fetchProducts(); // Refresh the list
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'Ошибка при удалении товара');
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const updateProduct = async (id: string, productData: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>) => {
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .update(productData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      await fetchProducts(); // Refresh the list
+      return data;
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'Ошибка при обновлении товара');
+    }
+  };
 
   return {
     products,
     loading,
     error,
+    deleteProduct,
+    updateProduct,
     refetch: fetchProducts
   };
 };
