@@ -18,7 +18,8 @@ import { countries } from '@/utils/countries';
 
 const currencyOptions = [
   { value: 'USD', label: 'USD ($)' },
-  { value: 'EUR', label: 'EUR (€)' }
+  { value: 'EUR', label: 'EUR (€)' },
+  { value: 'UZS', label: 'UZS (сум)' }
 ];
 
 const statusOptions = [
@@ -42,7 +43,7 @@ const AddProduct = () => {
     category: '',
     country: '',
     price: '',
-    currency: 'USD' as 'USD' | 'EUR',
+    currency: 'USD' as 'USD' | 'EUR' | 'UZS',
     status: 'draft',
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
@@ -380,25 +381,47 @@ const AddProduct = () => {
                   </Select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-4">
                   <div>
-                    <Label htmlFor="price">Цена</Label>
-                    <Input
-                      id="price"
-                      type="text"
-                      value={formData.price}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        price: e.target.value
-                      }))}
-                      placeholder="Например: 24.000-88.000 или 5000"
-                    />
+                    <div className="flex items-center space-x-2 mb-2">
+                      <input
+                        type="checkbox"
+                        id="priceOnRequest"
+                        checked={formData.price === 'on_request'}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setFormData(prev => ({...prev, price: 'on_request'}));
+                          } else {
+                            setFormData(prev => ({...prev, price: ''}));
+                          }
+                        }}
+                        className="w-4 h-4"
+                      />
+                      <Label htmlFor="priceOnRequest">Цена по запросу</Label>
+                    </div>
+                    
+                    {formData.price !== 'on_request' && (
+                      <div>
+                        <Label htmlFor="price">Цена</Label>
+                        <Input
+                          id="price"
+                          type="text"
+                          value={formData.price}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            price: e.target.value
+                          }))}
+                          placeholder="Например: 24.000-88.000 или 5000"
+                        />
+                      </div>
+                    )}
                   </div>
+                  
                   <div>
                     <Label htmlFor="currency">Валюта</Label>
                     <Select 
                       value={formData.currency} 
-                      onValueChange={(value: 'USD' | 'EUR') => setFormData(prev => ({
+                      onValueChange={(value: 'USD' | 'EUR' | 'UZS') => setFormData(prev => ({
                         ...prev,
                         currency: value
                       }))}

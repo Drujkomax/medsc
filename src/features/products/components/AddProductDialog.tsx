@@ -37,7 +37,9 @@ export const AddProductDialog = () => {
     country: '',
     images: { cover: null as string | null, gallery: [null, null] as (string | null)[] },
     features: { ru: [''], en: [''], uz: [''] },
-    status: 'active' as 'active' | 'draft' | 'archived'
+    status: 'active' as 'active' | 'draft' | 'archived',
+    price: '',
+    currency: 'USD' as 'USD' | 'EUR' | 'UZS'
   });
 
   const resetForm = () => {
@@ -48,7 +50,9 @@ export const AddProductDialog = () => {
       country: '',
       images: { cover: null, gallery: [null, null] },
       features: { ru: [''], en: [''], uz: [''] },
-      status: 'active' as 'active' | 'draft' | 'archived'
+      status: 'active' as 'active' | 'draft' | 'archived',
+      price: '',
+      currency: 'USD' as 'USD' | 'EUR' | 'UZS'
     });
   };
 
@@ -73,8 +77,8 @@ export const AddProductDialog = () => {
 
       await addProduct({
         ...formData,
-        price: '',
-        currency: 'USD',
+        price: formData.price || null,
+        currency: formData.currency,
         images: cleanImages,
         features: cleanFeatures
       });
@@ -351,6 +355,62 @@ export const AddProductDialog = () => {
                   </Button>
                 </div>
               ))}
+            </CardContent>
+          </Card>
+
+          {/* Price */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Цена</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <div className="flex items-center space-x-2 mb-2">
+                  <input
+                    type="checkbox"
+                    id="priceOnRequest"
+                    checked={formData.price === 'on_request'}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setFormData(prev => ({...prev, price: 'on_request'}));
+                      } else {
+                        setFormData(prev => ({...prev, price: ''}));
+                      }
+                    }}
+                    className="w-4 h-4"
+                  />
+                  <Label htmlFor="priceOnRequest">Цена по запросу</Label>
+                </div>
+                
+                {formData.price !== 'on_request' && (
+                  <div>
+                    <Label htmlFor="price">Цена</Label>
+                    <Input
+                      id="price"
+                      value={formData.price || ''}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        price: e.target.value
+                      }))}
+                      placeholder="Введите цену"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <Label htmlFor="currency">Валюта</Label>
+                <Select value={formData.currency} onValueChange={(value: 'USD' | 'EUR' | 'UZS') => setFormData(prev => ({...prev, currency: value}))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Выберите валюту" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD - Доллар США</SelectItem>
+                    <SelectItem value="EUR">EUR - Евро</SelectItem>
+                    <SelectItem value="UZS">UZS - Узбекский сум</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardContent>
           </Card>
 

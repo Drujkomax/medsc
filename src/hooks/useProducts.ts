@@ -16,7 +16,7 @@ export interface Product {
   category: string;
   country: string | null;
   price: string | null;
-  currency: 'USD' | 'EUR';
+  currency: 'USD' | 'EUR' | 'UZS';
   images: {
     cover: string | null;
     gallery: string[];
