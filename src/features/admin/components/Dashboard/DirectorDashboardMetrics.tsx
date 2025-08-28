@@ -8,6 +8,7 @@ import { useDeals } from '@/hooks/useDeals';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   TrendingUp, 
   DollarSign, 
@@ -25,6 +26,7 @@ const DirectorDashboardMetrics = () => {
   const { deals } = useDeals();
   const { hasPermission } = useUserPermissions();
   const { user } = useAuth();
+  const [salesManagersData, setSalesManagersData] = useState<any[]>([]);
 
   // Only show for directors
   if (!hasPermission('view_analytics')) {
@@ -56,12 +58,87 @@ const DirectorDashboardMetrics = () => {
   const pipelineValue = [...qualifiedDeals, ...proposalDeals, ...negotiationDeals]
     .reduce((sum, deal) => sum + (deal.amount || 0), 0);
 
-  // Sales team performance (mock data for now)
-  const teamMetrics = [
-    { name: 'Иван Петров', deals: 12, value: 850000, conversion: 85 },
-    { name: 'Мария Сидорова', deals: 8, value: 620000, conversion: 75 },
-    { name: 'Алексей Козлов', deals: 15, value: 1200000, conversion: 90 },
-  ];
+  // Fetch sales managers performance data
+  useEffect(() => {
+    const fetchSalesManagersData = async () => {
+      try {
+        // Get all sales managers
+        const { data: salesManagers, error: managersError } = await supabase
+          .from('user_roles')
+          .select(`
+            user_id,
+            role
+          `)
+          .eq('role', 'sales_manager');
+
+        if (managersError) {
+          console.error('Error fetching sales managers:', managersError);
+          return;
+        }
+
+        if (!salesManagers || salesManagers.length === 0) {
+          setSalesManagersData([]);
+          return;
+        }
+
+        // Get auth users info for these managers
+        const managerIds = salesManagers.map(sm => sm.user_id);
+        
+        // Get deals created by these managers
+        const { data: managerDeals, error: dealsError } = await supabase
+          .from('deals')
+          .select('*')
+          .in('created_by', managerIds);
+
+        if (dealsError) {
+          console.error('Error fetching manager deals:', dealsError);
+          return;
+        }
+
+        // Get leads assigned to these managers
+        const { data: managerLeads, error: leadsError } = await supabase
+          .from('leads')
+          .select('*')
+          .in('assigned_to', managerIds);
+
+        if (leadsError) {
+          console.error('Error fetching manager leads:', leadsError);
+          return;
+        }
+
+        // Calculate performance for each manager
+        const managersPerformance = await Promise.all(
+          salesManagers.map(async (manager) => {
+            // Get user info from auth
+            const { data: authUser } = await supabase.auth.admin.getUserById(manager.user_id);
+            
+            const userDeals = managerDeals?.filter(deal => deal.created_by === manager.user_id) || [];
+            const userLeads = managerLeads?.filter(lead => lead.assigned_to === manager.user_id) || [];
+            const closedDeals = userDeals.filter(deal => deal.stage === 'closed');
+            
+            const totalValue = closedDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+            const conversionRate = userLeads.length > 0 ? (closedDeals.length / userLeads.length) * 100 : 0;
+
+            return {
+              name: authUser?.user?.email?.split('@')[0] || 'Менеджер',
+              deals: closedDeals.length,
+              value: totalValue,
+              conversion: Math.round(conversionRate)
+            };
+          })
+        );
+
+        setSalesManagersData(managersPerformance);
+      } catch (error) {
+        console.error('Error in fetchSalesManagersData:', error);
+        setSalesManagersData([]);
+      }
+    };
+
+    if (hasPermission('view_analytics')) {
+      fetchSalesManagersData();
+    }
+  }, [hasPermission]);
 
   return (
     <div className="space-y-6">
@@ -159,7 +236,12 @@ const DirectorDashboardMetrics = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {teamMetrics.map((member, index) => (
+            {salesManagersData.length === 0 ? (
+              <div className="text-center text-muted-foreground py-8">
+                {t('director.noSalesManagers', 'Нет данных о менеджерах продаж')}
+              </div>
+            ) : (
+              salesManagersData.map((member, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <Award className="h-4 w-4 text-muted-foreground" />
@@ -178,7 +260,8 @@ const DirectorDashboardMetrics = () => {
                   </div>
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
