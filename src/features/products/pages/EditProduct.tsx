@@ -58,7 +58,7 @@ const EditProduct = () => {
         description: product.description,
         category: product.category,
         country: product.country || '',
-        price: product.price ? product.price.toString() : '',
+        price: product.price || '',
         status: product.status,
         features: product.features || { ru: [''], en: [''], uz: [''] },
         images: product.images || { cover: null, gallery: [] }
@@ -110,7 +110,7 @@ const EditProduct = () => {
         description: formData.description,
         category: formData.category,
         country: formData.country,
-        price: formData.price ? parseFloat(formData.price) : null,
+        price: formData.price || null,
         status: formData.status as 'active' | 'draft' | 'archived',
         features: formData.features,
         images: formData.images
@@ -404,18 +404,16 @@ const EditProduct = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="price">Цена (USD)</Label>
+                  <Label htmlFor="price">Цена</Label>
                   <Input
                     id="price"
-                    type="number"
-                    min="0"
-                    step="0.01"
+                    type="text"
                     value={formData.price}
                     onChange={(e) => setFormData(prev => ({
                       ...prev,
                       price: e.target.value
                     }))}
-                    placeholder="0.00"
+                    placeholder="Например: 24.000-88.000 EURO или 5000 USD"
                   />
                 </div>
 

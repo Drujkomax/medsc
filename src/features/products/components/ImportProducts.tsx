@@ -121,7 +121,7 @@ export const ImportProducts = () => {
       },
       category: data['Категория'] || '',
       country: data['Страна'] || null,
-      price: data['Цена'] ? parseFloat(data['Цена']) : null,
+      price: data['Цена'] || null,
       status: (data['Статус'] as 'active' | 'draft' | 'archived') || 'draft',
       features: {
         ru: data['Характеристики (RU)'] ? data['Характеристики (RU)'].split(';').map((f: string) => f.trim()).filter(Boolean) : [],
