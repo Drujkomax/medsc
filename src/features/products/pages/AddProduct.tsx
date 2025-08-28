@@ -43,6 +43,7 @@ const AddProduct = () => {
     description: { ru: '', en: '', uz: '' },
     category: '',
     country: '',
+    price: '',
     status: 'draft',
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
@@ -68,6 +69,7 @@ const AddProduct = () => {
         description: formData.description,
         category: formData.category,
         country: formData.country,
+        price: formData.price ? parseFloat(formData.price) : null,
         status: formData.status as 'active' | 'draft' | 'archived',
         features: formData.features,
         images: formData.images
@@ -358,6 +360,22 @@ const AddProduct = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="price">Цена (USD)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      price: e.target.value
+                    }))}
+                    placeholder="0.00"
+                  />
                 </div>
 
                 <div>

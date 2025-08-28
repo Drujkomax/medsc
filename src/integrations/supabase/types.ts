@@ -207,6 +207,7 @@ export type Database = {
           images: Json | null
           in_stock: boolean
           name: Json
+          price: number | null
           status: string
           updated_at: string
           updated_by: string | null
@@ -222,6 +223,7 @@ export type Database = {
           images?: Json | null
           in_stock?: boolean
           name: Json
+          price?: number | null
           status?: string
           updated_at?: string
           updated_by?: string | null
@@ -237,6 +239,7 @@ export type Database = {
           images?: Json | null
           in_stock?: boolean
           name?: Json
+          price?: number | null
           status?: string
           updated_at?: string
           updated_by?: string | null

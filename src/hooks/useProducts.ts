@@ -15,6 +15,7 @@ export interface Product {
   };
   category: string;
   country: string | null;
+  price: number | null;
   images: {
     cover: string | null;
     gallery: string[];

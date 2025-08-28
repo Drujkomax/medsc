@@ -121,6 +121,7 @@ export const ImportProducts = () => {
       },
       category: data['Категория'] || '',
       country: data['Страна'] || null,
+      price: data['Цена'] ? parseFloat(data['Цена']) : null,
       status: (data['Статус'] as 'active' | 'draft' | 'archived') || 'draft',
       features: {
         ru: data['Характеристики (RU)'] ? data['Характеристики (RU)'].split(';').map((f: string) => f.trim()).filter(Boolean) : [],
@@ -226,8 +227,9 @@ export const ImportProducts = () => {
   };
 
   const downloadTemplate = () => {
-    const templateData = `"ID","Название (RU)","Название (EN)","Название (UZ)","Описание (RU)","Описание (EN)","Описание (UZ)","Категория","Страна","Статус","Характеристики (RU)","Характеристики (EN)","Характеристики (UZ)","Обложка","Галерея","Дата создания","Дата обновления"
-"","Аппарат УЗИ","Ultrasound Machine","Ultratovush apparati","Современный аппарат УЗИ","Modern ultrasound machine","Zamonaviy ultratovush apparati","diagnostic","","active","Высокое разрешение; Портативный","High resolution; Portable","Yuqori aniqlik; Portativ","","","",""`; 
+    const templateData = `"Название (RU)","Название (EN)","Название (UZ)","Описание (RU)","Описание (EN)","Описание (UZ)","Категория","Страна","Цена","Статус","Характеристики (RU)","Характеристики (EN)","Характеристики (UZ)","Обложка","Галерея"
+"Аппарат УЗИ","Ultrasound Machine","Ultratovush apparati","Современный аппарат УЗИ","Modern ultrasound machine","Zamonaviy ultratovush apparati","diagnostic","US","1500.00","active","Высокое разрешение; Портативный","High resolution; Portable","Yuqori aniqlik; Portativ","",""
+"Хирургический аппарат","Surgical Machine","Jarrohlik apparati","Высокоточный хирургический аппарат","High precision surgical machine","Yuqori aniqlikdagi jarrohlik apparati","surgical","DE","2500.50","active","Точность; Надежность","Precision; Reliability","Aniqlik; Ishonchlilik","",""`;  
 
     const blob = new Blob([templateData], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);

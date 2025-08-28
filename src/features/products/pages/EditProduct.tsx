@@ -12,6 +12,7 @@ import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { useProducts, useProduct } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ProductImageUpload';
+import { countries } from '@/utils/countries';
 
 const categories = [
   { value: 'diagnostic', label: 'Диагностическое оборудование' },
@@ -43,6 +44,8 @@ const EditProduct = () => {
     name: { ru: '', en: '', uz: '' },
     description: { ru: '', en: '', uz: '' },
     category: '',
+    country: '',
+    price: '',
     status: 'draft',
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
@@ -54,6 +57,8 @@ const EditProduct = () => {
         name: product.name,
         description: product.description,
         category: product.category,
+        country: product.country || '',
+        price: product.price ? product.price.toString() : '',
         status: product.status,
         features: product.features || { ru: [''], en: [''], uz: [''] },
         images: product.images || { cover: null, gallery: [] }
@@ -104,6 +109,8 @@ const EditProduct = () => {
         name: formData.name,
         description: formData.description,
         category: formData.category,
+        country: formData.country,
+        price: formData.price ? parseFloat(formData.price) : null,
         status: formData.status as 'active' | 'draft' | 'archived',
         features: formData.features,
         images: formData.images
@@ -369,6 +376,47 @@ const EditProduct = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="country">Страна-производитель</Label>
+                  <Select 
+                    value={formData.country} 
+                    onValueChange={(value) => setFormData(prev => ({
+                      ...prev,
+                      country: value
+                    }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Выберите страну" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map(country => (
+                        <SelectItem key={country.code} value={country.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>{country.name.ru}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="price">Цена (USD)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      price: e.target.value
+                    }))}
+                    placeholder="0.00"
+                  />
                 </div>
 
                 <div>

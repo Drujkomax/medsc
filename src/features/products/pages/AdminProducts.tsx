@@ -251,6 +251,15 @@ const AdminProducts = () => {
                       {product.description.ru}
                     </p>
                     
+                    {product.price && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="text-lg font-semibold text-primary">
+                          ${product.price.toLocaleString()}
+                        </span>
+                        <span className="text-sm text-muted-foreground">USD</span>
+                      </div>
+                    )}
+                    
                       <div className="flex space-x-2 pt-2">
                         <Button 
                           variant="outline" 
