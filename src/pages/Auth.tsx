@@ -45,8 +45,8 @@ const AuthPage = () => {
           title: 'Успешно',
           description: 'Вход выполнен успешно',
         });
-        // Перенаправляем в админскую панель
-        navigate('/admin');
+        // Перенаправляем на главную страницу
+        navigate('/');
       }
     } catch (err) {
       const errorMessage = 'Произошла ошибка при входе';

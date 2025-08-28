@@ -22,12 +22,12 @@ const RequireAuth = ({ children, requiredRole = 'user' }: RequireAuthProps) => {
       }
 
       if (!user) {
-        navigate('/admin', { replace: true });
+        navigate('/', { replace: true });
         return;
       }
 
       if (requiredRole === 'admin' && role !== 'admin') {
-        navigate('/admin', { replace: true });
+        navigate('/', { replace: true });
         return;
       }
     }

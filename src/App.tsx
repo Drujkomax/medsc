@@ -17,8 +17,6 @@ import RegisterWithInvite from "./pages/RegisterWithInvite";
 import CreateFirstDirector from "./pages/CreateFirstDirector";
 import DirectorRegistration from "./pages/DirectorRegistration";
 
-// Admin Components
-import AdminWrapper from "./features/admin/components/AdminWrapper";
 
 
 const queryClient = new QueryClient();
@@ -36,8 +34,6 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Admin Routes - Standalone Layout */}
-                    <Route path="/admin/*" element={<AdminWrapper />} />
 
             {/* Public Routes - With Header/Footer */}
             <Route path="/*" element={

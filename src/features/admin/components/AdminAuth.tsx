@@ -42,7 +42,7 @@ const AdminAuth = () => {
           title: t('common.success'),
           description: t('auth.loginSuccess'),
         });
-        navigate('/admin');
+        navigate('/');
       }
     } catch (err) {
       const errorMessage = t('auth.generalError');
