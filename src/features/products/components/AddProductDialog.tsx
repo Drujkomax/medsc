@@ -74,6 +74,7 @@ export const AddProductDialog = () => {
       await addProduct({
         ...formData,
         price: '',
+        currency: 'USD',
         images: cleanImages,
         features: cleanFeatures
       });

@@ -8,21 +8,17 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { ArrowLeft, Save, Loader2, Plus } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ProductImageUpload';
+import { CategoryDialog } from '@/components/common/CategoryDialog';
+import { useCategories } from '@/hooks/useCategories';
 import { countries } from '@/utils/countries';
 
-const categories = [
-  { value: 'diagnostic', label: 'Диагностическое оборудование' },
-  { value: 'surgical', label: 'Хирургическое оборудование' },
-  { value: 'monitoring', label: 'Мониторинг' },
-  { value: 'laboratory', label: 'Лабораторное оборудование' },
-  { value: 'rehabilitation', label: 'Реабилитационное оборудование' },
-  { value: 'dental', label: 'Стоматологическое оборудование' },
-  { value: 'ophthalmology', label: 'Офтальмологическое оборудование' },
-  { value: 'furniture', label: 'Медицинская мебель' }
+const currencyOptions = [
+  { value: 'USD', label: 'USD ($)' },
+  { value: 'EUR', label: 'EUR (€)' }
 ];
 
 const statusOptions = [
@@ -35,8 +31,10 @@ const AddProduct = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { addProduct } = useProducts();
+  const { categories } = useCategories();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     name: { ru: '', en: '', uz: '' },
@@ -44,6 +42,7 @@ const AddProduct = () => {
     category: '',
     country: '',
     price: '',
+    currency: 'USD' as 'USD' | 'EUR',
     status: 'draft',
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
@@ -70,6 +69,7 @@ const AddProduct = () => {
         category: formData.category,
         country: formData.country,
         price: formData.price || null,
+        currency: formData.currency,
         status: formData.status as 'active' | 'draft' | 'archived',
         features: formData.features,
         images: formData.images
@@ -119,6 +119,13 @@ const AddProduct = () => {
         ...prev.features,
         [lang]: prev.features[lang].filter((_, i) => i !== index)
       }
+    }));
+  };
+
+  const handleCategoryAdded = (categoryValue: string) => {
+    setFormData(prev => ({
+      ...prev,
+      category: categoryValue
     }));
   };
 
@@ -316,7 +323,18 @@ const AddProduct = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="category">Категория *</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="category">Категория *</Label>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setCategoryDialogOpen(true)}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Новая категория
+                    </Button>
+                  </div>
                   <Select 
                     value={formData.category} 
                     onValueChange={(value) => setFormData(prev => ({
@@ -330,7 +348,7 @@ const AddProduct = () => {
                     <SelectContent>
                       {categories.map((category) => (
                         <SelectItem key={category.value} value={category.value}>
-                          {category.label}
+                          {category.name.ru}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -362,18 +380,41 @@ const AddProduct = () => {
                   </Select>
                 </div>
 
-                <div>
-                  <Label htmlFor="price">Цена</Label>
-                  <Input
-                    id="price"
-                    type="text"
-                    value={formData.price}
-                    onChange={(e) => setFormData(prev => ({
-                      ...prev,
-                      price: e.target.value
-                    }))}
-                    placeholder="Например: 24.000-88.000 EURO или 5000 USD"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="price">Цена</Label>
+                    <Input
+                      id="price"
+                      type="text"
+                      value={formData.price}
+                      onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        price: e.target.value
+                      }))}
+                      placeholder="Например: 24.000-88.000 или 5000"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="currency">Валюта</Label>
+                    <Select 
+                      value={formData.currency} 
+                      onValueChange={(value: 'USD' | 'EUR') => setFormData(prev => ({
+                        ...prev,
+                        currency: value
+                      }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currencyOptions.map((currency) => (
+                          <SelectItem key={currency.value} value={currency.value}>
+                            {currency.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 <div>
@@ -403,6 +444,12 @@ const AddProduct = () => {
           </div>
         </div>
       </form>
+
+      <CategoryDialog
+        open={categoryDialogOpen}
+        onOpenChange={setCategoryDialogOpen}
+        onCategoryAdded={handleCategoryAdded}
+      />
     </div>
   );
 };

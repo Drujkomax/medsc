@@ -195,12 +195,40 @@ export type Database = {
         }
         Relationships: []
       }
+      product_categories: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: Json
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: Json
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: Json
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           category: string
           country: string | null
           created_at: string
           created_by: string | null
+          currency: string | null
           description: Json
           features: Json | null
           id: string
@@ -217,6 +245,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           created_by?: string | null
+          currency?: string | null
           description: Json
           features?: Json | null
           id?: string
@@ -233,6 +262,7 @@ export type Database = {
           country?: string | null
           created_at?: string
           created_by?: string | null
+          currency?: string | null
           description?: Json
           features?: Json | null
           id?: string
