@@ -239,9 +239,11 @@ export type Database = {
           in_stock: boolean
           name: Json
           price: string | null
+          quote_requests_count: number | null
           status: string
           updated_at: string
           updated_by: string | null
+          views_count: number | null
         }
         Insert: {
           archived?: boolean | null
@@ -259,9 +261,11 @@ export type Database = {
           in_stock?: boolean
           name: Json
           price?: string | null
+          quote_requests_count?: number | null
           status?: string
           updated_at?: string
           updated_by?: string | null
+          views_count?: number | null
         }
         Update: {
           archived?: boolean | null
@@ -279,9 +283,11 @@ export type Database = {
           in_stock?: boolean
           name?: Json
           price?: string | null
+          quote_requests_count?: number | null
           status?: string
           updated_at?: string
           updated_by?: string | null
+          views_count?: number | null
         }
         Relationships: []
       }
@@ -490,6 +496,14 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_product_quote_requests: {
+        Args: { product_id: string }
+        Returns: undefined
+      }
+      increment_product_views: {
+        Args: { product_id: string }
+        Returns: undefined
       }
       register_specific_director: {
         Args: { director_email: string; user_id: string }
