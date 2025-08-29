@@ -10,7 +10,8 @@ import {
   Eye,
   Package,
   Loader2,
-  MoreHorizontal
+  MoreHorizontal,
+  FileText
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -167,7 +168,7 @@ const AdminProducts = () => {
                     {activeProducts.map((product) => (
                       <Card key={product.id} className="hover:shadow-md transition-shadow flex flex-col h-full">
                         <CardHeader className="pb-3">
-                          <div className="aspect-[4/5] w-full bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
+                          <div className="aspect-[4/5] w-full bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden relative">
                             {product.images?.cover ? (
                               <img 
                                 src={product.images.cover} 
@@ -177,14 +178,28 @@ const AdminProducts = () => {
                             ) : (
                               <Package className="w-10 h-10 text-gray-400" />
                             )}
+                            
+                            {/* Счетчики просмотров и запросов КП */}
+                            <div className="absolute top-2 left-2 flex flex-col gap-1">
+                              <div className="bg-background/90 backdrop-blur-sm rounded-md px-2 py-1 flex items-center gap-1 text-xs shadow-sm border">
+                                <Eye className="w-3 h-3 text-muted-foreground" />
+                                <span className="font-medium text-foreground">{product.views_count || 0}</span>
+                              </div>
+                              <div className="bg-background/90 backdrop-blur-sm rounded-md px-2 py-1 flex items-center gap-1 text-xs shadow-sm border">
+                                <FileText className="w-3 h-3 text-muted-foreground" />
+                                <span className="font-medium text-foreground">{product.quote_requests_count || 0}</span>
+                              </div>
+                            </div>
+                            
+                            {/* Статус товара */}
+                            <div className="absolute top-2 right-2">
+                              {getStatusBadge(product.status)}
+                            </div>
                           </div>
                           <div className="flex items-start justify-between">
                             <div className="flex-1 min-w-0">
                               <CardTitle className="text-base line-clamp-2 leading-tight">{product.name.ru}</CardTitle>
                               <p className="text-xs text-muted-foreground mt-1 truncate">{getCategoryLabel(product.category)}</p>
-                            </div>
-                            <div className="flex flex-col gap-1 ml-2">
-                              {getStatusBadge(product.status)}
                             </div>
                           </div>
                         </CardHeader>
