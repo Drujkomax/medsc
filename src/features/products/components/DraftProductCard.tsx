@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Edit2, 
   Eye, 
-  Trash2, 
+  Archive, 
   Package, 
   AlertCircle,
   Clock,
@@ -15,7 +15,7 @@ import { Product } from '@/hooks/useProducts';
 
 interface DraftProductCardProps {
   product: Product;
-  onDelete: (productId: string) => void;
+  onArchive: (productId: string) => void;
   onPublish: (productId: string) => void;
 }
 
@@ -34,7 +34,7 @@ const getCategoryLabel = (category: string) => {
   return categoryLabels[category as keyof typeof categoryLabels] || category;
 };
 
-const DraftProductCard = ({ product, onDelete, onPublish }: DraftProductCardProps) => {
+const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardProps) => {
   const navigate = useNavigate();
 
   // Проверяем готовность к публикации
@@ -166,15 +166,15 @@ const DraftProductCard = ({ product, onDelete, onPublish }: DraftProductCardProp
                 Опубликовать
               </Button>
             )}
-            <Button 
-              variant="destructive" 
-              size="sm"
-              onClick={() => onDelete(product.id)}
-              className={isReadyToPublish ? "flex-1" : "w-full"}
-            >
-              <Trash2 className="w-4 h-4 mr-1" />
-              Удалить
-            </Button>
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={() => onArchive(product.id)}
+                className={isReadyToPublish ? "flex-1" : "w-full"}
+              >
+                <Archive className="w-4 h-4 mr-1" />
+                Архивировать
+              </Button>
           </div>
         </div>
       </CardContent>

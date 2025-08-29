@@ -224,6 +224,9 @@ export type Database = {
       }
       products: {
         Row: {
+          archived: boolean | null
+          archived_at: string | null
+          archived_by: string | null
           category: string
           country: string | null
           created_at: string
@@ -241,6 +244,9 @@ export type Database = {
           updated_by: string | null
         }
         Insert: {
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
           category: string
           country?: string | null
           created_at?: string
@@ -258,6 +264,9 @@ export type Database = {
           updated_by?: string | null
         }
         Update: {
+          archived?: boolean | null
+          archived_at?: string | null
+          archived_by?: string | null
           category?: string
           country?: string | null
           created_at?: string
@@ -439,6 +448,10 @@ export type Database = {
         Args: { lead_id: string; user_id: string }
         Returns: undefined
       }
+      archive_product: {
+        Args: { product_id: string; user_id: string }
+        Returns: undefined
+      }
       create_first_director: {
         Args: { director_email: string }
         Returns: Json
@@ -481,6 +494,10 @@ export type Database = {
       register_specific_director: {
         Args: { director_email: string; user_id: string }
         Returns: Json
+      }
+      unarchive_product: {
+        Args: { product_id: string }
+        Returns: undefined
       }
     }
     Enums: {

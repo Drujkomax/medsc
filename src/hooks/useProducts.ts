@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 export interface Product {
   id: string;
@@ -26,7 +27,10 @@ export interface Product {
     en: string[];
     uz: string[];
   } | null;
-  status: 'active' | 'draft' | 'archived';
+  status: 'active' | 'draft';
+  archived?: boolean;
+  archived_at?: string;
+  archived_by?: string;
   created_at: string;
   updated_at: string;
 }
@@ -35,14 +39,16 @@ export const useProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .eq('status', 'active')
+        .eq('archived', false)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -52,7 +58,7 @@ export const useProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const addProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'updated_at'>) => {
     try {
@@ -114,9 +120,36 @@ export const useProducts = () => {
     }
   };
 
+  const archiveProduct = useCallback(async (id: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase.rpc('archive_product', {
+        product_id: id,
+        user_id: user.id
+      });
+
+      if (error) throw error;
+      await fetchProducts(); // Refresh the list
+      
+      toast({
+        title: "Товар архивирован",
+        description: "Товар был успешно архивирован.",
+      });
+    } catch (err) {
+      console.error('Error archiving product:', err);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось архивировать товар.",
+        variant: "destructive",
+      });
+    }
+  }, [toast, fetchProducts]);
+
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   return {
     products,
@@ -125,6 +158,7 @@ export const useProducts = () => {
     addProduct,
     updateProduct,
     deleteProduct,
+    archiveProduct,
     refetch: fetchProducts
   };
 };
@@ -133,13 +167,15 @@ export const useAdminProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
         .from('products')
         .select('*')
+        .eq('archived', false)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -149,7 +185,7 @@ export const useAdminProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const deleteProduct = async (id: string) => {
     try {
@@ -165,9 +201,36 @@ export const useAdminProducts = () => {
     }
   };
 
+  const archiveProduct = useCallback(async (id: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const { error } = await supabase.rpc('archive_product', {
+        product_id: id,
+        user_id: user.id
+      });
+
+      if (error) throw error;
+      await fetchProducts(); // Refresh the list
+      
+      toast({
+        title: "Товар архивирован",
+        description: "Товар был успешно архивирован.",
+      });
+    } catch (err) {
+      console.error('Error archiving product:', err);
+      toast({
+        title: "Ошибка",
+        description: "Не удалось архивировать товар.",
+        variant: "destructive",
+      });
+    }
+  }, [toast, fetchProducts]);
+
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   const updateProduct = async (id: string, productData: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>) => {
     try {
@@ -191,6 +254,7 @@ export const useAdminProducts = () => {
     loading,
     error,
     deleteProduct,
+    archiveProduct,
     updateProduct,
     refetch: fetchProducts
   };
@@ -209,6 +273,7 @@ export const useProduct = (id: string) => {
         .select('*')
         .eq('id', id)
         .eq('status', 'active')
+        .eq('archived', false)
         .maybeSingle();
 
       if (error) throw error;

@@ -19,7 +19,7 @@ import DraftProductCard from './DraftProductCard';
 const DraftManager = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
-  const { products, loading, error, deleteProduct, updateProduct } = useAdminProducts();
+  const { products, loading, error, archiveProduct, updateProduct } = useAdminProducts();
 
   // Фильтруем только черновики
   const draftProducts = products.filter(product => product.status === 'draft');
@@ -51,19 +51,19 @@ const DraftManager = () => {
     !product.images?.cover
   );
 
-  const handleDeleteProduct = async (productId: string) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот черновик?')) {
+  const handleArchiveProduct = async (productId: string) => {
+    if (window.confirm('Вы уверены, что хотите архивировать этот черновик?')) {
       try {
-        await deleteProduct(productId);
+        await archiveProduct(productId);
         toast({
           title: 'Успешно!',
-          description: 'Черновик удален'
+          description: 'Черновик архивирован'
         });
       } catch (error) {
         toast({
           variant: 'destructive',
           title: 'Ошибка',
-          description: 'Не удалось удалить черновик'
+          description: 'Не удалось архивировать черновик'
         });
       }
     }
@@ -182,7 +182,7 @@ const DraftManager = () => {
             <DraftProductCard
               key={product.id}
               product={product}
-              onDelete={handleDeleteProduct}
+              onArchive={handleArchiveProduct}
               onPublish={handlePublishProduct}
             />
           ))}

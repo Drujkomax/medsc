@@ -13,7 +13,7 @@ import AdminKanban from '../pages/AdminKanban';
 import AdminProducts from '../../products/pages/AdminProducts';
 import AddProduct from '../../products/pages/AddProduct';
 import EditProduct from '../../products/pages/EditProduct';
-import ProductPreview from '../../products/pages/ProductPreview';
+import ArchivedData from '../pages/ArchivedData';
 import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
 import Employees from '../pages/Employees';
