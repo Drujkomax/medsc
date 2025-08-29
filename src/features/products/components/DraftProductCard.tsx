@@ -50,7 +50,7 @@ const DraftProductCard = ({ product, onDelete, onPublish }: DraftProductCardProp
   if (!product.images?.cover) missingFields.push('Главное изображение');
 
   return (
-    <Card className="hover:shadow-md transition-shadow border-l-4 border-l-orange-500">
+    <Card className="hover:shadow-md transition-shadow border-l-4 border-l-orange-500 flex flex-col h-full">
       <CardHeader className="pb-3">
         <div className="aspect-[4/5] w-full bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
           {product.images?.cover ? (
@@ -94,8 +94,8 @@ const DraftProductCard = ({ product, onDelete, onPublish }: DraftProductCardProp
         </div>
       </CardHeader>
       
-      <CardContent>
-        <div className="space-y-4">
+      <CardContent className="flex-1 flex flex-col">
+        <div className="space-y-4 flex-1">
           <p className="text-sm text-muted-foreground line-clamp-2">
             {product.description.ru || 'Описание не добавлено'}
           </p>
@@ -130,51 +130,51 @@ const DraftProductCard = ({ product, onDelete, onPublish }: DraftProductCardProp
               </span>
             </div>
           )}
+        </div>
+        
+        {/* Кнопки действий - всегда внизу */}
+        <div className="flex flex-col gap-2 pt-4 mt-auto">
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+              className="flex-1"
+            >
+              <Edit2 className="w-4 h-4 mr-1" />
+              Редактировать
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => navigate(`/product/${product.id}`)}
+              className="flex-1"
+            >
+              <Eye className="w-4 h-4 mr-1" />
+              Предпросмотр
+            </Button>
+          </div>
           
-          {/* Кнопки действий */}
-          <div className="flex flex-col gap-2 pt-2">
-            <div className="flex gap-2">
+          <div className="flex gap-2">
+            {isReadyToPublish && (
               <Button 
-                variant="outline" 
                 size="sm" 
-                onClick={() => navigate(`/admin/products/edit/${product.id}`)}
-                className="flex-1"
+                onClick={() => onPublish(product.id)}
+                className="flex-1 bg-green-600 hover:bg-green-700"
               >
-                <Edit2 className="w-4 h-4 mr-1" />
-                Редактировать
+                <FileText className="w-4 h-4 mr-1" />
+                Опубликовать
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => navigate(`/product/${product.id}`)}
-                className="flex-1"
-              >
-                <Eye className="w-4 h-4 mr-1" />
-                Предпросмотр
-              </Button>
-            </div>
-            
-            <div className="flex gap-2">
-              {isReadyToPublish && (
-                <Button 
-                  size="sm" 
-                  onClick={() => onPublish(product.id)}
-                  className="flex-1 bg-green-600 hover:bg-green-700"
-                >
-                  <FileText className="w-4 h-4 mr-1" />
-                  Опубликовать
-                </Button>
-              )}
-              <Button 
-                variant="destructive" 
-                size="sm"
-                onClick={() => onDelete(product.id)}
-                className={isReadyToPublish ? "flex-1" : "w-full"}
-              >
-                <Trash2 className="w-4 h-4 mr-1" />
-                Удалить
-              </Button>
-            </div>
+            )}
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={() => onDelete(product.id)}
+              className={isReadyToPublish ? "flex-1" : "w-full"}
+            >
+              <Trash2 className="w-4 h-4 mr-1" />
+              Удалить
+            </Button>
           </div>
         </div>
       </CardContent>

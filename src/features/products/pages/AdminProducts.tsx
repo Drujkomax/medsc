@@ -6,16 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { 
   Search, 
-  Edit,
+  Edit2,
   Trash2,
   Eye,
   Package,
-  Loader2
+  Loader2,
+  MoreHorizontal
 } from 'lucide-react';
 import { useAdminProducts, Product } from '@/hooks/useProducts';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BulkActions } from '../components/BulkActions';
 import { ProductStats } from '../components/ProductStats';
 import { ExportProducts } from '../components/ExportProducts';
@@ -221,7 +223,7 @@ const AdminProducts = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="hover:shadow-md transition-shadow">
+              <Card key={product.id} className="hover:shadow-md transition-shadow flex flex-col h-full">
                 <CardHeader className="pb-3">
                   <div className="aspect-[4/5] w-full bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
                     {product.images?.cover ? (
@@ -244,59 +246,51 @@ const AdminProducts = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-3">
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {product.description.ru}
-                    </p>
-                    
-                    {product.price && product.price !== 'on_request' && (
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm font-semibold text-primary">
-                          {product.price}
+                <CardContent className="pt-0 flex-1 flex flex-col">
+                  <div className="space-y-3 flex-1">
+                    <p className="text-sm text-muted-foreground line-clamp-2">{product.description.ru}</p>
+                    {product.price && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-semibold text-primary">
+                          {product.price === 'on_request' ? 'По запросу' : `${product.price} ${product.currency}`}
                         </span>
-                        <span className="text-xs text-muted-foreground">{product.currency}</span>
                       </div>
                     )}
-                    
-                    <div className="flex flex-col gap-1">
-                      <div className="flex gap-1">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => {
-                            // Для черновиков - предпросмотр, для активных - пользовательский интерфейс
-                            if (product.status === 'draft') {
-                              navigate(`/admin/products/preview/${product.id}`);
-                            } else {
-                              navigate(`/product/${product.id}`);
-                            }
-                          }}
-                          className="flex-1 text-xs h-7"
-                        >
-                          <Eye className="w-3 h-3 mr-1" />
-                          {product.status === 'draft' ? 'Предпросмотр' : 'Просмотр'}
+                  </div>
+                  
+                  {/* Кнопки действий - всегда внизу */}
+                  <div className="flex gap-2 pt-4 mt-auto">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+                      className="flex-1"
+                    >
+                      <Edit2 className="w-4 h-4 mr-1" />
+                      Изменить
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => navigate(`/product/${product.id}`)}
+                      className="flex-1"
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      Просмотр
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <MoreHorizontal className="w-4 h-4" />
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => navigate(`/admin/products/edit/${product.id}`)}
-                          className="flex-1 text-xs h-7"
-                        >
-                          <Edit className="w-3 h-3 mr-1" />
-                          Изменить
-                        </Button>
-                      </div>
-                      <Button 
-                        variant="destructive" 
-                        size="sm"
-                        onClick={() => handleDeleteProduct(product.id)}
-                        className="w-full text-xs h-7"
-                      >
-                        <Trash2 className="w-3 h-3 mr-1" />
-                        Удалить
-                      </Button>
-                    </div>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem onClick={() => handleDeleteProduct(product.id)}>
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Удалить
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </CardContent>
               </Card>
