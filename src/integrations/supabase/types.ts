@@ -53,6 +53,53 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_analytics: {
+        Row: {
+          conversion_rate: number | null
+          conversions_count: number | null
+          created_at: string | null
+          date: string
+          id: string
+          product_id: string | null
+          quote_requests_count: number | null
+          revenue: number | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          conversion_rate?: number | null
+          conversions_count?: number | null
+          created_at?: string | null
+          date: string
+          id?: string
+          product_id?: string | null
+          quote_requests_count?: number | null
+          revenue?: number | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          conversion_rate?: number | null
+          conversions_count?: number | null
+          created_at?: string | null
+          date?: string
+          id?: string
+          product_id?: string | null
+          quote_requests_count?: number | null
+          revenue?: number | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversion_analytics_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deals: {
         Row: {
           amount: number | null
@@ -102,6 +149,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      employee_activity: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          date: string | null
+          details: Json | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          ip_address: unknown | null
+          session_duration: number | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          date?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: unknown | null
+          session_duration?: number | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          date?: string | null
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: unknown | null
+          session_duration?: number | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       lead_notes: {
         Row: {
@@ -228,6 +317,8 @@ export type Database = {
           archived_at: string | null
           archived_by: string | null
           category: string
+          competitor_price: number | null
+          conversion_rate: number | null
           country: string | null
           created_at: string
           created_by: string | null
@@ -238,8 +329,11 @@ export type Database = {
           images: Json | null
           in_stock: boolean
           name: Json
+          performance_score: number | null
           price: string | null
+          price_history: Json | null
           quote_requests_count: number | null
+          revenue_attributed: number | null
           status: string
           updated_at: string
           updated_by: string | null
@@ -250,6 +344,8 @@ export type Database = {
           archived_at?: string | null
           archived_by?: string | null
           category: string
+          competitor_price?: number | null
+          conversion_rate?: number | null
           country?: string | null
           created_at?: string
           created_by?: string | null
@@ -260,8 +356,11 @@ export type Database = {
           images?: Json | null
           in_stock?: boolean
           name: Json
+          performance_score?: number | null
           price?: string | null
+          price_history?: Json | null
           quote_requests_count?: number | null
+          revenue_attributed?: number | null
           status?: string
           updated_at?: string
           updated_by?: string | null
@@ -272,6 +371,8 @@ export type Database = {
           archived_at?: string | null
           archived_by?: string | null
           category?: string
+          competitor_price?: number | null
+          conversion_rate?: number | null
           country?: string | null
           created_at?: string
           created_by?: string | null
@@ -282,8 +383,11 @@ export type Database = {
           images?: Json | null
           in_stock?: boolean
           name?: Json
+          performance_score?: number | null
           price?: string | null
+          price_history?: Json | null
           quote_requests_count?: number | null
+          revenue_attributed?: number | null
           status?: string
           updated_at?: string
           updated_by?: string | null
@@ -469,6 +573,15 @@ export type Database = {
         }
         Returns: Json
       }
+      get_employee_performance_metrics: {
+        Args: { p_end_date?: string; p_start_date?: string; p_user_id: string }
+        Returns: {
+          activity_breakdown: Json
+          daily_average: number
+          most_active_day: string
+          total_actions: number
+        }[]
+      }
       get_pending_invites: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -505,12 +618,26 @@ export type Database = {
         Args: { product_id: string }
         Returns: undefined
       }
+      log_employee_activity: {
+        Args: {
+          p_action_type: string
+          p_details?: Json
+          p_entity_id?: string
+          p_entity_type?: string
+          p_session_duration?: number
+        }
+        Returns: string
+      }
       register_specific_director: {
         Args: { director_email: string; user_id: string }
         Returns: Json
       }
       unarchive_product: {
         Args: { product_id: string }
+        Returns: undefined
+      }
+      update_conversion_analytics: {
+        Args: { p_date?: string; p_product_id: string }
         Returns: undefined
       }
     }
