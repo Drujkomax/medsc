@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { getCountryFlag } from '@/utils/countries';
 import QuoteRequestForm from '@/components/forms/QuoteRequestForm';
 import { useTranslation } from 'react-i18next';
+import SEOHead from "@/components/SEO/SEOHead";
 
 // Function to get category display name
 const getCategoryTag = (category: string, language: 'ru' | 'en' | 'uz', allCategories: Record<string, { ru: string; en: string; uz: string }>) => {
@@ -118,6 +119,12 @@ const Catalog = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <SEOHead 
+        title="Каталог медицинского оборудования - Med Service Centre"
+        description="Профессиональное медицинское оборудование от ведущих производителей. МРТ, УЗИ, рентген и другое медицинское оборудование в Узбекистане."
+        keywords="каталог медицинского оборудования, МРТ, УЗИ, рентген, медицинская техника, узбекистан"
+        type="website"
+      />
       {/* Header */}
       <div 
         className="relative py-16 bg-cover bg-center bg-no-repeat"

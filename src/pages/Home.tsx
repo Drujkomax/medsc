@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
 import LeadForm from '@/components/forms/LeadForm';
 import { useTranslation } from 'react-i18next';
+import SEOHead from "@/components/SEO/SEOHead";
 
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
@@ -65,6 +66,12 @@ const Home = ({ language }: HomeProps) => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead 
+        title="Med Service Centre - Медицинское оборудование в Узбекистане"
+        description="Ведущий интегратор медицинского оборудования и сервис-услуг в Узбекистане. Поставка, инсталляция, обучение, регистрация, сервис."
+        keywords="медицинское оборудование, узбекистан, МРТ, УЗИ, рентген, сервис, поставка, инсталляция"
+        type="website"
+      />
       {/* Hero Section */}
       <section 
         className="relative text-white py-20 lg:py-32 overflow-hidden"
