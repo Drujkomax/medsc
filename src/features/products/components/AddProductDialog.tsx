@@ -9,23 +9,15 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Loader2 } from 'lucide-react';
 import { useProducts } from '@/hooks/useProducts';
+import { useCategories } from '@/hooks/useCategories';
 import { useToast } from '@/hooks/use-toast';
 import { ImageUpload } from '@/components/common/ImageUpload';
 import { countries } from '@/utils/countries';
 
-const categories = [
-  { value: 'diagnostic', label: { ru: 'Диагностическое', en: 'Diagnostic', uz: 'Diagnostika' } },
-  { value: 'surgical', label: { ru: 'Хирургическое', en: 'Surgical', uz: 'Jarrohlik' } },
-  { value: 'monitoring', label: { ru: 'Мониторинг', en: 'Monitoring', uz: 'Monitoring' } },
-  { value: 'laboratory', label: { ru: 'Лабораторное', en: 'Laboratory', uz: 'Laboratoriya' } },
-  { value: 'rehabilitation', label: { ru: 'Реабилитационное', en: 'Rehabilitation', uz: 'Reabilitatsiya' } },
-  { value: 'dental', label: { ru: 'Стоматологическое', en: 'Dental', uz: 'Stomatologiya' } },
-  { value: 'ophthalmology', label: { ru: 'Офтальмологическое', en: 'Ophthalmology', uz: 'Oftalmologiya' } },
-  { value: 'furniture', label: { ru: 'Медицинская мебель', en: 'Medical Furniture', uz: 'Tibbiy mebel' } }
-];
 
 export const AddProductDialog = () => {
   const { addProduct } = useProducts();
+  const { categories } = useCategories();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -59,6 +51,9 @@ export const AddProductDialog = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('Form data before submit:', formData);
+    console.log('Available categories:', categories);
+    
     try {
       setLoading(true);
       
@@ -74,6 +69,14 @@ export const AddProductDialog = () => {
         cover: formData.images.cover,
         gallery: formData.images.gallery.filter(img => img !== null) as string[]
       };
+
+      console.log('Cleaned product data before API call:', {
+        ...formData,
+        price: formData.price || null,
+        currency: formData.currency,
+        images: cleanImages,
+        features: cleanFeatures
+      });
 
       await addProduct({
         ...formData,
@@ -242,7 +245,7 @@ export const AddProductDialog = () => {
                     <SelectContent>
                       {categories.map(category => (
                         <SelectItem key={category.value} value={category.value}>
-                          {category.label.ru}
+                          {category.name.ru}
                         </SelectItem>
                       ))}
                     </SelectContent>
