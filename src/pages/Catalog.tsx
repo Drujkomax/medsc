@@ -9,37 +9,20 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Search, Filter, Heart, Eye, Loader2, Package, Menu } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
+import { useCategories } from '@/hooks/useCategories';
 import { toast } from 'sonner';
 import { getCountryFlag } from '@/utils/countries';
 import QuoteRequestForm from '@/components/forms/QuoteRequestForm';
 import { useTranslation } from 'react-i18next';
 
-// Categories with tags for equipment
-const getCategoryTag = (category: string, language: 'ru' | 'en' | 'uz') => {
-  const categoryTags = {
-    diagnostic: { ru: 'Диагностическое', en: 'Diagnostic', uz: 'Diagnostika' },
-    surgical: { ru: 'Хирургическое', en: 'Surgical', uz: 'Jarrohlik' },
-    monitoring: { ru: 'Мониторинг', en: 'Monitoring', uz: 'Monitoring' },
-    laboratory: { ru: 'Лабораторное', en: 'Laboratory', uz: 'Laboratoriya' },
-    rehabilitation: { ru: 'Реабилитационное', en: 'Rehabilitation', uz: 'Reabilitatsiya' },
-    dental: { ru: 'Стоматологическое', en: 'Dental', uz: 'Stomatologiya' },
-    ophthalmology: { ru: 'Офтальмологическое', en: 'Ophthalmology', uz: 'Oftalmologiya' },
-    furniture: { ru: 'Медицинская мебель', en: 'Medical Furniture', uz: 'Tibbiy mebel' }
-  };
-  
-  return categoryTags[category as keyof typeof categoryTags]?.[language] || category;
+// Function to get category display name
+const getCategoryTag = (category: string, language: 'ru' | 'en' | 'uz', allCategories: Record<string, { ru: string; en: string; uz: string }>) => {
+  return allCategories[category]?.[language] || category;
 };
 
-const categories = {
-  all: { ru: "Все категории", en: "All categories", uz: "Barcha kategoriyalar" },
-  diagnostic: { ru: "Диагностическое оборудование", en: "Diagnostic Equipment", uz: "Diagnostika uskunalari" },
-  surgical: { ru: "Хирургическое оборудование", en: "Surgical Equipment", uz: "Jarrohlik uskunalari" },
-  monitoring: { ru: "Мониторинг", en: "Monitoring", uz: "Monitoring" },
-  laboratory: { ru: "Лабораторное оборудование", en: "Laboratory Equipment", uz: "Laboratoriya uskunalari" },
-  rehabilitation: { ru: "Реабилитационное оборудование", en: "Rehabilitation Equipment", uz: "Reabilitatsiya uskunalari" },
-  dental: { ru: "Стоматологическое оборудование", en: "Dental Equipment", uz: "Stomatologiya uskunalari" },
-  ophthalmology: { ru: "Офтальмологическое оборудование", en: "Ophthalmology Equipment", uz: "Oftalmologiya uskunalari" },
-  furniture: { ru: "Медицинская мебель", en: "Medical Furniture", uz: "Tibbiy mebel" }
+// Fallback categories for display
+const fallbackCategories = {
+  all: { ru: "Все категории", en: "All categories", uz: "Barcha kategoriyalar" }
 };
 
 const translations = {
@@ -66,7 +49,8 @@ const Catalog = () => {
 
   const ITEMS_PER_PAGE = 20;
   
-  const { products, loading, error } = useProducts();
+  const { products, loading: productsLoading, error: productsError } = useProducts();
+  const { categories: dbCategories, loading: categoriesLoading } = useCategories();
 
   // Update selected category when URL changes
   useEffect(() => {
@@ -77,6 +61,15 @@ const Catalog = () => {
   }, [searchParams, selectedCategory]);
 
   const language = i18n.language as 'ru' | 'en' | 'uz' || 'ru';
+  
+  // Combine fallback categories with database categories
+  const allCategories = {
+    ...fallbackCategories,
+    ...dbCategories.reduce((acc, cat) => {
+      acc[cat.value] = cat.name;
+      return acc;
+    }, {} as Record<string, { ru: string; en: string; uz: string }>)
+  };
   
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name[language].toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -97,6 +90,9 @@ const Catalog = () => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
+
+  const loading = productsLoading || categoriesLoading;
+  const error = productsError;
 
   if (loading) {
     return (
@@ -148,7 +144,7 @@ const Catalog = () => {
             <div className="bg-card rounded-lg border p-6 sticky top-8">
               <h3 className="font-semibold text-lg mb-4">{translations.category[language]}</h3>
               <nav className="space-y-2">
-                {Object.entries(categories).map(([key, value]) => (
+                {Object.entries(allCategories).map(([key, value]) => (
                   <button
                     key={key}
                     onClick={() => setSelectedCategory(key)}
@@ -191,24 +187,24 @@ const Catalog = () => {
                   <SheetContent side="left" className="w-80">
                     <div className="py-6">
                       <h3 className="font-semibold text-lg mb-4">{translations.category[language]}</h3>
-                      <nav className="space-y-2">
-                        {Object.entries(categories).map(([key, value]) => (
-                          <button
-                            key={key}
-                            onClick={() => {
-                              setSelectedCategory(key);
-                              // Close sheet after selection
-                            }}
-                            className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
-                              selectedCategory === key
-                                ? 'bg-primary text-primary-foreground'
-                                : 'hover:bg-muted'
-                            }`}
-                          >
-                            {value[language]}
-                          </button>
-                        ))}
-                      </nav>
+                       <nav className="space-y-2">
+                         {Object.entries(allCategories).map(([key, value]) => (
+                           <button
+                             key={key}
+                             onClick={() => {
+                               setSelectedCategory(key);
+                               // Close sheet after selection
+                             }}
+                             className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                               selectedCategory === key
+                                 ? 'bg-primary text-primary-foreground'
+                                 : 'hover:bg-muted'
+                             }`}
+                           >
+                             {value[language]}
+                           </button>
+                         ))}
+                       </nav>
                     </div>
                   </SheetContent>
                 </Sheet>
@@ -242,7 +238,7 @@ const Catalog = () => {
                     )}
                     <div className="absolute top-4 left-4">
                       <Badge variant="default">
-                        {getCategoryTag(product.category, language)}
+                        {getCategoryTag(product.category, language, allCategories)}
                       </Badge>
                     </div>
                   </div>
