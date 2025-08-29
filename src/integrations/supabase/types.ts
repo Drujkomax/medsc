@@ -640,6 +640,10 @@ export type Database = {
         Args: { p_date?: string; p_product_id: string }
         Returns: undefined
       }
+      validate_product_category: {
+        Args: { category_value: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "director" | "sales_manager" | "salesperson"
