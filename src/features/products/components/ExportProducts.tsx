@@ -135,7 +135,7 @@ export const ExportProducts = ({ products }: ExportProductsProps) => {
   const statusStats = {
     active: products.filter(p => p.status === 'active').length,
     draft: products.filter(p => p.status === 'draft').length,
-    archived: products.filter(p => p.status === 'archived').length
+    archived: products.filter(p => p.archived === true).length
   };
 
   return (

@@ -9,7 +9,7 @@ interface ProductStatsProps {
 export const ProductStats = ({ products }: ProductStatsProps) => {
   const activeProducts = products.filter(p => p.status === 'active').length;
   const draftProducts = products.filter(p => p.status === 'draft').length;
-  const archivedProducts = products.filter(p => p.status === 'archived').length;
+  const archivedProducts = products.filter(p => p.archived === true).length;
   
   // Group by categories
   const categoryCounts = products.reduce((acc, product) => {

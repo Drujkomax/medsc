@@ -24,8 +24,7 @@ const currencyOptions = [
 
 const statusOptions = [
   { value: 'active', label: 'Активный' },
-  { value: 'draft', label: 'Черновик' },
-  { value: 'archived', label: 'Архив' }
+  { value: 'draft', label: 'Черновик' }
 ];
 
 const AddProduct = () => {
@@ -74,7 +73,7 @@ const AddProduct = () => {
         country: formData.country,
         price: formData.price || null,
         currency: formData.currency,
-        status: formData.status as 'active' | 'draft' | 'archived',
+        status: formData.status as 'active' | 'draft',
         features: formData.features,
         images: formData.images
       };

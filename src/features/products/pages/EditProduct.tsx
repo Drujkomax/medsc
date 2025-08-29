@@ -27,8 +27,7 @@ const categories = [
 
 const statusOptions = [
   { value: 'active', label: 'Активный' },
-  { value: 'draft', label: 'Черновик' },
-  { value: 'archived', label: 'Архив' }
+  { value: 'draft', label: 'Черновик' }
 ];
 
 const EditProduct = () => {
@@ -111,7 +110,7 @@ const EditProduct = () => {
         category: formData.category,
         country: formData.country,
         price: formData.price || null,
-        status: formData.status as 'active' | 'draft' | 'archived',
+        status: formData.status as 'active' | 'draft',
         features: formData.features,
         images: formData.images
       });

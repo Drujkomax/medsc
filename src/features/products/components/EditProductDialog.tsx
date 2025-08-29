@@ -42,7 +42,7 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
     country: '',
     images: { cover: null as string | null, gallery: [null, null] as (string | null)[] },
     features: { ru: [''], en: [''], uz: [''] },
-    status: 'active' as 'active' | 'draft' | 'archived'
+    status: 'active' as 'active' | 'draft'
   });
 
   useEffect(() => {
@@ -372,7 +372,6 @@ export const EditProductDialog = ({ product, open, onOpenChange }: EditProductDi
                     <SelectContent>
                       <SelectItem value="active">Активный</SelectItem>
                       <SelectItem value="draft">Черновик</SelectItem>
-                      <SelectItem value="archived">Архив</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

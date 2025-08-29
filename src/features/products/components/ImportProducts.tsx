@@ -52,7 +52,7 @@ export const ImportProducts = () => {
     }
 
     // Status validation
-    const validStatuses = ['active', 'draft', 'archived'];
+    const validStatuses = ['active', 'draft'];
     if (data['Статус'] && !validStatuses.includes(data['Статус'])) {
       errors.push({ row: rowIndex, field: 'Статус', message: `Недопустимый статус. Допустимые: ${validStatuses.join(', ')}` });
     }
@@ -123,7 +123,7 @@ export const ImportProducts = () => {
       country: data['Страна'] || null,
       price: data['Цена'] || null,
       currency: (data['Валюта'] as 'USD' | 'EUR') || 'USD',
-      status: (data['Статус'] as 'active' | 'draft' | 'archived') || 'draft',
+      status: (data['Статус'] as 'active' | 'draft') || 'draft',
       features: {
         ru: data['Характеристики (RU)'] ? data['Характеристики (RU)'].split(';').map((f: string) => f.trim()).filter(Boolean) : [],
         en: data['Характеристики (EN)'] ? data['Характеристики (EN)'].split(';').map((f: string) => f.trim()).filter(Boolean) : [],

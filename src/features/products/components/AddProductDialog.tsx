@@ -37,7 +37,7 @@ export const AddProductDialog = () => {
     country: '',
     images: { cover: null as string | null, gallery: [null, null] as (string | null)[] },
     features: { ru: [''], en: [''], uz: [''] },
-    status: 'active' as 'active' | 'draft' | 'archived',
+    status: 'active' as 'active' | 'draft',
     price: '',
     currency: 'USD' as 'USD' | 'EUR' | 'UZS'
   });
@@ -50,7 +50,7 @@ export const AddProductDialog = () => {
       country: '',
       images: { cover: null, gallery: [null, null] },
       features: { ru: [''], en: [''], uz: [''] },
-      status: 'active' as 'active' | 'draft' | 'archived',
+      status: 'active' as 'active' | 'draft',
       price: '',
       currency: 'USD' as 'USD' | 'EUR' | 'UZS'
     });
@@ -430,7 +430,6 @@ export const AddProductDialog = () => {
                     <SelectContent>
                       <SelectItem value="active">Активный</SelectItem>
                       <SelectItem value="draft">Черновик</SelectItem>
-                      <SelectItem value="archived">Архив</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
