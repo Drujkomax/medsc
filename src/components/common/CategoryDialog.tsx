@@ -34,6 +34,8 @@ export const CategoryDialog = ({ open, onOpenChange, onCategoryAdded }: Category
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('CategoryDialog: form submitted with data:', formData);
+    
     if (!formData.name.ru.trim()) {
       toast({
         variant: 'destructive',
@@ -47,8 +49,9 @@ export const CategoryDialog = ({ open, onOpenChange, onCategoryAdded }: Category
     
     try {
       const categoryValue = formData.value || generateValue(formData.name.ru);
+      console.log('CategoryDialog: adding category with value:', categoryValue);
       
-      await addCategory({
+      const result = await addCategory({
         value: categoryValue,
         name: {
           ru: formData.name.ru,
@@ -56,6 +59,8 @@ export const CategoryDialog = ({ open, onOpenChange, onCategoryAdded }: Category
           uz: formData.name.uz || formData.name.ru
         }
       });
+      
+      console.log('CategoryDialog: category added successfully:', result);
 
       toast({
         title: 'Успешно!',

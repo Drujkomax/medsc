@@ -20,6 +20,7 @@ import Employees from '../pages/Employees';
 import UserManagement from '../pages/UserManagement';
 import EmployeeManagement from '../pages/EmployeeManagement';
 import Analytics from '../pages/Analytics';
+import Categories from '../pages/Categories';
 
 const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
@@ -70,6 +71,7 @@ const AdminWrapper = () => {
         <Route path="products" element={<AdminProducts />} />
         <Route path="products/add" element={<AddProduct />} />
         <Route path="products/edit/:id" element={<EditProduct />} />
+        <Route path="categories" element={<Categories />} />
         <Route path="archived" element={<ArchivedData />} />
         <Route path="services" element={<AdminServices />} />
         <Route path="contacts" element={<AdminContacts />} />

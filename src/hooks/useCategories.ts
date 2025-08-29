@@ -54,6 +54,53 @@ export const useCategories = () => {
     }
   };
 
+  const deleteCategory = async (id: string) => {
+    try {
+      // Проверяем, есть ли товары с этой категорией
+      const { data: products, error: checkError } = await supabase
+        .from('products')
+        .select('id')
+        .eq('category', id)
+        .limit(1);
+
+      if (checkError) throw checkError;
+
+      if (products && products.length > 0) {
+        throw new Error('Нельзя удалить категорию, которая используется в товарах');
+      }
+
+      const { error } = await supabase
+        .from('product_categories')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      await fetchCategories(); // Refresh the list
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'Ошибка при удалении категории');
+    }
+  };
+
+  const updateCategory = async (id: string, categoryData: { 
+    value: string; 
+    name: { ru: string; en: string; uz: string } 
+  }) => {
+    try {
+      const { data, error } = await supabase
+        .from('product_categories')
+        .update(categoryData)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      await fetchCategories(); // Refresh the list
+      return data;
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'Ошибка при обновлении категории');
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -63,6 +110,8 @@ export const useCategories = () => {
     loading,
     error,
     addCategory,
+    deleteCategory,
+    updateCategory,
     refetch: fetchCategories
   };
 };

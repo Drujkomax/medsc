@@ -32,7 +32,8 @@ import {
   UserCheck,
   HandCoins,
   CheckSquare,
-  Archive
+  Archive,
+  Tags
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -56,6 +57,7 @@ export function AdminSidebar() {
 
     if (hasPermission('manage_products')) {
       conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: 'manage_products' });
+      conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'manage_products' });
     }
 
     if (hasPermission('manage_services')) {
