@@ -25,6 +25,7 @@ export const countries = [
   { code: 'CA', name: { ru: 'Канада', en: 'Canada', uz: 'Kanada' }, flag: '🇨🇦' },
   { code: 'AU', name: { ru: 'Австралия', en: 'Australia', uz: 'Avstraliya' }, flag: '🇦🇺' },
   { code: 'RU', name: { ru: 'Россия', en: 'Russia', uz: 'Rossiya' }, flag: '🇷🇺' },
+  { code: 'TR', name: { ru: 'Турция', en: 'Turkey', uz: 'Turkiya' }, flag: '🇹🇷' },
   { code: 'UZ', name: { ru: 'Узбекистан', en: 'Uzbekistan', uz: 'O\'zbekiston' }, flag: '🇺🇿' },
   { code: 'IN', name: { ru: 'Индия', en: 'India', uz: 'Hindiston' }, flag: '🇮🇳' },
 ];
