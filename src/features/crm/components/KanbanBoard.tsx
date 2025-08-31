@@ -9,7 +9,7 @@ import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { useDuplicateDetection } from '@/hooks/useDuplicateDetection';
 import { useToast } from '@/hooks/use-toast';
-import LeadModal from './LeadModal';
+import { EnhancedLeadModal } from './EnhancedLeadModal';
 import { DuplicateAlert } from './DuplicateAlert';
 
 // Unified lead stages
@@ -196,11 +196,11 @@ const KanbanBoard = () => {
         </div>
       </DragDropContext>
 
-      <LeadModal
+      <EnhancedLeadModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         lead={selectedLead}
-        onSave={refetch}
+        onLeadUpdate={refetch}
       />
     </div>
   );
