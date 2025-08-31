@@ -32,7 +32,8 @@ import {
   AlertTriangle,
   LayoutGrid,
   Plus,
-  MoreHorizontal
+  MoreHorizontal,
+  ChevronDown
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -63,6 +64,38 @@ const Leads = () => {
       lost: 'bg-red-100 text-red-800 border-red-200'
     };
     return colorMap[stage] || 'bg-gray-100 text-gray-800 border-gray-200';
+  };
+
+  const getAssignedUserName = (userId: string) => {
+    const employee = employees.find(emp => emp.id === userId);
+    return employee ? employee.email : 'Назначен';
+  };
+
+  const handleAssignLead = async (leadId: string, assigneeId: string | null) => {
+    try {
+      const { error } = await supabase
+        .from('leads')
+        .update({ 
+          assigned_to: assigneeId,
+          assigned_by: user?.id
+        })
+        .eq('id', leadId);
+
+      if (error) throw error;
+      
+      await refetch();
+      toast({
+        title: 'Успешно',
+        description: assigneeId ? 'Лид назначен' : 'Назначение лида снято',
+      });
+    } catch (error) {
+      console.error('Error assigning lead:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Ошибка при назначении лида',
+        variant: 'destructive',
+      });
+    }
   };
   // Force cache refresh
   const { toast } = useToast();
@@ -342,18 +375,68 @@ const Leads = () => {
                     <TableCell>{lead.company || '-'}</TableCell>
                     <TableCell>{lead.phone || '-'}</TableCell>
                     <TableCell>
-                      <Badge 
-                        variant="outline" 
-                        className={getStageColor(lead.stage)}
-                      >
-                        {getStageLabel(lead.stage)}
-                      </Badge>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            className={`h-8 px-3 text-xs font-medium border ${getStageColor(lead.stage)} hover:opacity-80`}
+                          >
+                            {getStageLabel(lead.stage)}
+                            <ChevronDown className="ml-1 h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
+                          {leadStages.map((stage) => (
+                            <DropdownMenuItem 
+                              key={stage.value}
+                              onClick={() => handleStageChange(lead.id, stage.value)}
+                              className="hover:bg-accent"
+                            >
+                              <Badge 
+                                variant="outline" 
+                                className={`mr-2 ${getStageColor(stage.value)}`}
+                              >
+                                {stage.label}
+                              </Badge>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                     <TableCell>
                       {format(new Date(lead.created_at), 'dd.MM.yyyy', { locale: ru })}
                     </TableCell>
                     <TableCell>
-                      {lead.assigned_to ? 'Назначен' : 'Не назначен'}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            className="h-8 px-3 text-xs font-medium hover:bg-accent"
+                          >
+                            {lead.assigned_to ? getAssignedUserName(lead.assigned_to) : 'Не назначен'}
+                            <ChevronDown className="ml-1 h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
+                          <DropdownMenuItem 
+                            onClick={() => handleAssignLead(lead.id, null)}
+                            className="hover:bg-accent"
+                          >
+                            <User className="mr-2 h-4 w-4" />
+                            Не назначен
+                          </DropdownMenuItem>
+                          {employees.map((employee) => (
+                            <DropdownMenuItem 
+                              key={employee.id}
+                              onClick={() => handleAssignLead(lead.id, employee.id)}
+                              className="hover:bg-accent"
+                            >
+                              <User className="mr-2 h-4 w-4" />
+                              {employee.email}
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                     <TableCell className="text-right">
                       <DropdownMenu>
