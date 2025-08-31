@@ -17,6 +17,7 @@ import { DuplicateAlert } from '../components/DuplicateAlert';
 import { ViewLeadModal } from '../components/ViewLeadModal';
 import { EditLeadModal } from '../components/EditLeadModal';
 import CreateDealFromLeadDialog from '../components/CreateDealFromLeadDialog';
+import { AddLeadDialog } from '../components/AddLeadDialog';
 import { 
   Search, 
   Edit,
@@ -28,7 +29,8 @@ import {
   Calendar,
   Filter,
   AlertTriangle,
-  LayoutGrid
+  LayoutGrid,
+  Plus
 } from 'lucide-react';
 
 const Leads = () => {
@@ -46,6 +48,7 @@ const Leads = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [createDealLead, setCreateDealLead] = useState<Lead | null>(null);
+  const [addLeadModalOpen, setAddLeadModalOpen] = useState(false);
 
   const leadStages = [
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
@@ -198,6 +201,12 @@ const Leads = () => {
           <h2 className="text-3xl font-bold">Лиды</h2>
           <p className="text-muted-foreground">Управление заявками клиентов</p>
         </div>
+        <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
+          <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Добавить лида
+          </Button>
+        </RoleBasedAccess>
       </div>
 
       {/* Duplicate Alerts */}
@@ -320,6 +329,18 @@ const Leads = () => {
         onClose={() => setCreateDealLead(null)}
         lead={createDealLead}
         onSuccess={handleDealSuccess}
+      />
+
+      <AddLeadDialog
+        open={addLeadModalOpen}
+        onClose={() => setAddLeadModalOpen(false)}
+        onSuccess={() => {
+          refetch();
+          toast({
+            title: 'Успешно',
+            description: 'Лид успешно добавлен',
+          });
+        }}
       />
     </div>
   );
