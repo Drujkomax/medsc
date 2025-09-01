@@ -94,6 +94,7 @@ const EditProduct = () => {
     
     console.log('EditProduct form data on submit:', formData);
     
+    // Минимальная валидация для черновиков
     if (!formData.name.ru.trim()) {
       console.log('EditProduct validation failed: name is empty');
       toast({
@@ -104,24 +105,39 @@ const EditProduct = () => {
       return;
     }
     
-    if (!formData.description.ru.trim()) {
-      console.log('EditProduct validation failed: description is empty');
-      toast({
-        variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Описание на русском языке обязательно'
-      });
-      return;
-    }
-    
-    if (!formData.category) {
-      console.log('EditProduct validation failed: category is empty');
-      toast({
-        variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Выберите категорию товара'
-      });
-      return;
+    // Полная валидация для публикации
+    if (formData.status === 'active') {
+      console.log('EditProduct validating for active status');
+      
+      if (!formData.description.ru.trim()) {
+        console.log('EditProduct validation failed: description is empty');
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка валидации',
+          description: 'Для публикации товара необходимо описание на русском языке'
+        });
+        return;
+      }
+      
+      if (!formData.category) {
+        console.log('EditProduct validation failed: category is empty');
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка валидации',
+          description: 'Для публикации товара необходимо выбрать категорию'
+        });
+        return;
+      }
+      
+      if (!formData.images.cover) {
+        console.log('EditProduct validation failed: cover image is missing');
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка валидации',
+          description: 'Для публикации товара необходимо добавить обложку'
+        });
+        return;
+      }
     }
 
     setLoading(true);
@@ -271,7 +287,10 @@ const EditProduct = () => {
                 {/* Descriptions */}
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="desc-ru">Описание (RU) *</Label>
+                    <Label htmlFor="desc-ru">
+                      Описание (RU)
+                      {formData.status === 'active' && <span className="text-destructive ml-1">*</span>}
+                    </Label>
                     <Textarea
                       id="desc-ru"
                       value={formData.description.ru}
@@ -314,7 +333,10 @@ const EditProduct = () => {
             {/* Images */}
             <Card>
               <CardHeader>
-                <CardTitle>Изображения</CardTitle>
+                <CardTitle>
+                  Изображения
+                  {formData.status === 'active' && <span className="text-destructive ml-1">* (обложка обязательна)</span>}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ProductImageUpload
@@ -381,7 +403,10 @@ const EditProduct = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="category">Категория *</Label>
+                  <Label htmlFor="category">
+                    Категория
+                    {formData.status === 'active' && <span className="text-destructive ml-1">*</span>}
+                  </Label>
                   <Select 
                     value={formData.category} 
                     onValueChange={(value) => setFormData(prev => ({

@@ -58,7 +58,7 @@ const AddProduct = () => {
     
     console.log('Form data on submit:', formData);
     
-    // Minimal validation - only name is required
+    // Минимальная валидация для черновиков
     if (!formData.name.ru.trim()) {
       console.log('Validation failed: name is empty');
       toast({
@@ -69,24 +69,39 @@ const AddProduct = () => {
       return;
     }
     
-    if (!formData.description.ru.trim()) {
-      console.log('Validation failed: description is empty');
-      toast({
-        variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Описание на русском языке обязательно'
-      });
-      return;
-    }
-    
-    if (!formData.category) {
-      console.log('Validation failed: category is empty');
-      toast({
-        variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Выберите категорию товара'
-      });
-      return;
+    // Полная валидация для публикации
+    if (formData.status === 'active') {
+      console.log('Validating for active status');
+      
+      if (!formData.description.ru.trim()) {
+        console.log('Validation failed: description is empty');
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка валидации',
+          description: 'Для публикации товара необходимо описание на русском языке'
+        });
+        return;
+      }
+      
+      if (!formData.category) {
+        console.log('Validation failed: category is empty');
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка валидации',
+          description: 'Для публикации товара необходимо выбрать категорию'
+        });
+        return;
+      }
+      
+      if (!formData.images.cover) {
+        console.log('Validation failed: cover image is missing');
+        toast({
+          variant: 'destructive',
+          title: 'Ошибка валидации',
+          description: 'Для публикации товара необходимо добавить обложку'
+        });
+        return;
+      }
     }
 
     setLoading(true);
@@ -251,19 +266,22 @@ const AddProduct = () => {
                 </div>
 
                 {/* Descriptions */}
-                <div className="space-y-4">
-                   <div>
-                     <Label htmlFor="desc-ru">Описание (RU)</Label>
-                     <Textarea
-                       id="desc-ru"
-                       value={formData.description.ru}
-                       onChange={(e) => setFormData(prev => ({
-                         ...prev,
-                         description: { ...prev.description, ru: e.target.value }
-                       }))}
-                       rows={3}
-                     />
-                   </div>
+                 <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="desc-ru">
+                        Описание (RU)
+                        {formData.status === 'active' && <span className="text-destructive ml-1">*</span>}
+                      </Label>
+                      <Textarea
+                        id="desc-ru"
+                        value={formData.description.ru}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          description: { ...prev.description, ru: e.target.value }
+                        }))}
+                        rows={3}
+                      />
+                    </div>
                   <div>
                     <Label htmlFor="desc-en">Описание (EN)</Label>
                     <Textarea
@@ -295,7 +313,10 @@ const AddProduct = () => {
             {/* Images */}
             <Card>
               <CardHeader>
-                <CardTitle>Изображения</CardTitle>
+                <CardTitle>
+                  Изображения
+                  {formData.status === 'active' && <span className="text-destructive ml-1">* (обложка обязательна)</span>}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <ProductImageUpload
@@ -362,7 +383,10 @@ const AddProduct = () => {
               <CardContent className="space-y-4">
                  <div>
                    <div className="flex items-center justify-between">
-                     <Label htmlFor="category">Категория</Label>
+                     <Label htmlFor="category">
+                       Категория
+                       {formData.status === 'active' && <span className="text-destructive ml-1">*</span>}
+                     </Label>
                      <Button
                        type="button"
                        variant="ghost"
