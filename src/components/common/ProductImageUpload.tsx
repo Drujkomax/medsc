@@ -76,6 +76,7 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
             <div className="relative">
               <img src={images.cover} alt="Обложка" className="w-full h-48 object-cover rounded-lg" />
               <Button
+                type="button"
                 variant="destructive"
                 size="sm"
                 className="absolute top-2 right-2"
@@ -88,6 +89,7 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
             <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
               <ImageIcon className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
               <Button
+                type="button"
                 variant="outline"
                 disabled={uploading.cover}
                 onClick={() => {
@@ -120,6 +122,7 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
               <div key={index} className="relative">
                 <img src={url} alt={`Галерея ${index + 1}`} className="w-full h-24 object-cover rounded-lg" />
                 <Button
+                  type="button"
                   variant="destructive"
                   size="sm"
                   className="absolute top-1 right-1"
@@ -134,6 +137,7 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
             ))}
           </div>
           <Button
+            type="button"
             variant="outline"
             disabled={uploading.gallery}
             onClick={() => {
