@@ -14,7 +14,8 @@ import {
   Users,
   Calendar,
   Eye,
-  AlertCircle
+  AlertCircle,
+  Edit
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -179,15 +180,23 @@ const ArchivedData = () => {
                           </p>
                           
                           <div className="flex flex-col gap-2">
-                            <div className="flex gap-2">
+                            <div className="flex gap-1">
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                onClick={() => navigate(`/product/${product.id}`)}
+                                onClick={() => navigate(`/admin/products/preview/${product.id}`)}
                                 className="flex-1"
                               >
-                                <Eye className="w-4 h-4 mr-1" />
+                                <Eye className="w-3 h-3 mr-1" />
                                 Просмотр
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+                                className="flex-1"
+                              >
+                                Изменить
                               </Button>
                               <Button 
                                 variant="outline" 
@@ -195,7 +204,7 @@ const ArchivedData = () => {
                                 onClick={() => unarchiveProduct(product.id)}
                                 className="flex-1"
                               >
-                                <RotateCcw className="w-4 h-4 mr-1" />
+                                <RotateCcw className="w-3 h-3 mr-1" />
                                 Восстановить
                               </Button>
                             </div>
