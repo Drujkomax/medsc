@@ -253,12 +253,15 @@ export const useAdminProducts = () => {
 
   const addProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'updated_at'>) => {
     try {
+      console.log('useProducts.addProduct called with:', productData);
+      
       // Clean up empty features
       const cleanedFeatures = {
         ru: productData.features?.ru?.filter(f => f.trim()) || [],
         en: productData.features?.en?.filter(f => f.trim()) || [],
         uz: productData.features?.uz?.filter(f => f.trim()) || []
       };
+      console.log('Cleaned features:', cleanedFeatures);
 
       const cleanedData = {
         ...productData,

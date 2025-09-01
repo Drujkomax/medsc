@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -47,6 +47,11 @@ const AddProduct = () => {
     features: { ru: [''], en: [''], uz: [''] },
     images: { cover: null, gallery: [] }
   });
+
+  // Log form data changes
+  useEffect(() => {
+    console.log('AddProduct form data changed:', formData);
+  }, [formData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,6 +106,7 @@ const AddProduct = () => {
         images: formData.images
       };
 
+      console.log('Calling addProduct with data:', productData);
       const result = await addProduct(productData);
       console.log('Product added successfully:', result);
 
@@ -112,6 +118,10 @@ const AddProduct = () => {
       navigate('/admin/products');
     } catch (error) {
       console.error('Error adding product:', error);
+      console.error('Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : 'No stack trace'
+      });
       toast({
         variant: 'destructive',
         title: 'Ошибка',

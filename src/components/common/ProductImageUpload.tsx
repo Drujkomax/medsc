@@ -18,6 +18,7 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
   const { toast } = useToast();
 
   const uploadImage = async (file: File, type: 'cover' | 'gallery') => {
+    console.log('Starting image upload:', { fileName: file.name, type, currentImages: images });
     setUploading(prev => ({ ...prev, [type]: true }));
     
     try {
@@ -38,9 +39,13 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
         .getPublicUrl(data.path);
 
       if (type === 'cover') {
-        onImagesChange({ ...images, cover: publicUrl });
+        const newImages = { ...images, cover: publicUrl };
+        console.log('Updating cover image:', newImages);
+        onImagesChange(newImages);
       } else {
-        onImagesChange({ ...images, gallery: [...images.gallery, publicUrl] });
+        const newImages = { ...images, gallery: [...images.gallery, publicUrl] };
+        console.log('Adding to gallery:', newImages);
+        onImagesChange(newImages);
       }
 
       toast({

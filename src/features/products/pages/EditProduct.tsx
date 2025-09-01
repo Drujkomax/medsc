@@ -92,11 +92,34 @@ const EditProduct = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name.ru.trim() || !formData.description.ru.trim() || !formData.category) {
+    console.log('EditProduct form data on submit:', formData);
+    
+    if (!formData.name.ru.trim()) {
+      console.log('EditProduct validation failed: name is empty');
       toast({
         variant: 'destructive',
         title: 'Ошибка валидации',
-        description: 'Заполните все обязательные поля'
+        description: 'Название на русском языке обязательно'
+      });
+      return;
+    }
+    
+    if (!formData.description.ru.trim()) {
+      console.log('EditProduct validation failed: description is empty');
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Описание на русском языке обязательно'
+      });
+      return;
+    }
+    
+    if (!formData.category) {
+      console.log('EditProduct validation failed: category is empty');
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Выберите категорию товара'
       });
       return;
     }
@@ -104,7 +127,7 @@ const EditProduct = () => {
     setLoading(true);
     
     try {
-      await updateProduct(id!, {
+      const updateData = {
         name: formData.name,
         description: formData.description,
         category: formData.category,
@@ -113,7 +136,9 @@ const EditProduct = () => {
         status: formData.status as 'active' | 'draft',
         features: formData.features,
         images: formData.images
-      });
+      };
+      console.log('EditProduct calling updateProduct with data:', updateData);
+      await updateProduct(id!, updateData);
 
       toast({
         title: 'Успешно!',
