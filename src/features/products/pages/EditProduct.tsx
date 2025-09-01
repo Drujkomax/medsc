@@ -209,6 +209,7 @@ const EditProduct = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button 
+            type="button"
             variant="outline" 
             onClick={() => navigate('/admin/products')}
           >
