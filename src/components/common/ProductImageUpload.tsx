@@ -26,13 +26,16 @@ export const ImageUpload = ({ images, onImagesChange }: ProductImageUploadProps)
 
       const { data, error } = await supabase.storage
         .from('product-images')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
       if (error) throw error;
 
       const { data: { publicUrl } } = supabase.storage
         .from('product-images')
-        .getPublicUrl(filePath);
+        .getPublicUrl(data.path);
 
       if (type === 'cover') {
         onImagesChange({ ...images, cover: publicUrl });
@@ -45,6 +48,7 @@ export const ImageUpload = ({ images, onImagesChange }: ProductImageUploadProps)
         description: 'Изображение загружено'
       });
     } catch (error) {
+      console.error('Error uploading image:', error);
       toast({
         variant: 'destructive',
         title: 'Ошибка',
