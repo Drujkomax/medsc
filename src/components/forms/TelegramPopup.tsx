@@ -44,10 +44,10 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ onClose }) => {
         <div className="p-6">
           <div className="text-center mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t('telegram.description')}
+              Консультация экспертов
             </h3>
             <p className="text-gray-600 text-sm leading-relaxed">
-              {t('telegram.description')}
+              Ознакомьтесь со статьей <a href="https://t.me/medservice_centre/7" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">"Аренда или покупка? Что выгоднее?"</a>
             </p>
           </div>
 
@@ -63,9 +63,9 @@ const TelegramPopup: React.FC<TelegramPopupProps> = ({ onClose }) => {
               </div>
             </div>
             <div className="text-sm text-gray-700 leading-relaxed">
-              📊 {t('telegram.description')}
+              📊 Экспертная консультация
               <br />
-              💡 Экспертный анализ для принятия правильного решения
+              💡 Поможем принять правильное решение
             </div>
           </div>
 
