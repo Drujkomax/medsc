@@ -19,6 +19,13 @@ export interface Lead {
   archived?: boolean;
   archived_at?: string;
   archived_by?: string;
+  // Поля квалификации
+  budget_range?: string;
+  position?: string;
+  equipment_interest?: string;
+  timeline?: string;
+  qualification_date?: string;
+  qualified_by?: string;
 }
 
 export const useLeads = () => {
@@ -126,10 +133,21 @@ export const useLeads = () => {
   };
 
   const changeLeadStage = async (id: string, stage: string) => {
-    return updateLead(id, { 
+    const updateData: any = { 
       stage,
       closed_at: ['closed', 'lost'].includes(stage) ? new Date().toISOString() : null
-    });
+    };
+    
+    // Автоматически проставляем дату квалификации при переходе в статус "qualified"
+    if (stage === 'qualified') {
+      const { data: { user } } = await supabase.auth.getUser();
+      updateData.qualification_date = new Date().toISOString();
+      if (user) {
+        updateData.qualified_by = user.id;
+      }
+    }
+    
+    return updateLead(id, updateData);
   };
 
   useEffect(() => {

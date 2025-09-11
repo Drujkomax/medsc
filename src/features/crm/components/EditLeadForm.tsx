@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lead, useLeads } from '@/hooks/useLeads';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Save, User, Phone, Building, FileText, Tag } from 'lucide-react';
+import { Loader2, Save, User, Phone, Building, FileText, Tag, Target, DollarSign, Clock, Briefcase } from 'lucide-react';
 
 interface EditLeadFormProps {
   lead: Lead;
@@ -35,6 +35,35 @@ const sources = [
   { value: 'other', label: 'Другое' }
 ];
 
+const budgetRanges = [
+  { value: 'under_10k', label: 'До $10,000' },
+  { value: '10k_50k', label: '$10,000 - $50,000' },
+  { value: '50k_100k', label: '$50,000 - $100,000' },
+  { value: '100k_500k', label: '$100,000 - $500,000' },
+  { value: 'over_500k', label: 'Свыше $500,000' },
+  { value: 'not_specified', label: 'Не указан' }
+];
+
+const equipmentTypes = [
+  { value: 'mri', label: 'МРТ' },
+  { value: 'ct', label: 'КТ' },
+  { value: 'ultrasound', label: 'УЗИ' },
+  { value: 'xray', label: 'Рентген' },
+  { value: 'mammography', label: 'Маммография' },
+  { value: 'endoscopy', label: 'Эндоскопия' },
+  { value: 'laboratory', label: 'Лабораторное оборудование' },
+  { value: 'other', label: 'Другое' }
+];
+
+const timelines = [
+  { value: 'immediate', label: 'Немедленно (в течение месяца)' },
+  { value: 'quarter', label: 'В течение квартала' },
+  { value: 'half_year', label: 'В течение полугода' },
+  { value: 'year', label: 'В течение года' },
+  { value: 'over_year', label: 'Более года' },
+  { value: 'research', label: 'Пока изучаем рынок' }
+];
+
 export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadFormProps) => {
   const { updateLead } = useLeads();
   const { toast } = useToast();
@@ -47,7 +76,11 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
     stage: 'new',
     source: 'manual',
     notes: '',
-    value: ''
+    value: '',
+    budget_range: '',
+    position: '',
+    equipment_interest: '',
+    timeline: ''
   });
 
   useEffect(() => {
@@ -60,7 +93,11 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
         stage: lead.stage || 'new',
         source: lead.source || 'manual',
         notes: lead.notes || '',
-        value: lead.value?.toString() || ''
+        value: lead.value?.toString() || '',
+        budget_range: lead.budget_range || '',
+        position: lead.position || '',
+        equipment_interest: lead.equipment_interest || '',
+        timeline: lead.timeline || ''
       });
     }
   }, [lead]);
@@ -78,7 +115,11 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
         stage: formData.stage,
         source: formData.source,
         notes: formData.notes.trim() || undefined,
-        value: formData.value ? parseFloat(formData.value) : undefined
+        value: formData.value ? parseFloat(formData.value) : undefined,
+        budget_range: formData.budget_range || undefined,
+        position: formData.position.trim() || undefined,
+        equipment_interest: formData.equipment_interest || undefined,
+        timeline: formData.timeline || undefined
       });
       
       toast({
@@ -221,6 +262,93 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
               </SelectContent>
             </Select>
           </div>
+        </div>
+      </div>
+
+      {/* Квалификация лида */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <Target className="h-5 w-5" />
+          Квалификация лида
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="budget_range" className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4" />
+              Бюджет
+            </Label>
+            <Select value={formData.budget_range} onValueChange={(value) => handleInputChange('budget_range', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите диапазон бюджета" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                {budgetRanges.map((range) => (
+                  <SelectItem key={range.value} value={range.value}>
+                    {range.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="position" className="flex items-center gap-2">
+              <Briefcase className="h-4 w-4" />
+              Позиция/Должность
+            </Label>
+            <Input
+              id="position"
+              value={formData.position}
+              onChange={(e) => handleInputChange('position', e.target.value)}
+              placeholder="Например: Главный врач, Директор"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="equipment_interest" className="flex items-center gap-2">
+              <Building className="h-4 w-4" />
+              Интерес к оборудованию
+            </Label>
+            <Select value={formData.equipment_interest} onValueChange={(value) => handleInputChange('equipment_interest', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите тип оборудования" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                {equipmentTypes.map((type) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="timeline" className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              Сроки реализации
+            </Label>
+            <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите временные рамки" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                {timelines.map((timeline) => (
+                  <SelectItem key={timeline.value} value={timeline.value}>
+                    {timeline.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="p-4 bg-muted/50 rounded-lg">
+          <p className="text-sm text-muted-foreground">
+            <span className="font-medium">Совет:</span> Заполните поля квалификации во время телефонного разговора с клиентом. 
+            Эта информация поможет лучше понять потребности лида и подготовить персональное предложение.
+          </p>
         </div>
       </div>
 

@@ -275,16 +275,22 @@ export type Database = {
           archived_by: string | null
           assigned_by: string | null
           assigned_to: string | null
+          budget_range: string | null
           closed_at: string | null
           company: string | null
           created_at: string
           email: string | null
+          equipment_interest: string | null
           id: string
           name: string
           notes: string | null
           phone: string | null
+          position: string | null
+          qualification_date: string | null
+          qualified_by: string | null
           source: string | null
           stage: string
+          timeline: string | null
           updated_at: string
           value: number | null
         }
@@ -294,16 +300,22 @@ export type Database = {
           archived_by?: string | null
           assigned_by?: string | null
           assigned_to?: string | null
+          budget_range?: string | null
           closed_at?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
+          equipment_interest?: string | null
           id?: string
           name: string
           notes?: string | null
           phone?: string | null
+          position?: string | null
+          qualification_date?: string | null
+          qualified_by?: string | null
           source?: string | null
           stage?: string
+          timeline?: string | null
           updated_at?: string
           value?: number | null
         }
@@ -313,16 +325,22 @@ export type Database = {
           archived_by?: string | null
           assigned_by?: string | null
           assigned_to?: string | null
+          budget_range?: string | null
           closed_at?: string | null
           company?: string | null
           created_at?: string
           email?: string | null
+          equipment_interest?: string | null
           id?: string
           name?: string
           notes?: string | null
           phone?: string | null
+          position?: string | null
+          qualification_date?: string | null
+          qualified_by?: string | null
           source?: string | null
           stage?: string
+          timeline?: string | null
           updated_at?: string
           value?: number | null
         }
