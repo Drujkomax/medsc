@@ -59,6 +59,7 @@ export const useLeads = () => {
     notes?: string;
     source?: string;
     value?: number;
+    equipment_interest?: string;
   }) => {
     try {
       const { data, error } = await supabase

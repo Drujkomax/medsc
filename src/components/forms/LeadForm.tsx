@@ -94,6 +94,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ onClose }) => {
         name: formData.name,
         phone: formData.phone ? getFullUzbekPhoneNumber(formData.phone) : undefined,
         notes: formData.equipmentType ? `Тип оборудования: ${t(`leadForm.equipmentTypes.${formData.equipmentType}`)}` : undefined,
+        equipment_interest: formData.equipmentType,
         stage: 'new',
         source: 'website_form'
       });
