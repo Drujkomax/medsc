@@ -111,8 +111,8 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
 
   const getRoleLabel = (role?: string) => {
     const roles: Record<string, string> = {
-      'salesperson': 'Продавец',
-      'sales_manager': 'Менеджер продаж',
+      'salesperson': 'Специалист по продажам',
+      'sales_manager': 'Руководитель',
       'admin': 'Администратор',
       'director': 'Директор'
     };

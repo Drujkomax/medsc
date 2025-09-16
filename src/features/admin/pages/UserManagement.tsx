@@ -44,8 +44,8 @@ const UserManagement = () => {
   });
 
   const roles = [
-    { value: 'salesperson', label: 'Продавец', color: 'bg-blue-100 text-blue-800' },
-    { value: 'sales_manager', label: 'Менеджер продаж', color: 'bg-purple-100 text-purple-800' },
+    { value: 'salesperson', label: 'Специалист по продажам', color: 'bg-blue-100 text-blue-800' },
+    { value: 'sales_manager', label: 'Руководитель', color: 'bg-purple-100 text-purple-800' },
     { value: 'admin', label: 'Администратор', color: 'bg-red-100 text-red-800' },
     { value: 'director', label: 'Директор', color: 'bg-green-100 text-green-800' }
   ];

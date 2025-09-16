@@ -65,8 +65,8 @@ const RegisterWithInvite = () => {
 
   const getRoleLabel = (role: string): string => {
     const roleLabels: { [key: string]: string } = {
-      'salesperson': 'Продавец',
-      'sales_manager': 'Менеджер продаж',
+      'salesperson': 'Специалист по продажам',
+      'sales_manager': 'Руководитель',
       'admin': 'Администратор',
       'director': 'Директор'
     };

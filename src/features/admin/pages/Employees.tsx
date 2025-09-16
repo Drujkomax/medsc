@@ -45,9 +45,9 @@ const Employees = () => {
 
   const roleLabels = {
     'director': 'Директор',
-    'sales_manager': 'Администратор', 
+    'sales_manager': 'Руководитель', 
     'admin': 'Администратор',
-    'salesperson': 'Продавец'
+    'salesperson': 'Специалист по продажам'
   };
 
   useEffect(() => {
@@ -187,8 +187,8 @@ const Employees = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="salesperson">Продавец</SelectItem>
-                      <SelectItem value="sales_manager">Администратор</SelectItem>
+                      <SelectItem value="salesperson">Специалист по продажам</SelectItem>
+                      <SelectItem value="sales_manager">Руководитель</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
