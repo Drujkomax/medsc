@@ -91,7 +91,7 @@ export function AdminSidebar() {
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden animate-glow">
               <img 
-                src="/src/assets/msc-logo.png" 
+                src="/src/assets/msc-admin-logo.jpg" 
                 alt="Med Service Centre" 
                 className="w-full h-full object-contain"
               />
