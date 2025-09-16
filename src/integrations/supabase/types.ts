@@ -719,6 +719,10 @@ export type Database = {
         Args: { product_id: string; user_id: string }
         Returns: undefined
       }
+      assign_role_from_invite: {
+        Args: { p_invite_id: string; p_user_id: string }
+        Returns: Json
+      }
       confirm_user_registration: {
         Args: { user_id: string }
         Returns: Json

@@ -110,34 +110,18 @@ const RegisterWithInvite = () => {
       if (authError) throw authError;
 
       if (authData.user) {
-        // Получаем данные приглашения для роли
-        const { data: inviteInfo } = await supabase
-          .from('user_invites')
-          .select('role')
-          .eq('id', inviteId)
-          .single();
+        // Используем новую функцию для назначения роли и подтверждения пользователя
+        const { data: assignResult, error: assignError } = await supabase.rpc('assign_role_from_invite', {
+          p_invite_id: inviteId,
+          p_user_id: authData.user.id
+        });
 
-        if (inviteInfo) {
-          // Создаем или обновляем роль пользователя
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .upsert({
-              user_id: authData.user.id,
-              role: inviteInfo.role as 'admin' | 'salesperson' | 'sales_manager' | 'director'
-            }, {
-              onConflict: 'user_id'
-            });
-
-          if (roleError) {
-            console.error('Role assignment error:', roleError);
-          }
+        if (assignError) {
+          console.error('Role assignment error:', assignError);
+          throw new Error('Ошибка при назначении роли: ' + assignError.message);
         }
 
-        // Помечаем приглашение как использованное
-        await supabase
-          .from('user_invites')
-          .update({ used: true })
-          .eq('id', inviteId);
+        console.log('Role assigned successfully:', assignResult);
       }
 
       toast({
