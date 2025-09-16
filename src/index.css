@@ -130,6 +130,22 @@
   .card-closed { @apply bg-green-500/5 border-green-500/20 hover:bg-green-500/10; }
   .card-lost { @apply bg-red-500/5 border-red-500/20 hover:bg-red-500/10; }
 
+  /* Deal stage backgrounds */
+  .deal-lead { @apply bg-blue-500/10 border-blue-500/30; }
+  .deal-qualified { @apply bg-green-500/10 border-green-500/30; }
+  .deal-proposal { @apply bg-yellow-500/10 border-yellow-500/30; }
+  .deal-negotiation { @apply bg-orange-500/10 border-orange-500/30; }
+  .deal-closed { @apply bg-emerald-500/10 border-emerald-500/30; }
+  .deal-lost { @apply bg-red-500/10 border-red-500/30; }
+
+  /* Deal card variants */
+  .deal-card-lead { @apply bg-blue-500/5 border-blue-500/20 hover:bg-blue-500/10; }
+  .deal-card-qualified { @apply bg-green-500/5 border-green-500/20 hover:bg-green-500/10; }
+  .deal-card-proposal { @apply bg-yellow-500/5 border-yellow-500/20 hover:bg-yellow-500/10; }
+  .deal-card-negotiation { @apply bg-orange-500/5 border-orange-500/20 hover:bg-orange-500/10; }
+  .deal-card-closed { @apply bg-emerald-500/5 border-emerald-500/20 hover:bg-emerald-500/10; }
+  .deal-card-lost { @apply bg-red-500/5 border-red-500/20 hover:bg-red-500/10; }
+
   .glass-sidebar {
     @apply backdrop-blur-xl border-r border-white/15;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);

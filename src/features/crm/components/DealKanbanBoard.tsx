@@ -26,12 +26,12 @@ const DealKanbanBoard = ({ onAddDeal, onEditDeal, onViewDeal }: DealKanbanBoardP
   const [localDeals, setLocalDeals] = useState<Deal[]>([]);
 
   const stages = [
-    { id: 'lead', title: t('deals.stages.lead'), color: 'bg-blue-50 border-blue-200' },
-    { id: 'qualified', title: t('deals.stages.qualified'), color: 'bg-green-50 border-green-200' },
-    { id: 'proposal', title: t('deals.stages.proposal'), color: 'bg-yellow-50 border-yellow-200' },
-    { id: 'negotiation', title: t('deals.stages.negotiation'), color: 'bg-orange-50 border-orange-200' },
-    { id: 'closed', title: t('deals.stages.closed'), color: 'bg-emerald-50 border-emerald-200' },
-    { id: 'lost', title: t('deals.stages.lost'), color: 'bg-red-50 border-red-200' }
+    { id: 'lead', title: t('deals.stages.lead'), color: 'deal-lead' },
+    { id: 'qualified', title: t('deals.stages.qualified'), color: 'deal-qualified' },
+    { id: 'proposal', title: t('deals.stages.proposal'), color: 'deal-proposal' },
+    { id: 'negotiation', title: t('deals.stages.negotiation'), color: 'deal-negotiation' },
+    { id: 'closed', title: t('deals.stages.closed'), color: 'deal-closed' },
+    { id: 'lost', title: t('deals.stages.lost'), color: 'deal-lost' }
   ];
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const DealKanbanBoard = ({ onAddDeal, onEditDeal, onViewDeal }: DealKanbanBoardP
           {stages.map(stage => (
             <div key={stage.id} className="flex-shrink-0 w-80">
               {/* Column Header */}
-              <div className={`p-4 rounded-lg border ${stage.color} mb-4`}>
+              <div className={`p-4 rounded-lg border backdrop-blur-xl ${stage.color} mb-4 animate-fade-in`}>
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-sm">{stage.title}</h3>
                   <Badge variant="secondary">
@@ -141,8 +141,8 @@ const DealKanbanBoard = ({ onAddDeal, onEditDeal, onViewDeal }: DealKanbanBoardP
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`transition-shadow ${
-                              snapshot.isDragging ? 'shadow-lg' : 'hover:shadow-md'
+                            className={`deal-card-${stage.id} transition-shadow smooth-transition hover-glow ${
+                              snapshot.isDragging ? 'shadow-lg rotate-2 scale-105' : 'hover:shadow-md'
                             }`}
                           >
                             <CardHeader className="pb-2">

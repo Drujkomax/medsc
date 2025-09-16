@@ -40,14 +40,14 @@ const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
 
   const getStageColor = (stage: string) => {
     const colors = {
-      lead: 'bg-blue-100 text-blue-800',
-      qualified: 'bg-green-100 text-green-800',
-      proposal: 'bg-yellow-100 text-yellow-800',
-      negotiation: 'bg-orange-100 text-orange-800',
-      closed: 'bg-emerald-100 text-emerald-800',
-      lost: 'bg-red-100 text-red-800'
+      lead: 'bg-blue-500/20 text-blue-200 border-blue-500/30',
+      qualified: 'bg-green-500/20 text-green-200 border-green-500/30',
+      proposal: 'bg-yellow-500/20 text-yellow-200 border-yellow-500/30',
+      negotiation: 'bg-orange-500/20 text-orange-200 border-orange-500/30',
+      closed: 'bg-emerald-500/20 text-emerald-200 border-emerald-500/30',
+      lost: 'bg-red-500/20 text-red-200 border-red-500/30'
     };
-    return colors[stage as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[stage as keyof typeof colors] || 'bg-muted/20 text-muted-foreground border-muted/30';
   };
 
   const totalValue = deals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
@@ -193,7 +193,7 @@ const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredDeals.map((deal) => (
-            <Card key={deal.id} className="hover:shadow-md transition-shadow">
+            <Card key={deal.id} className={`deal-card-${deal.stage} hover:shadow-md transition-shadow smooth-transition hover-glow`}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center justify-between">
                   <span className="truncate">{deal.title}</span>
