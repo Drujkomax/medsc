@@ -95,12 +95,15 @@ const RegisterWithInvite = () => {
     setError('');
 
     try {
-      // Регистрируемся в Supabase Auth
+      // Регистрируемся в Supabase Auth без подтверждения email
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: inviteData.email,
         password: formData.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/admin`
+          emailRedirectTo: `${window.location.origin}/admin`,
+          data: {
+            email_confirm: false // Отключаем подтверждение email
+          }
         }
       });
 
@@ -139,7 +142,7 @@ const RegisterWithInvite = () => {
 
       toast({
         title: 'Регистрация успешна!',
-        description: 'Проверьте почту для подтверждения аккаунта',
+        description: 'Теперь вы можете войти в систему с вашими данными',
       });
 
       // Перенаправляем на страницу входа
