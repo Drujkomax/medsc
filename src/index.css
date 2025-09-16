@@ -15,91 +15,62 @@
 
 @layer base {
   :root {
-    /* MSC Brand Colors */
-    --msc-primary: 232 78% 15%; /* #0C1139 deep blue */
-    --msc-accent: 220 100% 70%; /* #6699FF light blue */
-    --msc-bg: 240 9% 99%; /* #FEFEFE white */
-    --msc-text: 232 78% 15%; /* #0C1139 for text */
-    --msc-text-light: 220 13% 46%; /* Gray text */
+    /* MSC Brand Colors - Premium Dark Theme */
+    --msc-primary: 220 100% 65%; /* #4D9AFF bright blue */
+    --msc-accent: 280 100% 70%; /* #B366FF purple accent */
+    --msc-secondary: 200 100% 60%; /* #33AAFF cyan */
+    --msc-bg-gradient: linear-gradient(135deg, #0a0f1c 0%, #1a1b3e 100%);
     
-    /* Semantic tokens based on MSC brand - Light Theme */
-    --background: 240 9% 99%; /* Light background */
-    --foreground: 232 78% 15%; /* Dark text for contrast */
+    /* Dark Theme - Professional & Modern */
+    --background: 222 15% 6%; /* Very dark navy */
+    --foreground: 220 25% 95%; /* Bright white text */
 
-    --card: 0 0% 100%; /* White cards */
-    --card-foreground: 232 78% 15%;
+    --card: 222 20% 8%; /* Dark card with subtle blue */
+    --card-foreground: 220 25% 92%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 232 78% 15%;
-
-    --primary: 232 78% 15%; /* MSC primary deep blue */
-    --primary-foreground: 240 9% 99%;
-
-    --secondary: 240 5% 96%; /* Light gray secondary */
-    --secondary-foreground: 232 78% 15%;
-
-    --muted: 240 5% 96%;
-    --muted-foreground: 220 13% 46%;
-
-    --accent: 220 100% 70%; /* MSC accent blue */
-    --accent-foreground: 232 78% 15%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 240 9% 99%;
-
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 220 100% 70%;
-
-    --radius: 0.75rem;
-
-    --sidebar-background: 0 0% 100%; /* Light sidebar */
-    --sidebar-foreground: 232 78% 15%;
-    --sidebar-primary: 232 78% 15%;
-    --sidebar-primary-foreground: 240 9% 99%;
-    --sidebar-accent: 240 5% 96%;
-    --sidebar-accent-foreground: 232 78% 15%;
-    --sidebar-border: 240 6% 90%;
-    --sidebar-ring: 220 100% 70%;
-  }
-
-  .dark {
-    --background: 225 12% 6%; /* Even darker for dark mode */
-    --foreground: 220 25% 95%; /* Very light text */
-
-    --card: 225 15% 8%;
-    --card-foreground: 220 25% 95%;
-
-    --popover: 225 18% 10%;
+    --popover: 222 25% 10%;
     --popover-foreground: 220 25% 95%;
 
-    --primary: 220 100% 65%;
-    --primary-foreground: 225 12% 6%;
+    --primary: 220 100% 65%; /* Bright MSC blue */
+    --primary-foreground: 222 15% 6%;
 
-    --secondary: 225 15% 12%;
-    --secondary-foreground: 220 25% 95%;
+    --secondary: 222 20% 12%; /* Darker secondary */
+    --secondary-foreground: 220 25% 90%;
 
-    --muted: 225 15% 10%;
-    --muted-foreground: 220 15% 70%;
+    --muted: 222 18% 10%;
+    --muted-foreground: 220 15% 65%;
 
-    --accent: 220 100% 65%;
-    --accent-foreground: 225 12% 6%;
+    --accent: 280 100% 70%; /* Purple accent */
+    --accent-foreground: 222 15% 6%;
 
-    --destructive: 0 75% 55%;
+    --destructive: 0 75% 60%;
     --destructive-foreground: 220 25% 95%;
 
-    --border: 225 15% 15%;
-    --input: 225 15% 12%;
+    --border: 222 20% 15%; /* Subtle borders */
+    --input: 222 20% 12%;
     --ring: 220 100% 65%;
-    
-    --sidebar-background: 225 18% 4%;
+
+    --radius: 0.875rem; /* Slightly more rounded */
+
+    /* Sidebar - Premium glass effect */
+    --sidebar-background: 222 25% 4%; /* Even darker sidebar */
     --sidebar-foreground: 220 25% 92%;
     --sidebar-primary: 220 100% 65%;
-    --sidebar-primary-foreground: 225 12% 6%;
-    --sidebar-accent: 225 15% 10%;
+    --sidebar-primary-foreground: 222 15% 6%;
+    --sidebar-accent: 222 20% 10%;
     --sidebar-accent-foreground: 220 25% 92%;
-    --sidebar-border: 225 15% 12%;
+    --sidebar-border: 222 20% 12%;
     --sidebar-ring: 220 100% 65%;
+
+    /* Glass morphism variables */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Force dark theme - no light mode */
+  * {
+    color-scheme: dark;
   }
 }
 
@@ -111,23 +82,141 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'OmniglotFont', 'Inter', sans-serif;
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(222 20% 8%) 100%);
+    min-height: 100vh;
   }
   
-  /* Typography - MSC Brand Fonts */
+  /* Typography - Premium MSC Fonts */
   .font-heading {
     font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
   }
   
   .font-body {
     font-family: 'OmniglotFont', 'Inter', sans-serif;
+    line-height: 1.6;
   }
   
   /* Apply OmniglotFont to all headings */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+}
+
+@layer components {
+  /* Glass Morphism Cards */
+  .glass-card {
+    @apply bg-card/50 backdrop-blur-xl border border-white/10;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-sidebar {
+    @apply backdrop-blur-xl border-r border-white/10;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  /* Premium Buttons */
+  .btn-premium {
+    @apply relative overflow-hidden bg-gradient-to-r from-primary to-accent;
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25;
+  }
+
+  .btn-premium::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-white/20 to-transparent;
+    @apply opacity-0 transition-opacity duration-300;
+  }
+
+  .btn-premium:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Smooth Transitions */
+  .smooth-transition {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  /* Hover Glow Effect */
+  .hover-glow {
+    @apply transition-all duration-300;
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.4);
+  }
+}
+
+@layer utilities {
+  /* MSC Animations */
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
   }
   
-  /* MSC Hexagon Pattern & Animations */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    }
+    to {
+      box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Hexagon Shapes */
   .hexagon {
     clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);
   }
@@ -140,62 +229,8 @@
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(135deg, hsl(var(--msc-accent)), hsl(var(--msc-primary)));
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
     clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);
     z-index: -1;
-  }
-  
-  /* MSC Smooth Animations */
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-  
-  @keyframes glow {
-    from {
-      box-shadow: 0 0 20px hsl(var(--msc-accent) / 0.3);
-    }
-    to {
-      box-shadow: 0 0 40px hsl(var(--msc-accent) / 0.6);
-    }
-  }
-  
-  /* Reveal animation */
-  .animate-reveal {
-    animation: reveal 0.8s ease-out forwards;
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  
-  @keyframes reveal {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  /* Typewriter animation */
-  @keyframes typewriter {
-    0%, 33% {
-      width: 100%;
-      opacity: 1;
-    }
-    34%, 66% {
-      width: 0%;
-      opacity: 0;
-    }
-    67%, 100% {
-      width: 100%;
-      opacity: 1;
-    }
-  }
-  
-  /* Counter-rotate animation for keeping icons upright during orbital rotation */
-  @keyframes counter-rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(-360deg);
-    }
   }
 }

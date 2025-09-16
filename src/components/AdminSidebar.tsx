@@ -85,46 +85,60 @@ export function AdminSidebar() {
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader className="border-b border-border p-4">
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary rounded flex items-center justify-center">
-              <span className="text-primary-foreground font-bold">MSC</span>
+    <Sidebar className="glass-sidebar">
+      <SidebarHeader className="border-b border-white/10 p-6">
+        <div className="space-y-3 animate-fade-in">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center animate-glow">
+              <span className="text-white font-bold text-sm">MSC</span>
             </div>
-            <span className="font-semibold text-lg">{t('navigation2.adminPanel')}</span>
+            <div>
+              <span className="font-heading text-lg gradient-text">{t('navigation2.adminPanel')}</span>
+              <div className="text-xs text-muted-foreground">Med Service Centre</div>
+            </div>
           </div>
           {user?.email && (
-            <div className="text-sm text-muted-foreground pl-10">
-              {user.email}
+            <div className="glass-card rounded-lg p-3">
+              <div className="text-sm text-foreground font-medium">
+                {user.email}
+              </div>
+              <Badge 
+                variant="secondary" 
+                className="bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 text-primary text-xs mt-1"
+              >
+                {getRoleTranslation(role, i18n.language)}
+              </Badge>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
-          <SidebarGroupLabel>{t('navigation2.navigation')}</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-muted-foreground font-medium mb-3 px-3">
+            {t('navigation2.navigation')}
+          </SidebarGroupLabel>
           
           <SidebarGroupContent>
-            <SidebarMenu>
-              {navigation.map((item) => {
+            <SidebarMenu className="space-y-1">
+              {navigation.map((item, index) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
                 
                 return (
-                  <SidebarMenuItem key={item.href}>
+                  <SidebarMenuItem key={item.href} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                     <SidebarMenuButton asChild>
                       <Link
                         to={item.href}
-                        className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-colors ${
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium smooth-transition group ${
                           active
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                            ? 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-primary/25'
+                            : 'text-sidebar-foreground hover:bg-white/10 hover:text-white'
                         }`}
                       >
-                        <Icon className="w-5 h-5 flex-shrink-0" />
-                        <span>{item.name}</span>
+                        <Icon className={`w-5 h-5 flex-shrink-0 ${active ? 'animate-float' : 'group-hover:scale-110 smooth-transition'}`} />
+                        <span className="group-hover:translate-x-1 smooth-transition">{item.name}</span>
+                        {active && <div className="ml-auto w-2 h-2 bg-white rounded-full animate-glow" />}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -135,17 +149,18 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-border p-4">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
+      <SidebarFooter className="border-t border-white/10 p-4">
+        <div className="space-y-3 animate-fade-in">
+          <div className="flex items-center justify-center">
             <LanguageSwitcher />
-            <Badge variant="secondary" className="text-xs">
-              {getRoleTranslation(role, i18n.language)}
-            </Badge>
           </div>
           <Link to="/">
-            <Button variant="outline" className="w-full justify-start" size="sm">
-              <Home className="w-4 h-4 mr-2" />
+            <Button 
+              variant="outline" 
+              className="w-full justify-start glass-card border-white/20 hover:bg-white/10 smooth-transition group" 
+              size="sm"
+            >
+              <Home className="w-4 h-4 mr-2 group-hover:scale-110 smooth-transition" />
               {t('admin.toWebsite')}
             </Button>
           </Link>
