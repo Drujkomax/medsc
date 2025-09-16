@@ -89,8 +89,12 @@ export function AdminSidebar() {
       <SidebarHeader className="border-b border-white/10 p-6">
         <div className="space-y-3 animate-fade-in">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center animate-glow">
-              <span className="text-white font-bold text-sm">MSC</span>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden animate-glow">
+              <img 
+                src="/src/assets/msc-logo.png" 
+                alt="Med Service Centre" 
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
               <span className="font-heading text-lg gradient-text">{t('navigation2.adminPanel')}</span>
