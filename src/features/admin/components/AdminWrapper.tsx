@@ -51,7 +51,7 @@ const AdminWrapper = () => {
   // Если пользователь не авторизован или не имеет административных прав - показываем форму входа
   // Only director, admin, and sales_manager can access admin panel
   // salesperson has limited access only to assigned leads/deals through different interface
-  const allowedRoles = ['admin', 'sales_manager', 'director'];
+  const allowedRoles = ['admin', 'sales_manager', 'director', 'salesperson'];
   if (!user || !allowedRoles.includes(role || '')) {
     return <AdminAuth />;
   }
