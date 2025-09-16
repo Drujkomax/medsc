@@ -17,15 +17,17 @@ import AdminProductPreview from '../../products/pages/AdminProductPreview';
 import ArchivedData from '../pages/ArchivedData';
 import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
-import Employees from '../pages/Employees';
+import Employees from '../pages/EmployeeManagement';
 import UserManagement from '../pages/UserManagement';
 import EmployeeManagement from '../pages/EmployeeManagement';
 import Analytics from '../pages/Analytics';
 import Categories from '../pages/Categories';
+import { useResolveInviteRole } from '@/hooks/useResolveInviteRole';
 
 const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
+  const { resolving } = useResolveInviteRole();
 
 
   // Показываем загрузку пока проверяем аутентификацию
@@ -45,6 +47,14 @@ const AdminWrapper = () => {
         <Route path="register/:inviteId" element={<RegisterWithInvite />} />
         <Route path="director-registration" element={<DirectorRegistration />} />
       </Routes>
+    );
+  }
+  // Если сейчас пробуем автоматически назначить роль из приглашения — показываем спиннер
+  if (resolving) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
     );
   }
 
