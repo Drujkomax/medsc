@@ -94,7 +94,7 @@ export const AIImageGeneration = ({
     const targetPath = `src/assets/${filename}`;
     
     try {
-      // Используем API генерации изображений Lovable
+      // Используем API генерации изображений
       const response = await fetch('/api/generate-image', {
         method: 'POST',
         headers: {

@@ -15,7 +15,7 @@ const SEOHead = ({
   title = "Med Service Centre - Медицинское оборудование в Узбекистане",
   description = "Med Service Centre - ведущий интегратор медицинского оборудования и сервис-услуг в Узбекистане. Поставка, инсталляция, обучение, регистрация, сервис.",
   keywords = "медицинское оборудование, узбекистан, МРТ, УЗИ, рентген, сервис, поставка, инсталляция",
-  image = "https://lovable.dev/opengraph-image-p98pqg.png",
+  image = "/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png",
   url,
   type = "website",
   canonical
