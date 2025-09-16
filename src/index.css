@@ -15,57 +15,56 @@
 
 @layer base {
   :root {
-    /* MSC Brand Colors - Premium Dark Theme */
+    /* MSC Brand Colors - Balanced Dark Theme */
     --msc-primary: 220 100% 65%; /* #4D9AFF bright blue */
     --msc-accent: 280 100% 70%; /* #B366FF purple accent */
     --msc-secondary: 200 100% 60%; /* #33AAFF cyan */
-    --msc-bg-gradient: linear-gradient(135deg, #0a0f1c 0%, #1a1b3e 100%);
     
-    /* Dark Theme - Professional & Modern */
-    --background: 222 15% 6%; /* Very dark navy */
-    --foreground: 220 25% 95%; /* Bright white text */
+    /* Balanced Dark Theme - More readable */
+    --background: 220 15% 12%; /* Lighter dark background */
+    --foreground: 220 20% 98%; /* Very bright white text */
 
-    --card: 222 20% 8%; /* Dark card with subtle blue */
-    --card-foreground: 220 25% 92%;
+    --card: 220 15% 16%; /* Lighter card background */
+    --card-foreground: 220 15% 95%;
 
-    --popover: 222 25% 10%;
-    --popover-foreground: 220 25% 95%;
+    --popover: 220 15% 18%;
+    --popover-foreground: 220 15% 95%;
 
     --primary: 220 100% 65%; /* Bright MSC blue */
-    --primary-foreground: 222 15% 6%;
+    --primary-foreground: 220 15% 12%;
 
-    --secondary: 222 20% 12%; /* Darker secondary */
-    --secondary-foreground: 220 25% 90%;
+    --secondary: 220 15% 20%; /* Much lighter secondary */
+    --secondary-foreground: 220 15% 90%;
 
-    --muted: 222 18% 10%;
-    --muted-foreground: 220 15% 65%;
+    --muted: 220 15% 18%; /* Lighter muted */
+    --muted-foreground: 220 10% 70%;
 
     --accent: 280 100% 70%; /* Purple accent */
-    --accent-foreground: 222 15% 6%;
+    --accent-foreground: 220 15% 12%;
 
     --destructive: 0 75% 60%;
-    --destructive-foreground: 220 25% 95%;
+    --destructive-foreground: 220 15% 95%;
 
-    --border: 222 20% 15%; /* Subtle borders */
-    --input: 222 20% 12%;
+    --border: 220 15% 25%; /* Much lighter borders */
+    --input: 220 15% 18%;
     --ring: 220 100% 65%;
 
-    --radius: 0.875rem; /* Slightly more rounded */
+    --radius: 0.875rem;
 
-    /* Sidebar - Premium glass effect */
-    --sidebar-background: 222 25% 4%; /* Even darker sidebar */
-    --sidebar-foreground: 220 25% 92%;
+    /* Sidebar - Much lighter glass effect */
+    --sidebar-background: 220 15% 14%; /* Lighter sidebar */
+    --sidebar-foreground: 220 15% 92%;
     --sidebar-primary: 220 100% 65%;
-    --sidebar-primary-foreground: 222 15% 6%;
-    --sidebar-accent: 222 20% 10%;
-    --sidebar-accent-foreground: 220 25% 92%;
-    --sidebar-border: 222 20% 12%;
+    --sidebar-primary-foreground: 220 15% 12%;
+    --sidebar-accent: 220 15% 20%;
+    --sidebar-accent-foreground: 220 15% 92%;
+    --sidebar-border: 220 15% 22%;
     --sidebar-ring: 220 100% 65%;
 
-    /* Glass morphism variables */
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    /* Glass morphism variables - lighter */
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
 
   /* Force dark theme - no light mode */
@@ -82,7 +81,7 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'OmniglotFont', 'Inter', sans-serif;
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(222 20% 8%) 100%);
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(220 18% 15%) 100%);
     min-height: 100vh;
   }
   
@@ -107,16 +106,16 @@
 }
 
 @layer components {
-  /* Glass Morphism Cards */
+  /* Glass Morphism Cards - Lighter */
   .glass-card {
-    @apply bg-card/50 backdrop-blur-xl border border-white/10;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    @apply bg-card/80 backdrop-blur-xl border border-white/20;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 
   .glass-sidebar {
-    @apply backdrop-blur-xl border-r border-white/10;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.1);
+    @apply backdrop-blur-xl border-r border-white/15;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.15);
   }
 
   /* Premium Buttons */
