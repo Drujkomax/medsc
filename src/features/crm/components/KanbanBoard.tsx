@@ -127,7 +127,7 @@ const KanbanBoard = () => {
           {stages.map((stage, index) => (
             <div 
               key={stage.id} 
-              className="glass-card min-w-80 flex-shrink-0 p-4 animate-fade-in" 
+              className={`glass-card min-w-80 flex-shrink-0 p-4 animate-fade-in kanban-${stage.id}`}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-center mb-4">
@@ -157,7 +157,7 @@ const KanbanBoard = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`mb-3 cursor-pointer glass-card hover-glow smooth-transition ${
+                            className={`mb-3 cursor-pointer card-${stage.id} hover-glow smooth-transition ${
                               snapshot.isDragging ? 'rotate-2 scale-105' : ''
                             }`}
                             onClick={() => openLeadModal(lead)}
