@@ -194,22 +194,22 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
   
-  /* Typography - MSC Brand Fonts */
+  /* Typography - Inter Font */
   .font-heading {
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
   
   .font-body {
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
   
-  /* Apply OmniglotFont to all headings */
+  /* Apply Inter to all headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
   }
   
   /* MSC Hexagon Pattern & Animations */
