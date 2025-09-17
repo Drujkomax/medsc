@@ -131,11 +131,11 @@ const KanbanBoard = () => {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-center mb-4">
-                <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${stage.color} mr-3 animate-glow`}></div>
-                <h3 className="font-heading text-foreground font-semibold">{stage.title}</h3>
+                <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${stage.color} mr-3`}></div>
+                <h3 className="font-heading text-gray-900 font-semibold">{stage.title}</h3>
                 <Badge 
                   variant="secondary" 
-                  className="ml-auto bg-white/10 text-foreground border-white/20"
+                  className="ml-auto bg-gray-100 text-gray-900 border-gray-200"
                 >
                   {getLeadsByStage(stage.id).length}
                 </Badge>
@@ -147,7 +147,7 @@ const KanbanBoard = () => {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                     className={`min-h-[300px] transition-all duration-300 rounded-lg p-2 ${
-                      snapshot.isDraggingOver ? 'bg-white/10' : ''
+                      snapshot.isDraggingOver ? 'bg-blue-50' : ''
                     }`}
                   >
                     {getLeadsByStage(stage.id).map((lead, index) => (
@@ -163,25 +163,25 @@ const KanbanBoard = () => {
                             onClick={() => openLeadModal(lead)}
                           >
                             <CardHeader className="pb-2">
-                              <CardTitle className="text-sm font-medium text-foreground">
+                              <CardTitle className="text-sm font-medium text-gray-900">
                                 {lead.name}
                               </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-0">
-                              <div className="space-y-2 text-xs text-muted-foreground">
+                              <div className="space-y-2 text-xs text-gray-600">
                                 {lead.company && (
                                   <div className="flex items-center">
-                                    <Building className="mr-2 h-3 w-3 text-primary" />
+                                    <Building className="mr-2 h-3 w-3 text-blue-600" />
                                     <span className="truncate">{lead.company}</span>
                                   </div>
                                 )}
                                 {lead.phone && (
                                   <div className="flex items-center">
-                                    <Phone className="mr-2 h-3 w-3 text-accent" />
+                                    <Phone className="mr-2 h-3 w-3 text-green-600" />
                                     <span>{lead.phone}</span>
                                   </div>
                                 )}
-                                <div className="text-xs text-muted-foreground">
+                                <div className="text-xs text-gray-500">
                                   {new Date(lead.created_at).toLocaleDateString()}
                                 </div>
                               </div>

@@ -71,7 +71,7 @@ export const LeadHybridCard = ({
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="font-semibold text-lg">{lead.name}</h3>
+            <h3 className="font-semibold text-lg text-gray-900">{lead.name}</h3>
             
             {/* Status Selector */}
             <Select 
@@ -97,26 +97,26 @@ export const LeadHybridCard = ({
             </Select>
           </div>
           
-          <div className="space-y-1 text-sm text-muted-foreground">
+          <div className="space-y-1 text-sm text-gray-600">
             {lead.phone && (
               <div className="flex items-center gap-1">
-                <Phone className="h-3 w-3" />
+                <Phone className="h-3 w-3 text-blue-600" />
                 <span>{lead.phone}</span>
               </div>
             )}
             {lead.company && (
               <div className="flex items-center gap-1">
-                <Building2 className="h-3 w-3" />
+                <Building2 className="h-3 w-3 text-green-600" />
                 <span>{lead.company}</span>
               </div>
             )}
             <div className="flex items-center gap-1">
-              <Calendar className="h-3 w-3" />
+              <Calendar className="h-3 w-3 text-gray-500" />
               <span>{new Date(lead.created_at).toLocaleDateString('ru-RU')}</span>
             </div>
             {lead.assigned_to && (
               <div className="flex items-center gap-1">
-                <User className="h-3 w-3" />
+                <User className="h-3 w-3 text-purple-600" />
                 <span>Назначен</span>
               </div>
             )}
@@ -157,17 +157,17 @@ export const LeadHybridCard = ({
       </div>
 
       {lead.notes && (
-        <p className="text-sm text-muted-foreground truncate">{lead.notes}</p>
+        <p className="text-sm text-gray-600 truncate">{lead.notes}</p>
       )}
 
       {showDuplicates && duplicates.length > 0 && (
-        <div className="mt-3 pt-3 border-t">
-          <h4 className="text-sm font-medium mb-2">Похожие лиды:</h4>
+        <div className="mt-3 pt-3 border-t border-gray-200">
+          <h4 className="text-sm font-medium mb-2 text-gray-900">Похожие лиды:</h4>
           <div className="space-y-1">
             {duplicates.map(dup => (
-              <div key={dup.id} className="text-xs p-2 bg-orange-50 rounded">
-                <div className="font-medium">{dup.name}</div>
-                {dup.phone && <div className="text-muted-foreground">{dup.phone}</div>}
+              <div key={dup.id} className="text-xs p-2 bg-orange-50 border border-orange-200 rounded">
+                <div className="font-medium text-gray-900">{dup.name}</div>
+                {dup.phone && <div className="text-gray-600">{dup.phone}</div>}
               </div>
             ))}
           </div>

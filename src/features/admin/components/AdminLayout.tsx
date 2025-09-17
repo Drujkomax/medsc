@@ -40,15 +40,15 @@ const AdminLayout = () => {
         
         <div className="flex-1 flex flex-col">
           {/* Premium Header with Glass Effect */}
-          <header className="glass-card border-b border-white/10 px-4 py-4 md:px-6 m-3 md:m-4 rounded-xl">
+          <header className="bg-white border-b border-gray-200 px-4 py-4 md:px-6 m-3 md:m-4 rounded-xl shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <SidebarTrigger className="md:hidden hover-glow p-2 rounded-lg hover:bg-white/10 smooth-transition" />
+                <SidebarTrigger className="md:hidden p-2 rounded-lg hover:bg-gray-100" />
                 <div className="animate-fade-in">
-                  <h1 className="text-xl md:text-2xl font-heading gradient-text">
+                  <h1 className="text-xl md:text-2xl font-heading text-gray-900">
                     {currentPageName}
                   </h1>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm text-gray-600 mt-1">
                     Добро пожаловать в админскую панель MSC
                   </p>
                 </div>
@@ -59,7 +59,7 @@ const AdminLayout = () => {
                 <LanguageSwitcher />
                 <Badge 
                   variant="secondary" 
-                  className="bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 text-primary font-medium px-3 py-1"
+                  className="bg-blue-50 border-blue-200 text-blue-700 font-medium px-3 py-1"
                 >
                   {getRoleTranslation(role, i18n.language)}
                 </Badge>
@@ -67,7 +67,7 @@ const AdminLayout = () => {
 
               {/* Mobile-only header items */}
               <div className="md:hidden">
-                <SidebarTrigger className="hover-glow p-2 rounded-lg hover:bg-white/10 smooth-transition" />
+                <SidebarTrigger className="p-2 rounded-lg hover:bg-gray-100" />
               </div>
             </div>
           </header>
