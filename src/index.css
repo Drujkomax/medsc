@@ -15,61 +15,62 @@
 
 @layer base {
   :root {
-    /* MSC Brand Colors - High Contrast Dark Theme */
-    --msc-primary: 220 100% 70%; /* Brighter blue for better contrast */
-    --msc-accent: 280 100% 75%; /* Brighter purple accent */
-    --msc-secondary: 200 100% 65%; /* Enhanced cyan */
+    /* Bitrix24 Color Palette */
+    --bitrix24-blue: 195 91% 60%;     /* #2fc6f6 - Primary Bitrix24 blue */
+    --bitrix24-blue-dark: 195 91% 45%; /* Darker blue variant */
+    --bitrix24-green: 85 60% 60%;     /* #a4d037 - Bitrix24 green accent */
+    --bitrix24-orange: 25 95% 55%;    /* Orange for warnings/highlights */
+    --bitrix24-gray: 215 15% 40%;     /* Professional gray */
     
-    /* High Contrast Dark Theme - WCAG AA compliant */
-    --background: 220 25% 8%; /* Darker background for more contrast */
-    --foreground: 220 15% 98%; /* Pure white text */
+    /* Light theme base (like Bitrix24 interface) */
+    --background: 0 0% 98%;           /* Clean white background */
+    --foreground: 222 47% 11%;        /* Dark text */
 
-    --card: 220 20% 14%; /* More contrast with background */
-    --card-foreground: 220 15% 96%;
+    --card: 0 0% 100%;                /* Pure white cards */
+    --card-foreground: 222 47% 11%;
 
-    --popover: 220 20% 16%;
-    --popover-foreground: 220 15% 96%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 220 100% 70%; /* Brighter MSC blue */
-    --primary-foreground: 220 25% 8%;
+    --primary: 195 91% 60%;           /* Bitrix24 signature blue */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 20% 24%; /* Higher contrast secondary */
-    --secondary-foreground: 220 15% 92%;
+    --secondary: 0 0% 96%;            /* Light gray backgrounds */
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 220 20% 20%; /* Higher contrast muted */
-    --muted-foreground: 220 15% 75%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 215 15% 46%;
 
-    --accent: 280 100% 75%; /* Brighter purple accent */
-    --accent-foreground: 220 25% 8%;
+    --accent: 85 60% 60%;             /* Bitrix24 green */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 80% 65%;
-    --destructive-foreground: 220 15% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 220 20% 30%; /* Much more visible borders */
-    --input: 220 20% 16%;
-    --ring: 220 100% 70%;
+    --border: 220 13% 91%;            /* Subtle borders */
+    --input: 220 13% 91%;
+    --ring: 195 91% 60%;
 
-    --radius: 0.875rem;
+    --radius: 0.5rem;                 /* Smaller radius like Bitrix24 */
 
-    /* Sidebar - High contrast glass effect */
-    --sidebar-background: 220 25% 10%; /* Darker sidebar for contrast */
-    --sidebar-foreground: 220 15% 94%;
-    --sidebar-primary: 220 100% 70%;
-    --sidebar-primary-foreground: 220 25% 8%;
-    --sidebar-accent: 220 20% 22%;
-    --sidebar-accent-foreground: 220 15% 94%;
-    --sidebar-border: 220 20% 28%;
-    --sidebar-ring: 220 100% 70%;
+    /* Sidebar - Dark theme like Bitrix24 navigation */
+    --sidebar-background: 222 47% 11%; /* Dark blue-gray */
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 195 91% 60%;    /* Bitrix24 blue for active items */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 85 60% 60%;      /* Green for highlights */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: rgba(255, 255, 255, 0.1);
+    --sidebar-ring: 195 91% 60%;
 
-    /* Glass morphism variables - higher contrast */
-    --glass-bg: rgba(255, 255, 255, 0.12);
-    --glass-border: rgba(255, 255, 255, 0.25);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-  }
-
-  /* Force dark theme - no light mode */
-  * {
-    color-scheme: dark;
+    /* Kanban colors using Bitrix24 palette */
+    --kanban-new: 195 91% 95%;         /* Light blue */
+    --kanban-contacted: 48 96% 95%;    /* Light orange */
+    --kanban-qualified: 262 83% 95%;   /* Light purple */
+    --kanban-proposal: 85 60% 95%;     /* Light green */
+    --kanban-negotiation: 25 95% 95%;  /* Light yellow */
+    --kanban-closed: 120 60% 95%;      /* Success green */
+    --kanban-lost: 0 84% 95%;          /* Light red */
   }
 }
 
@@ -81,7 +82,7 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'OmniglotFont', 'Inter', sans-serif;
-    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(220 18% 15%) 100%);
+    background: hsl(var(--background));
     min-height: 100vh;
   }
   
@@ -106,50 +107,70 @@
 }
 
 @layer components {
-  /* Glass Morphism Cards - High Contrast */
+  /* Bitrix24-style cards */
   .glass-card {
-    @apply bg-card/90 backdrop-blur-xl border border-white/30;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    @apply bg-card border border-border;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
-  /* Kanban Stage Backgrounds */
-  .kanban-new { @apply bg-blue-500/10 border-blue-500/30; }
-  .kanban-contacted { @apply bg-yellow-500/10 border-yellow-500/30; }
-  .kanban-qualified { @apply bg-purple-500/10 border-purple-500/30; }
-  .kanban-proposal { @apply bg-orange-500/10 border-orange-500/30; }
-  .kanban-negotiation { @apply bg-indigo-500/10 border-indigo-500/30; }
-  .kanban-closed { @apply bg-green-500/10 border-green-500/30; }
-  .kanban-lost { @apply bg-red-500/10 border-red-500/30; }
+  /* Kanban Stage Backgrounds - Bitrix24 style */
+  .kanban-new { 
+    background: hsl(var(--kanban-new)); 
+    border-color: hsl(195 91% 80%); 
+  }
+  .kanban-contacted { 
+    background: hsl(var(--kanban-contacted)); 
+    border-color: hsl(48 96% 80%); 
+  }
+  .kanban-qualified { 
+    background: hsl(var(--kanban-qualified)); 
+    border-color: hsl(262 83% 80%); 
+  }
+  .kanban-proposal { 
+    background: hsl(var(--kanban-proposal)); 
+    border-color: hsl(85 60% 80%); 
+  }
+  .kanban-negotiation { 
+    background: hsl(var(--kanban-negotiation)); 
+    border-color: hsl(25 95% 80%); 
+  }
+  .kanban-closed { 
+    background: hsl(var(--kanban-closed)); 
+    border-color: hsl(120 60% 80%); 
+  }
+  .kanban-lost { 
+    background: hsl(var(--kanban-lost)); 
+    border-color: hsl(0 84% 80%); 
+  }
 
-  /* Card variants for different stages - Higher contrast */
-  .card-new { @apply bg-blue-500/12 border-blue-500/40 hover:bg-blue-500/18 shadow-sm; }
-  .card-contacted { @apply bg-yellow-500/12 border-yellow-500/40 hover:bg-yellow-500/18 shadow-sm; }
-  .card-qualified { @apply bg-purple-500/12 border-purple-500/40 hover:bg-purple-500/18 shadow-sm; }
-  .card-proposal { @apply bg-orange-500/12 border-orange-500/40 hover:bg-orange-500/18 shadow-sm; }
-  .card-negotiation { @apply bg-indigo-500/12 border-indigo-500/40 hover:bg-indigo-500/18 shadow-sm; }
-  .card-closed { @apply bg-green-500/12 border-green-500/40 hover:bg-green-500/18 shadow-sm; }
-  .card-lost { @apply bg-red-500/12 border-red-500/40 hover:bg-red-500/18 shadow-sm; }
+  /* Card variants with Bitrix24 colors */
+  .card-new { @apply bg-white border border-sky-200 hover:border-sky-300 shadow-sm hover:shadow-md; }
+  .card-contacted { @apply bg-white border border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md; }
+  .card-qualified { @apply bg-white border border-purple-200 hover:border-purple-300 shadow-sm hover:shadow-md; }
+  .card-proposal { @apply bg-white border border-green-200 hover:border-green-300 shadow-sm hover:shadow-md; }
+  .card-negotiation { @apply bg-white border border-yellow-200 hover:border-yellow-300 shadow-sm hover:shadow-md; }
+  .card-closed { @apply bg-white border border-emerald-200 hover:border-emerald-300 shadow-sm hover:shadow-md; }
+  .card-lost { @apply bg-white border border-red-200 hover:border-red-300 shadow-sm hover:shadow-md; }
 
-  /* Deal stage backgrounds */
-  .deal-lead { @apply bg-blue-500/10 border-blue-500/30; }
-  .deal-qualified { @apply bg-green-500/10 border-green-500/30; }
-  .deal-proposal { @apply bg-yellow-500/10 border-yellow-500/30; }
-  .deal-negotiation { @apply bg-orange-500/10 border-orange-500/30; }
-  .deal-closed { @apply bg-emerald-500/10 border-emerald-500/30; }
-  .deal-lost { @apply bg-red-500/10 border-red-500/30; }
+  /* Deal stage backgrounds with Bitrix24 style */
+  .deal-lead { background: hsl(195 91% 96%); border-color: hsl(195 91% 80%); }
+  .deal-qualified { background: hsl(120 60% 96%); border-color: hsl(120 60% 80%); }
+  .deal-proposal { background: hsl(48 96% 96%); border-color: hsl(48 96% 80%); }
+  .deal-negotiation { background: hsl(25 95% 96%); border-color: hsl(25 95% 80%); }
+  .deal-closed { background: hsl(85 60% 96%); border-color: hsl(85 60% 80%); }
+  .deal-lost { background: hsl(0 84% 96%); border-color: hsl(0 84% 80%); }
 
-  /* Deal card variants - Higher contrast */
-  .deal-card-lead { @apply bg-blue-500/12 border-blue-500/40 hover:bg-blue-500/18 shadow-sm; }
-  .deal-card-qualified { @apply bg-green-500/12 border-green-500/40 hover:bg-green-500/18 shadow-sm; }
-  .deal-card-proposal { @apply bg-yellow-500/12 border-yellow-500/40 hover:bg-yellow-500/18 shadow-sm; }
-  .deal-card-negotiation { @apply bg-orange-500/12 border-orange-500/40 hover:bg-orange-500/18 shadow-sm; }
-  .deal-card-closed { @apply bg-emerald-500/12 border-emerald-500/40 hover:bg-emerald-500/18 shadow-sm; }
-  .deal-card-lost { @apply bg-red-500/12 border-red-500/40 hover:bg-red-500/18 shadow-sm; }
+  /* Deal card variants - clean Bitrix24 style */
+  .deal-card-lead { @apply bg-white border border-sky-200 hover:border-sky-300 shadow-sm hover:shadow-md; }
+  .deal-card-qualified { @apply bg-white border border-green-200 hover:border-green-300 shadow-sm hover:shadow-md; }
+  .deal-card-proposal { @apply bg-white border border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md; }
+  .deal-card-negotiation { @apply bg-white border border-yellow-200 hover:border-yellow-300 shadow-sm hover:shadow-md; }
+  .deal-card-closed { @apply bg-white border border-emerald-200 hover:border-emerald-300 shadow-sm hover:shadow-md; }
+  .deal-card-lost { @apply bg-white border border-red-200 hover:border-red-300 shadow-sm hover:shadow-md; }
 
   .glass-sidebar {
-    @apply backdrop-blur-xl border-r border-white/25;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
-    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.25);
+    background: hsl(var(--sidebar-background));
+    border-right: 1px solid var(--sidebar-border);
   }
 
   /* Premium Buttons */
