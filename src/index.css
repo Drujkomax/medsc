@@ -11,18 +11,18 @@
   font-display: swap;
 }
 
-/* MSC Design System - Med Service Centre Brand Colors & Typography */
+/* PUBLIC SITE - MSC Design System - Med Service Centre Brand Colors & Typography */
 
 @layer base {
   :root {
-    /* MSC Brand Colors */
+    /* MSC Brand Colors for Public Site */
     --msc-primary: 232 78% 15%; /* #0C1139 deep blue */
     --msc-accent: 220 100% 70%; /* #6699FF light blue */
     --msc-bg: 240 9% 99%; /* #FEFEFE white */
     --msc-text: 232 78% 15%; /* #0C1139 for text */
     --msc-text-light: 220 13% 46%; /* Gray text */
     
-    /* Semantic tokens based on MSC brand - Light Theme */
+    /* Public Site Semantic tokens - Light Theme */
     --background: 240 9% 99%; /* Light background */
     --foreground: 232 78% 15%; /* Dark text for contrast */
 
@@ -63,6 +63,51 @@
     --sidebar-ring: 220 100% 70%;
   }
 
+  /* ADMIN PANEL - Separate Design System */
+  .theme-admin {
+    /* Admin Brand Colors - Professional Corporate Look */
+    --background: 0 0% 98%; /* Light gray background */
+    --foreground: 220 39% 11%; /* Dark text */
+
+    --card: 0 0% 100%; /* Pure white cards */
+    --card-foreground: 220 39% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 39% 11%;
+
+    --primary: 220 91% 48%; /* Professional blue */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%; /* Light gray */
+    --secondary-foreground: 220 39% 11%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --accent: 220 91% 48%; /* Same as primary for consistency */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 91% 48%;
+
+    --radius: 0.5rem; /* Slightly more conservative radius */
+
+    /* Admin Sidebar Styling */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 39% 11%;
+    --sidebar-primary: 220 91% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 96%;
+    --sidebar-accent-foreground: 220 39% 11%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 220 91% 48%;
+  }
+
+  /* Public Site Dark Mode */
   .dark {
     --background: 225 12% 6%; /* Even darker for dark mode */
     --foreground: 220 25% 95%; /* Very light text */
@@ -100,6 +145,46 @@
     --sidebar-accent-foreground: 220 25% 92%;
     --sidebar-border: 225 15% 12%;
     --sidebar-ring: 220 100% 65%;
+  }
+
+  /* Admin Panel Dark Mode (optional) */
+  .theme-admin.dark {
+    --background: 220 39% 11%;
+    --foreground: 220 14% 96%;
+
+    --card: 220 39% 13%;
+    --card-foreground: 220 14% 96%;
+
+    --popover: 220 39% 13%;
+    --popover-foreground: 220 14% 96%;
+
+    --primary: 220 91% 58%;
+    --primary-foreground: 220 39% 11%;
+
+    --secondary: 220 39% 15%;
+    --secondary-foreground: 220 14% 96%;
+
+    --muted: 220 39% 15%;
+    --muted-foreground: 220 9% 66%;
+
+    --accent: 220 91% 58%;
+    --accent-foreground: 220 39% 11%;
+
+    --destructive: 0 72% 61%;
+    --destructive-foreground: 220 14% 96%;
+
+    --border: 220 39% 18%;
+    --input: 220 39% 15%;
+    --ring: 220 91% 58%;
+
+    --sidebar-background: 220 39% 9%;
+    --sidebar-foreground: 220 14% 96%;
+    --sidebar-primary: 220 91% 58%;
+    --sidebar-primary-foreground: 220 39% 11%;
+    --sidebar-accent: 220 39% 15%;
+    --sidebar-accent-foreground: 220 14% 96%;
+    --sidebar-border: 220 39% 18%;
+    --sidebar-ring: 220 91% 58%;
   }
 }
 
