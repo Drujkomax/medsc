@@ -15,56 +15,56 @@
 
 @layer base {
   :root {
-    /* MSC Brand Colors - Balanced Dark Theme */
-    --msc-primary: 220 100% 65%; /* #4D9AFF bright blue */
-    --msc-accent: 280 100% 70%; /* #B366FF purple accent */
-    --msc-secondary: 200 100% 60%; /* #33AAFF cyan */
+    /* MSC Brand Colors - High Contrast Dark Theme */
+    --msc-primary: 220 100% 70%; /* Brighter blue for better contrast */
+    --msc-accent: 280 100% 75%; /* Brighter purple accent */
+    --msc-secondary: 200 100% 65%; /* Enhanced cyan */
     
-    /* Balanced Dark Theme - More readable */
-    --background: 220 15% 12%; /* Lighter dark background */
-    --foreground: 220 20% 98%; /* Very bright white text */
+    /* High Contrast Dark Theme - WCAG AA compliant */
+    --background: 220 25% 8%; /* Darker background for more contrast */
+    --foreground: 220 15% 98%; /* Pure white text */
 
-    --card: 220 15% 16%; /* Lighter card background */
-    --card-foreground: 220 15% 95%;
+    --card: 220 20% 14%; /* More contrast with background */
+    --card-foreground: 220 15% 96%;
 
-    --popover: 220 15% 18%;
-    --popover-foreground: 220 15% 95%;
+    --popover: 220 20% 16%;
+    --popover-foreground: 220 15% 96%;
 
-    --primary: 220 100% 65%; /* Bright MSC blue */
-    --primary-foreground: 220 15% 12%;
+    --primary: 220 100% 70%; /* Brighter MSC blue */
+    --primary-foreground: 220 25% 8%;
 
-    --secondary: 220 15% 20%; /* Much lighter secondary */
-    --secondary-foreground: 220 15% 90%;
+    --secondary: 220 20% 24%; /* Higher contrast secondary */
+    --secondary-foreground: 220 15% 92%;
 
-    --muted: 220 15% 18%; /* Lighter muted */
-    --muted-foreground: 220 10% 70%;
+    --muted: 220 20% 20%; /* Higher contrast muted */
+    --muted-foreground: 220 15% 75%;
 
-    --accent: 280 100% 70%; /* Purple accent */
-    --accent-foreground: 220 15% 12%;
+    --accent: 280 100% 75%; /* Brighter purple accent */
+    --accent-foreground: 220 25% 8%;
 
-    --destructive: 0 75% 60%;
-    --destructive-foreground: 220 15% 95%;
+    --destructive: 0 80% 65%;
+    --destructive-foreground: 220 15% 96%;
 
-    --border: 220 15% 25%; /* Much lighter borders */
-    --input: 220 15% 18%;
-    --ring: 220 100% 65%;
+    --border: 220 20% 30%; /* Much more visible borders */
+    --input: 220 20% 16%;
+    --ring: 220 100% 70%;
 
     --radius: 0.875rem;
 
-    /* Sidebar - Much lighter glass effect */
-    --sidebar-background: 220 15% 14%; /* Lighter sidebar */
-    --sidebar-foreground: 220 15% 92%;
-    --sidebar-primary: 220 100% 65%;
-    --sidebar-primary-foreground: 220 15% 12%;
-    --sidebar-accent: 220 15% 20%;
-    --sidebar-accent-foreground: 220 15% 92%;
-    --sidebar-border: 220 15% 22%;
-    --sidebar-ring: 220 100% 65%;
+    /* Sidebar - High contrast glass effect */
+    --sidebar-background: 220 25% 10%; /* Darker sidebar for contrast */
+    --sidebar-foreground: 220 15% 94%;
+    --sidebar-primary: 220 100% 70%;
+    --sidebar-primary-foreground: 220 25% 8%;
+    --sidebar-accent: 220 20% 22%;
+    --sidebar-accent-foreground: 220 15% 94%;
+    --sidebar-border: 220 20% 28%;
+    --sidebar-ring: 220 100% 70%;
 
-    /* Glass morphism variables - lighter */
-    --glass-bg: rgba(255, 255, 255, 0.08);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    /* Glass morphism variables - higher contrast */
+    --glass-bg: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.25);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
   }
 
   /* Force dark theme - no light mode */
@@ -106,10 +106,10 @@
 }
 
 @layer components {
-  /* Glass Morphism Cards - Lighter */
+  /* Glass Morphism Cards - High Contrast */
   .glass-card {
-    @apply bg-card/80 backdrop-blur-xl border border-white/20;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    @apply bg-card/90 backdrop-blur-xl border border-white/30;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   }
 
   /* Kanban Stage Backgrounds */
@@ -121,14 +121,14 @@
   .kanban-closed { @apply bg-green-500/10 border-green-500/30; }
   .kanban-lost { @apply bg-red-500/10 border-red-500/30; }
 
-  /* Card variants for different stages */
-  .card-new { @apply bg-blue-500/5 border-blue-500/20 hover:bg-blue-500/10; }
-  .card-contacted { @apply bg-yellow-500/5 border-yellow-500/20 hover:bg-yellow-500/10; }
-  .card-qualified { @apply bg-purple-500/5 border-purple-500/20 hover:bg-purple-500/10; }
-  .card-proposal { @apply bg-orange-500/5 border-orange-500/20 hover:bg-orange-500/10; }
-  .card-negotiation { @apply bg-indigo-500/5 border-indigo-500/20 hover:bg-indigo-500/10; }
-  .card-closed { @apply bg-green-500/5 border-green-500/20 hover:bg-green-500/10; }
-  .card-lost { @apply bg-red-500/5 border-red-500/20 hover:bg-red-500/10; }
+  /* Card variants for different stages - Higher contrast */
+  .card-new { @apply bg-blue-500/12 border-blue-500/40 hover:bg-blue-500/18 shadow-sm; }
+  .card-contacted { @apply bg-yellow-500/12 border-yellow-500/40 hover:bg-yellow-500/18 shadow-sm; }
+  .card-qualified { @apply bg-purple-500/12 border-purple-500/40 hover:bg-purple-500/18 shadow-sm; }
+  .card-proposal { @apply bg-orange-500/12 border-orange-500/40 hover:bg-orange-500/18 shadow-sm; }
+  .card-negotiation { @apply bg-indigo-500/12 border-indigo-500/40 hover:bg-indigo-500/18 shadow-sm; }
+  .card-closed { @apply bg-green-500/12 border-green-500/40 hover:bg-green-500/18 shadow-sm; }
+  .card-lost { @apply bg-red-500/12 border-red-500/40 hover:bg-red-500/18 shadow-sm; }
 
   /* Deal stage backgrounds */
   .deal-lead { @apply bg-blue-500/10 border-blue-500/30; }
@@ -138,18 +138,18 @@
   .deal-closed { @apply bg-emerald-500/10 border-emerald-500/30; }
   .deal-lost { @apply bg-red-500/10 border-red-500/30; }
 
-  /* Deal card variants */
-  .deal-card-lead { @apply bg-blue-500/5 border-blue-500/20 hover:bg-blue-500/10; }
-  .deal-card-qualified { @apply bg-green-500/5 border-green-500/20 hover:bg-green-500/10; }
-  .deal-card-proposal { @apply bg-yellow-500/5 border-yellow-500/20 hover:bg-yellow-500/10; }
-  .deal-card-negotiation { @apply bg-orange-500/5 border-orange-500/20 hover:bg-orange-500/10; }
-  .deal-card-closed { @apply bg-emerald-500/5 border-emerald-500/20 hover:bg-emerald-500/10; }
-  .deal-card-lost { @apply bg-red-500/5 border-red-500/20 hover:bg-red-500/10; }
+  /* Deal card variants - Higher contrast */
+  .deal-card-lead { @apply bg-blue-500/12 border-blue-500/40 hover:bg-blue-500/18 shadow-sm; }
+  .deal-card-qualified { @apply bg-green-500/12 border-green-500/40 hover:bg-green-500/18 shadow-sm; }
+  .deal-card-proposal { @apply bg-yellow-500/12 border-yellow-500/40 hover:bg-yellow-500/18 shadow-sm; }
+  .deal-card-negotiation { @apply bg-orange-500/12 border-orange-500/40 hover:bg-orange-500/18 shadow-sm; }
+  .deal-card-closed { @apply bg-emerald-500/12 border-emerald-500/40 hover:bg-emerald-500/18 shadow-sm; }
+  .deal-card-lost { @apply bg-red-500/12 border-red-500/40 hover:bg-red-500/18 shadow-sm; }
 
   .glass-sidebar {
-    @apply backdrop-blur-xl border-r border-white/15;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%);
-    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.15);
+    @apply backdrop-blur-xl border-r border-white/25;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+    box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.25);
   }
 
   /* Premium Buttons */
