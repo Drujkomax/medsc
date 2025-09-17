@@ -113,88 +113,96 @@
 /* ADMIN PANEL DESIGN SYSTEM */
 /* ============================== */
 
-/* Admin theme - Clean, professional, light palette */
+/* Admin theme - Bitrix24 inspired color palette */
 .theme-admin {
-  /* Admin - Light, professional color palette */
-  --background: 0 0% 100%; /* Pure white */
-  --foreground: 222 10% 20%; /* Dark gray text */
+  /* Bitrix24 Color Palette */
+  --bitrix-blue-primary: 191 97% 58%; /* #2fc6f6 - основной голубой */
+  --bitrix-blue-secondary: 195 100% 47%; /* #00aeef - тёмно-голубой */
+  --bitrix-green: 75 72% 53%; /* #a4d037 - яркий зелёный для акцентов */
+  --bitrix-dark-blue: 215 52% 24%; /* #1e3a8a - тёмно-синий для профессионального вида */
+  --bitrix-light-gray: 220 9% 95%; /* #f2f4f6 - светло-серый фон */
+  --bitrix-dark-gray: 220 8% 46%; /* #6b7280 - тёмно-серый текст */
+  
+  /* Admin - Bitrix24 inspired professional palette */
+  --background: 0 0% 100%; /* Чистый белый фон */
+  --foreground: 220 8% 46%; /* Тёмно-серый текст */
 
-  --card: 0 0% 100%; /* White cards */
-  --card-foreground: 222 10% 20%;
+  --card: 0 0% 100%; /* Белые карточки */
+  --card-foreground: 220 8% 46%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 222 10% 20%;
+  --popover-foreground: 220 8% 46%;
 
-  --primary: 222 47% 44%; /* Professional blue */
+  --primary: 191 97% 58%; /* Основной голубой Bitrix24 */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 210 13% 93%; /* Very light gray */
-  --secondary-foreground: 222 10% 20%;
+  --secondary: 220 9% 95%; /* Светло-серый фон */
+  --secondary-foreground: 220 8% 46%;
 
-  --muted: 210 13% 95%; /* Light muted background */
-  --muted-foreground: 222 8% 45%; /* Medium gray */
+  --muted: 220 9% 97%; /* Очень светлый фон */
+  --muted-foreground: 220 8% 60%; /* Средне-серый */
 
-  --accent: 210 13% 93%; /* Light accent */
-  --accent-foreground: 222 10% 20%;
+  --accent: 75 72% 53%; /* Зелёный акцент Bitrix24 */
+  --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 75% 50%;
+  --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --border: 220 9% 88%; /* Light borders */
-  --input: 220 9% 88%;
-  --ring: 222 47% 44%;
+  --border: 220 9% 88%; /* Светлые границы */
+  --input: 220 9% 95%;
+  --ring: 191 97% 58%; /* Голубое кольцо фокуса */
 
-  --radius: 0.5rem; /* Slightly less rounded for professional look */
+  --radius: 0.5rem; /* Умеренное скругление */
 
-  /* Admin sidebar */
-  --sidebar-background: 0 0% 100%;
-  --sidebar-foreground: 222 10% 20%;
-  --sidebar-primary: 222 47% 44%;
+  /* Admin sidebar - Bitrix24 style */
+  --sidebar-background: 0 0% 100%; /* Белый сайдбар */
+  --sidebar-foreground: 220 8% 46%;
+  --sidebar-primary: 191 97% 58%; /* Голубой для активных элементов */
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 13% 95%;
-  --sidebar-accent-foreground: 222 10% 20%;
+  --sidebar-accent: 220 9% 97%; /* Светлый hover */
+  --sidebar-accent-foreground: 220 8% 46%;
   --sidebar-border: 220 9% 88%;
-  --sidebar-ring: 222 47% 44%;
+  --sidebar-ring: 191 97% 58%;
 }
 
 .theme-admin.dark {
-  /* Admin dark theme - subtle, not high contrast */
-  --background: 222 10% 8%;
-  --foreground: 210 13% 88%;
+  /* Admin dark theme - Bitrix24 inspired dark mode */
+  --background: 220 15% 6%; /* Тёмный фон */
+  --foreground: 220 9% 88%; /* Светлый текст */
 
-  --card: 222 10% 10%;
-  --card-foreground: 210 13% 88%;
+  --card: 220 15% 8%; /* Тёмные карточки */
+  --card-foreground: 220 9% 88%;
 
-  --popover: 222 10% 10%;
-  --popover-foreground: 210 13% 88%;
+  --popover: 220 15% 8%;
+  --popover-foreground: 220 9% 88%;
 
-  --primary: 222 47% 60%;
-  --primary-foreground: 222 10% 8%;
+  --primary: 191 97% 65%; /* Более яркий голубой для тёмной темы */
+  --primary-foreground: 220 15% 6%;
 
-  --secondary: 222 10% 12%;
-  --secondary-foreground: 210 13% 88%;
+  --secondary: 220 15% 12%; /* Тёмно-серый вторичный */
+  --secondary-foreground: 220 9% 88%;
 
-  --muted: 222 10% 11%;
-  --muted-foreground: 210 8% 60%;
+  --muted: 220 15% 10%; /* Приглушённый тёмный */
+  --muted-foreground: 220 8% 65%;
 
-  --accent: 222 10% 12%;
-  --accent-foreground: 210 13% 88%;
+  --accent: 75 72% 60%; /* Яркий зелёный акцент */
+  --accent-foreground: 220 15% 6%;
 
-  --destructive: 0 75% 60%;
-  --destructive-foreground: 210 13% 88%;
+  --destructive: 0 84% 65%;
+  --destructive-foreground: 220 9% 88%;
 
-  --border: 222 10% 15%;
-  --input: 222 10% 12%;
-  --ring: 222 47% 60%;
+  --border: 220 15% 15%; /* Тёмные границы */
+  --input: 220 15% 12%;
+  --ring: 191 97% 65%;
   
-  --sidebar-background: 222 10% 6%;
-  --sidebar-foreground: 210 13% 85%;
-  --sidebar-primary: 222 47% 60%;
-  --sidebar-primary-foreground: 222 10% 6%;
-  --sidebar-accent: 222 10% 10%;
-  --sidebar-accent-foreground: 210 13% 85%;
-  --sidebar-border: 222 10% 12%;
-  --sidebar-ring: 222 47% 60%;
+  --sidebar-background: 220 15% 4%; /* Очень тёмный сайдбар */
+  --sidebar-foreground: 220 9% 85%;
+  --sidebar-primary: 191 97% 65%;
+  --sidebar-primary-foreground: 220 15% 4%;
+  --sidebar-accent: 220 15% 10%;
+  --sidebar-accent-foreground: 220 9% 85%;
+  --sidebar-border: 220 15% 12%;
+  --sidebar-ring: 191 97% 65%;
 }
 
 @layer base {
