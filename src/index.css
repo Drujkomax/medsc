@@ -262,6 +262,32 @@
     }
   }
 
+  /* Hero animations */
+  .animate-reveal {
+    animation: reveal 1s ease-out forwards;
+  }
+
+  @keyframes reveal {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Counter-rotate animation for orbit elements */
+  @keyframes counter-rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(-360deg);
+    }
+  }
+
   /* Gradient Text */
   .gradient-text {
     background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
