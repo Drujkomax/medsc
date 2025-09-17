@@ -19,9 +19,9 @@ export default {
 		},
 		extend: {
 			fontFamily: {
-				'heading': ['OmniglotFont', 'Inter', 'sans-serif'],
-				'body': ['OmniglotFont', 'Inter', 'sans-serif'],
-				'sans': ['OmniglotFont', 'Inter', 'system-ui', 'sans-serif'],
+				'heading': ['Inter', 'system-ui', 'sans-serif'],
+				'body': ['Inter', 'system-ui', 'sans-serif'],
+				'sans': ['Inter', 'system-ui', 'sans-serif'],
 			},
 			colors: {
 				// MSC Brand Colors

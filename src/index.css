@@ -81,26 +81,26 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     background: hsl(var(--background));
     min-height: 100vh;
   }
   
-  /* Typography - Premium MSC Fonts */
+  /* Typography - Inter Font */
   .font-heading {
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 600;
     letter-spacing: -0.025em;
   }
   
   .font-body {
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     line-height: 1.6;
   }
   
-  /* Apply OmniglotFont to all headings */
+  /* Apply Inter to all headings */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'OmniglotFont', 'Inter', sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     font-weight: 600;
     letter-spacing: -0.025em;
   }
