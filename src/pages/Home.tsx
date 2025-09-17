@@ -177,11 +177,11 @@ const Home = ({ language }: HomeProps) => {
                         }}
                       >
                         <div className="text-center">
-                          <div className="relative">
-                             <div className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform animate-[spin_-20s_linear_infinite]">
+                          <div className="relative animate-[spin_-20s_linear_infinite]">
+                             <div className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform">
                                <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-white" />
                             </div>
-                            <span className="text-white text-xs sm:text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-1 sm:mt-2 animate-[spin_-20s_linear_infinite]">
+                            <span className="text-white text-xs sm:text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-1 sm:mt-2">
                               {item.label}
                             </span>
                           </div>
