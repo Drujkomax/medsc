@@ -15,14 +15,61 @@
 
 @layer base {
   :root {
-    /* Bitrix24 Color Palette */
-    --bitrix24-blue: 195 91% 60%;     /* #2fc6f6 - Primary Bitrix24 blue */
-    --bitrix24-blue-dark: 195 91% 45%; /* Darker blue variant */
-    --bitrix24-green: 85 60% 60%;     /* #a4d037 - Bitrix24 green accent */
-    --bitrix24-orange: 25 95% 55%;    /* Orange for warnings/highlights */
-    --bitrix24-gray: 215 15% 40%;     /* Professional gray */
+    /* MSC Brand Colors - High Contrast Dark Theme */
+    --msc-primary: 220 100% 70%; /* Brighter blue for better contrast */
+    --msc-accent: 280 100% 75%; /* Brighter purple accent */
+    --msc-secondary: 200 100% 65%; /* Enhanced cyan */
     
-    /* Light theme base (like Bitrix24 interface) */
+    /* High Contrast Dark Theme - WCAG AA compliant for PUBLIC site */
+    --background: 220 25% 8%; /* Darker background for more contrast */
+    --foreground: 220 15% 98%; /* Pure white text */
+
+    --card: 220 20% 14%; /* More contrast with background */
+    --card-foreground: 220 15% 96%;
+
+    --popover: 220 20% 16%;
+    --popover-foreground: 220 15% 96%;
+
+    --primary: 220 100% 70%; /* MSC blue */
+    --primary-foreground: 220 25% 8%;
+
+    --secondary: 220 20% 24%; /* Higher contrast secondary */
+    --secondary-foreground: 220 15% 92%;
+
+    --muted: 220 20% 20%; /* Higher contrast muted */
+    --muted-foreground: 220 15% 75%;
+
+    --accent: 280 100% 75%; /* Purple accent */
+    --accent-foreground: 220 25% 8%;
+
+    --destructive: 0 80% 65%;
+    --destructive-foreground: 220 15% 96%;
+
+    --border: 220 20% 30%; /* Visible borders */
+    --input: 220 20% 16%;
+    --ring: 220 100% 70%;
+
+    --radius: 0.875rem;
+
+    /* Sidebar - High contrast glass effect */
+    --sidebar-background: 220 25% 10%;
+    --sidebar-foreground: 220 15% 94%;
+    --sidebar-primary: 220 100% 70%;
+    --sidebar-primary-foreground: 220 25% 8%;
+    --sidebar-accent: 220 20% 22%;
+    --sidebar-accent-foreground: 220 15% 94%;
+    --sidebar-border: 220 20% 28%;
+    --sidebar-ring: 220 100% 70%;
+
+    /* Glass morphism variables - higher contrast */
+    --glass-bg: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.25);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+
+  /* ADMIN THEME SCOPE ONLY */
+  .theme-admin {
+    /* Bitrix24-like light palette FOR ADMIN AREA ONLY */
     --background: 0 0% 98%;           /* Clean white background */
     --foreground: 222 47% 11%;        /* Dark text */
 
@@ -53,7 +100,7 @@
 
     --radius: 0.5rem;                 /* Smaller radius like Bitrix24 */
 
-    /* Sidebar - Dark theme like Bitrix24 navigation */
+    /* Sidebar - Dark navigation like Bitrix24 */
     --sidebar-background: 222 47% 11%; /* Dark blue-gray */
     --sidebar-foreground: 0 0% 90%;
     --sidebar-primary: 195 91% 60%;    /* Bitrix24 blue for active items */
@@ -82,7 +129,7 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: 'Inter', system-ui, sans-serif;
-    background: hsl(var(--background));
+    background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(220 18% 15%) 100%);
     min-height: 100vh;
   }
   
@@ -107,68 +154,47 @@
 }
 
 @layer components {
-  /* Bitrix24-style cards */
+  /* Public glass cards - High Contrast */
   .glass-card {
-    @apply bg-card border border-border;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    @apply bg-card/90 backdrop-blur-xl border border-white/30;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.25);
   }
 
-  /* Kanban Stage Backgrounds - Bitrix24 style */
-  .kanban-new { 
-    background: hsl(var(--kanban-new)); 
-    border-color: hsl(195 91% 80%); 
-  }
-  .kanban-contacted { 
-    background: hsl(var(--kanban-contacted)); 
-    border-color: hsl(48 96% 80%); 
-  }
-  .kanban-qualified { 
-    background: hsl(var(--kanban-qualified)); 
-    border-color: hsl(262 83% 80%); 
-  }
-  .kanban-proposal { 
-    background: hsl(var(--kanban-proposal)); 
-    border-color: hsl(85 60% 80%); 
-  }
-  .kanban-negotiation { 
-    background: hsl(var(--kanban-negotiation)); 
-    border-color: hsl(25 95% 80%); 
-  }
-  .kanban-closed { 
-    background: hsl(var(--kanban-closed)); 
-    border-color: hsl(120 60% 80%); 
-  }
-  .kanban-lost { 
-    background: hsl(var(--kanban-lost)); 
-    border-color: hsl(0 84% 80%); 
-  }
+  /* Admin-scoped Kanban Stage Backgrounds */
+  .theme-admin .kanban-new { background: hsl(var(--kanban-new)); border-color: hsl(195 91% 80%); }
+  .theme-admin .kanban-contacted { background: hsl(var(--kanban-contacted)); border-color: hsl(48 96% 80%); }
+  .theme-admin .kanban-qualified { background: hsl(var(--kanban-qualified)); border-color: hsl(262 83% 80%); }
+  .theme-admin .kanban-proposal { background: hsl(var(--kanban-proposal)); border-color: hsl(85 60% 80%); }
+  .theme-admin .kanban-negotiation { background: hsl(var(--kanban-negotiation)); border-color: hsl(25 95% 80%); }
+  .theme-admin .kanban-closed { background: hsl(var(--kanban-closed)); border-color: hsl(120 60% 80%); }
+  .theme-admin .kanban-lost { background: hsl(var(--kanban-lost)); border-color: hsl(0 84% 80%); }
 
-  /* Card variants with Bitrix24 colors */
-  .card-new { @apply bg-white border border-sky-200 hover:border-sky-300 shadow-sm hover:shadow-md; }
-  .card-contacted { @apply bg-white border border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md; }
-  .card-qualified { @apply bg-white border border-purple-200 hover:border-purple-300 shadow-sm hover:shadow-md; }
-  .card-proposal { @apply bg-white border border-green-200 hover:border-green-300 shadow-sm hover:shadow-md; }
-  .card-negotiation { @apply bg-white border border-yellow-200 hover:border-yellow-300 shadow-sm hover:shadow-md; }
-  .card-closed { @apply bg-white border border-emerald-200 hover:border-emerald-300 shadow-sm hover:shadow-md; }
-  .card-lost { @apply bg-white border border-red-200 hover:border-red-300 shadow-sm hover:shadow-md; }
+  /* Admin-scoped Card variants */
+  .theme-admin .card-new { @apply bg-white border border-sky-200 hover:border-sky-300 shadow-sm hover:shadow-md; }
+  .theme-admin .card-contacted { @apply bg-white border border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md; }
+  .theme-admin .card-qualified { @apply bg-white border border-purple-200 hover:border-purple-300 shadow-sm hover:shadow-md; }
+  .theme-admin .card-proposal { @apply bg-white border border-green-200 hover:border-green-300 shadow-sm hover:shadow-md; }
+  .theme-admin .card-negotiation { @apply bg-white border border-yellow-200 hover:border-yellow-300 shadow-sm hover:shadow-md; }
+  .theme-admin .card-closed { @apply bg-white border border-emerald-200 hover:border-emerald-300 shadow-sm hover:shadow-md; }
+  .theme-admin .card-lost { @apply bg-white border border-red-200 hover:border-red-300 shadow-sm hover:shadow-md; }
 
-  /* Deal stage backgrounds with Bitrix24 style */
-  .deal-lead { background: hsl(195 91% 96%); border-color: hsl(195 91% 80%); }
-  .deal-qualified { background: hsl(120 60% 96%); border-color: hsl(120 60% 80%); }
-  .deal-proposal { background: hsl(48 96% 96%); border-color: hsl(48 96% 80%); }
-  .deal-negotiation { background: hsl(25 95% 96%); border-color: hsl(25 95% 80%); }
-  .deal-closed { background: hsl(85 60% 96%); border-color: hsl(85 60% 80%); }
-  .deal-lost { background: hsl(0 84% 96%); border-color: hsl(0 84% 80%); }
+  /* Admin-scoped Deal stage backgrounds */
+  .theme-admin .deal-lead { background: hsl(195 91% 96%); border-color: hsl(195 91% 80%); }
+  .theme-admin .deal-qualified { background: hsl(120 60% 96%); border-color: hsl(120 60% 80%); }
+  .theme-admin .deal-proposal { background: hsl(48 96% 96%); border-color: hsl(48 96% 80%); }
+  .theme-admin .deal-negotiation { background: hsl(25 95% 96%); border-color: hsl(25 95% 80%); }
+  .theme-admin .deal-closed { background: hsl(85 60% 96%); border-color: hsl(85 60% 80%); }
+  .theme-admin .deal-lost { background: hsl(0 84% 96%); border-color: hsl(0 84% 80%); }
 
-  /* Deal card variants - clean Bitrix24 style */
-  .deal-card-lead { @apply bg-white border border-sky-200 hover:border-sky-300 shadow-sm hover:shadow-md; }
-  .deal-card-qualified { @apply bg-white border border-green-200 hover:border-green-300 shadow-sm hover:shadow-md; }
-  .deal-card-proposal { @apply bg-white border border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md; }
-  .deal-card-negotiation { @apply bg-white border border-yellow-200 hover:border-yellow-300 shadow-sm hover:shadow-md; }
-  .deal-card-closed { @apply bg-white border border-emerald-200 hover:border-emerald-300 shadow-sm hover:shadow-md; }
-  .deal-card-lost { @apply bg-white border border-red-200 hover:border-red-300 shadow-sm hover:shadow-md; }
+  /* Admin-scoped Deal card variants */
+  .theme-admin .deal-card-lead { @apply bg-white border border-sky-200 hover:border-sky-300 shadow-sm hover:shadow-md; }
+  .theme-admin .deal-card-qualified { @apply bg-white border border-green-200 hover:border-green-300 shadow-sm hover:shadow-md; }
+  .theme-admin .deal-card-proposal { @apply bg-white border border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md; }
+  .theme-admin .deal-card-negotiation { @apply bg-white border border-yellow-200 hover:border-yellow-300 shadow-sm hover:shadow-md; }
+  .theme-admin .deal-card-closed { @apply bg-white border border-emerald-200 hover:border-emerald-300 shadow-sm hover:shadow-md; }
+  .theme-admin .deal-card-lost { @apply bg-white border border-red-200 hover:border-red-300 shadow-sm hover:shadow-md; }
 
-  .glass-sidebar {
+  .theme-admin .glass-sidebar {
     background: hsl(var(--sidebar-background));
     border-right: 1px solid var(--sidebar-border);
   }
