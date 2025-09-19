@@ -16,7 +16,7 @@ import { supabase } from '@/integrations/supabase/client';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import { LeadHybridCard } from '../components/LeadHybridCard';
 import { DuplicateAlert } from '../components/DuplicateAlert';
-import { EnhancedLeadModal } from '../components/EnhancedLeadModal';
+import { UnifiedLeadModal } from '../components/UnifiedLeadModal';
 import CreateDealFromLeadDialog from '../components/CreateDealFromLeadDialog';
 import { AddLeadDialog } from '../components/AddLeadDialog';
 import { 
@@ -595,7 +595,7 @@ const Leads = () => {
       </Card>
 
       {/* Модальные окна */}
-      <EnhancedLeadModal 
+      <UnifiedLeadModal 
         lead={selectedLead}
         isOpen={leadModalOpen}
         onClose={handleCloseLeadModal}

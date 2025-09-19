@@ -142,14 +142,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
 
   return (
     <Card className={className}>
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5" />
-          История активности
-        </CardTitle>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 p-4">
         {/* Add new activity tabs */}
         <div className="space-y-3">
           <div className="flex gap-2">

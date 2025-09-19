@@ -13,6 +13,7 @@ interface EditLeadModalProps {
   lead: Lead | null;
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
 const stages = [
@@ -25,7 +26,7 @@ const stages = [
   { value: 'lost', label: 'Потерян' }
 ];
 
-export const EditLeadModal = ({ lead, isOpen, onClose }: EditLeadModalProps) => {
+export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModalProps) => {
   const { updateLead } = useLeads();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -68,6 +69,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose }: EditLeadModalProps) => 
         description: 'Лид обновлен',
       });
       
+      onSuccess?.();
       onClose();
     } catch (error) {
       toast({
