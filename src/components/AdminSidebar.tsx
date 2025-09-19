@@ -46,28 +46,38 @@ export function AdminSidebar() {
   const getNavigationItems = () => {
     const baseItems = [
       { name: t('admin.dashboard'), href: '/admin', icon: BarChart3, permission: null },
-      { name: t('navigation2.leads'), href: '/admin/leads', icon: Users, permission: null },
-      { name: t('admin.deals'), href: '/admin/deals', icon: HandCoins, permission: null },
-      { name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare, permission: null },
-      { name: t('navigation2.kanban'), href: '/admin/kanban', icon: Columns3, permission: null },
-      { name: 'Архив', href: '/admin/archived', icon: Archive, permission: null },
     ];
 
     const conditionalItems = [];
 
+    // Лиды и CRM функции - только для директора и менеджеров продаж
+    if (hasPermission('view_all_leads')) {
+      conditionalItems.push({ name: t('navigation2.leads'), href: '/admin/leads', icon: Users, permission: 'view_all_leads' });
+      conditionalItems.push({ name: t('admin.deals'), href: '/admin/deals', icon: HandCoins, permission: 'view_all_leads' });
+      conditionalItems.push({ name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare, permission: 'view_all_leads' });
+      conditionalItems.push({ name: t('navigation2.kanban'), href: '/admin/kanban', icon: Columns3, permission: 'view_all_leads' });
+    }
+
+    // Архив доступен всем
+    conditionalItems.push({ name: 'Архив', href: '/admin/archived', icon: Archive, permission: null });
+
+    // Продукты и категории
     if (hasPermission('manage_products')) {
       conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: 'manage_products' });
       conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'manage_products' });
     }
 
+    // Услуги
     if (hasPermission('manage_services')) {
       conditionalItems.push({ name: t('navigation2.services'), href: '/admin/services', icon: Settings, permission: 'manage_services' });
     }
 
+    // Контакты
     if (hasPermission('manage_contacts')) {
       conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: 'manage_contacts' });
     }
 
+    // Управление сотрудниками - только для директора
     if (role === 'director') {
       conditionalItems.push({ name: t('navigation2.employees'), href: '/admin/employees', icon: Users, permission: null });
     }

@@ -22,6 +22,7 @@ import EmployeeManagement from '../pages/EmployeeManagement';
 import Analytics from '../pages/Analytics';
 import Categories from '../pages/Categories';
 import { useResolveInviteRole } from '@/hooks/useResolveInviteRole';
+import { ProtectedRoute } from '@/components/auth/ProtectedRouteAdmin';
 
 const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
@@ -72,19 +73,81 @@ const AdminWrapper = () => {
       <Route path="/*" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
-        <Route path="leads" element={<Leads />} />
-        <Route path="deals" element={<DealsPage />} />
-        <Route path="tasks" element={<TasksPage />} />
-        <Route path="kanban" element={<AdminKanban />} />
-        <Route path="analytics" element={<Analytics />} />
-        <Route path="products" element={<AdminProducts />} />
-        <Route path="products/add" element={<AddProduct />} />
-        <Route path="products/edit/:id" element={<EditProduct />} />
-        <Route path="products/preview/:id" element={<AdminProductPreview />} />
-        <Route path="categories" element={<Categories />} />
+        
+        {/* CRM маршруты - только для ролей с доступом к лидам */}
+        <Route path="leads" element={
+          <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <Leads />
+          </ProtectedRoute>
+        } />
+        <Route path="deals" element={
+          <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <DealsPage />
+          </ProtectedRoute>
+        } />
+        <Route path="tasks" element={
+          <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <TasksPage />
+          </ProtectedRoute>
+        } />
+        <Route path="kanban" element={
+          <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <AdminKanban />
+          </ProtectedRoute>
+        } />
+        
+        {/* Аналитика - только для директора и админа */}
+        <Route path="analytics" element={
+          <ProtectedRoute permission="view_analytics" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <Analytics />
+          </ProtectedRoute>
+        } />
+        
+        {/* Продукты - для всех кроме salesperson */}
+        <Route path="products" element={
+          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <AdminProducts />
+          </ProtectedRoute>
+        } />
+        <Route path="products/add" element={
+          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <AddProduct />
+          </ProtectedRoute>
+        } />
+        <Route path="products/edit/:id" element={
+          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <EditProduct />
+          </ProtectedRoute>
+        } />
+        <Route path="products/preview/:id" element={
+          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <AdminProductPreview />
+          </ProtectedRoute>
+        } />
+        <Route path="categories" element={
+          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <Categories />
+          </ProtectedRoute>
+        } />
+        
+        {/* Услуги */}
+        <Route path="services" element={
+          <ProtectedRoute permission="manage_services" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <AdminServices />
+          </ProtectedRoute>
+        } />
+        
+        {/* Контакты */}
+        <Route path="contacts" element={
+          <ProtectedRoute permission="manage_contacts" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <AdminContacts />
+          </ProtectedRoute>
+        } />
+        
+        {/* Архив - доступен всем */}
         <Route path="archived" element={<ArchivedData />} />
-        <Route path="services" element={<AdminServices />} />
-        <Route path="contacts" element={<AdminContacts />} />
+        
+        {/* Управление сотрудниками - только для директора */}
         <Route path="employees" element={<EmployeeManagement />} />
         <Route path="users" element={<UserManagement />} />
       </Route>
