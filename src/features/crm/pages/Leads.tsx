@@ -376,23 +376,25 @@ const Leads = () => {
               </Select>
             </div>
 
-            <div>
-              <Select value={assignedFilter} onValueChange={setAssignedFilter}>
-                <SelectTrigger>
-                  <User className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Назначен" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Все</SelectItem>
-                  <SelectItem value="unassigned">Не назначен</SelectItem>
-                  {employees.map((employee) => (
-                    <SelectItem key={employee.id} value={employee.id}>
-                      {employee.full_name || employee.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
+              <div>
+                <Select value={assignedFilter} onValueChange={setAssignedFilter}>
+                  <SelectTrigger>
+                    <User className="w-4 h-4 mr-2" />
+                    <SelectValue placeholder="Назначен" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все</SelectItem>
+                    <SelectItem value="unassigned">Не назначен</SelectItem>
+                    {employees.map((employee) => (
+                      <SelectItem key={employee.id} value={employee.id}>
+                        {employee.full_name || employee.email}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </RoleBasedAccess>
 
             <div className="flex gap-2">
               <Popover>
@@ -467,7 +469,9 @@ const Leads = () => {
                   <TableHead>Телефон</TableHead>
                   <TableHead>Статус</TableHead>
                   <TableHead>Создан</TableHead>
-                  <TableHead>Назначен</TableHead>
+                  <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
+                    <TableHead>Назначен</TableHead>
+                  </RoleBasedAccess>
                   <TableHead className="text-right">Действия</TableHead>
                 </TableRow>
               </TableHeader>
@@ -524,38 +528,40 @@ const Leads = () => {
                     <TableCell>
                       {format(new Date(lead.created_at), 'dd.MM.yyyy', { locale: ru })}
                     </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            className="h-8 px-3 text-xs font-medium hover:bg-accent"
-                          >
-                            {lead.assigned_to ? getAssignedUserName(lead.assigned_to) : 'Не назначен'}
-                            <ChevronDown className="ml-1 h-3 w-3" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
-                          <DropdownMenuItem 
-                            onClick={() => handleAssignLead(lead.id, null)}
-                            className="hover:bg-accent"
-                          >
-                            <User className="mr-2 h-4 w-4" />
-                            Не назначен
-                          </DropdownMenuItem>
-                           {employees.map((employee) => (
+                    <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              className="h-8 px-3 text-xs font-medium hover:bg-accent"
+                            >
+                              {lead.assigned_to ? getAssignedUserName(lead.assigned_to) : 'Не назначен'}
+                              <ChevronDown className="ml-1 h-3 w-3" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
                             <DropdownMenuItem 
-                              key={employee.id}
-                              onClick={() => handleAssignLead(lead.id, employee.id)}
+                              onClick={() => handleAssignLead(lead.id, null)}
                               className="hover:bg-accent"
                             >
                               <User className="mr-2 h-4 w-4" />
-                              {employee.full_name || employee.email}
+                              Не назначен
                             </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+                             {employees.map((employee) => (
+                              <DropdownMenuItem 
+                                key={employee.id}
+                                onClick={() => handleAssignLead(lead.id, employee.id)}
+                                className="hover:bg-accent"
+                              >
+                                <User className="mr-2 h-4 w-4" />
+                                {employee.full_name || employee.email}
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </RoleBasedAccess>
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
