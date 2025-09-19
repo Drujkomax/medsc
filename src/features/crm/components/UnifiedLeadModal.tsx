@@ -2,26 +2,14 @@ import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Lead } from '@/hooks/useLeads';
+import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { User, Edit3, Phone, Mail, Building, DollarSign, Calendar, MapPin, Clock, Target, Award, MessageSquare, ChevronDown } from 'lucide-react';
+import { Lead, useLeads } from '@/hooks/useLeads';
 import { EditLeadModal } from './EditLeadModal';
 import { LeadActivityChat } from './LeadActivityChat';
-import { 
-  User, 
-  Phone, 
-  Building, 
-  Calendar, 
-  FileText, 
-  Target,
-  Clock,
-  Edit3,
-  MessageCircle,
-  Settings,
-  DollarSign,
-  Briefcase,
-  Mail
-} from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -33,52 +21,111 @@ interface UnifiedLeadModalProps {
 }
 
 const stageLabels = {
-  new: 'Новый',
-  contacted: 'Связались',
-  qualified: 'Квалифицирован',
-  proposal: 'Предложение',
-  negotiation: 'Переговоры',
-  closed: 'Закрыт',
-  lost: 'Потерян'
+  'new': 'Новый',
+  'contacted': 'Связались',
+  'qualified': 'Квалифицирован',
+  'proposal': 'Предложение',
+  'negotiation': 'Переговоры',
+  'closed': 'Закрыт',
+  'lost': 'Потерян'
 };
 
 const stageColors = {
-  new: 'bg-blue-100 text-blue-800 border-blue-200',
-  contacted: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  qualified: 'bg-purple-100 text-purple-800 border-purple-200',
-  proposal: 'bg-orange-100 text-orange-800 border-orange-200',
-  negotiation: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-  closed: 'bg-green-100 text-green-800 border-green-200',
-  lost: 'bg-red-100 text-red-800 border-red-200'
+  'new': 'bg-blue-100 text-blue-800',
+  'contacted': 'bg-yellow-100 text-yellow-800',
+  'qualified': 'bg-green-100 text-green-800',
+  'proposal': 'bg-purple-100 text-purple-800',
+  'negotiation': 'bg-orange-100 text-orange-800',
+  'closed': 'bg-emerald-100 text-emerald-800',
+  'lost': 'bg-red-100 text-red-800'
 };
 
 const budgetLabels = {
-  'under_10k': 'До $10,000',
-  '10k_50k': '$10,000 - $50,000',
+  'under_50k': 'До $50,000',
   '50k_100k': '$50,000 - $100,000',
   '100k_500k': '$100,000 - $500,000',
-  'over_500k': 'Свыше $500,000',
-  'not_specified': 'Не указан'
+  '500k_1m': '$500,000 - $1,000,000',
+  'over_1m': 'Свыше $1,000,000',
+  'not_disclosed': 'Не раскрыт'
 };
 
 const equipmentLabels = {
-  'mri': 'МРТ',
-  'ct': 'КТ',
-  'ultrasound': 'УЗИ',
-  'xray': 'Рентген',
-  'mammography': 'Маммография',
-  'endoscopy': 'Эндоскопия',
+  'mri': 'МРТ оборудование',
+  'ct': 'КТ оборудование',
+  'ultrasound': 'УЗИ оборудование',
+  'xray': 'Рентгеновское оборудование',
   'laboratory': 'Лабораторное оборудование',
+  'surgical': 'Хирургическое оборудование',
+  'anesthesia': 'Оборудование для анестезии',
+  'monitoring': 'Мониторинговое оборудование',
+  'rehabilitation': 'Реабилитационное оборудование',
   'other': 'Другое'
 };
 
 const timelineLabels = {
-  'immediate': 'Немедленно (в течение месяца)',
-  'quarter': 'В течение квартала',
-  'half_year': 'В течение полугода',
-  'year': 'В течение года',
+  'immediate': 'Немедленно',
+  'within_month': 'В течение месяца',
+  'within_quarter': 'В течение квартала',
+  'within_year': 'В течение года',
   'over_year': 'Более года',
   'research': 'Пока изучаем рынок'
+};
+
+const stages = [
+  { value: 'new', label: 'Новый' },
+  { value: 'contacted', label: 'Связались' },
+  { value: 'qualified', label: 'Квалифицирован' },
+  { value: 'proposal', label: 'Предложение' },
+  { value: 'negotiation', label: 'Переговоры' },
+  { value: 'closed', label: 'Закрыт' },
+  { value: 'lost', label: 'Потерян' }
+];
+
+interface StatusDropdownProps {
+  currentStage: string;
+  leadId: string;
+  onStageChange?: () => void;
+}
+
+const StatusDropdown = ({ currentStage, leadId, onStageChange }: StatusDropdownProps) => {
+  const { changeLeadStage } = useLeads();
+  const { toast } = useToast();
+
+  const handleStageChange = async (newStage: string) => {
+    try {
+      await changeLeadStage(leadId, newStage);
+      toast({
+        title: 'Успешно',
+        description: 'Статус лида обновлен',
+      });
+      onStageChange?.();
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Ошибка при обновлении статуса',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const currentStageLabel = stageLabels[currentStage as keyof typeof stageLabels] || currentStage;
+  const currentStageColor = stageColors[currentStage as keyof typeof stageColors] || 'bg-gray-100 text-gray-800';
+
+  return (
+    <Select value={currentStage} onValueChange={handleStageChange}>
+      <SelectTrigger className={`w-auto border-none shadow-none ${currentStageColor} px-3 py-1 h-auto text-sm font-medium rounded-full hover:opacity-80 transition-opacity`}>
+        <SelectValue>{currentStageLabel}</SelectValue>
+        <ChevronDown className="h-3 w-3 ml-1" />
+      </SelectTrigger>
+      <SelectContent className="bg-background z-50">
+        {stages.map((stage) => (
+          <SelectItem key={stage.value} value={stage.value}>
+            {stage.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
 };
 
 export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: UnifiedLeadModalProps) => {
@@ -107,9 +154,11 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Badge className={`px-3 py-1 ${stageColors[lead.stage as keyof typeof stageColors] || 'bg-gray-100 text-gray-800'}`}>
-                  {stageLabels[lead.stage as keyof typeof stageLabels] || lead.stage}
-                </Badge>
+                <StatusDropdown 
+                  currentStage={lead.stage} 
+                  leadId={lead.id} 
+                  onStageChange={onLeadUpdate}
+                />
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -123,269 +172,174 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
             </DialogTitle>
           </DialogHeader>
           
-          <div className="flex gap-6 h-full overflow-hidden">
-            {/* Левая колонка - Информация о лиде */}
-            <div className="flex-1 overflow-y-auto">
-              <ScrollArea className="h-[calc(90vh-140px)]">
-                <div className="space-y-6 pr-4">
-                  {/* Основная информация */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <User className="h-5 w-5" />
-                      Контактная информация
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden h-full">
+            {/* Основная информация - 2 колонки */}
+            <div className="lg:col-span-2 space-y-6 overflow-y-auto pr-2">
+              {/* Контактная информация */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Phone className="h-5 w-5" />
+                    Контактная информация
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <label className="text-sm font-medium text-muted-foreground">Имя</label>
-                        <div className="flex items-center gap-2 mt-1">
-                          <User className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{lead.name}</span>
-                        </div>
+                        <div className="text-sm text-muted-foreground">Email</div>
+                        <div className="font-medium">{lead.email || 'Не указан'}</div>
                       </div>
-                      
-                      {lead.phone && (
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">Телефон</label>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{lead.phone}</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {lead.email && (
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">Email</label>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{lead.email}</span>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {lead.company && (
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">Компания</label>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Building className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm">{lead.company}</span>
-                          </div>
-                        </div>
-                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Телефон</div>
+                        <div className="font-medium">{lead.phone || 'Не указан'}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Building className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Компания</div>
+                        <div className="font-medium">{lead.company || 'Не указана'}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Target className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Должность</div>
+                        <div className="font-medium">{lead.position || 'Не указана'}</div>
+                      </div>
                     </div>
                   </div>
-                  
-                  <Separator />
-                  
-                  {/* Системная информация */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Settings className="h-5 w-5" />
-                      Системная информация
+                </CardContent>
+              </Card>
+
+              {/* Системная информация */}
+              <Card>
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                    <Calendar className="h-5 w-5" />
+                    Системная информация
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Создан</div>
+                        <div className="font-medium">
+                          {format(new Date(lead.created_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Обновлен</div>
+                        <div className="font-medium">
+                          {format(new Date(lead.updated_at), 'dd.MM.yyyy HH:mm', { locale: ru })}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <div>
+                        <div className="text-sm text-muted-foreground">Источник</div>
+                        <div className="font-medium">
+                          {lead.source === 'website_form' ? 'Форма сайта' : lead.source || 'Не указан'}
+                        </div>
+                      </div>
+                    </div>
+                    {lead.value && (
+                      <div className="flex items-center gap-3">
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <div className="text-sm text-muted-foreground">Потенциальная стоимость</div>
+                          <div className="font-medium">${lead.value.toLocaleString()}</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Квалификационные данные */}
+              {(lead.budget_range || lead.equipment_interest || lead.timeline) && (
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <Award className="h-5 w-5" />
+                      Данные квалификации
                     </h3>
-                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">Статус</label>
-                        <div className="mt-1">
-                          <Badge className={`${stageColors[lead.stage as keyof typeof stageColors] || 'bg-gray-100 text-gray-800'} border`}>
-                            {stageLabels[lead.stage as keyof typeof stageLabels] || lead.stage}
-                          </Badge>
+                      {lead.budget_range && (
+                        <div className="flex items-center gap-3">
+                          <DollarSign className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <div className="text-sm text-muted-foreground">Бюджет</div>
+                            <div className="font-medium">
+                              {budgetLabels[lead.budget_range as keyof typeof budgetLabels] || lead.budget_range}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">Дата создания</label>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {format(new Date(lead.created_at), 'dd MMMM yyyy, HH:mm', { locale: ru })}
-                          </span>
+                      )}
+                      {lead.equipment_interest && (
+                        <div className="flex items-center gap-3">
+                          <Target className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <div className="text-sm text-muted-foreground">Интересующее оборудование</div>
+                            <div className="font-medium">
+                              {equipmentLabels[lead.equipment_interest as keyof typeof equipmentLabels] || lead.equipment_interest}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <div>
-                        <label className="text-sm font-medium text-muted-foreground">Последнее обновление</label>
-                        <div className="flex items-center gap-2 mt-1">
+                      )}
+                      {lead.timeline && (
+                        <div className="flex items-center gap-3">
                           <Clock className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {format(new Date(lead.updated_at), 'dd MMMM yyyy, HH:mm', { locale: ru })}
-                          </span>
-                        </div>
-                      </div>
-
-                      {lead.source && (
-                        <div>
-                          <label className="text-sm font-medium text-muted-foreground">Источник</label>
-                          <div className="mt-1">
-                            <span className="text-sm bg-muted px-2 py-1 rounded">
-                              {lead.source === 'website_form' ? 'Форма на сайте' : 
-                               lead.source === 'manual' ? 'Ручной ввод' :
-                               lead.source === 'phone_call' ? 'Телефонный звонок' :
-                               lead.source}
-                            </span>
+                          <div>
+                            <div className="text-sm text-muted-foreground">Временные рамки</div>
+                            <div className="font-medium">
+                              {timelineLabels[lead.timeline as keyof typeof timelineLabels] || lead.timeline}
+                            </div>
                           </div>
                         </div>
                       )}
                     </div>
-                  </div>
-                  
-                  {/* Квалификация лида */}
-                  {(lead.budget_range || lead.position || lead.equipment_interest || lead.timeline) && (
-                    <>
-                      <Separator />
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold flex items-center gap-2">
-                          <Target className="h-5 w-5" />
-                          Квалификация лида
-                        </h3>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {lead.budget_range && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Бюджет</label>
-                              <div className="flex items-center gap-2 mt-1">
-                                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">
-                                  {budgetLabels[lead.budget_range as keyof typeof budgetLabels] || lead.budget_range}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {lead.position && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Позиция/Должность</label>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Briefcase className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">{lead.position}</span>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {lead.equipment_interest && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Интерес к оборудованию</label>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Building className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">
-                                  {equipmentLabels[lead.equipment_interest as keyof typeof equipmentLabels] || lead.equipment_interest}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {lead.timeline && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Сроки реализации</label>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">
-                                  {timelineLabels[lead.timeline as keyof typeof timelineLabels] || lead.timeline}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        
-                        {lead.qualification_date && (
-                          <div className="pt-2 border-t">
-                            <label className="text-sm font-medium text-muted-foreground">Дата квалификации</label>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Calendar className="h-4 w-4 text-muted-foreground" />
-                              <span className="text-sm">
-                                {format(new Date(lead.qualification_date), 'dd MMMM yyyy, HH:mm', { locale: ru })}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
+                  </CardContent>
+                </Card>
+              )}
 
-                  {/* Заметки */}
-                  {lead.notes && (
-                    <>
-                      <Separator />
-                      <div className="space-y-3">
-                        <h3 className="text-lg font-semibold flex items-center gap-2">
-                          <FileText className="h-5 w-5" />
-                          Основные заметки
-                        </h3>
-                        <div className="text-sm bg-muted p-4 rounded-md border">
-                          {lead.notes}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  
-                  {/* Дополнительная информация */}
-                  {(lead.assigned_to || lead.closed_at || lead.value) && (
-                    <>
-                      <Separator />
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold flex items-center gap-2">
-                          <Settings className="h-5 w-5" />
-                          Дополнительная информация
-                        </h3>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {lead.assigned_to && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Назначен</label>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Target className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">{lead.assigned_to}</span>
-                              </div>
-                            </div>
-                          )}
-                          
-                          {lead.closed_at && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Дата закрытия</label>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Calendar className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">
-                                  {format(new Date(lead.closed_at), 'dd MMMM yyyy, HH:mm', { locale: ru })}
-                                </span>
-                              </div>
-                            </div>
-                          )}
-
-                          {lead.value && (
-                            <div>
-                              <label className="text-sm font-medium text-muted-foreground">Потенциальная сумма</label>
-                              <div className="flex items-center gap-2 mt-1">
-                                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm font-semibold">${lead.value}</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </ScrollArea>
+              {/* Заметки */}
+              {lead.notes && (
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                      <MessageSquare className="h-5 w-5" />
+                      Заметки
+                    </h3>
+                    <div className="bg-muted/50 rounded-lg p-4">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{lead.notes}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
-            {/* Правая колонка - Активность */}
-            <div className="w-96 border-l pl-6">
-              <div className="flex items-center gap-2 mb-4">
-                <MessageCircle className="h-5 w-5" />
-                <h3 className="text-lg font-semibold">История активности</h3>
+            {/* Активность - 1 колонка */}
+            <div className="lg:col-span-1 border-l pl-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                История активности
+              </h3>
+              <div className="h-[500px] overflow-hidden">
+                <LeadActivityChat leadId={lead.id} />
               </div>
-              <LeadActivityChat 
-                leadId={lead.id} 
-                className="border-0 shadow-none h-[calc(90vh-200px)]" 
-              />
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Модальное окно редактирования */}
       <EditLeadModal
         lead={lead}
         isOpen={editModalOpen}
