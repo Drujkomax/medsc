@@ -17,7 +17,6 @@ import AdminProductPreview from '../../products/pages/AdminProductPreview';
 import ArchivedData from '../pages/ArchivedData';
 import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
-import Employees from '../pages/EmployeeManagement';
 import UserManagement from '../pages/UserManagement';
 import EmployeeManagement from '../pages/EmployeeManagement';
 import Analytics from '../pages/Analytics';
@@ -28,7 +27,6 @@ const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
   const { resolving } = useResolveInviteRole();
-
 
   // Показываем загрузку пока проверяем аутентификацию
   if (authLoading || roleLoading) {
@@ -49,6 +47,7 @@ const AdminWrapper = () => {
       </Routes>
     );
   }
+
   // Если сейчас пробуем автоматически назначить роль из приглашения — показываем спиннер
   if (resolving) {
     return (
@@ -74,8 +73,8 @@ const AdminWrapper = () => {
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="leads" element={<Leads />} />
-          <Route path="deals" element={<DealsPage />} />
-          <Route path="tasks" element={<TasksPage />} />
+        <Route path="deals" element={<DealsPage />} />
+        <Route path="tasks" element={<TasksPage />} />
         <Route path="kanban" element={<AdminKanban />} />
         <Route path="analytics" element={<Analytics />} />
         <Route path="products" element={<AdminProducts />} />
