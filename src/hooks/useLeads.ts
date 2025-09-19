@@ -60,15 +60,34 @@ export const useLeads = () => {
     source?: string;
     value?: number;
     equipment_interest?: string;
+    assigned_to?: string;
   }) => {
     try {
+      // Получаем текущего пользователя для автоназначения лида
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const leadToInsert = {
+        ...leadData,
+        stage: leadData.stage || 'new',
+        source: leadData.source || 'website_form'
+      };
+
+      // Если пользователь - специалист по продажам, автоматически назначаем лид на него
+      if (user) {
+        const { data: userRole } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (userRole?.role === 'salesperson') {
+          leadToInsert.assigned_to = user.id;
+        }
+      }
+
       const { data, error } = await supabase
         .from('leads')
-        .insert([{
-          ...leadData,
-          stage: leadData.stage || 'new',
-          source: leadData.source || 'website_form'
-        }])
+        .insert([leadToInsert])
         .select()
         .single();
 
