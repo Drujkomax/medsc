@@ -328,20 +328,25 @@ const Leads = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2 md:gap-4">
-        {/* Total Leads Card - только для директора и руководителя */}
-        <RoleBasedAccess roles={['director', 'sales_manager']}>
-          <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
-            <CardContent className="p-2 md:p-4">
-              <div className="flex items-center space-x-1 md:space-x-2">
-                <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-primary" />
-                <div>
-                  <p className="text-xs md:text-sm font-medium leading-tight">Всего лидов</p>
-                  <p className="text-lg md:text-2xl font-bold">{leads.filter(lead => !lead.archived).length}</p>
-                </div>
+        {/* Total Leads Card - для всех ролей */}
+        <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+          <CardContent className="p-2 md:p-4">
+            <div className="flex items-center space-x-1 md:space-x-2">
+              <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-primary" />
+              <div>
+                <p className="text-xs md:text-sm font-medium leading-tight">
+                  {role === 'salesperson' ? 'Мои лиды' : 'Всего лидов'}
+                </p>
+                <p className="text-lg md:text-2xl font-bold">
+                  {role === 'salesperson' 
+                    ? leads.filter(lead => !lead.archived && lead.assigned_to === user?.id).length
+                    : leads.filter(lead => !lead.archived).length
+                  }
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </RoleBasedAccess>
+            </div>
+          </CardContent>
+        </Card>
         
         {leadStages.map((stage) => (
           <Card key={stage.value}>
@@ -350,7 +355,12 @@ const Leads = () => {
                 <div className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${stage.color}`} />
                 <div>
                   <p className="text-xs md:text-sm font-medium leading-tight">{stage.label}</p>
-                  <p className="text-lg md:text-2xl font-bold">{leadCounts[stage.value] || 0}</p>
+                  <p className="text-lg md:text-2xl font-bold">
+                    {role === 'salesperson' 
+                      ? leads.filter(lead => lead.stage === stage.value && !lead.archived && lead.assigned_to === user?.id).length
+                      : (leadCounts[stage.value] || 0)
+                    }
+                  </p>
                 </div>
               </div>
             </CardContent>
