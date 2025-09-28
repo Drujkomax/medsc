@@ -822,6 +822,21 @@ export type Database = {
           role: Database["public"]["Enums"]["app_role"]
         }[]
       }
+      get_user_accessible_clients: {
+        Args: { user_id: string }
+        Returns: {
+          company: string
+          created_at: string
+          created_by: string
+          email: string
+          id: string
+          last_contact: string
+          name: string
+          notes: string
+          phone: string
+          updated_at: string
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
