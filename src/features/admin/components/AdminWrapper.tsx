@@ -63,8 +63,25 @@ const AdminWrapper = () => {
   // salesperson has limited access only to assigned leads/deals through different interface
   const allowedRoles = ['admin', 'sales_manager', 'director', 'salesperson'];
   console.info('[AdminWrapper] auth resolved:', { user: !!user, role });
-  if (!user || !allowedRoles.includes(role || '')) {
-    console.warn('[AdminWrapper] Access denied, showing AdminAuth', { hasUser: !!user, role });
+
+  // Нет пользователя — показываем форму входа
+  if (!user) {
+    console.warn('[AdminWrapper] No user, showing AdminAuth');
+    return <AdminAuth />;
+  }
+
+  // Пользователь есть, но роль ещё не определена — ждём, чтобы не "отбрасывать" на логин
+  if (roleLoading || !role) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Роль определена, но нет доступа — форма входа
+  if (!allowedRoles.includes(role)) {
+    console.warn('[AdminWrapper] Access denied for role', { role });
     return <AdminAuth />;
   }
 
