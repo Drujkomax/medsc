@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,43 +7,100 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Save, Phone, Mail, MapPin, Clock, MessageSquare } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdminContacts = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
-
+  const [loading, setLoading] = useState(false);
   const [contactData, setContactData] = useState({
-    phone: '+998 90 123 45 67',
-    email: 'info@msc-uzbekistan.com',
-    address: 'Ташкент, Узбекистан',
-    workingHours: 'Пн-Пт: 9:00-18:00',
-    telegram: '@msc_uzbekistan',
-    whatsapp: '+998901234567',
-    facebook: 'MSC Uzbekistan',
-    instagram: '@msc_uzbekistan',
-    youtube: 'MSC Uzbekistan Channel',
+    phone: '',
+    email: '',
+    address: '',
+    working_hours: '',
+    telegram: '',
+    whatsapp: '',
+    facebook: '',
+    instagram: '',
+    youtube: '',
   });
+
+  // Load contacts data on component mount
+  useEffect(() => {
+    loadContacts();
+  }, []);
+
+  const loadContacts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('site_contacts')
+        .select('*')
+        .limit(1)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+        throw error;
+      }
+
+      if (data) {
+        setContactData({
+          phone: data.phone || '',
+          email: data.email || '',
+          address: data.address || '',
+          working_hours: data.working_hours || '',
+          telegram: data.telegram || '',
+          whatsapp: data.whatsapp || '',
+          facebook: data.facebook || '',
+          instagram: data.instagram || '',
+          youtube: data.youtube || '',
+        });
+      }
+    } catch (error) {
+      console.error('Error loading contacts:', error);
+      toast({
+        title: t('common.error'),
+        description: 'Ошибка при загрузке контактов',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setContactData(prev => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
+    setLoading(true);
     try {
-      // Здесь можно добавить сохранение в Supabase когда будет нужно
-      // const { error } = await supabase.from('contacts').upsert(contactData);
-      // if (error) throw error;
+      const { error } = await supabase
+        .from('site_contacts')
+        .upsert({
+          phone: contactData.phone,
+          email: contactData.email,
+          address: contactData.address,
+          working_hours: contactData.working_hours,
+          telegram: contactData.telegram,
+          whatsapp: contactData.whatsapp,
+          facebook: contactData.facebook,
+          instagram: contactData.instagram,
+          youtube: contactData.youtube,
+        });
+
+      if (error) throw error;
       
       toast({
         title: t('admin.contactsSaved'),
         description: t('admin.contactsSavedDesc'),
       });
     } catch (error) {
+      console.error('Error saving contacts:', error);
       toast({
         title: t('common.error'),
         description: 'Ошибка при сохранении контактов',
         variant: 'destructive',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,9 +108,9 @@ const AdminContacts = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">{t('admin.contacts')}</h1>
-        <Button onClick={handleSave} className="gap-2">
+        <Button onClick={handleSave} disabled={loading} className="gap-2">
           <Save className="w-4 h-4" />
-          {t('admin.save')}
+          {loading ? 'Сохраняется...' : t('admin.save')}
         </Button>
       </div>
 
@@ -97,11 +154,11 @@ const AdminContacts = () => {
               />
             </div>
             <div>
-              <Label htmlFor="workingHours">{t('admin.workingHours')}</Label>
+              <Label htmlFor="working_hours">{t('admin.workingHours')}</Label>
               <Input
-                id="workingHours"
-                value={contactData.workingHours}
-                onChange={(e) => handleInputChange('workingHours', e.target.value)}
+                id="working_hours"
+                value={contactData.working_hours}
+                onChange={(e) => handleInputChange('working_hours', e.target.value)}
                 placeholder={t('admin.workingHours')}
               />
             </div>

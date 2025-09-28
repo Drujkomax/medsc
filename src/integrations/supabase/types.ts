@@ -511,6 +511,51 @@ export type Database = {
         }
         Relationships: []
       }
+      site_contacts: {
+        Row: {
+          address: string | null
+          created_at: string
+          email: string | null
+          facebook: string | null
+          id: string
+          instagram: string | null
+          phone: string | null
+          telegram: string | null
+          updated_at: string
+          whatsapp: string | null
+          working_hours: string | null
+          youtube: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          instagram?: string | null
+          phone?: string | null
+          telegram?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          working_hours?: string | null
+          youtube?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          facebook?: string | null
+          id?: string
+          instagram?: string | null
+          phone?: string | null
+          telegram?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+          working_hours?: string | null
+          youtube?: string | null
+        }
+        Relationships: []
+      }
       system_alerts: {
         Row: {
           acknowledged_at: string | null
