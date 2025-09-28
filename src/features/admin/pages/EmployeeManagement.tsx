@@ -26,6 +26,7 @@ import {
 interface Employee {
   id: string;
   email: string;
+  full_name: string;
   created_at: string;
   role?: string;
   last_sign_in_at?: string;
@@ -66,18 +67,28 @@ const EmployeeManagement = () => {
       // Получаем роли пользователей (исключаем директоров)
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
-        .select('user_id, role')
+        .select('user_id, role, created_at')
         .neq('role', 'director'); // Исключаем директоров
           
       if (rolesError) throw rolesError;
+
+      // Получаем профили сотрудников
+      const { data: profilesData, error: profilesError } = await supabase
+        .rpc('get_employee_profiles');
+
+      if (profilesError) throw profilesError;
       
-      // Создаем структуру сотрудников
-      const employeesList = userRoles?.map(userRole => ({
-        id: userRole.user_id,
-        email: `employee-${userRole.user_id.slice(0, 8)}@medservice.uz`,
-        created_at: new Date().toISOString(),
-        role: userRole.role
-      })) || [];
+      // Объединяем роли с профилями
+      const employeesList = userRoles?.map(userRole => {
+        const profile = profilesData?.find(p => p.id === userRole.user_id);
+        return {
+          id: userRole.user_id,
+          email: profile?.email || 'Не указан',
+          full_name: profile?.full_name || profile?.email || 'Имя не указано',
+          created_at: userRole.created_at,
+          role: userRole.role
+        };
+      }) || [];
       
       setEmployees(employeesList);
     } catch (error) {
@@ -342,8 +353,9 @@ const EmployeeManagement = () => {
                         <UserCheck className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-medium">{employee.email}</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="font-medium">{employee.full_name}</h3>
+                        <p className="text-sm text-muted-foreground">{employee.email}</p>
+                        <p className="text-xs text-muted-foreground">
                           {t('employees.addedOn')}: {new Date(employee.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'ru-RU')}
                         </p>
                       </div>
