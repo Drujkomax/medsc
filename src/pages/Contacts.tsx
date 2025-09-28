@@ -1,10 +1,73 @@
 import { Phone, Mail, MapPin, MessageCircle, Facebook, Instagram, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Contacts = () => {
   const { t, i18n } = useTranslation();
+  const { toast } = useToast();
+  
+  // Contact data state
+  const [contactData, setContactData] = useState({
+    phone: '+998 (71) 237-33-08',
+    email: 'info@medsc.uz',
+    address: '',
+    telegram: '@medservice_centre',
+    whatsapp: '+998 90 944 34 82',
+    facebook: 'https://www.facebook.com/profile.php?id=61576982724139',
+    instagram: 'https://www.instagram.com/medservicecentreuz/',
+    youtube: 'https://www.youtube.com/@MedService_centre/shorts'
+  });
+
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    message: ''
+  });
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Load contact data from database
+  useEffect(() => {
+    const loadContactData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('site_contacts')
+          .select('*')
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (error && error.code !== 'PGRST116') {
+          throw error;
+        }
+
+        if (data) {
+          setContactData({
+            phone: data.phone || '+998 (71) 237-33-08',
+            email: data.email || 'info@medsc.uz',
+            address: data.address || '',
+            telegram: data.telegram || '@medservice_centre',
+            whatsapp: data.whatsapp || '+998 90 944 34 82',
+            facebook: data.facebook || 'https://www.facebook.com/profile.php?id=61576982724139',
+            instagram: data.instagram || 'https://www.instagram.com/medservicecentreuz/',
+            youtube: data.youtube || 'https://www.youtube.com/@MedService_centre/shorts'
+          });
+        }
+      } catch (error) {
+        console.error('Error loading contact data:', error);
+      }
+    };
+
+    loadContactData();
+  }, []);
   const content = {
     ru: {
       title: 'Контакты',
@@ -68,31 +131,85 @@ const Contacts = () => {
   const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
 
   const handlePhoneClick = () => {
-    window.open('tel:+998712373308', '_self');
+    const phoneNumber = contactData.phone.replace(/[^\d+]/g, '');
+    window.open(`tel:${phoneNumber}`, '_self');
   };
 
   const handleEmailClick = () => {
-    window.open('mailto:info@medsc.uz', '_self');
+    window.open(`mailto:${contactData.email}`, '_self');
   };
 
   const handleTelegramClick = () => {
-    window.open('https://t.me/medservice_centre', '_blank');
+    const telegramUrl = contactData.telegram.startsWith('http') 
+      ? contactData.telegram 
+      : `https://t.me/${contactData.telegram.replace('@', '')}`;
+    window.open(telegramUrl, '_blank');
   };
 
   const handleWhatsAppClick = () => {
-    window.open('https://wa.me/998909443482', '_blank');
+    const whatsappNumber = contactData.whatsapp.replace(/[^\d]/g, '');
+    window.open(`https://wa.me/${whatsappNumber}`, '_blank');
   };
 
   const handleFacebookClick = () => {
-    window.open('https://www.facebook.com/profile.php?id=61576982724139', '_blank');
+    window.open(contactData.facebook, '_blank');
   };
 
   const handleInstagramClick = () => {
-    window.open('https://www.instagram.com/medservicecentreuz/', '_blank');
+    window.open(contactData.instagram, '_blank');
   };
 
   const handleYouTubeClick = () => {
-    window.open('https://www.youtube.com/@MedService_centre/shorts', '_blank');
+    window.open(contactData.youtube, '_blank');
+  };
+
+  // Form handlers
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('contact_inquiries')
+        .insert({
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          message: formData.message
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: 'Сообщение отправлено',
+        description: 'Мы свяжемся с вами в ближайшее время.',
+      });
+
+      // Reset form
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        message: ''
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить сообщение. Попробуйте позже.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -117,7 +234,7 @@ const Contacts = () => {
                 <Phone className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.phone}</h3>
-              <p className="text-msc-primary text-lg font-medium">+998 (71) 237-33-08</p>
+              <p className="text-msc-primary text-lg font-medium">{contactData.phone}</p>
             </CardContent>
           </Card>
 
@@ -128,7 +245,7 @@ const Contacts = () => {
                 <Mail className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.email}</h3>
-              <p className="text-msc-primary text-lg font-medium">info@medsc.uz</p>
+              <p className="text-msc-primary text-lg font-medium">{contactData.email}</p>
             </CardContent>
           </Card>
 
@@ -139,7 +256,7 @@ const Contacts = () => {
                 <MapPin className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.address}</h3>
-              <p className="text-muted-foreground text-lg">{currentContent.fullAddress}</p>
+              <p className="text-muted-foreground text-lg">{contactData.address || currentContent.fullAddress}</p>
             </CardContent>
           </Card>
 
@@ -150,7 +267,7 @@ const Contacts = () => {
                 <MessageCircle className="w-8 h-8 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">Telegram</h3>
-              <p className="text-msc-primary text-lg font-medium">@medservice_centre</p>
+              <p className="text-msc-primary text-lg font-medium">{contactData.telegram}</p>
             </CardContent>
           </Card>
 
@@ -161,7 +278,7 @@ const Contacts = () => {
                 <MessageCircle className="w-8 h-8 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">WhatsApp</h3>
-              <p className="text-msc-primary text-lg font-medium">+998 90 944 34 82</p>
+              <p className="text-msc-primary text-lg font-medium">{contactData.whatsapp}</p>
             </CardContent>
           </Card>
 
@@ -225,15 +342,18 @@ const Contacts = () => {
                 <p className="text-muted-foreground text-lg">{currentContent.formDescription}</p>
               </div>
               
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleFormSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
                       {currentContent.name}
                     </label>
-                    <input 
+                    <Input 
                       type="text" 
-                      className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="h-12"
                       required
                     />
                   </div>
@@ -242,9 +362,12 @@ const Contacts = () => {
                     <label className="block text-sm font-medium text-foreground mb-2">
                       {currentContent.phoneField}
                     </label>
-                    <input 
+                    <Input 
                       type="tel" 
-                      className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="h-12"
                       required
                     />
                   </div>
@@ -254,9 +377,12 @@ const Contacts = () => {
                   <label className="block text-sm font-medium text-foreground mb-2">
                     {currentContent.emailField}
                   </label>
-                  <input 
+                  <Input 
                     type="email" 
-                    className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    className="h-12"
                     required
                   />
                 </div>
@@ -265,15 +391,22 @@ const Contacts = () => {
                   <label className="block text-sm font-medium text-foreground mb-2">
                     {currentContent.message}
                   </label>
-                  <textarea 
+                  <Textarea 
                     rows={5}
-                    className="w-full px-4 py-3 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-msc-primary"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
                     placeholder="Ваше сообщение..."
-                  ></textarea>
+                  />
                 </div>
                 
-                <Button type="submit" size="lg" className="w-full bg-msc-primary hover:bg-msc-accent text-lg py-3">
-                  {currentContent.send}
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  className="w-full bg-msc-primary hover:bg-msc-accent text-lg py-3"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Отправка...' : currentContent.send}
                 </Button>
               </form>
             </CardContent>
