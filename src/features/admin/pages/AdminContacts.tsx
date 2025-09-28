@@ -24,6 +24,7 @@ const AdminContacts = () => {
     instagram: '',
     youtube: '',
   });
+  const [contactId, setContactId] = useState<string | null>(null);
 
   // Load contacts data on component mount
   useEffect(() => {
@@ -35,14 +36,16 @@ const AdminContacts = () => {
       const { data, error } = await supabase
         .from('site_contacts')
         .select('*')
+        .order('updated_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
         throw error;
       }
 
       if (data) {
+        setContactId(data.id);
         setContactData({
           phone: data.phone || '',
           email: data.email || '',
@@ -72,21 +75,41 @@ const AdminContacts = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase
-        .from('site_contacts')
-        .upsert({
-          phone: contactData.phone,
-          email: contactData.email,
-          address: contactData.address,
-          working_hours: contactData.working_hours,
-          telegram: contactData.telegram,
-          whatsapp: contactData.whatsapp,
-          facebook: contactData.facebook,
-          instagram: contactData.instagram,
-          youtube: contactData.youtube,
-        });
-
-      if (error) throw error;
+      if (contactId) {
+        const { error } = await supabase
+          .from('site_contacts')
+          .update({
+            phone: contactData.phone,
+            email: contactData.email,
+            address: contactData.address,
+            working_hours: contactData.working_hours,
+            telegram: contactData.telegram,
+            whatsapp: contactData.whatsapp,
+            facebook: contactData.facebook,
+            instagram: contactData.instagram,
+            youtube: contactData.youtube,
+          })
+          .eq('id', contactId);
+        if (error) throw error;
+      } else {
+        const { data: inserted, error } = await supabase
+          .from('site_contacts')
+          .insert({
+            phone: contactData.phone,
+            email: contactData.email,
+            address: contactData.address,
+            working_hours: contactData.working_hours,
+            telegram: contactData.telegram,
+            whatsapp: contactData.whatsapp,
+            facebook: contactData.facebook,
+            instagram: contactData.instagram,
+            youtube: contactData.youtube,
+          })
+          .select('id')
+          .single();
+        if (error) throw error;
+        if (inserted?.id) setContactId(inserted.id);
+      }
       
       toast({
         title: t('admin.contactsSaved'),
