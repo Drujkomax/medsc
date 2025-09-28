@@ -17,16 +17,14 @@ export const useUserRole = () => {
 
       try {
         const { data, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .single();
+          .rpc('get_user_role', { _user_id: user.id });
 
         if (error) {
-          console.error('Error fetching user role:', error);
+          console.error('Error fetching user role via RPC:', error);
           setRole(null);
         } else {
-          setRole(data?.role || null);
+          // data is app_role or null
+          setRole((data as string) ?? null);
         }
       } catch (error) {
         console.error('Error fetching user role:', error);
