@@ -353,8 +353,7 @@ const EmployeeManagement = () => {
                         <UserCheck className="w-5 h-5 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-medium">{employee.full_name}</h3>
-                        <p className="text-sm text-muted-foreground">{employee.email}</p>
+                        <h3 className="font-medium">{employee.email}</h3>
                         <p className="text-xs text-muted-foreground">
                           {t('employees.addedOn')}: {new Date(employee.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'ru-RU')}
                         </p>
