@@ -16,6 +16,7 @@ import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 interface Employee {
   id: string;
   email: string;
+  full_name: string;
   role: string;
   created_at: string;
   last_sign_in_at?: string;
@@ -57,7 +58,8 @@ const Employees = () => {
 
   const fetchEmployees = async () => {
     try {
-      const { data, error } = await supabase
+      // Get employee roles
+      const { data: rolesData, error: rolesError } = await supabase
         .from('user_roles')
         .select(`
           id,
@@ -68,20 +70,28 @@ const Employees = () => {
         .in('role', ['salesperson', 'sales_manager', 'admin'])
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (rolesError) throw rolesError;
 
-      // Get user emails from auth.users through admin API
-      const userIds = data?.map(item => item.user_id) || [];
-      
-      const employeesWithEmails = data?.map(item => ({
-        id: item.user_id,
-        email: 'user@example.com', // TODO: Fetch real email
-        role: item.role,
-        created_at: item.created_at,
-        last_sign_in_at: null
-      })) || [];
+      // Get employee profiles using the secure function
+      const { data: profilesData, error: profilesError } = await supabase
+        .rpc('get_employee_profiles');
 
-      setEmployees(employeesWithEmails);
+      if (profilesError) throw profilesError;
+
+      // Merge roles with profiles
+      const employeesWithProfiles = rolesData?.map(roleItem => {
+        const profile = profilesData?.find(p => p.id === roleItem.user_id);
+        return {
+          id: roleItem.user_id,
+          email: profile?.email || 'Не указан',
+          full_name: profile?.full_name || profile?.email || 'Имя не указано',
+          role: roleItem.role,
+          created_at: roleItem.created_at,
+          last_sign_in_at: null
+        };
+      }) || [];
+
+      setEmployees(employeesWithProfiles);
     } catch (error) {
       console.error('Error fetching employees:', error);
       toast.error('Ошибка при загрузке сотрудников');
@@ -212,7 +222,8 @@ const Employees = () => {
                   <div key={employee.id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-4">
                       <div>
-                        <p className="font-medium">{employee.email}</p>
+                        <p className="font-medium">{employee.full_name}</p>
+                        <p className="text-sm text-muted-foreground">{employee.email}</p>
                         <div className="flex items-center space-x-2 mt-1">
                           <Badge variant="outline">
                             {roleLabels[employee.role as keyof typeof roleLabels]}
