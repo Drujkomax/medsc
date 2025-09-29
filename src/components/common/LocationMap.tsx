@@ -41,7 +41,7 @@ const LocationMap: React.FC = () => {
     if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
       // iOS devices - try Apple Maps first, fallback to Google Maps
       const appleUrl = `maps://maps.google.com/maps?q=${latitude},${longitude}`;
-      const googleUrl = `https://maps.google.com/maps?q=${latitude},${longitude}&ll=${latitude},${longitude}&z=16`;
+      const googleUrl = `https://yandex.uz/maps/10335/tashkent/house/YkAYdQdhTE0DQFprfX9wd35iZA==/?ll=69.301972%2C41.316221&z=19.32`;
       
       window.location.href = appleUrl;
       // Fallback to Google Maps if Apple Maps doesn't open
