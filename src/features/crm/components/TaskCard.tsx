@@ -9,8 +9,8 @@ import { ru } from "date-fns/locale";
 interface TaskCardProps {
   task: any;
   onView: (task: any) => void;
-  onEdit: (task: any) => void;
-  onDelete: (taskId: string) => void;
+  onEdit?: (task: any) => void;
+  onDelete?: (taskId: string) => void;
   onComplete: (taskId: string) => void;
 }
 
@@ -97,23 +97,27 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete }: TaskCar
                 <Eye className="mr-2 h-4 w-4" />
                 Просмотр
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onEdit(task)}>
-                <Edit className="mr-2 h-4 w-4" />
-                Редактировать
-              </DropdownMenuItem>
+              {onEdit && (
+                <DropdownMenuItem onClick={() => onEdit && onEdit(task)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Редактировать
+                </DropdownMenuItem>
+              )}
               {task.status !== 'completed' && (
                 <DropdownMenuItem onClick={() => onComplete(task.id)}>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
                   Выполнить
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem 
-                onClick={() => onDelete(task.id)}
-                className="text-red-600"
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Удалить
-              </DropdownMenuItem>
+              {onDelete && (
+                <DropdownMenuItem 
+                  onClick={() => onDelete && onDelete(task.id)}
+                  className="text-red-600"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Удалить
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
