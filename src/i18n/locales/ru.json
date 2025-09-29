@@ -371,7 +371,35 @@
   },
   "services": {
     "title": "Управление услугами",
-    "subtitle": "Управление услугами компании и их описаниями"
+    "subtitle": "Управление услугами компании и их описаниями",
+    "addService": "Добавить услугу",
+    "editService": "Редактировать услугу",
+    "deleteService": "Удалить услугу",
+    "serviceTitle": "Название услуги",
+    "serviceDescription": "Описание услуги",
+    "serviceCategory": "Категория",
+    "servicePrice": "Стоимость",
+    "serviceCurrency": "Валюта",
+    "serviceStatus": "Статус",
+    "serviceFeatures": "Особенности",
+    "active": "Активна",
+    "inactive": "Неактивна",
+    "noServices": "Услуги не найдены",
+    "noServicesDescription": "Создайте первую услугу для начала работы",
+    "totalServices": "Всего услуг",
+    "activeServices": "Активных услуг",
+    "serviceCreated": "Услуга успешно создана",
+    "serviceUpdated": "Услуга успешно обновлена",
+    "serviceDeleted": "Услуга успешно удалена",
+    "deleteConfirm": "Вы уверены, что хотите удалить эту услугу?",
+    "deleteConfirmDescription": "Это действие нельзя отменить.",
+    "categories": {
+      "consultations": "Консультации",
+      "technical_support": "Техническое обслуживание", 
+      "installation": "Установка и настройка",
+      "training": "Обучение персонала",
+      "warranty": "Гарантийное обслуживание"
+    }
   },
   "navigation2": {
     "navigation": "Навигация",

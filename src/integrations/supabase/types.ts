@@ -544,6 +544,81 @@ export type Database = {
         }
         Relationships: []
       }
+      service_categories: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: Json
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name: Json
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: Json
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          currency: string | null
+          description: Json
+          features: Json | null
+          id: string
+          images: Json | null
+          price: string | null
+          status: string
+          title: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          description: Json
+          features?: Json | null
+          id?: string
+          images?: Json | null
+          price?: string | null
+          status?: string
+          title: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string | null
+          description?: Json
+          features?: Json | null
+          id?: string
+          images?: Json | null
+          price?: string | null
+          status?: string
+          title?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       site_contacts: {
         Row: {
           address: string | null
