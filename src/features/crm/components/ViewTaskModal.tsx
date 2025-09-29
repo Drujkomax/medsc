@@ -104,6 +104,15 @@ export const ViewTaskModal = ({
               </div>
             )}
 
+            {task.comments && (
+              <div>
+                <h3 className="font-semibold text-sm text-muted-foreground mb-2">КОММЕНТАРИЙ К ПЕРЕРАБОТКЕ</h3>
+                <p className="text-sm leading-relaxed bg-orange-50 border-l-4 border-orange-200 p-3 rounded-md">
+                  {task.comments}
+                </p>
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Due Date */}
               {task.due_date && (

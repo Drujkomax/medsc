@@ -6,6 +6,7 @@ import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
 import { AddTaskDialog } from '../components/AddTaskDialog';
 import { ViewTaskModal } from '../components/ViewTaskModal';
+import { ReopenTaskDialog } from '../components/ReopenTaskDialog';
 import { TaskFilters } from '../components/TaskFilters';
 import { TaskCard } from '../components/TaskCard';
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const TasksPage = () => {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [viewingTask, setViewingTask] = useState<any>(null);
+  const [reopeningTask, setReopeningTask] = useState<any>(null);
   
   // Filter states
   const [searchTerm, setSearchTerm] = useState('');
@@ -100,8 +102,17 @@ const TasksPage = () => {
   };
 
   const handleReopenTask = async (taskId: string) => {
+    const task = tasks?.find(t => t.id === taskId);
+    if (task) {
+      setReopeningTask(task);
+    }
+  };
+
+  const handleReopenConfirm = async (comment: string) => {
+    if (!reopeningTask) return;
+    
     try {
-      await reopenTask(taskId);
+      await reopenTask(reopeningTask.id, comment);
       toast({
         title: "Задача отправлена на переработку",
         description: "Задача возвращена в статус 'В ожидании'",
@@ -348,6 +359,13 @@ const TasksPage = () => {
           onDelete={role === 'director' || role === 'sales_manager' ? handleDeleteTask : undefined}
           onComplete={handleCompleteTask}
           onReopen={canReopenTask(viewingTask) ? handleReopenTask : undefined}
+        />
+
+        <ReopenTaskDialog
+          open={!!reopeningTask}
+          onOpenChange={(open) => !open && setReopeningTask(null)}
+          onConfirm={handleReopenConfirm}
+          taskTitle={reopeningTask?.title || ''}
         />
     </div>
   );

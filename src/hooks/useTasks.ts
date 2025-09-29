@@ -74,7 +74,8 @@ export const useTasks = () => {
           recurrence_type: updates.recurrence_type,
           recurrence_interval: updates.recurrence_interval,
           recurrence_end_date: updates.recurrence_end_date,
-          parent_task_id: updates.parent_task_id
+          parent_task_id: updates.parent_task_id,
+          comments: updates.comments
         })
         .eq('id', id)
         .select()
@@ -126,10 +127,11 @@ export const useTasks = () => {
     });
   };
 
-  const reopenTask = async (id: string) => {
+  const reopenTask = async (id: string, comment?: string) => {
     return updateTask(id, { 
       status: 'pending', 
-      completed_at: null 
+      completed_at: undefined,
+      comments: comment
     });
   };
 
