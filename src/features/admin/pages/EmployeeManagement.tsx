@@ -53,7 +53,9 @@ const EmployeeManagement = () => {
     { value: 'salesperson', label: getRoleTranslation('salesperson', i18n.language), color: 'bg-blue-100 text-blue-800' },
     { value: 'sales_manager', label: getRoleTranslation('sales_manager', i18n.language), color: 'bg-green-100 text-green-800' },
     { value: 'admin', label: getRoleTranslation('admin', i18n.language), color: 'bg-red-100 text-red-800' },
-    { value: 'director', label: getRoleTranslation('director', i18n.language), color: 'bg-purple-100 text-purple-800' }
+    { value: 'director', label: getRoleTranslation('director', i18n.language), color: 'bg-purple-100 text-purple-800' },
+    { value: 'accountant', label: getRoleTranslation('accountant', i18n.language), color: 'bg-orange-100 text-orange-800' },
+    { value: 'engineer', label: getRoleTranslation('engineer', i18n.language), color: 'bg-cyan-100 text-cyan-800' }
   ];
 
   useEffect(() => {
@@ -121,7 +123,7 @@ const EmployeeManagement = () => {
       // Создаем приглашение через нашу функцию
       const { data, error } = await supabase.rpc('create_user_invite', {
         invite_email: newEmployee.email,
-        invite_role: newEmployee.role as 'admin' | 'salesperson' | 'sales_manager'
+        invite_role: newEmployee.role as 'admin' | 'salesperson' | 'sales_manager' | 'accountant' | 'engineer'
       });
 
       if (error) throw error;

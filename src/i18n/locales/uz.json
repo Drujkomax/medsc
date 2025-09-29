@@ -227,7 +227,9 @@
     "director": "Direktor",
     "salesManager": "Sotuv menejeri",
     "admin": "Administrator",
-    "salesperson": "Sotuvchi", 
+    "salesperson": "Sotuvchi",
+    "accountant": "Buxgalter",
+    "engineer": "Muhandis",
     "user": "Foydalanuvchi",
     "notAssigned": "Belgilanmagan"
   },

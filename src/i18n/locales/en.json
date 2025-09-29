@@ -228,6 +228,8 @@
     "salesManager": "Sales Manager",
     "admin": "Administrator", 
     "salesperson": "Salesperson",
+    "accountant": "Accountant",
+    "engineer": "Engineer",
     "user": "User",
     "notAssigned": "Not assigned"
   },
