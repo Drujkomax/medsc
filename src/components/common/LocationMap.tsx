@@ -37,40 +37,15 @@ const LocationMap: React.FC = () => {
   const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
 
   const handleOpenInMaps = () => {
-    // Try to open in user's preferred map app
-    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-      // iOS devices - try Apple Maps first, fallback to Google Maps
-      const appleUrl = `maps://maps.google.com/maps?q=${latitude},${longitude}`;
-      const googleUrl = `https://yandex.uz/maps/10335/tashkent/house/YkAYdQdhTE0DQFprfX9wd35iZA==/?ll=69.301972%2C41.316221&z=19.32`;
-      
-      window.location.href = appleUrl;
-      // Fallback to Google Maps if Apple Maps doesn't open
-      setTimeout(() => {
-        window.open(googleUrl, '_blank');
-      }, 1000);
-    } else {
-      // Android and desktop - open Google Maps
-      const url = `https://maps.google.com/maps?q=${latitude},${longitude}&ll=${latitude},${longitude}&z=16`;
-      window.open(url, '_blank');
-    }
+    // Always open Yandex Maps using the provided share link
+    const yandexShareUrl = 'https://yandex.uz/maps/-/CLuCZ-Om';
+    window.open(yandexShareUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleGetDirections = () => {
-    // Get directions based on device
-    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
-      // iOS devices
-      const appleUrl = `maps://maps.google.com/maps?daddr=${latitude},${longitude}&dirflg=d`;
-      const googleUrl = `https://maps.google.com/maps?daddr=${latitude},${longitude}&dirflg=d`;
-      
-      window.location.href = appleUrl;
-      setTimeout(() => {
-        window.open(googleUrl, '_blank');
-      }, 1000);
-    } else {
-      // Android and desktop
-      const url = `https://maps.google.com/maps?daddr=${latitude},${longitude}&dirflg=d`;
-      window.open(url, '_blank');
-    }
+    // Open Yandex Maps with directions to the coordinates from current location
+    const yandexDirectionsUrl = `https://yandex.uz/maps/?rtext=~${latitude},${longitude}&rtt=auto`;
+    window.open(yandexDirectionsUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
