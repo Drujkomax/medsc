@@ -16,7 +16,7 @@ import { toast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const TasksPage = () => {
-  const { tasks, loading, deleteTask, completeTask } = useTasks();
+  const { tasks, loading, deleteTask, completeTask, reopenTask } = useTasks();
   const { leads } = useLeads();
   const { deals } = useDeals();
   const { role } = useUserPermissions();
@@ -35,11 +35,11 @@ const TasksPage = () => {
   const [overdueOnly, setOverdueOnly] = useState(false);
 
   const canCompleteTask = (task: any) => {
-    if (role === 'director' || role === 'sales_manager' || role === 'admin') return true;
-    if (role === 'salesperson' || role === 'accountant' || role === 'engineer') {
-      return !!(task.assignee_id && user?.id && task.assignee_id === user.id);
-    }
-    return false;
+    return true; // Все могут выполнять задачи
+  };
+
+  const canReopenTask = (task: any) => {
+    return role === 'director' || role === 'sales_manager' || role === 'admin';
   };
 
   const handleAddTask = () => {
@@ -94,6 +94,22 @@ const TasksPage = () => {
       toast({
         title: "Ошибка",
         description: "Не удалось обновить статус задачи",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReopenTask = async (taskId: string) => {
+    try {
+      await reopenTask(taskId);
+      toast({
+        title: "Задача отправлена на переработку",
+        description: "Задача возвращена в статус 'В ожидании'",
+      });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось отправить задачу на переработку",
         variant: "destructive",
       });
     }
@@ -309,7 +325,9 @@ const TasksPage = () => {
               onEdit={role === 'director' || role === 'sales_manager' ? handleEditTask : undefined}
               onDelete={role === 'director' || role === 'sales_manager' ? handleDeleteTask : undefined}
               onComplete={handleCompleteTask}
+              onReopen={handleReopenTask}
               canComplete={canCompleteTask(task)}
+              canReopen={canReopenTask(task)}
             />
           ))}
         </div>
@@ -329,6 +347,7 @@ const TasksPage = () => {
           onEdit={role === 'director' || role === 'sales_manager' ? handleEditTask : undefined}
           onDelete={role === 'director' || role === 'sales_manager' ? handleDeleteTask : undefined}
           onComplete={handleCompleteTask}
+          onReopen={canReopenTask(viewingTask) ? handleReopenTask : undefined}
         />
     </div>
   );

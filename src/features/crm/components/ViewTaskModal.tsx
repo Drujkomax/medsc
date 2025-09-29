@@ -14,6 +14,7 @@ interface ViewTaskModalProps {
   onEdit?: (task: any) => void;
   onDelete?: (taskId: string) => void;
   onComplete?: (taskId: string) => void;
+  onReopen?: (taskId: string) => void;
 }
 
 export const ViewTaskModal = ({ 
@@ -22,7 +23,8 @@ export const ViewTaskModal = ({
   onOpenChange, 
   onEdit, 
   onDelete, 
-  onComplete 
+  onComplete,
+  onReopen 
 }: ViewTaskModalProps) => {
   const { role } = useUserPermissions();
   
@@ -217,6 +219,17 @@ export const ViewTaskModal = ({
               >
                 <CheckCircle2 className="h-4 w-4" />
                 Отметить выполненной
+              </Button>
+            )}
+
+            {task.status === 'completed' && onReopen && (role === 'director' || role === 'sales_manager' || role === 'admin') && (
+              <Button 
+                variant="outline"
+                onClick={() => onReopen(task.id)}
+                className="flex items-center gap-2"
+              >
+                <Repeat className="h-4 w-4" />
+                Отправить на переработку
               </Button>
             )}
             

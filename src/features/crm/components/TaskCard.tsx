@@ -12,10 +12,12 @@ interface TaskCardProps {
   onEdit?: (task: any) => void;
   onDelete?: (taskId: string) => void;
   onComplete: (taskId: string) => void;
+  onReopen?: (taskId: string) => void;
   canComplete?: boolean;
+  canReopen?: boolean;
 }
 
-export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, canComplete = true }: TaskCardProps) => {
+export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen, canComplete = true, canReopen = false }: TaskCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
@@ -105,9 +107,15 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, canComple
                 </DropdownMenuItem>
               )}
               {task.status !== 'completed' && (
-                <DropdownMenuItem disabled={!canComplete} onClick={() => canComplete && onComplete(task.id)}>
+                <DropdownMenuItem onClick={() => onComplete(task.id)}>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
                   Выполнить
+                </DropdownMenuItem>
+              )}
+              {task.status === 'completed' && canReopen && onReopen && (
+                <DropdownMenuItem onClick={() => onReopen(task.id)}>
+                  <AlertTriangle className="mr-2 h-4 w-4" />
+                  Отправить на переработку
                 </DropdownMenuItem>
               )}
               {onDelete && (
@@ -167,13 +175,22 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, canComple
           {task.status !== 'completed' && (
             <Button 
               size="sm" 
-              onClick={() => canComplete && onComplete(task.id)}
-              disabled={!canComplete}
+              onClick={() => onComplete(task.id)}
               className="flex-1"
-              title={!canComplete ? 'Недостаточно прав для выполнения' : undefined}
             >
               <CheckCircle2 className="h-3 w-3 mr-1" />
               Выполнить
+            </Button>
+          )}
+          {task.status === 'completed' && canReopen && onReopen && (
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => onReopen(task.id)}
+              className="flex-1"
+            >
+              <AlertTriangle className="h-3 w-3 mr-1" />
+              На переработку
             </Button>
           )}
         </div>

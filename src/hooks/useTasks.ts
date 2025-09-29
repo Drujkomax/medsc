@@ -126,6 +126,13 @@ export const useTasks = () => {
     });
   };
 
+  const reopenTask = async (id: string) => {
+    return updateTask(id, { 
+      status: 'pending', 
+      completed_at: null 
+    });
+  };
+
   return {
     tasks,
     loading,
@@ -136,6 +143,7 @@ export const useTasks = () => {
     getTasksByClientId,
     getTasksByDealId,
     completeTask,
+    reopenTask,
     refreshTasks: loadTasks,
   };
 };
