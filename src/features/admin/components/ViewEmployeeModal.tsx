@@ -140,6 +140,75 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
     return actions[actionType] || `🔧 ${actionType}`;
   };
 
+  const getActionType = (actionType: string) => {
+    const types: Record<string, string> = {
+      'login': 'Вход',
+      'logout': 'Выход',
+      'lead_create': 'Лид',
+      'lead_update': 'Лид',
+      'lead_assign': 'Лид',
+      'lead_close': 'Лид',
+      'product_create': 'Товар',
+      'product_update': 'Товар',
+      'product_edit': 'Товар',
+      'client_create': 'Клиент',
+      'deal_action': 'Сделка',
+      'page_view': 'Страница',
+      'form_submit': 'Форма'
+    };
+    return types[actionType] || actionType;
+  };
+
+  const getActionColor = (actionType: string) => {
+    const colors: Record<string, { bg: string; border: string; textBg: string }> = {
+      'login': { 
+        bg: 'bg-green-500', 
+        border: 'border-green-500', 
+        textBg: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' 
+      },
+      'logout': { 
+        bg: 'bg-red-500', 
+        border: 'border-red-500', 
+        textBg: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' 
+      },
+      'lead_create': { 
+        bg: 'bg-blue-500', 
+        border: 'border-blue-500', 
+        textBg: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' 
+      },
+      'lead_update': { 
+        bg: 'bg-blue-400', 
+        border: 'border-blue-400', 
+        textBg: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' 
+      },
+      'product_create': { 
+        bg: 'bg-purple-500', 
+        border: 'border-purple-500', 
+        textBg: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300' 
+      },
+      'product_edit': { 
+        bg: 'bg-violet-500', 
+        border: 'border-violet-500', 
+        textBg: 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-300' 
+      },
+      'deal_action': { 
+        bg: 'bg-yellow-500', 
+        border: 'border-yellow-500', 
+        textBg: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' 
+      },
+      'page_view': { 
+        bg: 'bg-gray-500', 
+        border: 'border-gray-500', 
+        textBg: 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300' 
+      }
+    };
+    return colors[actionType] || { 
+      bg: 'bg-slate-500', 
+      border: 'border-slate-500', 
+      textBg: 'bg-slate-100 text-slate-800 dark:bg-slate-900/30 dark:text-slate-300' 
+    };
+  };
+
   const getActionDescription = (log: ActivityLog) => {
     if (log.details) {
       try {
@@ -368,34 +437,51 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
                                   </div>
                                 </div>
                                 
-                                {/* Список действий за день */}
-                                <div className="p-4 space-y-3">
-                                  {logs.map((log, index) => (
-                                    <div key={log.id} className="flex items-start gap-3">
-                                      <div className="flex flex-col items-center">
-                                        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-2" />
-                                        {index !== logs.length - 1 && (
-                                          <div className="w-px h-6 bg-border mt-1" />
-                                        )}
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <div className="flex items-start justify-between gap-2">
-                                          <div className="flex-1">
-                                            <p className="text-sm text-foreground leading-tight">
-                                              {getActionDescription(log)}
-                                            </p>
-                                            <p className="text-xs text-muted-foreground mt-1">
-                                              {new Date(log.created_at).toLocaleTimeString('ru-RU', {
-                                                hour: '2-digit',
-                                                minute: '2-digit'
-                                              })}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
+                                 {/* Список действий за день */}
+                                 <div className="p-4 space-y-3 bg-card/50">
+                                   {logs.map((log, index) => {
+                                     const actionColor = getActionColor(log.action_type);
+                                     return (
+                                       <div key={log.id} className="flex items-start gap-3 group hover:bg-muted/30 p-2 rounded-md transition-colors">
+                                         <div className="flex flex-col items-center">
+                                           <div 
+                                             className={`w-3 h-3 rounded-full flex-shrink-0 mt-1.5 ${actionColor.bg} ${actionColor.border} border-2`} 
+                                           />
+                                           {index !== logs.length - 1 && (
+                                             <div className="w-px h-8 bg-gradient-to-b from-border to-transparent mt-1" />
+                                           )}
+                                         </div>
+                                         <div className="flex-1 min-w-0">
+                                           <div className="flex items-start justify-between gap-2">
+                                             <div className="flex-1">
+                                               <div className="flex items-center gap-2 mb-1">
+                                                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${actionColor.textBg}`}>
+                                                   {getActionType(log.action_type)}
+                                                 </span>
+                                                 <span className="text-xs text-muted-foreground">
+                                                   {new Date(log.created_at).toLocaleTimeString('ru-RU', {
+                                                     hour: '2-digit',
+                                                     minute: '2-digit'
+                                                   })}
+                                                 </span>
+                                               </div>
+                                               <p className="text-sm text-foreground leading-tight">
+                                                 {getActionDescription(log)}
+                                               </p>
+                                               {log.entity_type && (
+                                                 <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                                   <span>•</span>
+                                                   <span className="capitalize">{log.entity_type}</span>
+                                                   {log.entity_id && <span>ID: {log.entity_id.slice(0, 8)}...</span>}
+                                                 </p>
+                                               )}
+                                             </div>
+                                           </div>
+                                         </div>
+                                       </div>
+                                     );
+                                   })}
+                                 </div>
                               </div>
                             );
                           })}
