@@ -94,24 +94,24 @@ const AdminWrapper = () => {
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
         
-        {/* CRM маршруты - только для ролей с доступом к лидам */}
+        {/* CRM маршруты */}
         <Route path="leads" element={
           <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <Leads />
           </ProtectedRoute>
         } />
         <Route path="deals" element={
-          <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission="manage_deals" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <DealsPage />
           </ProtectedRoute>
         } />
         <Route path="tasks" element={
-          <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission="manage_tasks" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <TasksPage />
           </ProtectedRoute>
         } />
         <Route path="kanban" element={
-          <ProtectedRoute permission="view_all_leads" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission="view_kanban" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <AdminKanban />
           </ProtectedRoute>
         } />
@@ -145,7 +145,7 @@ const AdminWrapper = () => {
           </ProtectedRoute>
         } />
         <Route path="categories" element={
-          <ProtectedRoute permission="manage_products" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+          <ProtectedRoute permission="manage_categories" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <Categories />
           </ProtectedRoute>
         } />
@@ -164,12 +164,24 @@ const AdminWrapper = () => {
           </ProtectedRoute>
         } />
         
-        {/* Архив - доступен всем */}
-        <Route path="archived" element={<ArchivedData />} />
+        {/* Архив */}
+        <Route path="archived" element={
+          <ProtectedRoute permission="view_archive" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <ArchivedData />
+          </ProtectedRoute>
+        } />
         
-        {/* Управление сотрудниками - только для директора */}
-        <Route path="employees" element={<EmployeeManagement />} />
-        <Route path="users" element={<UserManagement />} />
+        {/* Управление сотрудниками - только для директора и руководителя */}
+        <Route path="employees" element={
+          <ProtectedRoute permission="manage_users" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <EmployeeManagement />
+          </ProtectedRoute>
+        } />
+        <Route path="users" element={
+          <ProtectedRoute permission="manage_users" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <UserManagement />
+          </ProtectedRoute>
+        } />
       </Route>
     </Routes>
   );

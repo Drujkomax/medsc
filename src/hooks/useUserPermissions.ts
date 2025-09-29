@@ -13,7 +13,12 @@ type Permission =
   | 'manage_contacts'
   | 'manage_users'
   | 'view_activity_logs'
-  | 'view_analytics';
+  | 'view_analytics'
+  | 'manage_deals'
+  | 'manage_tasks'
+  | 'manage_categories'
+  | 'view_archive'
+  | 'view_kanban';
 
 interface UserPermissions {
   [key: string]: boolean;
@@ -21,6 +26,7 @@ interface UserPermissions {
 
 const rolePermissions: Record<string, Permission[]> = {
   'director': [
+    // Директор имеет доступ абсолютно ко всему
     'view_all_leads',
     'manage_all_leads',
     'assign_leads',
@@ -31,53 +37,61 @@ const rolePermissions: Record<string, Permission[]> = {
     'manage_contacts',
     'manage_users',
     'view_activity_logs',
-    'view_analytics'
+    'view_analytics',
+    'manage_deals',
+    'manage_tasks',
+    'manage_categories',
+    'view_archive',
+    'view_kanban'
   ],
   'sales_manager': [
+    // Руководитель имеет доступ ко всему
     'view_all_leads',
     'manage_all_leads',
     'assign_leads',
     'export_leads',
     'import_leads',
-    'manage_contacts',
-    'view_activity_logs'
-  ],
-  'admin': [
-    // Админ управляет системой, но не работает с лидами напрямую
     'manage_products',
     'manage_services',
     'manage_contacts',
     'manage_users',
     'view_activity_logs',
-    'view_analytics'
+    'view_analytics',
+    'manage_deals',
+    'manage_tasks',
+    'manage_categories',
+    'view_archive',
+    'view_kanban'
+  ],
+  'admin': [
+    // Админ: только задачи, архив, товары, категории, услуги, сделки
+    'manage_tasks',
+    'view_archive',
+    'manage_products',
+    'manage_categories',
+    'manage_services',
+    'manage_deals'
   ],
   'salesperson': [
+    // Специалист по продажам: лиды, сделки, задачи, канбан, архив
     'view_all_leads',
-    'manage_all_leads'
+    'manage_all_leads',
+    'manage_deals',
+    'manage_tasks',
+    'view_kanban',
+    'view_archive'
   ],
   'accountant': [
-    'view_all_leads',
-    'manage_all_leads',
-    'assign_leads',
-    'export_leads',
-    'import_leads',
-    'manage_products',
-    'manage_services',
-    'manage_contacts',
-    'view_activity_logs',
-    'view_analytics'
+    // Бухгалтер: сделки, задачи, товары
+    'manage_deals',
+    'manage_tasks',
+    'manage_products'
   ],
   'engineer': [
-    'view_all_leads',
-    'manage_all_leads',
-    'assign_leads',
-    'export_leads',
-    'import_leads',
-    'manage_products',
-    'manage_services',
-    'manage_contacts',
-    'view_activity_logs',
-    'view_analytics'
+    // Инженер: сделки, задачи, услуги
+    'manage_deals',
+    'manage_tasks',
+    'manage_services'
   ],
   'user': []
 };

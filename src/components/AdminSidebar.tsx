@@ -50,28 +50,59 @@ export function AdminSidebar() {
 
     const conditionalItems = [];
 
-    // Лиды и CRM функции - доступны всем
-    conditionalItems.push({ name: t('navigation2.leads'), href: '/admin/leads', icon: Users, permission: null });
-    conditionalItems.push({ name: t('admin.deals'), href: '/admin/deals', icon: HandCoins, permission: null });
-    conditionalItems.push({ name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare, permission: null });
-    conditionalItems.push({ name: t('navigation2.kanban'), href: '/admin/kanban', icon: Columns3, permission: null });
+    // Лиды - доступны специалистам по продажам, руководителям и директорам
+    if (hasPermission('view_all_leads')) {
+      conditionalItems.push({ name: t('navigation2.leads'), href: '/admin/leads', icon: Users, permission: 'view_all_leads' });
+    }
+    
+    // Сделки - доступны всем кроме пользователей (админ, специалист по продажам, бухгалтер, инженер, руководитель, директор)
+    if (hasPermission('manage_deals')) {
+      conditionalItems.push({ name: t('admin.deals'), href: '/admin/deals', icon: HandCoins, permission: 'manage_deals' });
+    }
+    
+    // Задачи - доступны всем кроме пользователей  
+    if (hasPermission('manage_tasks')) {
+      conditionalItems.push({ name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare, permission: 'manage_tasks' });
+    }
+    
+    // Канбан - доступен только специалистам по продажам, руководителям и директорам
+    if (hasPermission('view_kanban')) {
+      conditionalItems.push({ name: t('navigation2.kanban'), href: '/admin/kanban', icon: Columns3, permission: 'view_kanban' });
+    }
 
-    // Архив доступен всем
-    conditionalItems.push({ name: 'Архив', href: '/admin/archived', icon: Archive, permission: null });
+    // Архив - доступен специалистам по продажам, админу, руководителю и директору
+    if (hasPermission('view_archive')) {
+      conditionalItems.push({ name: 'Архив', href: '/admin/archived', icon: Archive, permission: 'view_archive' });
+    }
 
-    // Продукты и категории - доступны всем
-    conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: null });
-    conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: null });
+    // Продукты - доступны админу, бухгалтеру, руководителю и директору
+    if (hasPermission('manage_products')) {
+      conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: 'manage_products' });
+    }
+    
+    // Категории - доступны админу, руководителю и директору
+    if (hasPermission('manage_categories')) {
+      conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'manage_categories' });
+    }
 
-    // Услуги - доступны всем
-    conditionalItems.push({ name: t('navigation2.services'), href: '/admin/services', icon: Settings, permission: null });
+    // Услуги - доступны админу, инженеру, руководителю и директору
+    if (hasPermission('manage_services')) {
+      conditionalItems.push({ name: t('navigation2.services'), href: '/admin/services', icon: Settings, permission: 'manage_services' });
+    }
 
-    // Контакты - доступны всем
-    conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: null });
+    // Контакты - доступны руководителю и директору
+    if (hasPermission('manage_contacts')) {
+      conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: 'manage_contacts' });
+    }
+    
+    // Аналитика - для руководителя и директора
+    if (hasPermission('view_analytics')) {
+      conditionalItems.push({ name: 'Аналитика', href: '/admin/analytics', icon: BarChart3, permission: 'view_analytics' });
+    }
 
     // Управление сотрудниками - для директора и руководителя
-    if (role === 'director' || role === 'sales_manager') {
-      conditionalItems.push({ name: t('navigation2.employees'), href: '/admin/employees', icon: Users, permission: null });
+    if (hasPermission('manage_users')) {
+      conditionalItems.push({ name: t('navigation2.employees'), href: '/admin/employees', icon: UserCheck, permission: 'manage_users' });
     }
 
     return [...baseItems, ...conditionalItems];
