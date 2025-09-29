@@ -13,6 +13,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { UserPlus, Edit, Trash2, Activity, Eye } from 'lucide-react';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import ViewEmployeeModal from '@/features/admin/components/ViewEmployeeModal';
+import { useActivityLogger } from '@/hooks/useActivityLogger';
 
 interface Employee {
   id: string;
@@ -34,6 +35,7 @@ interface ActivityLog {
 
 const Employees = () => {
   const { t } = useTranslation();
+  const { logActivity } = useActivityLogger();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,11 @@ const Employees = () => {
   useEffect(() => {
     fetchEmployees();
     fetchActivityLogs();
+    // Логируем посещение страницы
+    logActivity('page_view', 'admin_page', 'employees', {
+      page: '/admin/employees',
+      timestamp: new Date().toISOString()
+    });
   }, []);
 
   const fetchEmployees = async () => {

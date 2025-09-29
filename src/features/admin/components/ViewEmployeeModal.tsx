@@ -13,8 +13,10 @@ import {
   Calendar,
   Loader2,
   Target,
-  FileText
+  FileText,
+  Database
 } from 'lucide-react';
+import SeedActivityButton from '@/components/admin/SeedActivityButton';
 
 interface Employee {
   id: string;
@@ -322,9 +324,15 @@ const ViewEmployeeModal = ({ employee, isOpen, onClose }: ViewEmployeeModalProps
               <TabsContent value="activity" className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <FileText className="h-5 w-5" />
-                      История активности
+                    <CardTitle className="text-lg flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        История активности
+                      </div>
+                      <SeedActivityButton 
+                        userId={employee.id} 
+                        userEmail={employee.email} 
+                      />
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
