@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTasks } from '@/hooks/useTasks';
 import { useLeads } from '@/hooks/useLeads';
 import { useDeals } from '@/hooks/useDeals';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { AddTaskDialog } from '../components/AddTaskDialog';
 import { ViewTaskModal } from '../components/ViewTaskModal';
 import { TaskFilters } from '../components/TaskFilters';
@@ -17,6 +18,7 @@ const TasksPage = () => {
   const { tasks, loading, deleteTask, completeTask } = useTasks();
   const { leads } = useLeads();
   const { deals } = useDeals();
+  const { role } = useUserPermissions();
   
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
@@ -31,13 +33,19 @@ const TasksPage = () => {
   const [overdueOnly, setOverdueOnly] = useState(false);
 
   const handleAddTask = () => {
-    setEditingTask(null);
-    setShowAddDialog(true);
+    // Только директор и руководитель могут создавать задачи
+    if (role === 'director' || role === 'sales_manager') {
+      setEditingTask(null);
+      setShowAddDialog(true);
+    }
   };
 
   const handleEditTask = (task: any) => {
-    setEditingTask(task);
-    setShowAddDialog(true);
+    // Только директор и руководитель могут редактировать задачи
+    if (role === 'director' || role === 'sales_manager') {
+      setEditingTask(task);
+      setShowAddDialog(true);
+    }
   };
 
   const handleViewTask = (task: any) => {
@@ -45,6 +53,11 @@ const TasksPage = () => {
   };
 
   const handleDeleteTask = async (taskId: string) => {
+    // Только директор и руководитель могут удалять задачи
+    if (role !== 'director' && role !== 'sales_manager') {
+      return;
+    }
+    
     try {
       await deleteTask(taskId);
       toast({
@@ -168,10 +181,12 @@ const TasksPage = () => {
             )}
           </p>
         </div>
-        <Button onClick={handleAddTask} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Новая задача
-        </Button>
+        {(role === 'director' || role === 'sales_manager') && (
+          <Button onClick={handleAddTask} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Новая задача
+          </Button>
+        )}
       </div>
 
       {/* Statistics Cards */}
@@ -281,8 +296,8 @@ const TasksPage = () => {
               key={task.id}
               task={task}
               onView={handleViewTask}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
+              onEdit={role === 'director' || role === 'sales_manager' ? handleEditTask : undefined}
+              onDelete={role === 'director' || role === 'sales_manager' ? handleDeleteTask : undefined}
               onComplete={handleCompleteTask}
             />
           ))}
@@ -296,14 +311,14 @@ const TasksPage = () => {
         editingTask={editingTask}
       />
 
-      <ViewTaskModal
-        task={viewingTask}
-        open={!!viewingTask}
-        onOpenChange={(open) => !open && setViewingTask(null)}
-        onEdit={handleEditTask}
-        onDelete={handleDeleteTask}
-        onComplete={handleCompleteTask}
-      />
+        <ViewTaskModal
+          task={viewingTask}
+          open={!!viewingTask}
+          onOpenChange={(open) => !open && setViewingTask(null)}
+          onEdit={role === 'director' || role === 'sales_manager' ? handleEditTask : undefined}
+          onDelete={role === 'director' || role === 'sales_manager' ? handleDeleteTask : undefined}
+          onComplete={handleCompleteTask}
+        />
     </div>
   );
 };

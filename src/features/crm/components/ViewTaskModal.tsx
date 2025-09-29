@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar, Clock, User, Building, FileText, Repeat, CheckCircle2, Edit, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { useUserPermissions } from "@/hooks/useUserPermissions";
 
 interface ViewTaskModalProps {
   task: any;
@@ -23,6 +24,8 @@ export const ViewTaskModal = ({
   onDelete, 
   onComplete 
 }: ViewTaskModalProps) => {
+  const { role } = useUserPermissions();
+  
   if (!task) return null;
 
   const getStatusColor = (status: string) => {
@@ -217,7 +220,7 @@ export const ViewTaskModal = ({
               </Button>
             )}
             
-            {onEdit && (
+            {onEdit && (role === 'director' || role === 'sales_manager') && (
               <Button 
                 variant="outline"
                 onClick={() => onEdit(task)}
@@ -228,7 +231,7 @@ export const ViewTaskModal = ({
               </Button>
             )}
             
-            {onDelete && (
+            {onDelete && (role === 'director' || role === 'sales_manager') && (
               <Button 
                 variant="destructive"
                 onClick={() => onDelete(task.id)}
