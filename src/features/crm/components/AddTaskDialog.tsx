@@ -80,16 +80,17 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
     try {
       const taskData = {
         title: data.title,
-        description: data.description,
+        description: data.description || undefined,
         status: data.status,
         priority: data.priority,
         due_date: data.due_date?.toISOString(),
         recurrence_type: data.recurrence_type,
         recurrence_interval: data.recurrence_interval,
         recurrence_end_date: data.recurrence_end_date?.toISOString(),
-        assignee_id: data.assignee_id || undefined,
-        client_id: data.client_id || undefined,
-        deal_id: data.deal_id || undefined,
+        assignee_id: data.assignee_id && data.assignee_id !== '' ? data.assignee_id : undefined,
+        client_id: data.client_id && data.client_id !== '' ? data.client_id : undefined,
+        deal_id: data.deal_id && data.deal_id !== '' ? data.deal_id : undefined,
+        parent_task_id: undefined,
       };
 
       if (editingTask) {
