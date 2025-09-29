@@ -37,15 +37,40 @@ const LocationMap: React.FC = () => {
   const currentContent = content[i18n.language as 'ru' | 'en' | 'uz'] || content['ru'];
 
   const handleOpenInMaps = () => {
-    // Open in Google Maps
-    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-    window.open(url, '_blank');
+    // Try to open in user's preferred map app
+    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+      // iOS devices - try Apple Maps first, fallback to Google Maps
+      const appleUrl = `maps://maps.google.com/maps?q=${latitude},${longitude}`;
+      const googleUrl = `https://maps.google.com/maps?q=${latitude},${longitude}&ll=${latitude},${longitude}&z=16`;
+      
+      window.location.href = appleUrl;
+      // Fallback to Google Maps if Apple Maps doesn't open
+      setTimeout(() => {
+        window.open(googleUrl, '_blank');
+      }, 1000);
+    } else {
+      // Android and desktop - open Google Maps
+      const url = `https://maps.google.com/maps?q=${latitude},${longitude}&ll=${latitude},${longitude}&z=16`;
+      window.open(url, '_blank');
+    }
   };
 
   const handleGetDirections = () => {
-    // Get directions in Google Maps
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
-    window.open(url, '_blank');
+    // Get directions based on device
+    if (navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad')) {
+      // iOS devices
+      const appleUrl = `maps://maps.google.com/maps?daddr=${latitude},${longitude}&dirflg=d`;
+      const googleUrl = `https://maps.google.com/maps?daddr=${latitude},${longitude}&dirflg=d`;
+      
+      window.location.href = appleUrl;
+      setTimeout(() => {
+        window.open(googleUrl, '_blank');
+      }, 1000);
+    } else {
+      // Android and desktop
+      const url = `https://maps.google.com/maps?daddr=${latitude},${longitude}&dirflg=d`;
+      window.open(url, '_blank');
+    }
   };
 
   return (
