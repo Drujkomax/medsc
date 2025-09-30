@@ -12,6 +12,9 @@ import { useDeals } from '@/hooks/useDeals';
 import { useLeads } from '@/hooks/useLeads';
 import { useProducts } from '@/hooks/useProducts';
 import { useServices } from '@/hooks/useServices';
+import { useUserRole } from '@/hooks/useUserRole';
+import { useAuth } from '@/hooks/useAuth';
+import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { Deal } from '@/types/crm';
 import { useToast } from '@/hooks/use-toast';
 import { 
@@ -24,7 +27,8 @@ import {
   Save,
   FileText,
   User,
-  Calendar
+  Calendar,
+  Users
 } from 'lucide-react';
 
 interface DealProduct {
@@ -46,10 +50,13 @@ interface DealService {
 const CreateDeal = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { role } = useUserRole();
   const { addDeal } = useDeals();
   const { leads } = useLeads();
   const { products } = useProducts();
   const { services } = useServices();
+  const { engineers, accountants, salespersons, loading: employeesLoading } = useEmployeesByRole();
   
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -57,7 +64,10 @@ const CreateDeal = () => {
     lead_id: '',
     stage: 'lead' as Deal['stage'],
     close_date: '',
-    notes: ''
+    notes: '',
+    assigned_engineer: '',
+    assigned_accountant: '',
+    assigned_salesperson: ''
   });
   
   const [dealProducts, setDealProducts] = useState<DealProduct[]>([]);
@@ -257,6 +267,13 @@ const CreateDeal = () => {
       addService();
     }
   }, []);
+
+  // Автоматическое закрепление за специалистом по продажам
+  useEffect(() => {
+    if (role === 'salesperson' && user && !formData.assigned_salesperson) {
+      setFormData(prev => ({ ...prev, assigned_salesperson: user.id }));
+    }
+  }, [role, user, formData.assigned_salesperson]);
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -648,13 +665,99 @@ const CreateDeal = () => {
                     </div>
                   )}
 
-                  {errors.items && (
-                    <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
-                      {errors.items}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                   <Separator />
+
+                   {/* Назначение ролей */}
+                   <div>
+                     <Label className="flex items-center gap-2">
+                       <Users className="w-4 h-4" />
+                       Назначение ролей
+                     </Label>
+                     <div className="mt-2 space-y-3">
+                       {/* Инженер */}
+                       <div>
+                         <Label className="text-sm text-muted-foreground">Инженер</Label>
+                         <Select 
+                           value={formData.assigned_engineer} 
+                           onValueChange={(value) => handleInputChange('assigned_engineer', value)}
+                         >
+                           <SelectTrigger>
+                             <SelectValue placeholder="Выберите инженера" />
+                           </SelectTrigger>
+                           <SelectContent>
+                             {engineers.map((engineer) => (
+                               <SelectItem key={engineer.id} value={engineer.id}>
+                                 <div className="space-y-1">
+                                   <div className="font-medium">{engineer.full_name}</div>
+                                   <div className="text-sm text-muted-foreground">{engineer.email}</div>
+                                 </div>
+                               </SelectItem>
+                             ))}
+                           </SelectContent>
+                         </Select>
+                       </div>
+
+                       {/* Бухгалтер */}
+                       <div>
+                         <Label className="text-sm text-muted-foreground">Бухгалтер</Label>
+                         <Select 
+                           value={formData.assigned_accountant} 
+                           onValueChange={(value) => handleInputChange('assigned_accountant', value)}
+                         >
+                           <SelectTrigger>
+                             <SelectValue placeholder="Выберите бухгалтера" />
+                           </SelectTrigger>
+                           <SelectContent>
+                             {accountants.map((accountant) => (
+                               <SelectItem key={accountant.id} value={accountant.id}>
+                                 <div className="space-y-1">
+                                   <div className="font-medium">{accountant.full_name}</div>
+                                   <div className="text-sm text-muted-foreground">{accountant.email}</div>
+                                 </div>
+                               </SelectItem>
+                             ))}
+                           </SelectContent>
+                         </Select>
+                       </div>
+
+                       {/* Специалист по продажам */}
+                       <div>
+                         <Label className="text-sm text-muted-foreground">Специалист по продажам</Label>
+                         <Select 
+                           value={formData.assigned_salesperson} 
+                           onValueChange={(value) => handleInputChange('assigned_salesperson', value)}
+                           disabled={role === 'salesperson'} // Заблокировано для специалистов по продажам
+                         >
+                           <SelectTrigger>
+                             <SelectValue placeholder="Выберите специалиста по продажам" />
+                           </SelectTrigger>
+                           <SelectContent>
+                             {salespersons.map((salesperson) => (
+                               <SelectItem key={salesperson.id} value={salesperson.id}>
+                                 <div className="space-y-1">
+                                   <div className="font-medium">{salesperson.full_name}</div>
+                                   <div className="text-sm text-muted-foreground">{salesperson.email}</div>
+                                 </div>
+                               </SelectItem>
+                             ))}
+                           </SelectContent>
+                         </Select>
+                         {role === 'salesperson' && (
+                           <p className="text-xs text-muted-foreground mt-1">
+                             Автоматически закреплено за вами
+                           </p>
+                         )}
+                       </div>
+                     </div>
+                   </div>
+
+                   {errors.items && (
+                     <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
+                       {errors.items}
+                     </div>
+                   )}
+                 </CardContent>
+               </Card>
             </div>
           </div>
 
