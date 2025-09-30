@@ -162,33 +162,35 @@ const CreateDeal = () => {
       newErrors.title = 'Название обязательно';
     }
     
-    if (dealProducts.length === 0 && dealServices.length === 0) {
+    // Проверяем что добавлен хотя бы один товар или услуга с выбранным элементом
+    const hasSelectedProducts = dealProducts.some(p => p.product_id);
+    const hasSelectedServices = dealServices.some(s => s.service_id);
+    
+    if (!hasSelectedProducts && !hasSelectedServices) {
       newErrors.items = 'Добавьте хотя бы один товар или услугу';
     }
     
-    // Проверяем что у каждого товара выбран продукт
+    // Проверяем только товары, у которых выбран product_id
     dealProducts.forEach((product, index) => {
-      if (!product.product_id) {
-        newErrors[`product_${index}`] = 'Выберите товар';
-      }
-      if (product.quantity <= 0) {
-        newErrors[`product_quantity_${index}`] = 'Количество должно быть больше 0';
-      }
-      if (product.unit_price < 0) {
-        newErrors[`product_price_${index}`] = 'Цена не может быть отрицательной';
+      if (product.product_id) { // Только если товар выбран
+        if (product.quantity <= 0) {
+          newErrors[`product_quantity_${index}`] = 'Количество должно быть больше 0';
+        }
+        if (product.unit_price < 0) {
+          newErrors[`product_price_${index}`] = 'Цена не может быть отрицательной';
+        }
       }
     });
     
-    // Проверяем что у каждой услуги выбрана услуга
+    // Проверяем только услуги, у которых выбран service_id
     dealServices.forEach((service, index) => {
-      if (!service.service_id) {
-        newErrors[`service_${index}`] = 'Выберите услугу';
-      }
-      if (service.quantity <= 0) {
-        newErrors[`service_quantity_${index}`] = 'Количество должно быть больше 0';
-      }
-      if (service.unit_price < 0) {
-        newErrors[`service_price_${index}`] = 'Цена не может быть отрицательной';
+      if (service.service_id) { // Только если услуга выбрана
+        if (service.quantity <= 0) {
+          newErrors[`service_quantity_${index}`] = 'Количество должно быть больше 0';
+        }
+        if (service.unit_price < 0) {
+          newErrors[`service_price_${index}`] = 'Цена не может быть отрицательной';
+        }
       }
     });
     
@@ -204,6 +206,8 @@ const CreateDeal = () => {
     setLoading(true);
     
     try {
+      const hasSelectedProducts = dealProducts.some(p => p.product_id);
+      const hasSelectedServices = dealServices.some(s => s.service_id);
       const totalAmount = calculateTotalAmount();
       
       const dealData = {
@@ -213,7 +217,7 @@ const CreateDeal = () => {
         stage: formData.stage,
         close_date: formData.close_date || undefined,
         notes: formData.notes || undefined,
-        deal_type: 'both' as const // Поскольку может быть и товар и услуга
+        deal_type: (hasSelectedProducts && hasSelectedServices ? 'both' : hasSelectedProducts ? 'product' : 'service') as 'both' | 'product' | 'service'
       };
       
       await addDeal(dealData);
