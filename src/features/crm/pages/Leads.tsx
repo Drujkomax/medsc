@@ -72,7 +72,7 @@ const Leads = () => {
 
   const getAssignedUserName = (userId: string) => {
     const employee = employees.find(emp => emp.id === userId);
-    return employee ? (employee.full_name || employee.email) : 'Назначен';
+    return employee ? employee.email : 'Назначен';
   };
 
   const handleAssignLead = async (leadId: string, assigneeId: string | null) => {
