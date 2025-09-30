@@ -164,9 +164,12 @@ export type Database = {
           close_date: string | null
           created_at: string
           created_by: string | null
+          deal_type: string | null
           id: string
           notes: string | null
           probability: number | null
+          product_id: string | null
+          service_id: string | null
           stage: string
           title: string
           updated_at: string
@@ -177,9 +180,12 @@ export type Database = {
           close_date?: string | null
           created_at?: string
           created_by?: string | null
+          deal_type?: string | null
           id?: string
           notes?: string | null
           probability?: number | null
+          product_id?: string | null
+          service_id?: string | null
           stage?: string
           title: string
           updated_at?: string
@@ -190,9 +196,12 @@ export type Database = {
           close_date?: string | null
           created_at?: string
           created_by?: string | null
+          deal_type?: string | null
           id?: string
           notes?: string | null
           probability?: number | null
+          product_id?: string | null
+          service_id?: string | null
           stage?: string
           title?: string
           updated_at?: string
@@ -203,6 +212,20 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
             referencedColumns: ["id"]
           },
         ]

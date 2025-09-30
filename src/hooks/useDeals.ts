@@ -38,6 +38,9 @@ export const useDeals = () => {
           probability: dealData.probability,
           close_date: dealData.close_date,
           notes: dealData.notes,
+          deal_type: dealData.deal_type,
+          product_id: dealData.product_id,
+          service_id: dealData.service_id,
           created_by: (await supabase.auth.getUser()).data.user?.id
         }])
         .select()
@@ -63,7 +66,10 @@ export const useDeals = () => {
           stage: updates.stage,
           probability: updates.probability,
           close_date: updates.close_date,
-          notes: updates.notes
+          notes: updates.notes,
+          deal_type: updates.deal_type,
+          product_id: updates.product_id,
+          service_id: updates.service_id
         })
         .eq('id', id)
         .select()

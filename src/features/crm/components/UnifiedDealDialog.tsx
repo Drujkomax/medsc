@@ -10,10 +10,12 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useDeals } from '@/hooks/useDeals';
 import { useLeads } from '@/hooks/useLeads';
+import { useProducts } from '@/hooks/useProducts';
+import { useServices } from '@/hooks/useServices';
 import { Deal } from '@/types/crm';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/hooks/use-toast';
-import { CalendarIcon, DollarSign, TrendingUp, FileText, User, Calendar, Target } from 'lucide-react';
+import { CalendarIcon, DollarSign, TrendingUp, FileText, User, Calendar, Target, Package, Settings } from 'lucide-react';
 
 interface UnifiedDealDialogProps {
   open: boolean;
@@ -26,6 +28,8 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
   const { toast } = useToast();
   const { addDeal, updateDeal } = useDeals();
   const { leads } = useLeads();
+  const { products } = useProducts();
+  const { services } = useServices();
   
   const [formData, setFormData] = useState({
     title: '',
@@ -34,7 +38,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     stage: 'lead' as Deal['stage'],
     probability: '',
     close_date: '',
-    notes: ''
+    notes: '',
+    deal_type: '' as 'product' | 'service' | '',
+    product_id: '',
+    service_id: ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -58,7 +65,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         stage: deal.stage || 'lead',
         probability: deal.probability?.toString() || '',
         close_date: deal.close_date ? new Date(deal.close_date).toISOString().split('T')[0] : '',
-        notes: deal.notes || ''
+        notes: deal.notes || '',
+        deal_type: deal.deal_type || '',
+        product_id: deal.product_id || '',
+        service_id: deal.service_id || ''
       });
     } else {
       setFormData({
@@ -68,7 +78,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         stage: 'lead',
         probability: '10',
         close_date: '',
-        notes: ''
+        notes: '',
+        deal_type: '',
+        product_id: '',
+        service_id: ''
       });
     }
     setErrors({});
@@ -78,15 +91,19 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
     const newErrors: { [key: string]: string } = {};
     
     if (!formData.title.trim()) {
-      newErrors.title = t('common.validation.required');
+      newErrors.title = 'Название обязательно';
+    }
+    
+    if (formData.deal_type && !formData.product_id && !formData.service_id) {
+      newErrors.deal_type = 'Выберите товар или услугу';
     }
     
     if (formData.amount && isNaN(Number(formData.amount))) {
-      newErrors.amount = t('common.validation.invalidNumber');
+      newErrors.amount = 'Неверный формат числа';
     }
     
     if (formData.probability && (isNaN(Number(formData.probability)) || Number(formData.probability) < 0 || Number(formData.probability) > 100)) {
-      newErrors.probability = t('deals.validation.probabilityRange');
+      newErrors.probability = 'Вероятность должна быть от 0 до 100';
     }
     
     setErrors(newErrors);
@@ -114,28 +131,31 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         stage: formData.stage,
         probability: formData.probability ? Number(formData.probability) : undefined,
         close_date: formData.close_date || undefined,
-        notes: formData.notes || undefined
+        notes: formData.notes || undefined,
+        deal_type: formData.deal_type || undefined,
+        product_id: formData.product_id || undefined,
+        service_id: formData.service_id || undefined
       };
       
       if (deal) {
         await updateDeal(deal.id, dealData);
         toast({
-          title: t('deals.updated'),
-          description: t('deals.updateSuccess')
+          title: 'Сделка обновлена',
+          description: 'Сделка успешно обновлена'
         });
       } else {
         await addDeal(dealData);
         toast({
-          title: t('deals.created'),
-          description: t('deals.createSuccess')
+          title: 'Сделка создана',
+          description: 'Сделка успешно создана'
         });
       }
       
       onClose();
     } catch (error) {
       toast({
-        title: t('common.error'),
-        description: t('deals.saveError'),
+        title: 'Ошибка',
+        description: 'Ошибка при сохранении сделки',
         variant: 'destructive'
       });
     } finally {
@@ -144,7 +164,17 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    // Reset related fields when deal_type changes
+    if (field === 'deal_type') {
+      setFormData(prev => ({
+        ...prev,
+        deal_type: value as 'product' | 'service' | '',
+        product_id: '',
+        service_id: ''
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
     
     // Auto-suggest probability based on stage
     if (field === 'stage') {
@@ -162,7 +192,17 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
   const getLeadName = (clientId: string) => {
     const lead = leads.find(l => l.id === clientId);
-    return lead ? `${lead.name} (${lead.company || t('common.noCompany')})` : '';
+    return lead ? `${lead.name} (${lead.company || 'Без компании'})` : '';
+  };
+
+  const getProductName = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    return product ? (typeof product.name === 'string' ? product.name : product.name?.ru || product.name?.en || 'Товар') : '';
+  };
+
+  const getServiceName = (serviceId: string) => {
+    const service = services.find(s => s.id === serviceId);
+    return service ? (typeof service.title === 'string' ? service.title : service.title?.ru || service.title?.en || 'Услуга') : '';
   };
 
   const currentStage = stages.find(s => s.value === formData.stage);
@@ -174,7 +214,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
-            {deal ? t('deals.editDeal') : t('deals.addDeal')}
+            {deal ? 'Редактировать сделку' : 'Добавить сделку'}
           </DialogTitle>
         </DialogHeader>
 
@@ -191,22 +231,22 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="title">{t('deals.title')} *</Label>
+                    <Label htmlFor="title">Название сделки *</Label>
                     <Input
                       id="title"
                       value={formData.title}
                       onChange={(e) => handleInputChange('title', e.target.value)}
-                      placeholder={t('deals.titlePlaceholder')}
+                      placeholder="Введите название сделки"
                       className={errors.title ? 'border-red-500' : ''}
                     />
                     {errors.title && <p className="text-sm text-red-500 mt-1">{errors.title}</p>}
                   </div>
 
                   <div>
-                    <Label htmlFor="client_id">{t('deals.client')}</Label>
+                    <Label htmlFor="client_id">Клиент</Label>
                     <Select value={formData.client_id} onValueChange={(value) => handleInputChange('client_id', value)}>
                       <SelectTrigger>
-                        <SelectValue placeholder={t('deals.selectClient')} />
+                        <SelectValue placeholder="Выберите клиента" />
                       </SelectTrigger>
                       <SelectContent>
                         {leads.map((lead) => (
@@ -218,9 +258,69 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                     </Select>
                   </div>
 
+                  <div>
+                    <Label htmlFor="deal_type">Тип сделки</Label>
+                    <Select value={formData.deal_type} onValueChange={(value) => handleInputChange('deal_type', value)}>
+                      <SelectTrigger className={errors.deal_type ? 'border-red-500' : ''}>
+                        <SelectValue placeholder="Выберите тип сделки" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="product">Товар</SelectItem>
+                        <SelectItem value="service">Услуга</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.deal_type && <p className="text-sm text-red-500 mt-1">{errors.deal_type}</p>}
+                  </div>
+
+                  {formData.deal_type === 'product' && (
+                    <div>
+                      <Label htmlFor="product_id">Товар</Label>
+                      <Select value={formData.product_id} onValueChange={(value) => handleInputChange('product_id', value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите товар" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {products
+                            .filter(product => product.status === 'active' && !product.archived)
+                            .map((product) => (
+                            <SelectItem key={product.id} value={product.id}>
+                              <div className="flex items-center gap-2">
+                                <Package className="w-4 h-4" />
+                                {getProductName(product.id)}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {formData.deal_type === 'service' && (
+                    <div>
+                      <Label htmlFor="service_id">Услуга</Label>
+                      <Select value={formData.service_id} onValueChange={(value) => handleInputChange('service_id', value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Выберите услугу" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {services
+                            .filter(service => service.status === 'active')
+                            .map((service) => (
+                            <SelectItem key={service.id} value={service.id}>
+                              <div className="flex items-center gap-2">
+                                <Settings className="w-4 h-4" />
+                                {getServiceName(service.id)}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="stage">{t('deals.stage')} *</Label>
+                      <Label htmlFor="stage">Этап сделки *</Label>
                       <Select value={formData.stage} onValueChange={(value) => handleInputChange('stage', value)}>
                         <SelectTrigger>
                           <SelectValue />
@@ -243,7 +343,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                     </div>
 
                     <div>
-                      <Label htmlFor="close_date">{t('deals.closeDate')}</Label>
+                      <Label htmlFor="close_date">Дата закрытия</Label>
                       <Input
                         id="close_date"
                         type="date"
@@ -254,12 +354,12 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                   </div>
 
                   <div>
-                    <Label htmlFor="notes">{t('deals.notes')}</Label>
+                    <Label htmlFor="notes">Заметки</Label>
                     <Textarea
                       id="notes"
                       value={formData.notes}
                       onChange={(e) => handleInputChange('notes', e.target.value)}
-                      placeholder={t('deals.notesPlaceholder')}
+                      placeholder="Добавить заметки о сделке"
                       rows={3}
                     />
                   </div>
@@ -275,8 +375,8 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="amount">{t('deals.amount')}</Label>
+                  <div>
+                    <Label htmlFor="amount">Сумма сделки</Label>
                       <Input
                         id="amount"
                         type="number"
@@ -290,7 +390,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                     </div>
 
                     <div>
-                      <Label htmlFor="probability">{t('deals.probability')} (%)</Label>
+                      <Label htmlFor="probability">Вероятность (%)</Label>
                       <Input
                         id="probability"
                         type="number"
@@ -314,13 +414,13 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-4 h-4" />
-                    {t('deals.summary')}
+                    Сводка по сделке
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {currentStage && (
                     <div>
-                      <Label>{t('deals.currentStage')}</Label>
+                      <Label>Текущий этап</Label>
                       <Badge className={`w-full justify-center mt-1 ${currentStage.color}`}>
                         {currentStage.label}
                       </Badge>
@@ -329,11 +429,24 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   {formData.client_id && (
                     <div>
-                      <Label>{t('deals.selectedClient')}</Label>
+                      <Label>Выбранный клиент</Label>
                       <div className="mt-1 p-2 bg-muted rounded text-sm">
                         <div className="flex items-center gap-2">
                           <User className="w-4 h-4" />
                           {getLeadName(formData.client_id)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {((formData.deal_type === 'product' && formData.product_id) || 
+                    (formData.deal_type === 'service' && formData.service_id)) && (
+                    <div>
+                      <Label>{formData.deal_type === 'product' ? 'Выбранный товар' : 'Выбранная услуга'}</Label>
+                      <div className="mt-1 p-2 bg-muted rounded text-sm">
+                        <div className="flex items-center gap-2">
+                          {formData.deal_type === 'product' ? <Package className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
+                          {formData.deal_type === 'product' ? getProductName(formData.product_id) : getServiceName(formData.service_id)}
                         </div>
                       </div>
                     </div>
@@ -345,13 +458,13 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                       <div className="mt-1 space-y-2">
                         {formData.amount && (
                           <div className="flex justify-between text-sm">
-                            <span>{t('deals.dealValue')}:</span>
+                            <span>Стоимость сделки:</span>
                             <span className="font-medium">${Number(formData.amount).toLocaleString()}</span>
                           </div>
                         )}
                         {formData.probability && (
                           <div className="flex justify-between text-sm">
-                            <span>{t('deals.probability')}:</span>
+                            <span>Вероятность:</span>
                             <span className="font-medium">{formData.probability}%</span>
                           </div>
                         )}
@@ -359,7 +472,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                           <>
                             <Separator />
                             <div className="flex justify-between text-sm font-medium">
-                              <span>{t('deals.estimatedValue')}:</span>
+                              <span>Ожидаемая стоимость:</span>
                               <span className="text-green-600">${Number(estimatedValue).toLocaleString()}</span>
                             </div>
                           </>
@@ -370,7 +483,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
                   {formData.close_date && (
                     <div>
-                      <Label>{t('deals.expectedClose')}</Label>
+                      <Label>Ожидаемое закрытие</Label>
                       <div className="mt-1 p-2 bg-muted rounded text-sm">
                         <div className="flex items-center gap-2">
                           <Calendar className="w-4 h-4" />
@@ -388,10 +501,10 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
 
           <div className="flex justify-end gap-3">
             <Button type="button" variant="outline" onClick={onClose}>
-              {t('common.cancel')}
+              Отмена
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? t('common.saving') : deal ? t('common.update') : t('common.create')}
+              {loading ? 'Сохранение...' : deal ? 'Обновить' : 'Создать'}
             </Button>
           </div>
         </form>
