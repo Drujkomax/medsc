@@ -97,7 +97,7 @@ const EnhancedDealKanban = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealK
 
   const filteredDeals = localDeals.filter(deal => {
     const matchesSearch = deal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         getLeadName(deal.client_id).toLowerCase().includes(searchTerm.toLowerCase());
+                         getLeadName(deal.lead_id).toLowerCase().includes(searchTerm.toLowerCase());
     const matchesAssignee = assigneeFilter === 'all' || deal.created_by === assigneeFilter;
     return matchesSearch && matchesAssignee;
   });
@@ -345,21 +345,21 @@ const EnhancedDealKanban = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealK
                                 )}
                                 
                                 {/* Client */}
-                                {deal.client_id && (
+                                {deal.lead_id && (
                                   <div className="flex items-center text-sm text-muted-foreground">
                                     <div className="flex items-center flex-1">
                                       <Avatar className="h-6 w-6 mr-2">
                                         <AvatarFallback className="text-xs">
-                                          {getLeadName(deal.client_id).charAt(0).toUpperCase()}
+                                          {getLeadName(deal.lead_id).charAt(0).toUpperCase()}
                                         </AvatarFallback>
                                       </Avatar>
                                       <div className="flex-1 truncate">
                                         <p className="font-medium text-foreground truncate">
-                                          {getLeadName(deal.client_id)}
+                                          {getLeadName(deal.lead_id)}
                                         </p>
-                                        {getLeadCompany(deal.client_id) && (
+                                        {getLeadCompany(deal.lead_id) && (
                                           <p className="text-xs text-muted-foreground truncate">
-                                            {getLeadCompany(deal.client_id)}
+                                            {getLeadCompany(deal.lead_id)}
                                           </p>
                                         )}
                                       </div>

@@ -72,12 +72,12 @@ const ViewDealModal = ({ open, onClose, deal, onEdit }: ViewDealModalProps) => {
 
           {/* Deal Details */}
           <div className="space-y-4">
-            {deal.client_id && (
+            {deal.lead_id && (
               <div className="flex items-start">
                 <User className="w-5 h-5 text-muted-foreground mt-0.5 mr-3" />
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">{t('deals.client')}</p>
-                  <p className="text-sm">{getLeadName(deal.client_id)}</p>
+                  <p className="text-sm">{getLeadName(deal.lead_id)}</p>
                 </div>
               </div>
             )}

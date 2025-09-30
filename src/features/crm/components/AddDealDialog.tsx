@@ -25,7 +25,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
 
   const [formData, setFormData] = useState({
     title: deal?.title || '',
-    client_id: deal?.client_id || 'none',
+    lead_id: deal?.lead_id || 'none',
     amount: deal?.amount?.toString() || '',
     stage: deal?.stage || 'lead',
     probability: deal?.probability?.toString() || '',
@@ -38,7 +38,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
     if (deal) {
       setFormData({
         title: deal.title || '',
-        client_id: deal.client_id || 'none',
+        lead_id: deal.lead_id || 'none',
         amount: deal.amount?.toString() || '',
         stage: deal.stage || 'lead',
         probability: deal.probability?.toString() || '',
@@ -48,7 +48,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
     } else {
       setFormData({
         title: '',
-        client_id: 'none',
+        lead_id: 'none',
         amount: '',
         stage: 'lead',
         probability: '',
@@ -74,7 +74,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
     try {
       const dealData = {
         title: formData.title,
-        client_id: formData.client_id === 'none' ? undefined : formData.client_id,
+        lead_id: formData.lead_id === 'none' ? undefined : formData.lead_id,
         amount: formData.amount ? parseFloat(formData.amount) : undefined,
         stage: formData.stage as Deal['stage'],
         probability: formData.probability ? parseInt(formData.probability) : undefined,
@@ -93,7 +93,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
       onClose();
       setFormData({
         title: '',
-        client_id: 'none',
+        lead_id: 'none',
         amount: '',
         stage: 'lead',
         probability: '',
@@ -134,7 +134,7 @@ const AddDealDialog = ({ open, onClose, deal }: AddDealDialogProps) => {
 
           <div className="space-y-2">
             <Label htmlFor="client">{t('deals.client')}</Label>
-            <Select value={formData.client_id} onValueChange={(value) => handleInputChange('client_id', value)}>
+            <Select value={formData.lead_id} onValueChange={(value) => handleInputChange('lead_id', value)}>
               <SelectTrigger>
                 <SelectValue placeholder={t('deals.selectClient')} />
               </SelectTrigger>

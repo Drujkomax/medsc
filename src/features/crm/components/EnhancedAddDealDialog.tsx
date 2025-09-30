@@ -43,7 +43,7 @@ const EnhancedAddDealDialog = ({ open, onClose, deal }: EnhancedAddDealDialogPro
 
   const [formData, setFormData] = useState({
     title: '',
-    client_id: 'none',
+    lead_id: 'none',
     amount: '',
     stage: 'lead' as Deal['stage'],
     probability: '',
@@ -56,7 +56,7 @@ const EnhancedAddDealDialog = ({ open, onClose, deal }: EnhancedAddDealDialogPro
     if (deal) {
       setFormData({
         title: deal.title || '',
-        client_id: deal.client_id || 'none',
+        lead_id: deal.lead_id || 'none',
         amount: deal.amount?.toString() || '',
         stage: deal.stage || 'lead',
         probability: deal.probability?.toString() || '',
@@ -66,7 +66,7 @@ const EnhancedAddDealDialog = ({ open, onClose, deal }: EnhancedAddDealDialogPro
     } else {
       setFormData({
         title: '',
-        client_id: 'none',
+        lead_id: 'none',
         amount: '',
         stage: 'lead',
         probability: '',
@@ -132,7 +132,7 @@ const EnhancedAddDealDialog = ({ open, onClose, deal }: EnhancedAddDealDialogPro
     try {
       const dealData = {
         title: formData.title.trim(),
-        client_id: formData.client_id === 'none' ? undefined : formData.client_id,
+        lead_id: formData.lead_id === 'none' ? undefined : formData.lead_id,
         amount: formData.amount ? parseFloat(formData.amount) : undefined,
         stage: formData.stage,
         probability: formData.probability ? parseInt(formData.probability) : undefined,
@@ -234,7 +234,7 @@ const EnhancedAddDealDialog = ({ open, onClose, deal }: EnhancedAddDealDialogPro
                   <User className="w-4 h-4" />
                   {t('deals.client')}
                 </Label>
-                <Select value={formData.client_id} onValueChange={(value) => handleInputChange('client_id', value)}>
+                <Select value={formData.lead_id} onValueChange={(value) => handleInputChange('lead_id', value)}>
                   <SelectTrigger>
                     <SelectValue placeholder={t('deals.selectClient')} />
                   </SelectTrigger>

@@ -158,10 +158,10 @@ const DealKanbanBoard = ({ onAddDeal, onEditDeal, onViewDeal }: DealKanbanBoardP
                                 </div>
                               )}
                               
-                              {deal.client_id && (
+                              {deal.lead_id && (
                                 <div className="flex items-center text-xs text-muted-foreground">
                                   <User className="w-3 h-3 mr-1" />
-                                  <span className="truncate">{getLeadName(deal.client_id)}</span>
+                                  <span className="truncate">{getLeadName(deal.lead_id)}</span>
                                 </div>
                               )}
                               

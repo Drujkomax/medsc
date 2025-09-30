@@ -235,10 +235,10 @@ const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
                   )}
                 </div>
                 
-                {deal.client_id && (
+                {deal.lead_id && (
                   <div className="flex items-center text-sm">
                     <User className="w-4 h-4 text-muted-foreground mr-2" />
-                    <span className="truncate">{getLeadName(deal.client_id)}</span>
+                    <span className="truncate">{getLeadName(deal.lead_id)}</span>
                   </div>
                 )}
                 

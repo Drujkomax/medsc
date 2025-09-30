@@ -33,9 +33,9 @@ export const dealStorage = {
     return deals.find(deal => deal.id === id);
   },
   
-  getByClientId: (clientId: string): Deal[] => {
+  getByLeadId: (leadId: string): Deal[] => {
     const deals = dealStorage.getAll();
-    return deals.filter(deal => deal.client_id === clientId);
+    return deals.filter(deal => deal.lead_id === leadId);
   },
   
   create: (deal: Omit<Deal, 'id' | 'created_at' | 'updated_at'>): Deal => {
