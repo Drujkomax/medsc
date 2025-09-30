@@ -44,9 +44,12 @@ export function AdminSidebar() {
   const { user } = useAuth();
 
   const getNavigationItems = () => {
-    const baseItems = [
-      { name: t('admin.dashboard'), href: '/admin', icon: BarChart3, permission: null },
-    ];
+    const baseItems = [];
+
+    // Дашборд - доступен только руководителю и директору
+    if (hasPermission('view_analytics')) {
+      baseItems.push({ name: t('admin.dashboard'), href: '/admin', icon: BarChart3, permission: 'view_analytics' });
+    }
 
     const conditionalItems = [];
 
