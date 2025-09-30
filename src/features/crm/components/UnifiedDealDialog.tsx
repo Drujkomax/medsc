@@ -270,7 +270,7 @@ const UnifiedDealDialog = ({ open, onClose, deal }: UnifiedDealDialogProps) => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <DollarSign className="w-4 h-4" />
-                    {t('deals.financialDetails')}
+                    Финансовые детали
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
