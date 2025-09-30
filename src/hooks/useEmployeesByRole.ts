@@ -15,29 +15,38 @@ export const useEmployeesByRole = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        // Получаем всех сотрудников с их ролями
-        const { data, error } = await supabase
+        // Получаем все профили
+        const { data: profiles, error: profilesError } = await supabase
           .from('profiles')
-          .select(`
-            id,
-            email,
-            full_name,
-            user_roles!inner(role)
-          `);
+          .select('id, email, full_name');
 
-        if (error) {
-          console.error('Error fetching employees:', error);
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
           return;
         }
 
-        // Преобразуем данные в нужный формат
-        const formattedEmployees = data?.map(emp => ({
-          id: emp.id,
-          email: emp.email || '',
-          full_name: emp.full_name || emp.email || '',
-          role: (emp.user_roles as any)?.[0]?.role || ''
-        })) || [];
+        // Получаем все роли пользователей
+        const { data: userRoles, error: rolesError } = await supabase
+          .from('user_roles')
+          .select('user_id, role');
 
+        if (rolesError) {
+          console.error('Error fetching user roles:', rolesError);
+          return;
+        }
+
+        // Объединяем данные профилей с ролями
+        const formattedEmployees = profiles?.map(profile => {
+          const userRole = userRoles?.find(role => role.user_id === profile.id);
+          return {
+            id: profile.id,
+            email: profile.email || '',
+            full_name: profile.full_name || profile.email || 'Без имени',
+            role: userRole?.role || ''
+          };
+        }).filter(emp => emp.role) || []; // Оставляем только тех, у кого есть роль
+
+        console.log('Loaded employees:', formattedEmployees);
         setEmployees(formattedEmployees);
       } catch (error) {
         console.error('Error fetching employees:', error);
