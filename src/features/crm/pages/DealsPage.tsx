@@ -165,7 +165,7 @@ const DealsPage = () => {
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('deals.analytics')}</span>
+              <span className="hidden sm:inline">Аналитика</span>
             </TabsTrigger>
           </TabsList>
           
