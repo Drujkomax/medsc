@@ -227,7 +227,10 @@ const CreateDeal = () => {
         stage: formData.stage,
         close_date: formData.close_date || undefined,
         notes: formData.notes || undefined,
-        deal_type: (hasSelectedProducts && hasSelectedServices ? 'both' : hasSelectedProducts ? 'product' : 'service') as 'both' | 'product' | 'service'
+        deal_type: (hasSelectedProducts && hasSelectedServices ? 'both' : hasSelectedProducts ? 'product' : 'service') as 'both' | 'product' | 'service',
+        assigned_engineer: formData.assigned_engineer || undefined,
+        assigned_accountant: formData.assigned_accountant || undefined,
+        assigned_salesperson: formData.assigned_salesperson || undefined
       };
       
       await addDeal(dealData);

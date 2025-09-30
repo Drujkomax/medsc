@@ -256,6 +256,9 @@ export type Database = {
       deals: {
         Row: {
           amount: number | null
+          assigned_accountant: string | null
+          assigned_engineer: string | null
+          assigned_salesperson: string | null
           close_date: string | null
           created_at: string
           created_by: string | null
@@ -272,6 +275,9 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
+          assigned_accountant?: string | null
+          assigned_engineer?: string | null
+          assigned_salesperson?: string | null
           close_date?: string | null
           created_at?: string
           created_by?: string | null
@@ -288,6 +294,9 @@ export type Database = {
         }
         Update: {
           amount?: number | null
+          assigned_accountant?: string | null
+          assigned_engineer?: string | null
+          assigned_salesperson?: string | null
           close_date?: string | null
           created_at?: string
           created_by?: string | null
