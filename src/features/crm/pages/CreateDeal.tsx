@@ -108,7 +108,7 @@ const CreateDeal = () => {
     const newProduct: DealProduct = {
       id: `temp-${Date.now()}`,
       product_id: '',
-      quantity: 1,
+      quantity: '' as any,
       unit_price: '' as any,
       total_price: 0,
       currency: 'UZS'
@@ -120,7 +120,7 @@ const CreateDeal = () => {
     const newService: DealService = {
       id: `temp-${Date.now()}`,
       service_id: '',
-      quantity: 1,
+      quantity: '' as any,
       unit_price: '' as any,
       total_price: 0,
       currency: 'UZS'
@@ -142,8 +142,9 @@ const CreateDeal = () => {
         if (p.id === id) {
           const updated = { ...p, [field]: value };
           if (field === 'quantity' || field === 'unit_price') {
+            const qty = updated.quantity || 0;
             const price = updated.unit_price || 0;
-            updated.total_price = updated.quantity * price;
+            updated.total_price = qty * price;
           }
           return updated;
         }
@@ -158,8 +159,9 @@ const CreateDeal = () => {
         if (s.id === id) {
           const updated = { ...s, [field]: value };
           if (field === 'quantity' || field === 'unit_price') {
+            const qty = updated.quantity || 0;
             const price = updated.unit_price || 0;
-            updated.total_price = updated.quantity * price;
+            updated.total_price = qty * price;
           }
           return updated;
         }
@@ -497,7 +499,8 @@ const CreateDeal = () => {
                                 type="number"
                                 min="1"
                                 value={product.quantity}
-                                onChange={(e) => updateProduct(product.id, 'quantity', Number(e.target.value))}
+                                onChange={(e) => updateProduct(product.id, 'quantity', e.target.value)}
+                                placeholder="0"
                                 className={errors[`product_quantity_${index}`] ? 'border-red-500' : ''}
                               />
                               {errors[`product_quantity_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`product_quantity_${index}`]}</p>}
@@ -633,7 +636,8 @@ const CreateDeal = () => {
                                 type="number"
                                 min="1"
                                 value={service.quantity}
-                                onChange={(e) => updateService(service.id, 'quantity', Number(e.target.value))}
+                                onChange={(e) => updateService(service.id, 'quantity', e.target.value)}
+                                placeholder="0"
                                 className={errors[`service_quantity_${index}`] ? 'border-red-500' : ''}
                               />
                               {errors[`service_quantity_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`service_quantity_${index}`]}</p>}
