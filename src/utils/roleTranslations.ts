@@ -27,6 +27,11 @@ export const roleTranslations: Record<string, RoleTranslation> = {
     en: 'Salesperson',
     uz: 'Sotuvchi'
   },
+  'observer': {
+    ru: 'Наблюдатель',
+    en: 'Observer',
+    uz: 'Kuzatuvchi'
+  },
   'user': {
     ru: 'Пользователь',
     en: 'User',

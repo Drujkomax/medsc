@@ -63,6 +63,7 @@ const EmployeeManagement = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const getRoles = () => [
+    { value: 'observer', label: getRoleTranslation('observer', i18n.language), color: 'bg-yellow-100 text-yellow-800' },
     { value: 'salesperson', label: getRoleTranslation('salesperson', i18n.language), color: 'bg-blue-100 text-blue-800' },
     { value: 'sales_manager', label: getRoleTranslation('sales_manager', i18n.language), color: 'bg-green-100 text-green-800' },
     { value: 'admin', label: getRoleTranslation('admin', i18n.language), color: 'bg-red-100 text-red-800' },
@@ -281,15 +282,20 @@ const EmployeeManagement = () => {
             </DialogHeader>
             
             <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className={cn(
+                "grid w-full",
+                newEmployee.role === 'observer' ? "grid-cols-2" : "grid-cols-1"
+              )}>
                 <TabsTrigger value="basic" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Основная информация
                 </TabsTrigger>
-                <TabsTrigger value="permissions" className="flex items-center gap-2">
-                  <Shield className="h-4 w-4" />
-                  Настройка прав
-                </TabsTrigger>
+                {newEmployee.role === 'observer' && (
+                  <TabsTrigger value="permissions" className="flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    Настройка прав
+                  </TabsTrigger>
+                )}
               </TabsList>
 
               <TabsContent value="basic">
