@@ -121,7 +121,17 @@ const EmployeeManagement = () => {
         };
       }) || [];
       
-      setEmployees(employeesList);
+      // Также получаем пользователей без ролей (зависшие регистрации)
+      const userIdsWithRoles = userRoles?.map(ur => ur.user_id) || [];
+      const usersWithoutRoles = profilesData?.filter(p => !userIdsWithRoles.includes(p.id)).map(profile => ({
+        id: profile.id,
+        email: profile.email || 'Не указан',
+        full_name: profile.full_name || profile.email || 'Имя не указано',
+        created_at: new Date().toISOString(),
+        role: undefined // Нет роли
+      })) || [];
+      
+      setEmployees([...employeesList, ...usersWithoutRoles]);
     } catch (error) {
       console.error('Error fetching employees:', error);
       toast({
@@ -341,6 +351,9 @@ const EmployeeManagement = () => {
   });
 
   const getRoleInfo = (role?: string) => {
+    if (!role) {
+      return { label: 'Не назначена (требуется удаление)', color: 'bg-gray-100 text-gray-800 border border-red-500' };
+    }
     const roles = getRoles();
     return roles.find(r => r.value === role) || { label: t('roles.notAssigned'), color: 'bg-gray-100 text-gray-800' };
   };
@@ -665,24 +678,32 @@ const EmployeeManagement = () => {
                       </Badge>
                       
                       <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleViewEmployee(employee)}
-                          className="flex items-center gap-1"
-                        >
-                          <Eye className="w-4 h-4" />
-                          {t('common.view')}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEditEmployee(employee)}
-                          className="flex items-center gap-1"
-                        >
-                          <Edit className="w-4 h-4" />
-                          {t('common.edit')}
-                        </Button>
+                        {employee.role ? (
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewEmployee(employee)}
+                              className="flex items-center gap-1"
+                            >
+                              <Eye className="w-4 h-4" />
+                              {t('common.view')}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleEditEmployee(employee)}
+                              className="flex items-center gap-1"
+                            >
+                              <Edit className="w-4 h-4" />
+                              {t('common.edit')}
+                            </Button>
+                          </>
+                        ) : (
+                          <div className="text-xs text-muted-foreground px-2 py-1 bg-yellow-50 rounded border border-yellow-200">
+                            ⚠️ Незавершённая регистрация
+                          </div>
+                        )}
                         <Button
                           variant="destructive"
                           size="sm"
