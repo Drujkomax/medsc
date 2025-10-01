@@ -172,8 +172,8 @@ export const useCustomPermissions = (userId?: string) => {
         description: 'Права доступа сохранены',
       });
 
-      await fetchPermissions();
-      await fetchTemporaryStatus();
+      // Обновляем данные после успешного сохранения
+      await Promise.all([fetchPermissions(), fetchTemporaryStatus()]);
     } catch (error) {
       console.error('Error saving permissions:', error);
       toast({

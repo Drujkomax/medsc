@@ -24,8 +24,7 @@ export const CustomPermissionsForm = ({ userId, onSave }: CustomPermissionsFormP
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    console.log('CustomPermissionsForm: permissions changed', { permissions, temporaryEmployee });
-    
+    // Только обновляем состояние при изменении прав
     if (permissions.length > 0) {
       const fullAccess = permissions
         .filter(p => p.permission_level === 'full_access')
@@ -34,14 +33,11 @@ export const CustomPermissionsForm = ({ userId, onSave }: CustomPermissionsFormP
         .filter(p => p.permission_level === 'view_only')
         .map(p => p.section);
       
-      console.log('Setting permissions state:', { fullAccess, viewOnly });
       setFullAccessSections(fullAccess);
       setViewOnlySections(viewOnly);
-    } else {
-      setFullAccessSections([]);
-      setViewOnlySections([]);
     }
 
+    // Устанавливаем временный статус
     if (temporaryEmployee?.expires_at) {
       setIsTemporary(true);
       setExpiresAt(new Date(temporaryEmployee.expires_at));
@@ -52,21 +48,14 @@ export const CustomPermissionsForm = ({ userId, onSave }: CustomPermissionsFormP
   }, [permissions, temporaryEmployee]);
 
   const toggleFullAccess = (section: string) => {
-    console.log('toggleFullAccess called for:', section);
     setFullAccessSections(prev => {
       const newSections = prev.includes(section)
         ? prev.filter(s => s !== section)
         : [...prev, section];
       
-      console.log('Full access sections updated:', newSections);
-      
       // Удаляем из view only если добавляем в full access
       if (!prev.includes(section)) {
-        setViewOnlySections(v => {
-          const filtered = v.filter(s => s !== section);
-          console.log('Removed from view only:', filtered);
-          return filtered;
-        });
+        setViewOnlySections(v => v.filter(s => s !== section));
       }
       
       return newSections;
@@ -74,21 +63,14 @@ export const CustomPermissionsForm = ({ userId, onSave }: CustomPermissionsFormP
   };
 
   const toggleViewOnly = (section: string) => {
-    console.log('toggleViewOnly called for:', section);
     setViewOnlySections(prev => {
       const newSections = prev.includes(section)
         ? prev.filter(s => s !== section)
         : [...prev, section];
       
-      console.log('View only sections updated:', newSections);
-      
       // Удаляем из full access если добавляем в view only
       if (!prev.includes(section)) {
-        setFullAccessSections(f => {
-          const filtered = f.filter(s => s !== section);
-          console.log('Removed from full access:', filtered);
-          return filtered;
-        });
+        setFullAccessSections(f => f.filter(s => s !== section));
       }
       
       return newSections;
@@ -96,10 +78,7 @@ export const CustomPermissionsForm = ({ userId, onSave }: CustomPermissionsFormP
   };
 
   const handleSave = async () => {
-    console.log('handleSave called with:', { fullAccessSections, viewOnlySections, isTemporary, expiresAt });
-    
     if (isTemporary && !expiresAt) {
-      console.error('Temporary employee requires expiration date');
       return;
     }
     
@@ -111,6 +90,7 @@ export const CustomPermissionsForm = ({ userId, onSave }: CustomPermissionsFormP
         isTemporary,
         expiresAt
       );
+      
       onSave?.();
     } catch (error) {
       console.error('Error saving permissions:', error);
