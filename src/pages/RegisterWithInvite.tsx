@@ -140,14 +140,15 @@ const RegisterWithInvite = () => {
 
         console.log('Role assigned successfully:', assignResult);
 
-        // Применяем кастомные права доступа, если они были настроены
+        // Применяем кастомные права доступа через RPC
         const permissionsDataStr = localStorage.getItem(`invite_permissions_${inviteId}`);
         if (permissionsDataStr) {
           try {
             const permissionsData = JSON.parse(permissionsDataStr);
             const { fullAccessSections = [], viewOnlySections = [], isTemporary = false, expiresAt } = permissionsData;
 
-            // Применяем права и срок действия через защищенную RPC (обходит RLS)
+            console.log('Applying permissions from localStorage:', permissionsData);
+
             const { error: permsApplyError } = await supabase.rpc('apply_invite_permissions', {
               p_invite_id: inviteId,
               p_user_id: authData.user.id,
@@ -159,13 +160,16 @@ const RegisterWithInvite = () => {
 
             if (permsApplyError) {
               console.error('Error applying invite permissions via RPC:', permsApplyError);
+            } else {
+              console.log('Permissions applied successfully via RPC');
             }
 
-            // Удаляем данные из localStorage после применения
             localStorage.removeItem(`invite_permissions_${inviteId}`);
           } catch (err) {
             console.error('Error applying custom permissions:', err);
           }
+        } else {
+          console.log('No custom permissions found in localStorage for invite:', inviteId);
         }
       }
 

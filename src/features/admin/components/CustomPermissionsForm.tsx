@@ -38,12 +38,11 @@ export const CustomPermissionsForm = ({ userId, onSave }: CustomPermissionsFormP
       setFullAccessSections(fullAccess);
       setViewOnlySections(viewOnly);
     } else {
-      // Сброс состояния если прав нет
       setFullAccessSections([]);
       setViewOnlySections([]);
     }
 
-    if (temporaryEmployee) {
+    if (temporaryEmployee?.expires_at) {
       setIsTemporary(true);
       setExpiresAt(new Date(temporaryEmployee.expires_at));
     } else {

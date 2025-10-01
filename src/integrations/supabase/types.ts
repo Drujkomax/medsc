@@ -1131,6 +1131,17 @@ export type Database = {
         Args: { invite_id: string; user_password: string }
         Returns: Json
       }
+      apply_invite_permissions: {
+        Args: {
+          p_expires_at: string
+          p_full_access: string[]
+          p_invite_id: string
+          p_is_temporary: boolean
+          p_user_id: string
+          p_view_only: string[]
+        }
+        Returns: undefined
+      }
       archive_lead: {
         Args: { lead_id: string; user_id: string }
         Returns: undefined
