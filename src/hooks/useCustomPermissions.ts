@@ -95,12 +95,19 @@ export const useCustomPermissions = (userId?: string) => {
   ) => {
     if (!userId) return;
 
+    console.log('Saving permissions:', { fullAccessSections, viewOnlySections, isTemporary, expiresAt });
+
     try {
       // Удаляем все существующие права
-      await supabase
+      const { error: deleteError } = await supabase
         .from('employee_custom_permissions')
         .delete()
         .eq('user_id', userId);
+
+      if (deleteError) {
+        console.error('Error deleting old permissions:', deleteError);
+        throw deleteError;
+      }
 
       // Создаем новые права
       const permissionsToInsert: Omit<CustomPermission, 'id' | 'created_at' | 'updated_at'>[] = [];
@@ -121,12 +128,17 @@ export const useCustomPermissions = (userId?: string) => {
         });
       });
 
+      console.log('Permissions to insert:', permissionsToInsert);
+
       if (permissionsToInsert.length > 0) {
         const { error: insertError } = await supabase
           .from('employee_custom_permissions')
           .insert(permissionsToInsert);
 
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error('Error inserting permissions:', insertError);
+          throw insertError;
+        }
       }
 
       // Управление временным доступом
@@ -139,13 +151,20 @@ export const useCustomPermissions = (userId?: string) => {
             is_active: true,
           }, { onConflict: 'user_id' });
 
-        if (tempError) throw tempError;
+        if (tempError) {
+          console.error('Error upserting temporary employee:', tempError);
+          throw tempError;
+        }
       } else {
         // Удаляем временный доступ если он был
-        await supabase
+        const { error: deleteError } = await supabase
           .from('temporary_employees')
           .delete()
           .eq('user_id', userId);
+        
+        if (deleteError) {
+          console.error('Error deleting temporary employee:', deleteError);
+        }
       }
 
       toast({
