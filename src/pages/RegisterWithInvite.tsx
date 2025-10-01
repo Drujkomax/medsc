@@ -68,7 +68,10 @@ const RegisterWithInvite = () => {
       'salesperson': 'Специалист по продажам',
       'sales_manager': 'Руководитель',
       'admin': 'Администратор',
-      'director': 'Директор'
+      'director': 'Директор',
+      'observer': 'Наблюдатель',
+      'accountant': 'Бухгалтер',
+      'engineer': 'Инженер'
     };
     return roleLabels[role] || role;
   };

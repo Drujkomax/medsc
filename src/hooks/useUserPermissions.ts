@@ -114,6 +114,14 @@ const rolePermissions: Record<string, Permission[]> = {
     'manage_tasks',
     'manage_services'
   ],
+  'observer': [
+    // Наблюдатель: только просмотр (без прав на изменение)
+    'view_all_leads',
+    'view_analytics',
+    'view_archive',
+    'view_kanban',
+    'view_activity_logs'
+  ],
   'user': []
 };
 
