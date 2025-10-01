@@ -58,6 +58,7 @@ const EmployeeManagement = () => {
   const [viewOnlySections, setViewOnlySections] = useState<string[]>([]);
   const [isTemporary, setIsTemporary] = useState(false);
   const [expiresAt, setExpiresAt] = useState<Date>();
+  const [hasAdminAccess, setHasAdminAccess] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -171,10 +172,13 @@ const EmployeeManagement = () => {
     setAddingEmployee(true);
     
     try {
+      // Определяем роль на основе доступа к админке
+      const finalRole = hasAdminAccess ? newEmployee.role : 'user';
+      
       // Создаем приглашение через нашу функцию
       const { data, error } = await supabase.rpc('create_user_invite', {
         invite_email: newEmployee.email,
-        invite_role: newEmployee.role as 'admin' | 'salesperson' | 'sales_manager' | 'accountant' | 'engineer'
+        invite_role: finalRole as 'admin' | 'salesperson' | 'sales_manager' | 'accountant' | 'engineer' | 'observer' | 'user'
       });
 
       if (error) throw error;
@@ -213,6 +217,7 @@ const EmployeeManagement = () => {
       setViewOnlySections([]);
       setIsTemporary(false);
       setExpiresAt(undefined);
+      setHasAdminAccess(true);
       fetchEmployees();
     } catch (error: any) {
       console.error('Error creating invite:', error);
@@ -284,13 +289,13 @@ const EmployeeManagement = () => {
             <Tabs defaultValue="basic" className="w-full">
               <TabsList className={cn(
                 "grid w-full",
-                newEmployee.role === 'observer' ? "grid-cols-2" : "grid-cols-1"
+                (hasAdminAccess && newEmployee.role === 'observer') ? "grid-cols-2" : "grid-cols-1"
               )}>
                 <TabsTrigger value="basic" className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Основная информация
                 </TabsTrigger>
-                {newEmployee.role === 'observer' && (
+                {hasAdminAccess && newEmployee.role === 'observer' && (
                   <TabsTrigger value="permissions" className="flex items-center gap-2">
                     <Shield className="h-4 w-4" />
                     Настройка прав
@@ -312,25 +317,51 @@ const EmployeeManagement = () => {
                       disabled={addingEmployee}
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="role">{t('employees.roleLabel')}</Label>
-                    <Select 
-                      value={newEmployee.role} 
-                      onValueChange={(value) => setNewEmployee(prev => ({ ...prev, role: value }))}
+
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="admin-access">Доступ в панель администрирования</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Разрешить сотруднику входить в админ-панель
+                      </p>
+                    </div>
+                    <Switch
+                      id="admin-access"
+                      checked={hasAdminAccess}
+                      onCheckedChange={setHasAdminAccess}
                       disabled={addingEmployee}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-background z-50">
-                        {getRoles().map(role => (
-                          <SelectItem key={role.value} value={role.value}>
-                            {role.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
+
+                  {hasAdminAccess && (
+                    <div>
+                      <Label htmlFor="role">{t('employees.roleLabel')}</Label>
+                      <Select 
+                        value={newEmployee.role} 
+                        onValueChange={(value) => setNewEmployee(prev => ({ ...prev, role: value }))}
+                        disabled={addingEmployee}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-background z-50">
+                          {getRoles().map(role => (
+                            <SelectItem key={role.value} value={role.value}>
+                              {role.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {!hasAdminAccess && (
+                    <div className="p-3 bg-muted rounded-lg">
+                      <p className="text-sm text-muted-foreground">
+                        💡 Сотрудник будет создан с ролью "Пользователь" без доступа к админ-панели
+                      </p>
+                    </div>
+                  )}
                   <div className="flex gap-2">
                     <Button type="submit" className="flex-1" disabled={addingEmployee}>
                       {addingEmployee && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
