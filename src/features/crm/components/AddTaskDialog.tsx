@@ -23,6 +23,7 @@ const taskSchema = z.object({
   title: z.string().min(1, "Название задачи обязательно"),
   description: z.string().optional(),
   assignee_id: z.string().optional(),
+  assignee_ids: z.array(z.string()).optional(),
   client_id: z.string().optional(),
   deal_id: z.string().optional(), 
   status: z.enum(['pending', 'in_progress', 'completed', 'cancelled']),
@@ -54,6 +55,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
       title: editingTask.title,
       description: editingTask.description || '',
       assignee_id: editingTask.assignee_id || '',
+      assignee_ids: editingTask.assignee_ids || [],
       client_id: editingTask.client_id || '',
       deal_id: editingTask.deal_id || '',
       status: editingTask.status,
@@ -66,6 +68,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
       title: '',
       description: '',
       assignee_id: '',
+      assignee_ids: [],
       client_id: '',
       deal_id: '',
       status: 'pending',
@@ -89,7 +92,8 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
         recurrence_type: data.recurrence_type,
         recurrence_interval: data.recurrence_interval,
         recurrence_end_date: data.recurrence_end_date?.toISOString(),
-        assignee_id: data.assignee_id && data.assignee_id !== '' ? data.assignee_id : undefined,
+        assignee_id: data.assignee_ids && data.assignee_ids.length > 0 ? data.assignee_ids[0] : (data.assignee_id && data.assignee_id !== '' ? data.assignee_id : undefined),
+        assignee_ids: data.assignee_ids || [],
         client_id: data.client_id && data.client_id !== '' ? data.client_id : undefined,
         deal_id: data.deal_id && data.deal_id !== '' && data.deal_id !== 'none' ? data.deal_id : undefined,
         parent_task_id: undefined,
@@ -169,24 +173,43 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
 
               <FormField
                 control={form.control}
-                name="assignee_id"
+                name="assignee_ids"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Назначить сотруднику</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Выберите сотрудника" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {employees?.map((employee) => (
-                          <SelectItem key={employee.id} value={employee.id}>
-                            {employee.full_name || employee.email}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormLabel>Назначить сотрудникам (можно выбрать несколько)</FormLabel>
+                    <div className="border rounded-md p-3 max-h-[200px] overflow-y-auto space-y-2">
+                      {employees && employees.length > 0 ? (
+                        employees.map((employee) => (
+                          <div key={employee.id} className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              id={`assignee-${employee.id}`}
+                              checked={field.value?.includes(employee.id) || false}
+                              onChange={(e) => {
+                                const currentValues = field.value || [];
+                                if (e.target.checked) {
+                                  field.onChange([...currentValues, employee.id]);
+                                } else {
+                                  field.onChange(currentValues.filter(id => id !== employee.id));
+                                }
+                              }}
+                              className="h-4 w-4 rounded border-input text-primary focus:ring-2 focus:ring-primary"
+                            />
+                            <label
+                              htmlFor={`assignee-${employee.id}`}
+                              className="text-sm font-medium leading-none cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            >
+                              {employee.full_name || employee.email}
+                            </label>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground">Нет доступных сотрудников</p>
+                      )}
+                    </div>
+                    <FormDescription>
+                      Выбрано: {field.value?.length || 0} сотрудников
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}

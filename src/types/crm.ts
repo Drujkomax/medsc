@@ -26,6 +26,7 @@ export interface Task {
   title: string;
   description?: string;
   assignee_id?: string;
+  assignee_ids?: string[];
   client_id?: string;
   deal_id?: string;
   status: 'pending' | 'in_progress' | 'completed' | 'cancelled';

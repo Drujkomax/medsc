@@ -149,10 +149,14 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
             </div>
           )}
           
-          {task.assignee_id && (
+          {(task.assignee_id || (task.assignee_ids && task.assignee_ids.length > 0)) && (
             <div className="flex items-center gap-2">
               <User className="h-3 w-3" />
-              <span>Назначено</span>
+              <span>
+                {task.assignee_ids && task.assignee_ids.length > 0 
+                  ? `Назначено (${task.assignee_ids.length})`
+                  : 'Назначено'}
+              </span>
             </div>
           )}
 

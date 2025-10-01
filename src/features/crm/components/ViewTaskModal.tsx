@@ -156,13 +156,17 @@ export const ViewTaskModal = ({
                 </div>
               )}
 
-              {/* Assignee */}
-              {task.assignee_id && (
+              {/* Assignees */}
+              {(task.assignee_id || (task.assignee_ids && task.assignee_ids.length > 0)) && (
                 <div className="flex items-center gap-3">
                   <User className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-xs text-muted-foreground">Исполнитель</p>
-                    <p className="text-sm font-medium">Назначен</p>
+                    <p className="text-xs text-muted-foreground">Исполнители</p>
+                    <p className="text-sm font-medium">
+                      {task.assignee_ids && task.assignee_ids.length > 0 
+                        ? `Назначено: ${task.assignee_ids.length} человек`
+                        : 'Назначен'}
+                    </p>
                   </div>
                 </div>
               )}
