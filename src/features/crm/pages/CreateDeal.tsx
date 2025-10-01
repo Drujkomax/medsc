@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -54,6 +54,7 @@ interface DealService {
 
 const CreateDeal = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
   const { role } = useUserRole();
@@ -330,6 +331,21 @@ const CreateDeal = () => {
       setFormData(prev => ({ ...prev, assigned_salesperson: user.id }));
     }
   }, [role, user, formData.assigned_salesperson]);
+
+  // Автоматическое заполнение лида из поздравительного окна
+  useEffect(() => {
+    const state = location.state as { leadId?: string };
+    if (state?.leadId && !formData.lead_id) {
+      const lead = leads.find(l => l.id === state.leadId);
+      if (lead) {
+        setFormData(prev => ({ 
+          ...prev, 
+          lead_id: state.leadId,
+          title: prev.title || `Сделка с ${lead.name}`
+        }));
+      }
+    }
+  }, [location.state, leads, formData.lead_id]);
 
   return (
     <div className="min-h-screen bg-background p-6">
