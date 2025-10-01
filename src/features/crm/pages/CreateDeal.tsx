@@ -28,7 +28,9 @@ import {
   FileText,
   User,
   Calendar,
-  Users
+  Users,
+  CreditCard,
+  AlertCircle
 } from 'lucide-react';
 
 interface DealProduct {
@@ -67,7 +69,9 @@ const CreateDeal = () => {
     notes: '',
     assigned_engineer: '',
     assigned_accountant: '',
-    assigned_salesperson: ''
+    assigned_salesperson: '',
+    payment_status: 'waiting' as 'waiting' | 'paid' | 'not_realized' | 'debt',
+    debt_amount: ''
   });
   
   const [dealProducts, setDealProducts] = useState<DealProduct[]>([]);
@@ -230,7 +234,11 @@ const CreateDeal = () => {
         deal_type: (hasSelectedProducts && hasSelectedServices ? 'both' : hasSelectedProducts ? 'product' : 'service') as 'both' | 'product' | 'service',
         assigned_engineer: formData.assigned_engineer || undefined,
         assigned_accountant: formData.assigned_accountant || undefined,
-        assigned_salesperson: formData.assigned_salesperson || undefined
+        assigned_salesperson: formData.assigned_salesperson || undefined,
+        payment_status: formData.payment_status,
+        debt_amount: formData.payment_status === 'debt' && formData.debt_amount 
+          ? Number(formData.debt_amount) 
+          : undefined
       };
       
       await addDeal(dealData);
@@ -253,7 +261,17 @@ const CreateDeal = () => {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    // Сбрасываем debt_amount когда payment_status не 'debt'
+    if (field === 'payment_status') {
+      const paymentStatus = value as 'waiting' | 'paid' | 'not_realized' | 'debt';
+      setFormData(prev => ({ 
+        ...prev, 
+        payment_status: paymentStatus,
+        debt_amount: paymentStatus !== 'debt' ? '' : prev.debt_amount 
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
     
     // Очищаем ошибки для этого поля
     if (errors[field]) {
@@ -667,6 +685,54 @@ const CreateDeal = () => {
                       </div>
                     </div>
                   )}
+
+                   <Separator />
+
+                   {/* Статус оплаты - доступен только Директору, Руководителю и Бухгалтеру */}
+                   {(role === 'director' || role === 'sales_manager' || role === 'accountant') && (
+                     <div>
+                       <Label className="flex items-center gap-2">
+                         <CreditCard className="w-4 h-4" />
+                         Статус оплаты
+                       </Label>
+                       <div className="mt-2 space-y-3">
+                         <div>
+                           <Select 
+                             value={formData.payment_status} 
+                             onValueChange={(value) => handleInputChange('payment_status', value)}
+                           >
+                             <SelectTrigger>
+                               <SelectValue />
+                             </SelectTrigger>
+                             <SelectContent>
+                               <SelectItem value="waiting">Ожидание</SelectItem>
+                               <SelectItem value="paid">Оплачено</SelectItem>
+                               <SelectItem value="not_realized">Не реализовано</SelectItem>
+                               <SelectItem value="debt">Задолженность</SelectItem>
+                             </SelectContent>
+                           </Select>
+                         </div>
+
+                         {formData.payment_status === 'debt' && (
+                           <div>
+                             <Label htmlFor="debt_amount" className="flex items-center gap-2">
+                               <AlertCircle className="w-4 h-4 text-red-600" />
+                               Сумма задолженности
+                             </Label>
+                             <Input
+                               id="debt_amount"
+                               type="number"
+                               step="0.01"
+                               value={formData.debt_amount}
+                               onChange={(e) => handleInputChange('debt_amount', e.target.value)}
+                               placeholder="0.00"
+                               className="mt-1"
+                             />
+                           </div>
+                         )}
+                       </div>
+                     </div>
+                   )}
 
                    <Separator />
 
