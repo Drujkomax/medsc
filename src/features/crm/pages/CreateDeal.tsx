@@ -108,7 +108,7 @@ const CreateDeal = () => {
     const newProduct: DealProduct = {
       id: `temp-${Date.now()}`,
       product_id: '',
-      quantity: '' as any,
+      quantity: 1,
       unit_price: '' as any,
       total_price: 0,
       currency: 'UZS'
@@ -120,7 +120,7 @@ const CreateDeal = () => {
     const newService: DealService = {
       id: `temp-${Date.now()}`,
       service_id: '',
-      quantity: '' as any,
+      quantity: 1,
       unit_price: '' as any,
       total_price: 0,
       currency: 'UZS'
