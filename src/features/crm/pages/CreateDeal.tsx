@@ -263,7 +263,6 @@ const CreateDeal = () => {
         title: formData.title,
         lead_id: formData.lead_id || undefined,
         amount: totalAmount > 0 ? totalAmount : undefined,
-        currency: formData.currency,
         stage: formData.stage,
         close_date: formData.close_date || undefined,
         notes: formData.notes || undefined,
