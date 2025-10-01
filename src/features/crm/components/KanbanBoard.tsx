@@ -23,8 +23,8 @@ const stages = [
   { id: 'qualified', title: 'Квалифицирован', color: 'bg-purple-500' },
   { id: 'proposal', title: 'Отправил КП', color: 'bg-orange-500' },
   { id: 'negotiation', title: 'Переговоры', color: 'bg-indigo-500' },
-  { id: 'closed', title: 'Успешно/Отказ', color: 'bg-green-500' },
-  { id: 'lost', title: 'Потерян', color: 'bg-red-500' }
+  { id: 'closed', title: 'Успешно', color: 'bg-green-500' },
+  { id: 'lost', title: 'Отказ', color: 'bg-red-500' }
 ];
 
 const KanbanBoard = () => {
