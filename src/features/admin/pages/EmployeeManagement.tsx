@@ -296,33 +296,31 @@ const EmployeeManagement = () => {
     setDeletingEmployee(true);
     
     try {
-      // Удаляем роль пользователя
-      const { error: roleError } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', employeeToDelete.id);
+      // Получаем токен для авторизации
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (roleError) throw roleError;
+      if (!session) {
+        throw new Error('Не авторизован');
+      }
 
-      // Удаляем профиль пользователя
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', employeeToDelete.id);
-      
-      if (profileError) throw profileError;
+      // Вызываем edge function для удаления пользователя
+      const response = await fetch(
+        'https://smvbhwaupvbxqxqxzzjx.supabase.co/functions/v1/delete-user',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: employeeToDelete.id }),
+        }
+      );
 
-      // Удаляем кастомные права (если есть)
-      await supabase
-        .from('employee_custom_permissions')
-        .delete()
-        .eq('user_id', employeeToDelete.id);
+      const result = await response.json();
 
-      // Удаляем статус временного сотрудника (если есть)
-      await supabase
-        .from('temporary_employees')
-        .delete()
-        .eq('user_id', employeeToDelete.id);
+      if (!response.ok) {
+        throw new Error(result.error || 'Ошибка при удалении пользователя');
+      }
 
       toast({
         title: 'Сотрудник удалён',
