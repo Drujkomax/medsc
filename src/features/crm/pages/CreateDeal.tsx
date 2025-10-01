@@ -109,7 +109,7 @@ const CreateDeal = () => {
       id: `temp-${Date.now()}`,
       product_id: '',
       quantity: 1,
-      unit_price: 0,
+      unit_price: '' as any,
       total_price: 0,
       currency: 'UZS'
     };
@@ -121,7 +121,7 @@ const CreateDeal = () => {
       id: `temp-${Date.now()}`,
       service_id: '',
       quantity: 1,
-      unit_price: 0,
+      unit_price: '' as any,
       total_price: 0,
       currency: 'UZS'
     };
@@ -142,7 +142,8 @@ const CreateDeal = () => {
         if (p.id === id) {
           const updated = { ...p, [field]: value };
           if (field === 'quantity' || field === 'unit_price') {
-            updated.total_price = updated.quantity * updated.unit_price;
+            const price = updated.unit_price || 0;
+            updated.total_price = updated.quantity * price;
           }
           return updated;
         }
@@ -157,7 +158,8 @@ const CreateDeal = () => {
         if (s.id === id) {
           const updated = { ...s, [field]: value };
           if (field === 'quantity' || field === 'unit_price') {
-            updated.total_price = updated.quantity * updated.unit_price;
+            const price = updated.unit_price || 0;
+            updated.total_price = updated.quantity * price;
           }
           return updated;
         }
@@ -508,7 +510,8 @@ const CreateDeal = () => {
                                 min="0"
                                 step="0.01"
                                 value={product.unit_price}
-                                onChange={(e) => updateProduct(product.id, 'unit_price', Number(e.target.value))}
+                                onChange={(e) => updateProduct(product.id, 'unit_price', e.target.value)}
+                                placeholder="0"
                                 className={errors[`product_price_${index}`] ? 'border-red-500' : ''}
                               />
                               {errors[`product_price_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`product_price_${index}`]}</p>}
@@ -643,7 +646,8 @@ const CreateDeal = () => {
                                 min="0"
                                 step="0.01"
                                 value={service.unit_price}
-                                onChange={(e) => updateService(service.id, 'unit_price', Number(e.target.value))}
+                                onChange={(e) => updateService(service.id, 'unit_price', e.target.value)}
+                                placeholder="0"
                                 className={errors[`service_price_${index}`] ? 'border-red-500' : ''}
                               />
                               {errors[`service_price_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`service_price_${index}`]}</p>}
