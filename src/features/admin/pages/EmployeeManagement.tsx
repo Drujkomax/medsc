@@ -7,11 +7,18 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import EditEmployeeModal from '@/features/admin/components/EditEmployeeModal';
 import ViewEmployeeModal from '@/features/admin/components/ViewEmployeeModal';
 import { getRoleTranslation } from '@/utils/roleTranslations';
+import { ADMIN_SECTIONS } from '@/hooks/useCustomPermissions';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import { 
   Users, 
   Plus, 
@@ -20,7 +27,9 @@ import {
   Shield,
   Loader2,
   Edit,
-  Eye
+  Eye,
+  User,
+  CalendarIcon
 } from 'lucide-react';
 
 interface Employee {
@@ -45,6 +54,10 @@ const EmployeeManagement = () => {
     email: '',
     role: 'salesperson'
   });
+  const [fullAccessSections, setFullAccessSections] = useState<string[]>([]);
+  const [viewOnlySections, setViewOnlySections] = useState<string[]>([]);
+  const [isTemporary, setIsTemporary] = useState(false);
+  const [expiresAt, setExpiresAt] = useState<Date>();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -105,6 +118,34 @@ const EmployeeManagement = () => {
     }
   };
 
+  const toggleFullAccess = (section: string) => {
+    setFullAccessSections(prev => {
+      const newSections = prev.includes(section)
+        ? prev.filter(s => s !== section)
+        : [...prev, section];
+      
+      if (!prev.includes(section)) {
+        setViewOnlySections(v => v.filter(s => s !== section));
+      }
+      
+      return newSections;
+    });
+  };
+
+  const toggleViewOnly = (section: string) => {
+    setViewOnlySections(prev => {
+      const newSections = prev.includes(section)
+        ? prev.filter(s => s !== section)
+        : [...prev, section];
+      
+      if (!prev.includes(section)) {
+        setFullAccessSections(f => f.filter(s => s !== section));
+      }
+      
+      return newSections;
+    });
+  };
+
   const handleAddEmployee = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -112,6 +153,15 @@ const EmployeeManagement = () => {
       toast({
         title: 'Ошибка',
         description: 'Заполните все поля',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (isTemporary && !expiresAt) {
+      toast({
+        title: 'Ошибка',
+        description: 'Укажите дату истечения доступа для временного сотрудника',
         variant: 'destructive',
       });
       return;
@@ -129,10 +179,22 @@ const EmployeeManagement = () => {
       if (error) throw error;
 
       const inviteData = data as { invite_id: string };
+      
+      // Сохраняем настройки прав для дальнейшего применения после регистрации
+      const permissionsData = {
+        fullAccessSections,
+        viewOnlySections,
+        isTemporary,
+        expiresAt: expiresAt?.toISOString()
+      };
+      
+      // Сохраняем в localStorage (временно, пока пользователь не зарегистрируется)
+      localStorage.setItem(`invite_permissions_${inviteData.invite_id}`, JSON.stringify(permissionsData));
+
       const fullLink = `${window.location.origin}/admin/register/${inviteData.invite_id}`;
 
       toast({
-        title: 'Приглашение отправлено',
+        title: 'Приглашение создано',
         description: (
           <span>
             Сотрудник может зарегистрироваться по ссылке: {' '}
@@ -146,6 +208,10 @@ const EmployeeManagement = () => {
 
       setIsAddEmployeeOpen(false);
       setNewEmployee({ email: '', role: 'salesperson' });
+      setFullAccessSections([]);
+      setViewOnlySections([]);
+      setIsTemporary(false);
+      setExpiresAt(undefined);
       fetchEmployees();
     } catch (error: any) {
       console.error('Error creating invite:', error);
@@ -209,57 +275,158 @@ const EmployeeManagement = () => {
               {t('employees.addEmployee')}
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-background">
+          <DialogContent className="bg-background max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{t('employees.addNewEmployee')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleAddEmployee} className="space-y-4">
-              <div>
-                <Label htmlFor="email">{t('employees.emailLabel')}</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={newEmployee.email}
-                  onChange={(e) => setNewEmployee(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder={t('employees.emailPlaceholder')}
-                  required
-                  disabled={addingEmployee}
-                />
-              </div>
-              <div>
-                <Label htmlFor="role">{t('employees.roleLabel')}</Label>
-                <Select 
-                  value={newEmployee.role} 
-                  onValueChange={(value) => setNewEmployee(prev => ({ ...prev, role: value }))}
-                  disabled={addingEmployee}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background z-50">
-                    {getRoles().map(role => (
-                      <SelectItem key={role.value} value={role.value}>
-                        {role.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex gap-2">
-                <Button type="submit" className="flex-1" disabled={addingEmployee}>
-                  {addingEmployee && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {addingEmployee ? t('employees.adding') : t('employees.addEmployee')}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setIsAddEmployeeOpen(false)}
-                  disabled={addingEmployee}
-                >
-                  {t('common.cancel')}
-                </Button>
-              </div>
-            </form>
+            
+            <Tabs defaultValue="basic" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="basic" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Основная информация
+                </TabsTrigger>
+                <TabsTrigger value="permissions" className="flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  Настройка прав
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="basic">
+                <form onSubmit={handleAddEmployee} className="space-y-4">
+                  <div>
+                    <Label htmlFor="email">{t('employees.emailLabel')}</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={newEmployee.email}
+                      onChange={(e) => setNewEmployee(prev => ({ ...prev, email: e.target.value }))}
+                      placeholder={t('employees.emailPlaceholder')}
+                      required
+                      disabled={addingEmployee}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="role">{t('employees.roleLabel')}</Label>
+                    <Select 
+                      value={newEmployee.role} 
+                      onValueChange={(value) => setNewEmployee(prev => ({ ...prev, role: value }))}
+                      disabled={addingEmployee}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-background z-50">
+                        {getRoles().map(role => (
+                          <SelectItem key={role.value} value={role.value}>
+                            {role.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button type="submit" className="flex-1" disabled={addingEmployee}>
+                      {addingEmployee && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      {addingEmployee ? t('employees.adding') : 'Создать сотрудника'}
+                    </Button>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setIsAddEmployeeOpen(false)}
+                      disabled={addingEmployee}
+                    >
+                      {t('common.cancel')}
+                    </Button>
+                  </div>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="permissions" className="space-y-6">
+                {/* Временный сотрудник */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="temporary-access">Временный сотрудник</Label>
+                    <Switch
+                      id="temporary-access"
+                      checked={isTemporary}
+                      onCheckedChange={setIsTemporary}
+                    />
+                  </div>
+
+                  {isTemporary && (
+                    <div className="space-y-2">
+                      <Label>Срок действия доступа</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full justify-start text-left font-normal",
+                              !expiresAt && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {expiresAt ? format(expiresAt, 'dd.MM.yyyy') : 'Выберите дату'}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 bg-background" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={expiresAt}
+                            onSelect={setExpiresAt}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  )}
+                </div>
+
+                {/* Права доступа */}
+                <div className="space-y-4">
+                  <div className="border rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium text-sm">Разделы администрирования</h4>
+                    <div className="grid gap-3">
+                      {ADMIN_SECTIONS.map(section => {
+                        const hasFullAccess = fullAccessSections.includes(section.value);
+                        const hasViewOnly = viewOnlySections.includes(section.value);
+                        
+                        return (
+                          <div
+                            key={section.value}
+                            className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors"
+                          >
+                            <span className="text-sm font-medium">{section.label}</span>
+                            <div className="flex gap-2">
+                              <Badge
+                                variant={hasFullAccess ? "default" : "outline"}
+                                className="cursor-pointer"
+                                onClick={() => toggleFullAccess(section.value)}
+                              >
+                                Полный доступ
+                              </Badge>
+                              <Badge
+                                variant={hasViewOnly ? "secondary" : "outline"}
+                                className="cursor-pointer"
+                                onClick={() => toggleViewOnly(section.value)}
+                              >
+                                Только просмотр
+                              </Badge>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-sm text-muted-foreground">
+                  💡 Права будут применены сразу после регистрации сотрудника по пригласительной ссылке
+                </p>
+              </TabsContent>
+            </Tabs>
           </DialogContent>
         </Dialog>
       </div>

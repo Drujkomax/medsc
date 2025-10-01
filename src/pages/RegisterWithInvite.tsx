@@ -122,6 +122,64 @@ const RegisterWithInvite = () => {
         }
 
         console.log('Role assigned successfully:', assignResult);
+
+        // Применяем кастомные права доступа, если они были настроены
+        const permissionsDataStr = localStorage.getItem(`invite_permissions_${inviteId}`);
+        if (permissionsDataStr) {
+          try {
+            const permissionsData = JSON.parse(permissionsDataStr);
+            const { fullAccessSections, viewOnlySections, isTemporary, expiresAt } = permissionsData;
+
+            // Создаем записи прав доступа
+            const permissionsToInsert: any[] = [];
+
+            fullAccessSections?.forEach((section: string) => {
+              permissionsToInsert.push({
+                user_id: authData.user.id,
+                section,
+                permission_level: 'full_access',
+              });
+            });
+
+            viewOnlySections?.forEach((section: string) => {
+              permissionsToInsert.push({
+                user_id: authData.user.id,
+                section,
+                permission_level: 'view_only',
+              });
+            });
+
+            if (permissionsToInsert.length > 0) {
+              const { error: permsError } = await supabase
+                .from('employee_custom_permissions')
+                .insert(permissionsToInsert);
+
+              if (permsError) {
+                console.error('Error inserting custom permissions:', permsError);
+              }
+            }
+
+            // Если это временный сотрудник
+            if (isTemporary && expiresAt) {
+              const { error: tempError } = await supabase
+                .from('temporary_employees')
+                .insert({
+                  user_id: authData.user.id,
+                  expires_at: expiresAt,
+                  is_active: true,
+                });
+
+              if (tempError) {
+                console.error('Error inserting temporary employee:', tempError);
+              }
+            }
+
+            // Удаляем данные из localStorage после применения
+            localStorage.removeItem(`invite_permissions_${inviteId}`);
+          } catch (err) {
+            console.error('Error applying custom permissions:', err);
+          }
+        }
       }
 
       toast({
