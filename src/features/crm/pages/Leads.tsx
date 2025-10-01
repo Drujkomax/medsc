@@ -49,9 +49,9 @@ const Leads = () => {
       new: 'Новый',
       contacted: 'Связались',
       qualified: 'Квалифицирован',
-      proposal: 'Предложение',
+      proposal: 'Отправил КП',
       negotiation: 'Переговоры',
-      closed: 'Закрыт',
+      closed: 'Успешно/Отказ',
       lost: 'Потерян'
     };
     return stageMap[stage] || stage;
@@ -125,9 +125,9 @@ const Leads = () => {
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
     { value: 'contacted', label: 'Связались', count: 0, color: 'bg-yellow-500' },
     { value: 'qualified', label: 'Квалифицированы', count: 0, color: 'bg-purple-500' },
-    { value: 'proposal', label: 'Предложение', count: 0, color: 'bg-orange-500' },
+    { value: 'proposal', label: 'Отправил КП', count: 0, color: 'bg-orange-500' },
     { value: 'negotiation', label: 'Переговоры', count: 0, color: 'bg-indigo-500' },
-    { value: 'closed', label: 'Закрыты', count: 0, color: 'bg-green-500' },
+    { value: 'closed', label: 'Успешно/Отказ', count: 0, color: 'bg-green-500' },
     { value: 'lost', label: 'Потеряны', count: 0, color: 'bg-red-500' },
   ];
 
