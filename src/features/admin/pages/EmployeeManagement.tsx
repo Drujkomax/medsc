@@ -543,14 +543,22 @@ const EmployeeManagement = () => {
                             <div className="flex gap-2">
                               <Badge
                                 variant={hasFullAccess ? "default" : "outline"}
-                                className="cursor-pointer"
+                                className={`cursor-pointer transition-all ${
+                                  hasFullAccess 
+                                    ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' 
+                                    : 'hover:bg-accent border-muted-foreground/20'
+                                }`}
                                 onClick={() => toggleFullAccess(section.value)}
                               >
                                 Полный доступ
                               </Badge>
                               <Badge
                                 variant={hasViewOnly ? "secondary" : "outline"}
-                                className="cursor-pointer"
+                                className={`cursor-pointer transition-all ${
+                                  hasViewOnly 
+                                    ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600' 
+                                    : 'hover:bg-accent border-muted-foreground/20'
+                                }`}
                                 onClick={() => toggleViewOnly(section.value)}
                               >
                                 Только просмотр
