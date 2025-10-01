@@ -3,6 +3,7 @@ export interface Deal {
   title: string;
   lead_id?: string;
   amount?: number;
+  currency?: 'USD' | 'EUR' | 'UZS';
   stage: 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'closed' | 'lost';
   probability?: number;
   close_date?: string;

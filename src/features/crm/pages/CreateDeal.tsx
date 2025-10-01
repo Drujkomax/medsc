@@ -30,7 +30,8 @@ import {
   Calendar,
   Users,
   CreditCard,
-  AlertCircle
+  AlertCircle,
+  ArrowRightLeft
 } from 'lucide-react';
 
 interface DealProduct {
@@ -67,6 +68,7 @@ const CreateDeal = () => {
     stage: 'lead' as Deal['stage'],
     close_date: '',
     notes: '',
+    currency: 'UZS' as 'USD' | 'EUR' | 'UZS',
     assigned_engineer: '',
     assigned_accountant: '',
     assigned_salesperson: '',
@@ -78,6 +80,18 @@ const CreateDeal = () => {
   const [dealServices, setDealServices] = useState<DealService[]>([]);
   
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  // Курсы валют (средние значения из sqb.uz)
+  const exchangeRates = {
+    USD: 12065, // Средний курс
+    EUR: 14200  // Средний курс
+  };
+  
+  // Конвертация в сумы
+  const convertToUZS = (amount: number, currency: 'USD' | 'EUR' | 'UZS'): number => {
+    if (currency === 'UZS') return amount;
+    return amount * exchangeRates[currency];
+  };
 
   const stages = [
     { value: 'lead', label: 'Лид', color: 'bg-gray-100 text-gray-800' },
@@ -228,6 +242,7 @@ const CreateDeal = () => {
         title: formData.title,
         lead_id: formData.lead_id || undefined,
         amount: totalAmount > 0 ? totalAmount : undefined,
+        currency: formData.currency,
         stage: formData.stage,
         close_date: formData.close_date || undefined,
         notes: formData.notes || undefined,
@@ -651,6 +666,29 @@ const CreateDeal = () => {
 
                   <Separator />
 
+                  {/* Валюта */}
+                  <div>
+                    <Label className="flex items-center gap-2">
+                      <ArrowRightLeft className="w-4 h-4" />
+                      Валюта сделки
+                    </Label>
+                    <Select 
+                      value={formData.currency} 
+                      onValueChange={(value) => handleInputChange('currency', value)}
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="UZS">UZS (сум)</SelectItem>
+                        <SelectItem value="USD">USD ($)</SelectItem>
+                        <SelectItem value="EUR">EUR (€)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Separator />
+
                   <div>
                     <Label>Финансовая сводка</Label>
                     <div className="mt-2 space-y-2">
@@ -669,8 +707,39 @@ const CreateDeal = () => {
                       <Separator />
                       <div className="flex justify-between font-semibold">
                         <span>Общая сумма:</span>
-                        <span className="text-green-600">${calculateTotalAmount().toLocaleString()}</span>
+                        <span className="text-green-600">
+                          {formData.currency === 'USD' && '$'}
+                          {formData.currency === 'EUR' && '€'}
+                          {calculateTotalAmount().toLocaleString()}
+                          {formData.currency === 'UZS' && ' UZS'}
+                        </span>
                       </div>
+                      
+                      {/* Конвертация в сумы */}
+                      {calculateTotalAmount() > 0 && formData.currency !== 'UZS' && (
+                        <div className="mt-3 p-3 bg-muted/50 rounded-md border space-y-2">
+                          <div className="flex items-center gap-2">
+                            <ArrowRightLeft className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground">
+                              Конвертация в сумы:
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-semibold text-primary">
+                              {convertToUZS(
+                                calculateTotalAmount(), 
+                                formData.currency
+                              ).toLocaleString('ru-RU', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                              })} UZS
+                            </span>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            Курс: 1 {formData.currency} = {exchangeRates[formData.currency].toLocaleString('ru-RU')} UZS
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
