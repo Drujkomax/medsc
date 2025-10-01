@@ -58,14 +58,14 @@ export function AdminSidebar() {
       conditionalItems.push({ name: t('navigation2.leads'), href: '/admin/leads', icon: Users, permission: 'view_all_leads' });
     }
     
-    // Сделки - доступны всем кроме пользователей (админ, специалист по продажам, бухгалтер, инженер, руководитель, директор)
-    if (hasPermission('manage_deals')) {
-      conditionalItems.push({ name: t('admin.deals'), href: '/admin/deals', icon: HandCoins, permission: 'manage_deals' });
+    // Сделки - доступны при наличии любого права на сделки
+    if (hasPermission('view_deals')) {
+      conditionalItems.push({ name: t('admin.deals'), href: '/admin/deals', icon: HandCoins, permission: 'view_deals' });
     }
     
-    // Задачи - доступны всем кроме пользователей  
-    if (hasPermission('manage_tasks')) {
-      conditionalItems.push({ name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare, permission: 'manage_tasks' });
+    // Задачи - доступны при наличии любого права на задачи
+    if (hasPermission('view_tasks')) {
+      conditionalItems.push({ name: t('admin.tasks'), href: '/admin/tasks', icon: CheckSquare, permission: 'view_tasks' });
     }
     
     // Канбан - доступен только специалистам по продажам, руководителям и директорам
@@ -83,27 +83,27 @@ export function AdminSidebar() {
       conditionalItems.push({ name: t('admin.products'), href: '/admin/products', icon: ShoppingBag, permission: 'view_products' });
     }
     
-    // Категории - доступны админу, руководителю и директору
-    if (hasPermission('manage_categories')) {
-      conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'manage_categories' });
+    // Категории - доступны при наличии права на категории
+    if (hasPermission('view_categories')) {
+      conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'view_categories' });
     }
 
-    // Услуги - доступны админу, инженеру, руководителю и директору
-    if (hasPermission('manage_services')) {
-      conditionalItems.push({ name: t('navigation2.services'), href: '/admin/services', icon: Settings, permission: 'manage_services' });
+    // Услуги - доступны при наличии права на услуги
+    if (hasPermission('view_services')) {
+      conditionalItems.push({ name: t('navigation2.services'), href: '/admin/services', icon: Settings, permission: 'view_services' });
     }
 
-    // Контакты - доступны руководителю и директору
-    if (hasPermission('manage_contacts')) {
-      conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: 'manage_contacts' });
+    // Контакты - доступны при наличии права на контакты
+    if (hasPermission('view_contacts')) {
+      conditionalItems.push({ name: t('admin.contacts'), href: '/admin/contacts', icon: MessageSquare, permission: 'view_contacts' });
     }
     
-    // Аналитика - для руководителя и директора
+    // Аналитика - доступна при наличии права на аналитику
     if (hasPermission('view_analytics')) {
       conditionalItems.push({ name: 'Аналитика', href: '/admin/analytics', icon: BarChart3, permission: 'view_analytics' });
     }
 
-    // Управление сотрудниками - для директора и руководителя
+    // Управление сотрудниками - только при наличии права на управление пользователями
     if (hasPermission('manage_users')) {
       conditionalItems.push({ name: t('navigation2.employees'), href: '/admin/employees', icon: UserCheck, permission: 'manage_users' });
     }

@@ -19,12 +19,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAdminProducts } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { AddProductDialog } from '../components/AddProductDialog';
 import DraftManager from '../components/DraftManager';
 
 const AdminProducts = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { hasPermission } = useUserPermissions();
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -119,7 +121,7 @@ const AdminProducts = () => {
           <h1 className="text-3xl font-bold">Управление товарами</h1>
           <p className="text-muted-foreground">Создавайте, редактируйте и управляйте товарами в каталоге</p>
         </div>
-        <AddProductDialog />
+        {hasPermission('manage_products') && <AddProductDialog />}
       </div>
 
       <div className="space-y-6">
@@ -216,16 +218,18 @@ const AdminProducts = () => {
                           </div>
                           
                           {/* Кнопки действий - всегда внизу */}
-                          <div className="flex gap-2 pt-4 mt-auto">
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={() => navigate(`/admin/products/edit/${product.id}`)}
-                              className="flex-1"
-                            >
-                              <Edit2 className="w-4 h-4 mr-1" />
-                              Изменить
-                            </Button>
+                           <div className="flex gap-2 pt-4 mt-auto">
+                            {hasPermission('manage_products') && (
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+                                className="flex-1"
+                              >
+                                <Edit2 className="w-4 h-4 mr-1" />
+                                Изменить
+                              </Button>
+                            )}
                             <Button 
                               variant="outline" 
                               size="sm" 
@@ -235,19 +239,21 @@ const AdminProducts = () => {
                               <Eye className="w-4 h-4 mr-1" />
                               Предпросмотр
                             </Button>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                  <MoreHorizontal className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                <DropdownMenuItem onClick={() => handleArchiveProduct(product.id)}>
-                                  <Archive className="w-4 h-4 mr-2" />
-                                  Архивировать
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            {hasPermission('manage_products') && (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="outline" size="sm">
+                                    <MoreHorizontal className="w-4 h-4" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent>
+                                  <DropdownMenuItem onClick={() => handleArchiveProduct(product.id)}>
+                                    <Archive className="w-4 h-4 mr-2" />
+                                    Архивировать
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            )}
                           </div>
                         </CardContent>
                       </Card>

@@ -12,6 +12,7 @@ import { Deal } from '@/types/crm';
 import { useDeals } from '@/hooks/useDeals';
 import { useTranslation } from 'react-i18next';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
+import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { 
   LayoutList, 
   BarChart3, 
@@ -28,6 +29,7 @@ const DealsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { deals } = useDeals();
+  const { hasPermission } = useUserPermissions();
   const [activeTab, setActiveTab] = useState('overview');
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null);
   const [viewingDeal, setViewingDeal] = useState<Deal | null>(null);
@@ -94,7 +96,7 @@ const DealsPage = () => {
   ];
 
   return (
-    <RoleBasedAccess permissions={['view_all_leads', 'manage_deals']}>
+    <RoleBasedAccess permissions={['view_deals']}>
       <div className="space-y-6 p-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -111,10 +113,12 @@ const DealsPage = () => {
               <Download className="w-4 h-4 mr-2" />
               {t('common.export')}
             </Button>
-            <Button onClick={handleCreateDeal}>
-              <Plus className="w-4 h-4 mr-2" />
-              {t('deals.addDeal')}
-            </Button>
+            {hasPermission('manage_deals') && (
+              <Button onClick={handleCreateDeal}>
+                <Plus className="w-4 h-4 mr-2" />
+                {t('deals.addDeal')}
+              </Button>
+            )}
           </div>
         </div>
 
@@ -172,7 +176,7 @@ const DealsPage = () => {
           
           <TabsContent value="list" className="space-y-6">
             <EnhancedDealList 
-              onEditDeal={handleEditDeal}
+              onEditDeal={hasPermission('manage_deals') ? handleEditDeal : undefined}
               onViewDeal={handleViewDeal}
             />
           </TabsContent>
@@ -186,7 +190,7 @@ const DealsPage = () => {
           open={!!viewingDeal}
           onClose={handleCloseDialog}
           deal={viewingDeal}
-          onEdit={handleEditDeal}
+          onEdit={hasPermission('manage_deals') ? handleEditDeal : undefined}
         />
       </div>
     </RoleBasedAccess>
