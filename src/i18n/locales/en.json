@@ -156,9 +156,9 @@
       "new": "New",
       "contacted": "Contacted",
       "qualified": "Qualified",
-      "proposal": "Proposal",
+      "proposal": "Sent Quote",
       "negotiation": "Negotiation",
-      "closed": "Closed",
+      "closed": "Success/Reject",
       "lost": "Lost"
     }
   },

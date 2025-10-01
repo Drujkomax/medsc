@@ -95,9 +95,9 @@
     "stages": {
       "lead": "Lead",
       "qualified": "Malakali",
-      "proposal": "Taklif",
+      "proposal": "KP yuborildi",
       "negotiation": "Muzokaralar",
-      "closed": "Yopilgan"
+      "closed": "Muvaffaqiyat/Rad"
     },
     "notFound": "Bitimlar topilmadi"
   },
@@ -156,9 +156,9 @@
       "new": "Yangi",
       "contacted": "Bog'lanildi",
       "qualified": "Kvalifikatsiya qilingan",
-      "proposal": "Taklif",
+      "proposal": "KP yuborildi",
       "negotiation": "Muzokaralar",
-      "closed": "Yopildi",
+      "closed": "Muvaffaqiyat/Rad",
       "lost": "Yo'qotildi"
     }
   },
