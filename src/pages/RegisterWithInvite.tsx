@@ -145,50 +145,20 @@ const RegisterWithInvite = () => {
         if (permissionsDataStr) {
           try {
             const permissionsData = JSON.parse(permissionsDataStr);
-            const { fullAccessSections, viewOnlySections, isTemporary, expiresAt } = permissionsData;
+            const { fullAccessSections = [], viewOnlySections = [], isTemporary = false, expiresAt } = permissionsData;
 
-            // Создаем записи прав доступа
-            const permissionsToInsert: any[] = [];
-
-            fullAccessSections?.forEach((section: string) => {
-              permissionsToInsert.push({
-                user_id: authData.user.id,
-                section,
-                permission_level: 'full_access',
-              });
+            // Применяем права и срок действия через защищенную RPC (обходит RLS)
+            const { error: permsApplyError } = await supabase.rpc('apply_invite_permissions', {
+              p_invite_id: inviteId,
+              p_user_id: authData.user.id,
+              p_full_access: fullAccessSections,
+              p_view_only: viewOnlySections,
+              p_is_temporary: isTemporary,
+              p_expires_at: expiresAt ? new Date(expiresAt).toISOString() : null
             });
 
-            viewOnlySections?.forEach((section: string) => {
-              permissionsToInsert.push({
-                user_id: authData.user.id,
-                section,
-                permission_level: 'view_only',
-              });
-            });
-
-            if (permissionsToInsert.length > 0) {
-              const { error: permsError } = await supabase
-                .from('employee_custom_permissions')
-                .insert(permissionsToInsert);
-
-              if (permsError) {
-                console.error('Error inserting custom permissions:', permsError);
-              }
-            }
-
-            // Если это временный сотрудник
-            if (isTemporary && expiresAt) {
-              const { error: tempError } = await supabase
-                .from('temporary_employees')
-                .insert({
-                  user_id: authData.user.id,
-                  expires_at: expiresAt,
-                  is_active: true,
-                });
-
-              if (tempError) {
-                console.error('Error inserting temporary employee:', tempError);
-              }
+            if (permsApplyError) {
+              console.error('Error applying invite permissions via RPC:', permsApplyError);
             }
 
             // Удаляем данные из localStorage после применения
