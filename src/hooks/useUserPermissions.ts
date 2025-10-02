@@ -179,7 +179,9 @@ const rolePermissions: Record<string, Permission[]> = {
     'manage_services'
   ],
   'observer': [
-    // Наблюдатель: БЕЗ прав по умолчанию - используем только кастомные
+    // Наблюдатель: черновики и архив
+    'view_archive',
+    'view_products'
   ],
   'user': []
 };
