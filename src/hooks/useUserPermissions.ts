@@ -222,17 +222,19 @@ export const useUserPermissions = () => {
       } else {
         const userPermissions: UserPermissions = {};
         
-        // Если есть кастомные права, используем их
+        // Устанавливаем все возможные права в false
+        Object.values(rolePermissions).flat().forEach(permission => {
+          userPermissions[permission] = false;
+        });
+        
+        // Сначала устанавливаем базовые права роли
+        const rolePerms = rolePermissions[role] || [];
+        rolePerms.forEach(permission => {
+          userPermissions[permission] = true;
+        });
+        
+        // Если есть кастомные права, они ДОПОЛНЯЮТ базовые права роли
         if (customPermissions.length > 0) {
-          // Инициализируем все права как false
-          Object.values(rolePermissions).flat().forEach(permission => {
-            userPermissions[permission] = false;
-          });
-
-          // Получаем список разделов с кастомными настройками
-          const configuredSections = customPermissions.map(cp => cp.section);
-          
-          // Для каждого раздела с кастомными правами
           customPermissions.forEach(customPerm => {
             const sectionPerms = sectionPermissionMap[customPerm.section];
             if (!sectionPerms) return;
@@ -247,23 +249,12 @@ export const useUserPermissions = () => {
               sectionPerms.view.forEach(perm => {
                 userPermissions[perm] = true;
               });
+            } else if (customPerm.permission_level === 'no_access') {
+              // Явный запрет - убираем все права для этого раздела
+              [...sectionPerms.view, ...sectionPerms.manage].forEach(perm => {
+                userPermissions[perm] = false;
+              });
             }
-            // no_access или отсутствие - права остаются false
-          });
-
-          // Важно: разделы, которые не были настроены, остаются недоступными (false)
-        } else {
-          // Используем стандартные права роли
-          const rolePerms = rolePermissions[role] || [];
-          
-          // Устанавливаем все возможные права в false
-          Object.values(rolePermissions).flat().forEach(permission => {
-            userPermissions[permission] = false;
-          });
-          
-          // Затем устанавливаем права пользователя в true
-          rolePerms.forEach(permission => {
-            userPermissions[permission] = true;
           });
         }
         
