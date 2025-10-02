@@ -20,6 +20,7 @@ const LogoutButton = () => {
       });
       navigate('/');
     } catch (error) {
+      console.error('Logout error:', error);
       toast({
         variant: 'destructive',
         title: t('common.error'),
