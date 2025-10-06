@@ -223,9 +223,6 @@ const DealsPage = () => {
                     })} 
                     <span className="text-2xl ml-2 font-bold">USD</span>
                   </p>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Должников: <span className="font-bold text-orange-600 dark:text-orange-400">{debtorsCount}</span>
-                  </p>
                 </div>
               </div>
             </CardContent>
