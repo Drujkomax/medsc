@@ -167,30 +167,7 @@ const DealsPage = () => {
                 {t('deals.addDeal')}
               </Button>
             )}
-        </div>
-
-        {/* Debt Summary Block - Only for Accountants */}
-        {isAccountant && (
-          <Card className="border-red-200 dark:border-red-800 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-4 rounded-full bg-red-100 dark:bg-red-900/30">
-                  <DollarSign className="w-8 h-8 text-red-600 dark:text-red-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Общая сумма задолженности</p>
-                  <p className="text-3xl font-bold text-red-600 dark:text-red-400">
-                    {totalDebtAmount.toLocaleString('ru-RU', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2
-                    })} USD
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
+          </div>
         </div>
 
         {/* Quick Stats */}
@@ -225,6 +202,35 @@ const DealsPage = () => {
             </Card>
           ))}
         </div>
+
+        {/* Debt Summary Block - Only for Accountants */}
+        {isAccountant && (
+          <Card className="relative overflow-hidden border-2 border-red-200 dark:border-red-800 shadow-lg">
+            <div className="absolute inset-0 bg-gradient-to-br from-red-50 via-orange-50 to-red-50 dark:from-red-950/30 dark:via-orange-950/30 dark:to-red-950/30" />
+            <CardContent className="relative p-8">
+              <div className="flex items-center justify-center gap-6">
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 shadow-xl">
+                  <AlertCircle className="w-10 h-10 text-white" />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-semibold text-red-700 dark:text-red-400 uppercase tracking-wider mb-2">
+                    ⚠️ Общая сумма задолженности
+                  </p>
+                  <p className="text-5xl font-black text-red-600 dark:text-red-400 tracking-tight">
+                    {totalDebtAmount.toLocaleString('ru-RU', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    })} 
+                    <span className="text-2xl ml-2 font-bold">USD</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Должников: <span className="font-bold text-orange-600 dark:text-orange-400">{debtorsCount}</span>
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Main Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
