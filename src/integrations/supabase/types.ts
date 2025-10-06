@@ -157,6 +157,53 @@ export type Database = {
           },
         ]
       }
+      deal_audit_log: {
+        Row: {
+          action_type: string
+          changed_fields: string[] | null
+          created_at: string
+          deal_id: string
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          user_email: string | null
+          user_id: string | null
+          user_role: string | null
+        }
+        Insert: {
+          action_type: string
+          changed_fields?: string[] | null
+          created_at?: string
+          deal_id: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          user_email?: string | null
+          user_id?: string | null
+          user_role?: string | null
+        }
+        Update: {
+          action_type?: string
+          changed_fields?: string[] | null
+          created_at?: string
+          deal_id?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          user_email?: string | null
+          user_id?: string | null
+          user_role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deal_audit_log_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deal_documents: {
         Row: {
           created_at: string | null

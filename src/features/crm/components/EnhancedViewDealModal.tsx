@@ -7,9 +7,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Deal } from '@/types/crm';
 import { useLeads } from '@/hooks/useLeads';
+import { useUserRole } from '@/hooks/useUserRole';
 import { useTranslation } from 'react-i18next';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import DealAuditLog from './DealAuditLog';
 import { 
   DollarSign, 
   Calendar, 
@@ -38,6 +40,7 @@ interface EnhancedViewDealModalProps {
 const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDealModalProps) => {
   const { t } = useTranslation();
   const { leads } = useLeads();
+  const { role } = useUserRole();
 
   if (!deal) return null;
 
@@ -408,6 +411,13 @@ const EnhancedViewDealModal = ({ open, onClose, deal, onEdit }: EnhancedViewDeal
               </CardContent>
             </Card>
           </div>
+
+          {/* Audit Log - Only for Accountants */}
+          {role === 'accountant' && (
+            <div className="col-span-2">
+              <DealAuditLog dealId={deal.id} />
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
