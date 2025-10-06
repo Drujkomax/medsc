@@ -76,7 +76,8 @@ const CreateDeal = () => {
     assigned_accountant: '',
     assigned_salesperson: '',
     payment_status: 'waiting' as 'waiting' | 'paid' | 'not_realized' | 'debt',
-    debt_amount: ''
+    debt_amount: '',
+    debt_currency: 'USD' as 'USD' | 'EUR' | 'UZS'
   });
   
   const [dealProducts, setDealProducts] = useState<DealProduct[]>([]);
@@ -836,23 +837,43 @@ const CreateDeal = () => {
                            </Select>
                          </div>
 
-                         {formData.payment_status === 'debt' && (
-                           <div>
-                             <Label htmlFor="debt_amount" className="flex items-center gap-2">
-                               <AlertCircle className="w-4 h-4 text-red-600" />
-                               Сумма задолженности
-                             </Label>
-                             <Input
-                               id="debt_amount"
-                               type="number"
-                               step="0.01"
-                               value={formData.debt_amount}
-                               onChange={(e) => handleInputChange('debt_amount', e.target.value)}
-                               placeholder="0.00"
-                               className="mt-1"
-                             />
-                           </div>
-                         )}
+                          {formData.payment_status === 'debt' && (
+                            <div className="space-y-3">
+                              <div>
+                                <Label htmlFor="debt_currency" className="text-sm text-muted-foreground">
+                                  Валюта задолженности
+                                </Label>
+                                <Select 
+                                  value={formData.debt_currency} 
+                                  onValueChange={(value) => handleInputChange('debt_currency', value as 'USD' | 'EUR' | 'UZS')}
+                                >
+                                  <SelectTrigger className="mt-1">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="USD">USD ($)</SelectItem>
+                                    <SelectItem value="EUR">EUR (€)</SelectItem>
+                                    <SelectItem value="UZS">UZS (сум)</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <Label htmlFor="debt_amount" className="flex items-center gap-2">
+                                  <AlertCircle className="w-4 h-4 text-red-600" />
+                                  Сумма задолженности
+                                </Label>
+                                <Input
+                                  id="debt_amount"
+                                  type="number"
+                                  step="0.01"
+                                  value={formData.debt_amount}
+                                  onChange={(e) => handleInputChange('debt_amount', e.target.value)}
+                                  placeholder="0.00"
+                                  className="mt-1"
+                                />
+                              </div>
+                            </div>
+                          )}
                        </div>
                      </div>
                    )}
