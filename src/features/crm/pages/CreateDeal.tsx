@@ -1094,6 +1094,52 @@ const CreateDeal = () => {
                       </>
                     )}
 
+                    {/* Аудит изменений - только для бухгалтера */}
+                    {role === 'accountant' && (
+                      <>
+                        <Separator />
+                        <div className="space-y-4">
+                          <Label className="flex items-center gap-2 text-base font-semibold">
+                            <FileText className="w-4 h-4" />
+                            Аудит изменений
+                          </Label>
+                          
+                          <div className="grid gap-4 p-4 bg-muted/50 rounded-lg">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <Label className="text-xs text-muted-foreground">Создано</Label>
+                                <p className="text-sm font-medium mt-1">
+                                  {user?.email || 'Текущий пользователь'}
+                                </p>
+                              </div>
+                              <div>
+                                <Label className="text-xs text-muted-foreground">Дата создания</Label>
+                                <p className="text-sm font-medium mt-1">
+                                  {new Date().toLocaleString('ru-RU', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <Label htmlFor="audit-notes">Комментарий аудита</Label>
+                              <Textarea
+                                id="audit-notes"
+                                placeholder="Добавьте комментарий для аудита (опционально)"
+                                className="mt-2 resize-none"
+                                rows={3}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
                     {errors.items && (
                       <div className="text-sm text-red-500 bg-red-50 p-2 rounded">
                         {errors.items}
