@@ -12,6 +12,7 @@ import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { useAdminProducts, useAdminProduct } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { ProductImageUpload } from '@/components/common/ProductImageUpload';
+import { ImageUpload } from '@/components/common/ImageUpload';
 import { countries } from '@/utils/countries';
 import { useCategories } from '@/hooks/useCategories';
 
@@ -295,15 +296,16 @@ const EditProduct = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="icon-url">Иконка (URL)</Label>
-                    <Input
-                      id="icon-url"
+                    <ImageUpload
+                      label="Иконка производителя"
                       value={formData.icon_url}
-                      onChange={(e) => setFormData(prev => ({
+                      onChange={(url) => setFormData(prev => ({
                         ...prev,
-                        icon_url: e.target.value
+                        icon_url: url || ''
                       }))}
-                      placeholder="https://example.com/icon.png"
+                      productId={id}
+                      imageType="gallery"
+                      galleryIndex={999}
                     />
                   </div>
                 </div>
