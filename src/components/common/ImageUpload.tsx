@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Trash2, Upload, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { AIImageGeneration } from './AIImageGeneration';
 
 interface ImageUploadProps {
   label: string;
@@ -131,10 +130,6 @@ export const ImageUpload = ({
     }
   };
 
-  const handleAIImageGenerated = (imageUrl: string) => {
-    onChange(imageUrl);
-  };
-
   return (
     <div className="space-y-4">
       <Label>{label}</Label>
@@ -160,39 +155,32 @@ export const ImageUpload = ({
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4">
-          <Card className="border-dashed">
-            <CardContent className="p-4">
-              <div className="flex flex-col items-center space-y-2">
-                <ImageIcon className="w-8 h-8 text-muted-foreground" />
-                <Label htmlFor={`image-${imageType}-${galleryIndex || 0}`} className="cursor-pointer">
-                  <Button variant="outline" disabled={uploading} asChild>
-                    <span>
-                      <Upload className="w-4 h-4 mr-2" />
-                      {uploading ? 'Загрузка...' : 'Выбрать изображение'}
-                    </span>
-                  </Button>
-                </Label>
-                <Input
-                  id={`image-${imageType}-${galleryIndex || 0}`}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <p className="text-xs text-muted-foreground text-center">
-                  Максимальный размер: 5MB<br />
-                  Форматы: JPG, PNG, WEBP
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <AIImageGeneration 
-            onImageGenerated={handleAIImageGenerated}
-            equipmentType={imageType === 'cover' ? 'main equipment' : 'equipment detail'}
-          />
-        </div>
+        <Card className="border-dashed">
+          <CardContent className="p-4">
+            <div className="flex flex-col items-center space-y-2">
+              <ImageIcon className="w-8 h-8 text-muted-foreground" />
+              <Label htmlFor={`image-${imageType}-${galleryIndex || 0}`} className="cursor-pointer">
+                <Button variant="outline" disabled={uploading} asChild>
+                  <span>
+                    <Upload className="w-4 h-4 mr-2" />
+                    {uploading ? 'Загрузка...' : 'Выбрать изображение'}
+                  </span>
+                </Button>
+              </Label>
+              <Input
+                id={`image-${imageType}-${galleryIndex || 0}`}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                Максимальный размер: 5MB<br />
+                Форматы: JPG, PNG, WEBP
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
