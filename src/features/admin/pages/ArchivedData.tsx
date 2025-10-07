@@ -135,7 +135,7 @@ const ArchivedData = () => {
                   {productsError}
                 </div>
               ) : filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filteredProducts.map((product) => (
                     <Card key={product.id} className="hover:shadow-md transition-shadow">
                       <CardHeader className="pb-3">
@@ -187,8 +187,8 @@ const ArchivedData = () => {
                                 onClick={() => navigate(`/admin/products/preview/${product.id}`)}
                                 className="flex-1"
                               >
-                                <Eye className="w-3 h-3 mr-1" />
-                                Просмотр
+                                <Eye className="w-3 h-3" />
+                                <span className="hidden sm:inline ml-1">Просмотр</span>
                               </Button>
                               <Button 
                                 variant="outline" 
@@ -196,26 +196,27 @@ const ArchivedData = () => {
                                 onClick={() => navigate(`/admin/products/edit/${product.id}`)}
                                 className="flex-1"
                               >
-                                Изменить
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => unarchiveProduct(product.id)}
-                                className="flex-1"
-                              >
-                                <RotateCcw className="w-3 h-3 mr-1" />
-                                Восстановить
+                                <Edit className="w-3 h-3" />
+                                <span className="hidden sm:inline ml-1">Изменить</span>
                               </Button>
                             </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => unarchiveProduct(product.id)}
+                              className="w-full"
+                            >
+                              <RotateCcw className="w-3 h-3" />
+                              <span className="hidden sm:inline ml-1">Восстановить</span>
+                            </Button>
                             <Button 
                               variant="destructive" 
                               size="sm"
                               onClick={() => deleteProductPermanently(product.id)}
                               className="w-full"
                             >
-                              <Trash2 className="w-4 h-4 mr-1" />
-                              Удалить навсегда
+                              <Trash2 className="w-4 h-4" />
+                              <span className="hidden sm:inline ml-1">Удалить навсегда</span>
                             </Button>
                           </div>
                         </div>

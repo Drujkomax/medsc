@@ -141,8 +141,8 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
               onClick={() => navigate(`/admin/products/edit/${product.id}`)}
               className="flex-1"
             >
-              <Edit2 className="w-4 h-4 mr-1" />
-              Редактировать
+              <Edit2 className="w-4 h-4" />
+              <span className="hidden sm:inline ml-1">Изменить</span>
             </Button>
             <Button 
               variant="outline" 
@@ -150,8 +150,8 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
               onClick={() => navigate(`/admin/products/preview/${product.id}`)}
               className="flex-1"
             >
-              <Eye className="w-4 h-4 mr-1" />
-              Предпросмотр
+              <Eye className="w-4 h-4" />
+              <span className="hidden sm:inline ml-1">Просмотр</span>
             </Button>
           </div>
           
@@ -162,8 +162,8 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
                 onClick={() => onPublish(product.id)}
                 className="flex-1 bg-green-600 hover:bg-green-700"
               >
-                <FileText className="w-4 h-4 mr-1" />
-                Опубликовать
+                <FileText className="w-4 h-4" />
+                <span className="hidden sm:inline ml-1">Опубликовать</span>
               </Button>
             )}
               <Button 
@@ -172,8 +172,8 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
                 onClick={() => onArchive(product.id)}
                 className={isReadyToPublish ? "flex-1" : "w-full"}
               >
-                <Archive className="w-4 h-4 mr-1" />
-                Архивировать
+                <Archive className="w-4 h-4" />
+                <span className="hidden sm:inline ml-1">Архивировать</span>
               </Button>
           </div>
         </div>

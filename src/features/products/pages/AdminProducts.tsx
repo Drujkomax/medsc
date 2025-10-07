@@ -227,7 +227,8 @@ const AdminProducts = () => {
                                   onClick={() => navigate(`/admin/products/edit/${product.id}`)}
                                   className="flex-1"
                                 >
-                                  <Edit2 className="w-4 h-4" />
+                                  <Edit2 className="w-4 h-4 mr-1" />
+                                  <span className="hidden sm:inline">Изменить</span>
                                 </Button>
                               )}
                               <Button 
@@ -236,7 +237,8 @@ const AdminProducts = () => {
                                 onClick={() => navigate(`/admin/products/preview/${product.id}`)}
                                 className="flex-1"
                               >
-                                <Eye className="w-4 h-4" />
+                                <Eye className="w-4 h-4 mr-1" />
+                                <span className="hidden sm:inline">Просмотр</span>
                               </Button>
                               {hasPermission('manage_products') && (
                                 <DropdownMenu>
