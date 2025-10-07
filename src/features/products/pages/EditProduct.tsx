@@ -46,13 +46,14 @@ const EditProduct = () => {
 
   useEffect(() => {
     if (product) {
+      const productData = product as any;
       setFormData({
         name: product.name,
         description: product.description,
         category: product.category,
         country: product.country || '',
-        manufacturer_name: product.manufacturer_name || '',
-        icon_url: product.icon_url || '',
+        manufacturer_name: productData.manufacturer_name || '',
+        icon_url: productData.icon_url || '',
         price: product.price || '',
         status: product.status,
         features: product.features || { ru: [''], en: [''], uz: [''] },
@@ -281,35 +282,6 @@ const EditProduct = () => {
                   </div>
                 </div>
 
-                {/* Manufacturer and Icon */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="manufacturer">Название производителя</Label>
-                    <Input
-                      id="manufacturer"
-                      value={formData.manufacturer_name}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        manufacturer_name: e.target.value
-                      }))}
-                      placeholder="Например: Siemens, GE Healthcare"
-                    />
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Иконка производителя"
-                      value={formData.icon_url}
-                      onChange={(url) => setFormData(prev => ({
-                        ...prev,
-                        icon_url: url || ''
-                      }))}
-                      productId={id}
-                      imageType="gallery"
-                      galleryIndex={999}
-                    />
-                  </div>
-                </div>
-
                 {/* Descriptions */}
                 <div className="space-y-4">
                   <div>
@@ -476,6 +448,33 @@ const EditProduct = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="manufacturer">Название производителя</Label>
+                  <Input
+                    id="manufacturer"
+                    value={formData.manufacturer_name}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      manufacturer_name: e.target.value
+                    }))}
+                    placeholder="Например: Siemens, GE Healthcare"
+                  />
+                </div>
+
+                <div>
+                  <ImageUpload
+                    label="Иконка производителя"
+                    value={formData.icon_url}
+                    onChange={(url) => setFormData(prev => ({
+                      ...prev,
+                      icon_url: url || ''
+                    }))}
+                    productId={id}
+                    imageType="gallery"
+                    galleryIndex={999}
+                  />
                 </div>
 
                 <div>

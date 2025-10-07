@@ -268,34 +268,6 @@ const AddProduct = () => {
                   </div>
                 </div>
 
-                {/* Manufacturer and Icon */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="manufacturer">Название производителя</Label>
-                    <Input
-                      id="manufacturer"
-                      value={formData.manufacturer_name}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        manufacturer_name: e.target.value
-                      }))}
-                      placeholder="Например: Siemens, GE Healthcare"
-                    />
-                  </div>
-                  <div>
-                    <ImageUpload
-                      label="Иконка производителя"
-                      value={formData.icon_url}
-                      onChange={(url) => setFormData(prev => ({
-                        ...prev,
-                        icon_url: url || ''
-                      }))}
-                      imageType="gallery"
-                      galleryIndex={999}
-                    />
-                  </div>
-                </div>
-
                 {/* Descriptions */}
                  <div className="space-y-4">
                     <div>
@@ -471,6 +443,32 @@ const AddProduct = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="manufacturer">Название производителя</Label>
+                  <Input
+                    id="manufacturer"
+                    value={formData.manufacturer_name}
+                    onChange={(e) => setFormData(prev => ({
+                      ...prev,
+                      manufacturer_name: e.target.value
+                    }))}
+                    placeholder="Например: Siemens, GE Healthcare"
+                  />
+                </div>
+
+                <div>
+                  <ImageUpload
+                    label="Иконка производителя"
+                    value={formData.icon_url}
+                    onChange={(url) => setFormData(prev => ({
+                      ...prev,
+                      icon_url: url || ''
+                    }))}
+                    imageType="gallery"
+                    galleryIndex={999}
+                  />
                 </div>
 
                 <div className="space-y-4">
