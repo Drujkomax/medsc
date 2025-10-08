@@ -88,11 +88,6 @@ export function AdminSidebar() {
     if (hasPermission('view_categories')) {
       conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'view_categories' });
     }
-    
-    // Производители - доступны при наличии права на категории
-    if (hasPermission('view_categories')) {
-      conditionalItems.push({ name: 'Производители', href: '/admin/manufacturers', icon: Factory, permission: 'view_categories' });
-    }
 
     // Услуги - доступны при наличии права на услуги
     if (hasPermission('view_services')) {

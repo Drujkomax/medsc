@@ -6,9 +6,11 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Edit, Trash2, Loader2, Package, AlertTriangle } from "lucide-react";
+import { Plus, Edit, Trash2, Loader2, Package, AlertTriangle, Building2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCategories } from '@/hooks/useCategories';
 import { useToast } from '@/hooks/use-toast';
+import ManufacturersTab from './ManufacturersTab';
 
 const Categories = () => {
   const { categories, loading, addCategory, deleteCategory, updateCategory } = useCategories();
@@ -135,19 +137,32 @@ const Categories = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Управление категориями</h1>
-          <p className="text-muted-foreground">Добавляйте, редактируйте и удаляйте категории товаров</p>
-        </div>
-        
-        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-          <DialogTrigger asChild>
-            <Button onClick={resetForm}>
-              <Plus className="w-4 h-4 mr-2" />
-              Добавить категорию
-            </Button>
-          </DialogTrigger>
+      <div>
+        <h1 className="text-3xl font-bold">Категории и производители</h1>
+        <p className="text-muted-foreground">Управление категориями товаров и производителями</p>
+      </div>
+
+      <Tabs defaultValue="categories" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="categories">
+            <Package className="w-4 h-4 mr-2" />
+            Категории товаров
+          </TabsTrigger>
+          <TabsTrigger value="manufacturers">
+            <Building2 className="w-4 h-4 mr-2" />
+            Производители
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="categories" className="space-y-6">
+          <div className="flex items-center justify-between">
+            <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+              <DialogTrigger asChild>
+                <Button onClick={resetForm}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Добавить категорию
+                </Button>
+              </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Добавить новую категорию</DialogTitle>
@@ -218,12 +233,12 @@ const Categories = () => {
                 </Button>
               </DialogFooter>
             </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
-      {/* Categories Table */}
-      <Card>
+        {/* Categories Table */}
+        <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Package className="w-5 h-5" />
@@ -308,11 +323,11 @@ const Categories = () => {
               </TableBody>
             </Table>
           )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Edit Dialog */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        {/* Edit Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Редактировать категорию</DialogTitle>
@@ -391,8 +406,14 @@ const Categories = () => {
               </Button>
             </DialogFooter>
           </form>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+        </TabsContent>
+
+        <TabsContent value="manufacturers">
+          <ManufacturersTab />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
