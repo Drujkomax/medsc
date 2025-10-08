@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ImageUpload } from '@/components/common/ImageUpload';
 import {
   Table,
   TableBody,
@@ -261,15 +262,12 @@ export default function Manufacturers() {
                 />
               </div>
 
-              <div>
-                <Label htmlFor="logoUrl">URL логотипа</Label>
-                <Input
-                  id="logoUrl"
-                  value={formData.logoUrl}
-                  onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
-                  placeholder="https://example.com/logo.png"
-                />
-              </div>
+              <ImageUpload
+                label="Логотип производителя"
+                value={formData.logoUrl}
+                onChange={(url) => setFormData({ ...formData, logoUrl: url || '' })}
+                imageType="cover"
+              />
 
               <Button onClick={handleAdd} className="w-full">
                 Добавить
@@ -411,14 +409,12 @@ export default function Manufacturers() {
               />
             </div>
 
-            <div>
-              <Label htmlFor="editLogoUrl">URL логотипа</Label>
-              <Input
-                id="editLogoUrl"
-                value={formData.logoUrl}
-                onChange={(e) => setFormData({ ...formData, logoUrl: e.target.value })}
-              />
-            </div>
+            <ImageUpload
+              label="Логотип производителя"
+              value={formData.logoUrl}
+              onChange={(url) => setFormData({ ...formData, logoUrl: url || '' })}
+              imageType="cover"
+            />
 
             <Button onClick={handleEdit} className="w-full">
               Сохранить
