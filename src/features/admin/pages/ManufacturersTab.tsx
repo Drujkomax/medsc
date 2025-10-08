@@ -210,7 +210,7 @@ export default function ManufacturersTab() {
                   <SelectContent>
                     {countries.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
-                        {`${country.flag} ${country.name}`}
+                        {`${country.flag} ${country.name.ru}`}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -278,7 +278,7 @@ export default function ManufacturersTab() {
                       </TableCell>
                       <TableCell>{manufacturer.name}</TableCell>
                       <TableCell>
-                        {country ? `${country.flag} ${country.name}` : manufacturer.country_code}
+                        {country ? `${country.flag} ${country.name.ru}` : manufacturer.country_code}
                       </TableCell>
                       <TableCell><code className="text-xs">{manufacturer.slug}</code></TableCell>
                       <TableCell className="text-right">
@@ -336,7 +336,7 @@ export default function ManufacturersTab() {
                 <SelectContent>
                   {countries.map((country) => (
                     <SelectItem key={country.code} value={country.code}>
-                      {`${country.flag} ${country.name}`}
+                      {`${country.flag} ${country.name.ru}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
