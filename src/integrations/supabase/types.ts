@@ -668,7 +668,7 @@ export type Database = {
           created_by: string | null
           id: string
           logo_url: string | null
-          name: Json
+          name: string
           slug: string
           updated_at: string
         }
@@ -678,7 +678,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           logo_url?: string | null
-          name: Json
+          name: string
           slug: string
           updated_at?: string
         }
@@ -688,7 +688,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           logo_url?: string | null
-          name?: Json
+          name?: string
           slug?: string
           updated_at?: string
         }

@@ -51,9 +51,7 @@ export default function ManufacturersTab() {
   const [selectedManufacturer, setSelectedManufacturer] = useState<Manufacturer | null>(null);
 
   const [formData, setFormData] = useState({
-    nameRu: '',
-    nameEn: '',
-    nameUz: '',
+    name: '',
     countryCode: '',
     logoUrl: '',
     slug: ''
@@ -61,9 +59,7 @@ export default function ManufacturersTab() {
 
   const resetForm = () => {
     setFormData({
-      nameRu: '',
-      nameEn: '',
-      nameUz: '',
+      name: '',
       countryCode: '',
       logoUrl: '',
       slug: ''
@@ -72,7 +68,7 @@ export default function ManufacturersTab() {
 
   const handleAdd = async () => {
     try {
-      if (!formData.nameRu || !formData.nameEn || !formData.nameUz || !formData.countryCode || !formData.slug) {
+      if (!formData.name || !formData.countryCode || !formData.slug) {
         toast({
           title: 'Ошибка',
           description: 'Пожалуйста, заполните все обязательные поля',
@@ -82,11 +78,7 @@ export default function ManufacturersTab() {
       }
 
       await addManufacturer({
-        name: {
-          ru: formData.nameRu,
-          en: formData.nameEn,
-          uz: formData.nameUz
-        },
+        name: formData.name,
         country_code: formData.countryCode,
         logo_url: formData.logoUrl || undefined,
         slug: formData.slug
@@ -112,7 +104,7 @@ export default function ManufacturersTab() {
     if (!selectedManufacturer) return;
 
     try {
-      if (!formData.nameRu || !formData.nameEn || !formData.nameUz || !formData.countryCode || !formData.slug) {
+      if (!formData.name || !formData.countryCode || !formData.slug) {
         toast({
           title: 'Ошибка',
           description: 'Пожалуйста, заполните все обязательные поля',
@@ -122,11 +114,7 @@ export default function ManufacturersTab() {
       }
 
       await updateManufacturer(selectedManufacturer.id, {
-        name: {
-          ru: formData.nameRu,
-          en: formData.nameEn,
-          uz: formData.nameUz
-        },
+        name: formData.name,
         country_code: formData.countryCode,
         logo_url: formData.logoUrl || undefined,
         slug: formData.slug
@@ -172,9 +160,7 @@ export default function ManufacturersTab() {
   const openEditDialog = (manufacturer: Manufacturer) => {
     setSelectedManufacturer(manufacturer);
     setFormData({
-      nameRu: manufacturer.name.ru,
-      nameEn: manufacturer.name.en,
-      nameUz: manufacturer.name.uz,
+      name: manufacturer.name,
       countryCode: manufacturer.country_code,
       logoUrl: manufacturer.logo_url || '',
       slug: manufacturer.slug
@@ -205,34 +191,14 @@ export default function ManufacturersTab() {
               <DialogTitle>Добавить производителя</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="nameRu">Название (Русский) *</Label>
-                  <Input
-                    id="nameRu"
-                    value={formData.nameRu}
-                    onChange={(e) => setFormData({ ...formData, nameRu: e.target.value })}
-                    placeholder="Название производителя"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="nameEn">Название (English) *</Label>
-                  <Input
-                    id="nameEn"
-                    value={formData.nameEn}
-                    onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
-                    placeholder="Manufacturer name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="nameUz">Название (O'zbek) *</Label>
-                  <Input
-                    id="nameUz"
-                    value={formData.nameUz}
-                    onChange={(e) => setFormData({ ...formData, nameUz: e.target.value })}
-                    placeholder="Ishlab chiqaruvchi nomi"
-                  />
-                </div>
+              <div>
+                <Label htmlFor="name">Название производителя *</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Название производителя"
+                />
               </div>
 
               <div>
@@ -290,9 +256,7 @@ export default function ManufacturersTab() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Логотип</TableHead>
-                  <TableHead>Название (RU)</TableHead>
-                  <TableHead>Название (EN)</TableHead>
-                  <TableHead>Название (UZ)</TableHead>
+                  <TableHead>Название</TableHead>
                   <TableHead>Страна</TableHead>
                   <TableHead>Slug</TableHead>
                   <TableHead className="text-right">Действия</TableHead>
@@ -305,16 +269,14 @@ export default function ManufacturersTab() {
                     <TableRow key={manufacturer.id}>
                       <TableCell>
                         {manufacturer.logo_url ? (
-                          <img src={manufacturer.logo_url} alt={manufacturer.name.ru} className="h-10 w-10 object-contain" />
+                          <img src={manufacturer.logo_url} alt={manufacturer.name} className="h-10 w-10 object-contain" />
                         ) : (
                           <div className="h-10 w-10 bg-muted rounded flex items-center justify-center text-xs">
                             No logo
                           </div>
                         )}
                       </TableCell>
-                      <TableCell>{String(manufacturer.name.ru)}</TableCell>
-                      <TableCell>{String(manufacturer.name.en)}</TableCell>
-                      <TableCell>{String(manufacturer.name.uz)}</TableCell>
+                      <TableCell>{manufacturer.name}</TableCell>
                       <TableCell>
                         {country ? `${country.flag} ${country.name}` : manufacturer.country_code}
                       </TableCell>
@@ -356,31 +318,13 @@ export default function ManufacturersTab() {
             <DialogTitle>Редактировать производителя</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="editNameRu">Название (Русский) *</Label>
-                <Input
-                  id="editNameRu"
-                  value={formData.nameRu}
-                  onChange={(e) => setFormData({ ...formData, nameRu: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="editNameEn">Название (English) *</Label>
-                <Input
-                  id="editNameEn"
-                  value={formData.nameEn}
-                  onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="editNameUz">Название (O'zbek) *</Label>
-                <Input
-                  id="editNameUz"
-                  value={formData.nameUz}
-                  onChange={(e) => setFormData({ ...formData, nameUz: e.target.value })}
-                />
-              </div>
+            <div>
+              <Label htmlFor="editName">Название производителя *</Label>
+              <Input
+                id="editName"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              />
             </div>
 
             <div>

@@ -3,11 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export interface Manufacturer {
   id: string;
-  name: {
-    ru: string;
-    en: string;
-    uz: string;
-  };
+  name: string;
   country_code: string;
   logo_url?: string;
   slug: string;
@@ -26,7 +22,7 @@ export const useManufacturers = () => {
       const { data, error } = await supabase
         .from('manufacturers')
         .select('*')
-        .order('name->ru', { ascending: true });
+        .order('name', { ascending: true });
 
       if (error) throw error;
       setManufacturers((data || []) as unknown as Manufacturer[]);
@@ -38,7 +34,7 @@ export const useManufacturers = () => {
   };
 
   const addManufacturer = async (manufacturerData: { 
-    name: { ru: string; en: string; uz: string };
+    name: string;
     country_code: string;
     logo_url?: string;
     slug: string;
@@ -59,7 +55,7 @@ export const useManufacturers = () => {
   };
 
   const updateManufacturer = async (id: string, manufacturerData: { 
-    name: { ru: string; en: string; uz: string };
+    name: string;
     country_code: string;
     logo_url?: string;
     slug: string;

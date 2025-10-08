@@ -478,7 +478,7 @@ const AddProduct = () => {
                     <SelectContent>
                       {manufacturers.map((manufacturer) => (
                         <SelectItem key={manufacturer.id} value={manufacturer.id}>
-                          {`${manufacturer.name.ru}`}
+                          {manufacturer.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
