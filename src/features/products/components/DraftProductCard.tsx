@@ -57,7 +57,7 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
             <img 
               src={product.images.cover} 
               alt={product.name.ru || 'Черновик товара'}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           ) : (
             <div className="flex flex-col items-center text-gray-400">
