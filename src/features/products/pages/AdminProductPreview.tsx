@@ -337,7 +337,7 @@ const AdminProductPreview = () => {
                   <CardTitle className="text-lg">Производитель</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {manufacturer && (
+                  {manufacturer ? (
                     <div className="flex items-center gap-4">
                       {manufacturer.logo_url && (
                         <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center overflow-hidden border">
@@ -359,13 +359,37 @@ const AdminProductPreview = () => {
                         </div>
                       </div>
                     </div>
-                  )}
-                  {!manufacturer && product.country && (
-                    <div>
-                      <div className="text-sm text-muted-foreground mb-1">Страна производства</div>
-                      <div className="font-medium flex items-center gap-2">
-                        <span className="text-xl">{getCountryFlag(product.country)}</span>
-                        <span>{getCountryName(product.country, language)}</span>
+                  ) : product.country ? (
+                    <div className="bg-orange-50/50 border border-orange-200 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <div className="font-medium text-orange-800 mb-1">
+                            Производитель не указан
+                          </div>
+                          <div className="text-sm text-orange-700 mb-2">
+                            Для этого товара не выбран производитель. Отредактируйте товар и выберите производителя из списка.
+                          </div>
+                          <div className="text-sm text-muted-foreground">Страна производства (указана вручную):</div>
+                          <div className="font-medium flex items-center gap-2 mt-1">
+                            <span className="text-xl">{getCountryFlag(product.country)}</span>
+                            <span>{getCountryName(product.country, language)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-orange-50/50 border border-orange-200 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <div className="font-medium text-orange-800 mb-1">
+                            Производитель и страна не указаны
+                          </div>
+                          <div className="text-sm text-orange-700">
+                            Отредактируйте товар и выберите производителя из списка, чтобы автоматически подтянулись название, логотип и страна.
+                          </div>
+                        </div>
                       </div>
                     </div>
                   )}
