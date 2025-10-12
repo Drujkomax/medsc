@@ -111,6 +111,7 @@ const Leads = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [assignedFilter, setAssignedFilter] = useState<string>('all');
+  const [qualityFilter, setQualityFilter] = useState<string>('all');
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string, role: string}>>([]);
@@ -199,11 +200,13 @@ const Leads = () => {
       (assignedFilter === 'unassigned' && !lead.assigned_to) ||
       (assignedFilter !== 'unassigned' && lead.assigned_to === assignedFilter);
     
+    const matchesQuality = qualityFilter === 'all' || lead.lead_quality === qualityFilter;
+    
     const leadDate = new Date(lead.created_at);
     const matchesDateRange = (!startDate || leadDate >= startDate) && 
                              (!endDate || leadDate <= endDate);
     
-    return matchesSearch && matchesStage && matchesAssigned && matchesDateRange;
+    return matchesSearch && matchesStage && matchesAssigned && matchesQuality && matchesDateRange;
   });
 
   const handleArchiveLead = async (id: string) => {
@@ -380,7 +383,7 @@ const Leads = () => {
       {/* Filters */}
       <Card>
         <CardContent className="p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -406,6 +409,21 @@ const Leads = () => {
                       {stage.label}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Select value={qualityFilter} onValueChange={setQualityFilter}>
+                <SelectTrigger>
+                  <Filter className="w-4 h-4 mr-2" />
+                  <SelectValue placeholder="Качество" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Все качества</SelectItem>
+                  <SelectItem value="A">A - Высокое</SelectItem>
+                  <SelectItem value="B">B - Среднее</SelectItem>
+                  <SelectItem value="C">C - Низкое</SelectItem>
                 </SelectContent>
               </Select>
             </div>
