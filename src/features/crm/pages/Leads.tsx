@@ -417,13 +417,13 @@ const Leads = () => {
               <Select value={qualityFilter} onValueChange={setQualityFilter}>
                 <SelectTrigger>
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Качество" />
+                  <SelectValue placeholder="Качество лида" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Все качества</SelectItem>
-                  <SelectItem value="A">A - Высокое</SelectItem>
-                  <SelectItem value="B">B - Среднее</SelectItem>
-                  <SelectItem value="C">C - Низкое</SelectItem>
+                  <SelectItem value="A">A - Целевой</SelectItem>
+                  <SelectItem value="B">B - Потенциальный</SelectItem>
+                  <SelectItem value="C">C - Мусор</SelectItem>
                 </SelectContent>
               </Select>
             </div>
