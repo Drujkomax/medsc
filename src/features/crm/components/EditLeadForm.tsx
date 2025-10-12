@@ -80,7 +80,8 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
     budget_range: '',
     position: '',
     equipment_interest: '',
-    timeline: ''
+    timeline: '',
+    lead_quality: ''
   });
 
   useEffect(() => {
@@ -97,7 +98,8 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
         budget_range: lead.budget_range || '',
         position: lead.position || '',
         equipment_interest: lead.equipment_interest || '',
-        timeline: lead.timeline || ''
+        timeline: lead.timeline || '',
+        lead_quality: lead.lead_quality || ''
       });
     }
   }, [lead]);
@@ -119,7 +121,8 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
         budget_range: formData.budget_range || undefined,
         position: formData.position.trim() || undefined,
         equipment_interest: formData.equipment_interest || undefined,
-        timeline: formData.timeline || undefined
+        timeline: formData.timeline || undefined,
+        lead_quality: formData.lead_quality ? formData.lead_quality as 'A' | 'B' | 'C' : undefined
       });
       
       toast({
@@ -339,6 +342,23 @@ export const EditLeadForm = ({ lead, onSuccess, embedded = false }: EditLeadForm
                     {timeline.label}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="lead_quality" className="flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Качество лида
+            </Label>
+            <Select value={formData.lead_quality} onValueChange={(value) => handleInputChange('lead_quality', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите качество лида" />
+              </SelectTrigger>
+              <SelectContent className="bg-background z-50">
+                <SelectItem value="A">A - Целевой</SelectItem>
+                <SelectItem value="B">B - Потенциальный</SelectItem>
+                <SelectItem value="C">C - Мусор</SelectItem>
               </SelectContent>
             </Select>
           </div>
