@@ -179,9 +179,10 @@ const rolePermissions: Record<string, Permission[]> = {
     'manage_services'
   ],
   'observer': [
-    // Наблюдатель: черновики и архив
+    // Наблюдатель: черновики, архив и категории
     'view_archive',
-    'view_products'
+    'view_products',
+    'view_categories'
   ],
   'user': []
 };
