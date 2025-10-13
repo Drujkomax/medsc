@@ -265,19 +265,6 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="lead_quality">Качество лида</Label>
-                <Select value={formData.lead_quality || ''} onValueChange={(value) => handleInputChange('lead_quality', value)}>
-                  <SelectTrigger className="focus:ring-2 focus:ring-primary">
-                    <SelectValue placeholder="Выберите качество лида" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-background z-50">
-                    <SelectItem value="A">A - Целевой</SelectItem>
-                    <SelectItem value="B">B - Потенциальный</SelectItem>
-                    <SelectItem value="C">C - Мусор</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="equipment_interest">Интересующее оборудование</Label>
