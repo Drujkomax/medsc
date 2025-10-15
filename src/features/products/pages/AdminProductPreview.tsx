@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Edit2, Package, AlertTriangle, Eye, ExternalLink, CheckCircle } from "lucide-react";
+import { ArrowLeft, Edit2, Package, AlertTriangle, Eye, ExternalLink, CheckCircle, Globe } from "lucide-react";
 import { useAdminProduct } from '@/hooks/useProducts';
 import { useManufacturers } from '@/hooks/useManufacturers';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +36,7 @@ const AdminProductPreview = () => {
   const { manufacturers } = useManufacturers();
   
   const manufacturer = manufacturers.find(m => m.id === product?.manufacturer_id);
+  const countryCode = manufacturer?.country_code || product?.country || null;
 
   if (loading) {
     return (
@@ -354,8 +355,8 @@ const AdminProductPreview = () => {
                       <div className="flex-1">
                         <div className="font-semibold text-lg">{manufacturer.name}</div>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(manufacturer.country_code)}</span>
-                          <span className="text-muted-foreground">{getCountryName(manufacturer.country_code, language)}</span>
+                          <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(countryCode)}</span>
+                          <span className="text-muted-foreground">{getCountryName(countryCode, language) || 'Не указана'}</span>
                         </div>
                       </div>
                     </div>
@@ -388,6 +389,10 @@ const AdminProductPreview = () => {
                           </div>
                           <div className="text-sm text-orange-700">
                             Отредактируйте товар и выберите производителя из списка, чтобы автоматически подтянулись название, логотип и страна.
+                          </div>
+                          <div className="flex items-center gap-2 mt-2 text-muted-foreground">
+                            <Globe className="w-4 h-4" />
+                            <span>Страна не указана</span>
                           </div>
                         </div>
                       </div>
