@@ -352,7 +352,7 @@ const AdminProductPreview = () => {
                         <span className="text-muted-foreground min-w-[200px]">Страна:</span>
                         <span className="font-medium flex items-center gap-2">
                           <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(countryCode)}</span>
-                          {countryCode} {getCountryName(countryCode, language) || 'Не указана'}
+                          {getCountryName(countryCode, language) || 'Не указана'}
                         </span>
                       </div>
                     </div>
