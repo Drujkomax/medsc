@@ -354,11 +354,9 @@ const AdminProductPreview = () => {
                       )}
                       <div className="flex-1">
                         <div className="font-semibold text-lg">{manufacturer.name}</div>
-                        {manufacturer.legal_name && (
-                          <div className="text-sm text-muted-foreground mt-0.5">
-                            {manufacturer.legal_name}
-                          </div>
-                        )}
+                        <div className="text-sm text-muted-foreground mt-0.5">
+                          {manufacturer.legal_name || '—'}
+                        </div>
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(countryCode)}</span>
                           <span className="text-muted-foreground">{getCountryName(countryCode, language) || 'Не указана'}</span>
