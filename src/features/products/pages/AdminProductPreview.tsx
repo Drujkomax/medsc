@@ -345,7 +345,7 @@ const AdminProductPreview = () => {
                         <span className="font-medium">{manufacturer.name}</span>
                       </div>
                       <div className="flex gap-2">
-                        <span className="text-muted-foreground min-w-[200px]">Юридическое наименование:</span>
+                        <span className="text-muted-foreground min-w-[200px]">Производитель:</span>
                         <span className="font-medium">{manufacturer.legal_name || '—'}</span>
                       </div>
                       <div className="flex gap-2">
