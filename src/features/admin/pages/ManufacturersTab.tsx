@@ -207,7 +207,7 @@ export default function ManufacturersTab() {
               </div>
 
               <div>
-                <Label htmlFor="legalName">Юридическое наименование производителя</Label>
+                <Label htmlFor="legalName">Производитель</Label>
                 <Input
                   id="legalName"
                   value={formData.legalName}
@@ -272,7 +272,7 @@ export default function ManufacturersTab() {
                 <TableRow>
                   <TableHead>Логотип</TableHead>
                   <TableHead>Название</TableHead>
-                  <TableHead>Юридическое наименование</TableHead>
+                  <TableHead>Производитель</TableHead>
                   <TableHead>Страна</TableHead>
                   <TableHead>Slug</TableHead>
                   <TableHead className="text-right">Действия</TableHead>
@@ -349,7 +349,7 @@ export default function ManufacturersTab() {
             </div>
 
             <div>
-              <Label htmlFor="editLegalName">Юридическое наименование производителя</Label>
+              <Label htmlFor="editLegalName">Производитель</Label>
               <Input
                 id="editLegalName"
                 value={formData.legalName}
