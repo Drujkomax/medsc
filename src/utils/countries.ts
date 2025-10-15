@@ -55,7 +55,18 @@ export const countries = [
 
 export const getCountryByCode = (code: string | null) => {
   if (!code) return null;
-  return countries.find(country => country.code === code);
+  const normalizeCountryCode = (val: string | null) => {
+    if (!val) return null;
+    const c = val.trim().toUpperCase();
+    const map: Record<string, string> = {
+      UK: 'GB',
+      UAE: 'AE',
+      USA: 'US',
+    };
+    return map[c] || c;
+  };
+  const normalized = normalizeCountryCode(code);
+  return countries.find(country => country.code === normalized);
 };
 
 export const getCountryFlag = (code: string | null) => {
