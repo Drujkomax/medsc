@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Search, 
   FileText,
@@ -13,27 +14,32 @@ import {
   Package
 } from 'lucide-react';
 import { useAdminProducts, Product } from '@/hooks/useProducts';
+import { useManufacturers } from '@/hooks/useManufacturers';
 import { useToast } from '@/hooks/use-toast';
 import DraftProductCard from './DraftProductCard';
 
 const DraftManager = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
+  const [manufacturerFilter, setManufacturerFilter] = useState<string>('all');
   const { products, loading, error, archiveProduct, updateProduct } = useAdminProducts();
+  const { manufacturers } = useManufacturers();
 
   // Фильтруем только черновики
   const draftProducts = products.filter(product => product.status === 'draft');
   
-  // Применяем поиск
+  // Применяем поиск и фильтры
   const filteredDrafts = draftProducts.filter(product => {
-    if (!searchTerm) return true;
-    
-    return (
+    const matchesSearch = !searchTerm || (
       product.name.ru.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.name.en.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.name.uz.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (product.category && product.category.toLowerCase().includes(searchTerm.toLowerCase()))
     );
+    
+    const matchesManufacturer = manufacturerFilter === 'all' || product.manufacturer_id === manufacturerFilter;
+    
+    return matchesSearch && matchesManufacturer;
   });
 
   // Считаем статистику
@@ -160,17 +166,32 @@ const DraftManager = () => {
         </Card>
       </div>
 
-      {/* Поиск */}
+      {/* Поиск и фильтры */}
       <Card>
         <CardContent className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="Поиск черновиков по названию или категории..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder="Поиск черновиков по названию или категории..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Select value={manufacturerFilter} onValueChange={setManufacturerFilter}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Производитель" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все производители</SelectItem>
+                {manufacturers.map(manufacturer => (
+                  <SelectItem key={manufacturer.id} value={manufacturer.id}>
+                    {manufacturer.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </CardContent>
       </Card>
