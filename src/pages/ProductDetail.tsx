@@ -7,10 +7,12 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Heart, FileText, Loader2, Package } from "lucide-react";
+import { ArrowLeft, Heart, FileText, Loader2, Package, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useProduct } from '@/hooks/useProducts';
+import { useManufacturers } from '@/hooks/useManufacturers';
 import { useTranslation } from 'react-i18next';
+import { getCountryName, getCountryFlag } from '@/utils/countries';
 
 const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
   const categoryLabels = {
@@ -46,7 +48,9 @@ const translations = {
   productNotFound: { ru: "Товар не найден", en: "Product not found", uz: "Mahsulot topilmadi" },
   loading: { ru: "Загружаем товар...", en: "Loading product...", uz: "Mahsulot yuklanmoqda..." },
   error: { ru: "Ошибка загрузки", en: "Loading error", uz: "Yuklash xatosi" },
-  keyFeatures: { ru: "Ключевые особенности", en: "Key Features", uz: "Asosiy xususiyatlar" }
+  keyFeatures: { ru: "Ключевые особенности", en: "Key Features", uz: "Asosiy xususiyatlar" },
+  manufacturer: { ru: "Производитель", en: "Manufacturer", uz: "Ishlab chiqaruvchi" },
+  country: { ru: "Страна", en: "Country", uz: "Mamlakat" }
 };
 
 const ProductDetail = () => {
@@ -67,6 +71,10 @@ const ProductDetail = () => {
   });
 
   const { product, loading, error } = useProduct(id || '');
+  const { manufacturers } = useManufacturers();
+  
+  const manufacturer = manufacturers.find(m => m.id === product?.manufacturer_id);
+  const countryCode = manufacturer?.country_code || product?.country || null;
 
   if (loading) {
     return (
@@ -252,6 +260,49 @@ const ProductDetail = () => {
                       </div>
                     ))}
                   </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Manufacturer Info */}
+            {(manufacturer || product.country) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">{translations.manufacturer[language]}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {manufacturer ? (
+                    <div className="space-y-4">
+                      {manufacturer.logo_url && (
+                        <div className="flex items-center gap-3 pb-3 border-b">
+                          <img 
+                            src={manufacturer.logo_url} 
+                            alt={`${manufacturer.name} logo`}
+                            className="h-12 w-auto object-contain"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        <div className="font-medium text-lg">{manufacturer.name}</div>
+                        {manufacturer.legal_name && (
+                          <div className="text-sm text-muted-foreground">{manufacturer.legal_name}</div>
+                        )}
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="text-xl leading-none inline-block" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(countryCode)}</span>
+                          <span className="font-medium">{getCountryName(countryCode, language) || translations.country[language]}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : product.country ? (
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-xl leading-none inline-block mr-1" style={{ fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif' }}>{getCountryFlag(product.country)}</span>
+                      <span>{getCountryName(product.country, language)}</span>
+                    </div>
+                  ) : null}
                 </CardContent>
               </Card>
             )}
