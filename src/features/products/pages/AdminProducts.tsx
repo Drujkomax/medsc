@@ -20,6 +20,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useAdminProducts } from '@/hooks/useProducts';
 import { useToast } from '@/hooks/use-toast';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
+import { useManufacturers } from '@/hooks/useManufacturers';
 import { AddProductDialog } from '../components/AddProductDialog';
 import DraftManager from '../components/DraftManager';
 
@@ -30,8 +31,10 @@ const AdminProducts = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [manufacturerFilter, setManufacturerFilter] = useState<string>('all');
 
   const { products, loading, error, archiveProduct } = useAdminProducts();
+  const { manufacturers } = useManufacturers();
 
   const getCategoryLabel = (category: string) => {
     const categoryLabels = {
@@ -69,8 +72,9 @@ const AdminProducts = () => {
 
     const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
     const matchesStatus = statusFilter === 'all' || product.status === statusFilter;
+    const matchesManufacturer = manufacturerFilter === 'all' || product.manufacturer_id === manufacturerFilter;
 
-    return matchesSearch && matchesCategory && matchesStatus;
+    return matchesSearch && matchesCategory && matchesStatus && matchesManufacturer;
   });
 
   const handleArchiveProduct = async (productId: string) => {
@@ -160,6 +164,19 @@ const AdminProducts = () => {
                       <SelectItem value="dental">Стоматологическое</SelectItem>
                       <SelectItem value="ophthalmology">Офтальмологическое</SelectItem>
                       <SelectItem value="furniture">Медицинская мебель</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={manufacturerFilter} onValueChange={setManufacturerFilter}>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Производитель" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Все производители</SelectItem>
+                      {manufacturers.map(manufacturer => (
+                        <SelectItem key={manufacturer.id} value={manufacturer.id}>
+                          {manufacturer.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
