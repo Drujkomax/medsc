@@ -217,7 +217,7 @@ const AdminProductPreview = () => {
                 <img
                   src={selectedImage || product.images.cover}
                   alt={product.name[language] || 'Изображение товара'}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder.svg';
                   }}
