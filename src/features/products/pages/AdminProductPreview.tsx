@@ -244,7 +244,7 @@ const AdminProductPreview = () => {
                     <img
                       src={product.images.cover}
                       alt="Основное изображение"
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       onError={(e) => {
                         e.currentTarget.src = '/placeholder.svg';
                       }}
@@ -264,7 +264,7 @@ const AdminProductPreview = () => {
                     <img
                       src={image}
                       alt={`Изображение ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                       onError={(e) => {
                         e.currentTarget.src = '/placeholder.svg';
                       }}
