@@ -212,7 +212,7 @@ const AdminProductPreview = () => {
           {/* Product Images */}
           <div className="space-y-4">
             {/* Main Image */}
-            <div className="relative aspect-square max-w-md mx-auto rounded-lg overflow-hidden bg-muted">
+            <div className="relative aspect-square max-w-sm mx-auto rounded-lg overflow-hidden bg-muted">
               {product.images?.cover || selectedImage ? (
                 <img
                   src={selectedImage || product.images.cover}
