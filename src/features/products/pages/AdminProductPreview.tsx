@@ -6,24 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit2, Package, AlertTriangle, Eye, ExternalLink, CheckCircle, Globe } from "lucide-react";
 import { useAdminProduct } from '@/hooks/useProducts';
 import { useManufacturers } from '@/hooks/useManufacturers';
+import { useCategories } from '@/hooks/useCategories';
 import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
 import { getCountryName, getCountryFlag } from '@/utils/countries';
 
-const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
-  const categoryLabels = {
-    diagnostic: { ru: 'Диагностическое', en: 'Diagnostic', uz: 'Diagnostika' },
-    surgical: { ru: 'Хирургическое', en: 'Surgical', uz: 'Jarrohlik' },
-    monitoring: { ru: 'Мониторинг', en: 'Monitoring', uz: 'Monitoring' },
-    laboratory: { ru: 'Лабораторное', en: 'Laboratory', uz: 'Laboratoriya' },
-    rehabilitation: { ru: 'Реабилитационное', en: 'Rehabilitation', uz: 'Reabilitatsiya' },
-    dental: { ru: 'Стоматологическое', en: 'Dental', uz: 'Stomatologiya' },
-    ophthalmology: { ru: 'Офтальмологическое', en: 'Ophthalmology', uz: 'Oftalmologiya' },
-    furniture: { ru: 'Медицинская мебель', en: 'Medical Furniture', uz: 'Tibbiy mebel' }
-  };
-  
-  return categoryLabels[category as keyof typeof categoryLabels]?.[language] || category;
-};
 
 const AdminProductPreview = () => {
   const { i18n } = useTranslation();
@@ -34,6 +21,25 @@ const AdminProductPreview = () => {
 
   const { product, loading, error } = useAdminProduct(id || '');
   const { manufacturers } = useManufacturers();
+  const { categories } = useCategories();
+  
+  const getCategoryLabel = (category: string) => {
+    const found = categories.find(c => c.value === category || c.id === category);
+    if (found) return found.name.ru;
+
+    const categoryLabels = {
+      diagnostic: 'Диагностическое',
+      surgical: 'Хирургическое',
+      monitoring: 'Мониторинг',
+      laboratory: 'Лабораторное',
+      rehabilitation: 'Реабилитационное',
+      dental: 'Стоматологическое',
+      ophthalmology: 'Офтальмологическое',
+      furniture: 'Медицинская мебель'
+    };
+    
+    return categoryLabels[category as keyof typeof categoryLabels] || category;
+  };
   
   const manufacturer = manufacturers.find(m => m.id === product?.manufacturer_id);
   const countryCode = manufacturer?.country_code || product?.country || null;
@@ -284,7 +290,7 @@ const AdminProductPreview = () => {
               <div className="flex gap-2 mb-4">
                 {product.category && (
                   <Badge variant="outline" className="text-sm">
-                    {getCategoryLabel(product.category, 'ru')}
+                    {getCategoryLabel(product.category)}
                   </Badge>
                 )}
               </div>
