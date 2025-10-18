@@ -57,6 +57,38 @@ const DraftManager = () => {
     !product.images?.cover
   );
 
+  // Данные для статистических карточек
+  const statsCards = [
+    {
+      icon: FileText,
+      iconColor: 'text-blue-500',
+      title: 'Всего черновиков',
+      value: draftProducts.length,
+      valueColor: ''
+    },
+    {
+      icon: CheckCircle,
+      iconColor: 'text-green-500',
+      title: 'Готовы к публикации',
+      value: readyToPublish.length,
+      valueColor: 'text-green-600'
+    },
+    {
+      icon: AlertCircle,
+      iconColor: 'text-amber-500',
+      title: 'Требуют доработки',
+      value: needsWork.length,
+      valueColor: 'text-amber-600'
+    },
+    {
+      icon: Clock,
+      iconColor: 'text-purple-500',
+      title: 'Завершенность',
+      value: `${draftProducts.length > 0 ? Math.round((readyToPublish.length / draftProducts.length) * 100) : 0}%`,
+      valueColor: 'text-purple-600'
+    }
+  ];
+
   const handleArchiveProduct = async (productId: string) => {
     if (window.confirm('Вы уверены, что хотите архивировать этот черновик?')) {
       try {
@@ -115,55 +147,22 @@ const DraftManager = () => {
     <div className="space-y-6">
       {/* Статистика черновиков */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <FileText className="w-4 h-4 text-blue-500" />
-              Всего черновиков
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{draftProducts.length}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-green-500" />
-              Готовы к публикации
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">{readyToPublish.length}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-amber-500" />
-              Требуют доработки
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-amber-600">{needsWork.length}</div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Clock className="w-4 h-4 text-purple-500" />
-              Завершенность
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-600">
-              {draftProducts.length > 0 ? Math.round((readyToPublish.length / draftProducts.length) * 100) : 0}%
-            </div>
-          </CardContent>
-        </Card>
+        {statsCards.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={index}>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                  <Icon className={`w-4 h-4 ${stat.iconColor}`} />
+                  {stat.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className={`text-2xl font-bold ${stat.valueColor}`}>{stat.value}</div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Поиск и фильтры */}
