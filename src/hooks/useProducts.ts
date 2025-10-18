@@ -209,13 +209,20 @@ export const useAdminProducts = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      const { error } = await supabase.rpc('archive_product', {
+      const { data, error } = await supabase.rpc('archive_product', {
         product_id: id,
         user_id: user.id
       });
 
-      if (error) throw error;
-      await fetchProducts(); // Refresh the list
+      if (error) {
+        console.error('RPC Error:', error);
+        throw error;
+      }
+      
+      console.log('Archive result:', data);
+      
+      // Обновляем список товаров
+      await fetchProducts();
       
       toast({
         title: "Товар архивирован",
@@ -225,9 +232,10 @@ export const useAdminProducts = () => {
       console.error('Error archiving product:', err);
       toast({
         title: "Ошибка",
-        description: "Не удалось архивировать товар.",
+        description: err instanceof Error ? err.message : "Не удалось архивировать товар.",
         variant: "destructive",
       });
+      throw err;
     }
   }, [toast, fetchProducts]);
 

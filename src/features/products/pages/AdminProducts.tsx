@@ -84,19 +84,7 @@ const AdminProducts = () => {
 
   const handleArchiveProduct = async (productId: string) => {
     if (window.confirm('Вы уверены, что хотите архивировать этот товар?')) {
-      try {
-        await archiveProduct(productId);
-        toast({
-          title: 'Успешно!',
-          description: 'Товар архивирован успешно'
-        });
-      } catch (error) {
-        toast({
-          variant: 'destructive',
-          title: 'Ошибка',
-          description: 'Не удалось архивировать товар'
-        });
-      }
+      await archiveProduct(productId);
     }
   };
 
