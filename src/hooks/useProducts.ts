@@ -134,7 +134,6 @@ export const useProducts = () => {
           archived: true,
           archived_at: new Date().toISOString(),
           archived_by: user.id,
-          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
         .eq('archived', false)
@@ -226,7 +225,6 @@ export const useAdminProducts = () => {
           archived: true,
           archived_at: new Date().toISOString(),
           archived_by: user.id,
-          updated_at: new Date().toISOString(),
         })
         .eq('id', id)
         .eq('archived', false)
