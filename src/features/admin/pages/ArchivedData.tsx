@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { useArchivedProducts, useArchivedLeads } from '@/hooks/useArchivedData';
+import { useCategories } from '@/hooks/useCategories';
 import { 
   Search, 
   Package, 
@@ -25,6 +26,7 @@ const ArchivedData = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [leadSearchTerm, setLeadSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { categories } = useCategories();
 
   const { 
     products, 
@@ -56,6 +58,9 @@ const ArchivedData = () => {
   );
 
   const getCategoryLabel = (category: string) => {
+    const found = categories.find(c => c.value === category || c.id === category);
+    if (found) return found.name.ru;
+
     const categoryLabels = {
       diagnostic: 'Диагностическое',
       surgical: 'Хирургическое',

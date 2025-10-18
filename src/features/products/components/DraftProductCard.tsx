@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/hooks/useProducts';
+import { useCategories } from '@/hooks/useCategories';
 
 interface DraftProductCardProps {
   product: Product;
@@ -19,23 +20,28 @@ interface DraftProductCardProps {
   onPublish: (productId: string) => void;
 }
 
-const getCategoryLabel = (category: string) => {
-  const categoryLabels = {
-    diagnostic: 'Диагностическое',
-    surgical: 'Хирургическое',
-    monitoring: 'Мониторинг',
-    laboratory: 'Лабораторное',
-    rehabilitation: 'Реабилитационное',
-    dental: 'Стоматологическое',
-    ophthalmology: 'Офтальмологическое',
-    furniture: 'Медицинская мебель'
-  };
-  
-  return categoryLabels[category as keyof typeof categoryLabels] || category;
-};
 
 const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardProps) => {
   const navigate = useNavigate();
+  const { categories } = useCategories();
+
+  const getCategoryLabel = (category: string) => {
+    const found = categories.find(c => c.value === category || c.id === category);
+    if (found) return found.name.ru;
+
+    const categoryLabels = {
+      diagnostic: 'Диагностическое',
+      surgical: 'Хирургическое',
+      monitoring: 'Мониторинг',
+      laboratory: 'Лабораторное',
+      rehabilitation: 'Реабилитационное',
+      dental: 'Стоматологическое',
+      ophthalmology: 'Офтальмологическое',
+      furniture: 'Медицинская мебель'
+    };
+    
+    return categoryLabels[category as keyof typeof categoryLabels] || category;
+  };
 
   // Проверяем готовность к публикации
   const isReadyToPublish = product.name.ru && 

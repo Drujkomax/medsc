@@ -16,6 +16,7 @@ import {
   Search
 } from 'lucide-react';
 import { useAnalytics } from '@/hooks/useAnalytics';
+import { useCategories } from '@/hooks/useCategories';
 import { format, subDays } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
@@ -25,11 +26,18 @@ const ProductAnalyticsDashboard = () => {
     getTopProductsByConversion, 
     loading 
   } = useAnalytics();
+  const { categories } = useCategories();
   
   const [analytics, setAnalytics] = useState<any[]>([]);
   const [topProducts, setTopProducts] = useState<any[]>([]);
   const [dateRange, setDateRange] = useState('7');
   const [searchTerm, setSearchTerm] = useState('');
+
+  const getCategoryLabel = (category: string) => {
+    const found = categories.find(c => c.value === category || c.id === category);
+    if (found) return found.name.ru;
+    return category;
+  };
 
   useEffect(() => {
     loadAnalytics();
@@ -187,7 +195,7 @@ const ProductAnalyticsDashboard = () => {
                     </div>
                     <div>
                       <h4 className="font-medium">{product.name?.ru || 'Без названия'}</h4>
-                      <p className="text-sm text-muted-foreground">{product.category}</p>
+                      <p className="text-sm text-muted-foreground">{getCategoryLabel(product.category)}</p>
                     </div>
                   </div>
                   
