@@ -276,16 +276,27 @@ export const useAdminProducts = () => {
     try {
       console.log('useProducts.addProduct called with:', productData);
       
+      // Ensure required fields have defaults
+      const safeData = {
+        ...productData,
+        currency: productData.currency || 'USD',
+        features: productData.features || { ru: [], en: [], uz: [] },
+        images: productData.images || { cover: null, gallery: [] },
+        country: productData.country || null,
+        price: productData.price || null,
+        manufacturer_id: productData.manufacturer_id || null,
+      };
+      
       // Clean up empty features
       const cleanedFeatures = {
-        ru: productData.features?.ru?.filter(f => f.trim()) || [],
-        en: productData.features?.en?.filter(f => f.trim()) || [],
-        uz: productData.features?.uz?.filter(f => f.trim()) || []
+        ru: safeData.features?.ru?.filter(f => f.trim()) || [],
+        en: safeData.features?.en?.filter(f => f.trim()) || [],
+        uz: safeData.features?.uz?.filter(f => f.trim()) || []
       };
       console.log('Cleaned features:', cleanedFeatures);
 
       const cleanedData = {
-        ...productData,
+        ...safeData,
         features: cleanedFeatures
       };
 
@@ -307,7 +318,9 @@ export const useAdminProducts = () => {
       return data;
     } catch (err) {
       console.error('Error adding product:', err);
-      throw new Error(err instanceof Error ? err.message : 'Ошибка при добавлении товара');
+      const errorMessage = err instanceof Error ? err.message : 'Ошибка при добавлении товара';
+      console.error('Full error details:', err);
+      throw new Error(errorMessage);
     }
   };
 
