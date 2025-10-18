@@ -1,15 +1,10 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Search, 
-  FileText,
-  AlertCircle,
-  CheckCircle,
-  Clock,
   Loader2,
   Package
 } from 'lucide-react';
@@ -56,42 +51,6 @@ const DraftManager = () => {
     !product.category ||
     !product.images?.cover
   );
-
-  // Данные для статистических карточек
-  const statsCards = [
-    {
-      id: 'total',
-      icon: FileText,
-      iconColor: 'text-blue-500',
-      title: 'Всего черновиков',
-      value: draftProducts.length,
-      valueColor: ''
-    },
-    {
-      id: 'ready',
-      icon: CheckCircle,
-      iconColor: 'text-green-500',
-      title: 'Готовы к публикации',
-      value: readyToPublish.length,
-      valueColor: 'text-green-600'
-    },
-    {
-      id: 'needs-work',
-      icon: AlertCircle,
-      iconColor: 'text-amber-500',
-      title: 'Требуют доработки',
-      value: needsWork.length,
-      valueColor: 'text-amber-600'
-    },
-    {
-      id: 'completion',
-      icon: Clock,
-      iconColor: 'text-purple-500',
-      title: 'Завершенность',
-      value: `${draftProducts.length > 0 ? Math.round((readyToPublish.length / draftProducts.length) * 100) : 0}%`,
-      valueColor: 'text-purple-600'
-    }
-  ];
 
   const handleArchiveProduct = async (productId: string) => {
     if (window.confirm('Вы уверены, что хотите архивировать этот черновик?')) {
@@ -149,26 +108,6 @@ const DraftManager = () => {
 
   return (
     <div className="space-y-6">
-      {/* Статистика черновиков */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {statsCards.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <Card key={stat.id}>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Icon className={`w-4 h-4 ${stat.iconColor}`} />
-                  {stat.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className={`text-2xl font-bold ${stat.valueColor}`}>{stat.value}</div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
-
       {/* Поиск и фильтры */}
       <Card>
         <CardContent className="p-4">
