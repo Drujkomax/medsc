@@ -434,31 +434,6 @@ const AddProduct = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="country">Страна-производитель</Label>
-                  <Select 
-                    value={formData.country} 
-                    onValueChange={(value) => setFormData(prev => ({
-                      ...prev,
-                      country: value
-                    }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Выберите страну" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map(country => (
-                        <SelectItem key={country.code} value={country.code}>
-                          <span className="flex items-center gap-2">
-                            <span>{country.flag}</span>
-                            <span>{country.name.ru}</span>
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
                   <Label htmlFor="manufacturer">Производитель</Label>
                   <Select
                     value={formData.manufacturer_id}
@@ -479,6 +454,32 @@ const AddProduct = () => {
                       {manufacturers.map((manufacturer) => (
                         <SelectItem key={manufacturer.id} value={manufacturer.id}>
                           {manufacturer.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="country">Страна-производитель</Label>
+                  <Select 
+                    value={formData.country} 
+                    onValueChange={(value) => setFormData(prev => ({
+                      ...prev,
+                      country: value
+                    }))}
+                    disabled={!!formData.manufacturer_id}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={formData.manufacturer_id ? "Заполняется автоматически" : "Выберите страну"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map(country => (
+                        <SelectItem key={country.code} value={country.code}>
+                          <span className="flex items-center gap-2">
+                            <span>{country.flag}</span>
+                            <span>{country.name.ru}</span>
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>
