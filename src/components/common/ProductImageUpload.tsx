@@ -86,7 +86,7 @@ export const ProductImageUpload = ({ images, onImagesChange }: ProductImageUploa
         <CardHeader>
           <CardTitle>Обложка товара</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-hidden">
           {images.cover ? (
             <div className="relative overflow-hidden rounded-lg">
               <img src={images.cover} alt="Обложка" className="w-full h-48 object-cover" />
