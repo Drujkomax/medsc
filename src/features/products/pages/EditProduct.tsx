@@ -340,7 +340,7 @@ const EditProduct = () => {
                   {formData.status === 'active' && <span className="text-destructive ml-1">* (обложка обязательна)</span>}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="overflow-hidden">
                 <ProductImageUpload
                   images={formData.images}
                   onImagesChange={(imagesOrUpdater) => {
