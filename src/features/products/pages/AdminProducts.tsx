@@ -276,7 +276,11 @@ const AdminProducts = () => {
                                 {product.manufacturer_id && (
                                   <p className="text-xs text-muted-foreground flex items-center gap-1">
                                     <span className="font-medium">Производитель:</span>
-                                    <span>{manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}</span>
+                                    <span>
+                                      {manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}
+                                      {manufacturers.find(m => m.id === product.manufacturer_id)?.country_code && 
+                                        ` (${manufacturers.find(m => m.id === product.manufacturer_id)?.country_code})`}
+                                    </span>
                                   </p>
                                 )}
                               </div>
