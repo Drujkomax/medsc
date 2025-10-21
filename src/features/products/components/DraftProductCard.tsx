@@ -13,6 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
+import { useManufacturers } from '@/hooks/useManufacturers';
 
 interface DraftProductCardProps {
   product: Product;
@@ -24,6 +25,7 @@ interface DraftProductCardProps {
 const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardProps) => {
   const navigate = useNavigate();
   const { categories } = useCategories();
+  const { manufacturers } = useManufacturers();
 
   const getCategoryLabel = (category: string) => {
     const found = categories.find(c => c.value === category || c.id === category);
@@ -79,9 +81,12 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
               <Clock className="w-3 h-3 text-orange-500 flex-shrink-0" />
               {product.name.ru || 'Без названия'}
             </CardTitle>
-            <p className="text-xs text-muted-foreground mt-1 truncate">
-              {product.category ? getCategoryLabel(product.category) : 'Категория не указана'}
-            </p>
+            {product.manufacturer_id && (
+              <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+                <span className="font-medium">Производитель:</span>
+                <span>{manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}</span>
+              </p>
+            )}
           </div>
           <div className="flex flex-col gap-1">
             <Badge variant="secondary" className="bg-orange-100 text-orange-800">
