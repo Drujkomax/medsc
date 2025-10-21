@@ -268,12 +268,18 @@ const AdminProducts = () => {
                           <div className="flex items-start justify-between">
                             <div className="flex-1 min-w-0">
                               <CardTitle className="text-base line-clamp-2 leading-tight">{product.name.ru}</CardTitle>
-                              {product.manufacturer_id && (
-                                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                                  <span className="font-medium">Производитель:</span>
-                                  <span>{manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}</span>
+                              <div className="mt-2 space-y-1">
+                                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                  <span className="font-medium">Категория:</span>
+                                  <span>{getCategoryLabel(product.category)}</span>
                                 </p>
-                              )}
+                                {product.manufacturer_id && (
+                                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                                    <span className="font-medium">Производитель:</span>
+                                    <span>{manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}</span>
+                                  </p>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </CardHeader>

@@ -81,12 +81,18 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
               <Clock className="w-3 h-3 text-orange-500 flex-shrink-0" />
               {product.name.ru || 'Без названия'}
             </CardTitle>
-            {product.manufacturer_id && (
-              <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                <span className="font-medium">Производитель:</span>
-                <span>{manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}</span>
+            <div className="mt-2 space-y-1">
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <span className="font-medium">Категория:</span>
+                <span>{product.category ? getCategoryLabel(product.category) : 'Не указана'}</span>
               </p>
-            )}
+              {product.manufacturer_id && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="font-medium">Производитель:</span>
+                  <span>{manufacturers.find(m => m.id === product.manufacturer_id)?.name || 'Не указан'}</span>
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-1">
             <Badge variant="secondary" className="bg-orange-100 text-orange-800">
