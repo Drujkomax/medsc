@@ -522,7 +522,8 @@ const Leads = () => {
                   <TableHead>Телефон</TableHead>
                   <TableHead>Статус</TableHead>
                   <TableHead>Качество</TableHead>
-                  <TableHead>Создан</TableHead>
+                  <TableHead>Дата создания лида</TableHead>
+                  <TableHead>Создан в CRM</TableHead>
                   <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
                     <TableHead>Назначен</TableHead>
                   </RoleBasedAccess>
@@ -593,6 +594,12 @@ const Leads = () => {
                           {lead.lead_quality}
                         </Badge>
                       ) : '-'}
+                    </TableCell>
+                    <TableCell>
+                      {lead.lead_created_date 
+                        ? format(new Date(lead.lead_created_date), 'dd.MM.yyyy HH:mm', { locale: ru })
+                        : '-'
+                      }
                     </TableCell>
                     <TableCell>
                       {format(new Date(lead.created_at), 'dd.MM.yyyy', { locale: ru })}
