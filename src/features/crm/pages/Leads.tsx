@@ -310,12 +310,15 @@ const Leads = () => {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       if (!currentUser) throw new Error('Пользователь не авторизован');
 
+      // Если выбрано "unassign", убираем назначение
+      const assignValue = assignToId === 'unassign' ? null : assignToId;
+
       const updates = selectedLeadIds.map(leadId => 
         supabase
           .from('leads')
           .update({ 
-            assigned_to: assignToId,
-            assigned_by: currentUser.id
+            assigned_to: assignValue,
+            assigned_by: assignValue ? currentUser.id : null
           })
           .eq('id', leadId)
       );
@@ -324,7 +327,9 @@ const Leads = () => {
 
       toast({
         title: "Успешно",
-        description: `${selectedLeadIds.length} лидов назначено`,
+        description: assignValue 
+          ? `${selectedLeadIds.length} лидов назначено`
+          : `Назначение снято у ${selectedLeadIds.length} лидов`,
       });
 
       setSelectedLeadIds([]);
@@ -406,13 +411,16 @@ const Leads = () => {
             <div className="flex flex-wrap gap-3 items-center">
               <span className="text-sm font-medium">Массовые действия:</span>
               <Select onValueChange={handleBulkAssign}>
-                <SelectTrigger className="w-[200px]">
+                <SelectTrigger className="w-[250px]">
                   <SelectValue placeholder="Назначить на..." />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="unassign">
+                    ❌ Снять назначение
+                  </SelectItem>
                   {employees.map((emp) => (
                     <SelectItem key={emp.id} value={emp.id}>
-                      {emp.full_name || emp.email}
+                      {emp.email}
                     </SelectItem>
                   ))}
                 </SelectContent>
