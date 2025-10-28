@@ -34,10 +34,25 @@ serve(async (req) => {
       });
     }
 
-    const { userId, telegramId } = await req.json();
+    let userId: string | null = null;
+    let telegramId: number | null = null;
+
+    // Support both GET and POST
+    if (req.method === 'GET') {
+      const url = new URL(req.url);
+      const tgIdParam = url.searchParams.get('tg_id');
+      if (tgIdParam) {
+        telegramId = parseInt(tgIdParam, 10);
+      }
+    } else if (req.method === 'POST') {
+      const body = await req.json();
+      userId = body.userId || null;
+      // Support both telegramId and tg_id
+      telegramId = body.telegramId || body.tg_id || null;
+    }
 
     if (!userId && !telegramId) {
-      return new Response(JSON.stringify({ error: 'userId or telegramId required' }), {
+      return new Response(JSON.stringify({ error: 'userId or tg_id required' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -89,12 +104,8 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({
-      userId: profile.id,
-      email: profile.email,
-      fullName: profile.full_name,
+      user_id: profile.id,
       role: roleData.role,
-      telegramLinked: !!profile.telegram_id,
-      telegramUsername: profile.telegram_username,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

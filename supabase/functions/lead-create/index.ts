@@ -34,7 +34,11 @@ serve(async (req) => {
       });
     }
 
-    const { name, phone, email, company, source, notes, createdBy } = await req.json();
+    const body = await req.json();
+    
+    // Support multiple field names for flexibility
+    const name = body.name || body.full_name || body.fio;
+    const phone = body.phone || body.phone_number;
 
     if (!name || !phone) {
       return new Response(JSON.stringify({ error: 'Name and phone are required' }), {
@@ -42,6 +46,11 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    const email = body.email || null;
+    const company = body.company || null;
+    const source = body.source || 'tg_bot';
+    const notes = body.notes || null;
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -53,12 +62,11 @@ serve(async (req) => {
       .insert({
         name,
         phone,
-        email: email || null,
-        company: company || null,
-        source: source || 'telegram',
+        email,
+        company,
+        source,
         stage: 'new',
-        notes: notes || null,
-        created_by: createdBy || null,
+        notes,
       })
       .select()
       .single();
@@ -71,9 +79,9 @@ serve(async (req) => {
       });
     }
 
-    console.log(`Lead created: ${lead.id} by ${createdBy || 'telegram-bot'}`);
+    console.log(`Lead created: ${lead.id} via tg_bot`);
 
-    return new Response(JSON.stringify({ success: true, lead }), {
+    return new Response(JSON.stringify({ ok: true, id: lead.id }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
