@@ -45,6 +45,30 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 
 const Leads = () => {
+  // Force cache refresh
+  const { toast } = useToast();
+  const { leads, loading, deleteLead, archiveLead, changeLeadStage, refetch } = useLeads();
+  const { duplicateGroups, hasDuplicates } = useDuplicateDetection(leads);
+  const { hasPermission, role } = useUserPermissions();
+  const { user } = useAuth();
+  const { mergeLeads, loading: merging } = useLeadMerge();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [stageFilter, setStageFilter] = useState<string>('all');
+  const [assignedFilter, setAssignedFilter] = useState<string>('all');
+  const [qualityFilter, setQualityFilter] = useState<string>('all');
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
+  const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string, role: string}>>([]);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [createDealLead, setCreateDealLead] = useState<Lead | null>(null);
+  const [addLeadModalOpen, setAddLeadModalOpen] = useState(false);
+  const [selectedDuplicateGroup, setSelectedDuplicateGroup] = useState<DuplicateGroup | null>(null);
+  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
+  const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
+  const [sortField, setSortField] = useState<'name' | 'company' | 'city' | 'created_at' | 'lead_created_date'>('lead_created_date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
   // Helper functions for lead stages
   const getStageLabel = (stage: string) => {
     const stageMap: Record<string, string> = {
@@ -103,29 +127,6 @@ const Leads = () => {
       });
     }
   };
-  // Force cache refresh
-  const { toast } = useToast();
-  const { leads, loading, deleteLead, archiveLead, changeLeadStage, refetch } = useLeads();
-  const { duplicateGroups, hasDuplicates } = useDuplicateDetection(leads);
-  const { hasPermission, role } = useUserPermissions();
-  const { user } = useAuth();
-  const { mergeLeads, loading: merging } = useLeadMerge();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [stageFilter, setStageFilter] = useState<string>('all');
-  const [assignedFilter, setAssignedFilter] = useState<string>('all');
-  const [qualityFilter, setQualityFilter] = useState<string>('all');
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
-  const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string, role: string}>>([]);
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [leadModalOpen, setLeadModalOpen] = useState(false);
-  const [createDealLead, setCreateDealLead] = useState<Lead | null>(null);
-  const [addLeadModalOpen, setAddLeadModalOpen] = useState(false);
-  const [selectedDuplicateGroup, setSelectedDuplicateGroup] = useState<DuplicateGroup | null>(null);
-  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
-  const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
-  const [sortField, setSortField] = useState<'name' | 'company' | 'city' | 'created_at' | 'lead_created_date'>('lead_created_date');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const leadStages = [
     { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
