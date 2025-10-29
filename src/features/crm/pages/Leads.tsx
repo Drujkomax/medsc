@@ -827,13 +827,17 @@ const Leads = () => {
                       ) : '-'}
                     </TableCell>
                     <TableCell>
-                      {lead.lead_created_date 
-                        ? format(new Date(lead.lead_created_date), 'dd.MM.yyyy HH:mm', { locale: ru })
-                        : '-'
-                      }
+                      {(() => {
+                        if (!lead.lead_created_date) return '-';
+                        const date = new Date(lead.lead_created_date);
+                        return isNaN(date.getTime()) ? '-' : format(date, 'dd.MM.yyyy HH:mm', { locale: ru });
+                      })()}
                     </TableCell>
                     <TableCell>
-                      {format(new Date(lead.created_at), 'dd.MM.yyyy', { locale: ru })}
+                      {(() => {
+                        const date = new Date(lead.created_at);
+                        return isNaN(date.getTime()) ? '-' : format(date, 'dd.MM.yyyy', { locale: ru });
+                      })()}
                     </TableCell>
                     <RoleBasedAccess roles={['director', 'admin', 'sales_manager']}>
                       <TableCell>
