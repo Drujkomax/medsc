@@ -8,7 +8,9 @@ import LeadForm from '@/components/forms/LeadForm';
 import { useTranslation } from 'react-i18next';
 import SEOHead from "@/components/SEO/SEOHead";
 import { useAuth } from '@/hooks/useAuth';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, CheckCircle2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 interface HomeProps {
   language: 'ru' | 'en' | 'uz';
@@ -24,6 +26,30 @@ const Home = ({ language }: HomeProps) => {
   useEffect(() => {
     setIsVisible(true);
   }, []);
+
+  const checkTelegramStatus = async () => {
+    if (!user) {
+      toast.error('Необходимо войти в систему');
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('telegram_links')
+      .select('verified')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (error) {
+      toast.error('Ошибка проверки статуса');
+      return;
+    }
+
+    if (data?.verified) {
+      toast.success('Telegram успешно привязан ✅');
+    } else {
+      toast.info('Telegram не привязан');
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -99,14 +125,25 @@ const Home = ({ language }: HomeProps) => {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
                 {user && (
-                  <Button
-                    size="lg"
-                    className="bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
-                    onClick={() => window.open(`https://t.me/medscuz_bot?start=${user.id}`, '_blank')}
-                  >
-                    <MessageCircle className="mr-2 w-5 h-5" />
-                    Привязать Telegram
-                  </Button>
+                  <>
+                    <Button
+                      size="lg"
+                      className="bg-[#0088cc] hover:bg-[#0088cc]/90 text-white font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
+                      onClick={() => window.open(`https://t.me/medscuz_bot?start=${user.id}`, '_blank')}
+                    >
+                      <MessageCircle className="mr-2 w-5 h-5" />
+                      Привязать Telegram
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="border-white text-white hover:bg-white/10 font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
+                      onClick={checkTelegramStatus}
+                    >
+                      <CheckCircle2 className="mr-2 w-5 h-5" />
+                      Проверить Telegram
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
