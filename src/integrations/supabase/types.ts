@@ -703,6 +703,74 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_queue: {
+        Row: {
+          id: string
+          payload: Json | null
+          planned_at: string
+          sent_at: string | null
+          status: string
+          template_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          payload?: Json | null
+          planned_at?: string
+          sent_at?: string | null
+          status?: string
+          template_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          payload?: Json | null
+          planned_at?: string
+          sent_at?: string | null
+          status?: string
+          template_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_queue_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_templates: {
+        Row: {
+          audience: string
+          body_md: string
+          code: string
+          created_at: string | null
+          id: string
+          throttle_seconds: number
+          title: string
+        }
+        Insert: {
+          audience?: string
+          body_md: string
+          code: string
+          created_at?: string | null
+          id?: string
+          throttle_seconds?: number
+          title: string
+        }
+        Update: {
+          audience?: string
+          body_md?: string
+          code?: string
+          created_at?: string | null
+          id?: string
+          throttle_seconds?: number
+          title?: string
+        }
+        Relationships: []
+      }
       product_categories: {
         Row: {
           created_at: string
@@ -1160,6 +1228,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      telegram_links: {
+        Row: {
+          id: string
+          linked_at: string | null
+          tg_id: number
+          user_id: string
+          verified: boolean | null
+        }
+        Insert: {
+          id?: string
+          linked_at?: string | null
+          tg_id: number
+          user_id: string
+          verified?: boolean | null
+        }
+        Update: {
+          id?: string
+          linked_at?: string | null
+          tg_id?: number
+          user_id?: string
+          verified?: boolean | null
+        }
+        Relationships: []
       }
       temporary_employees: {
         Row: {
