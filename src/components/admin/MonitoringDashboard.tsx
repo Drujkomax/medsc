@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
-import { AlertTriangle, Activity, Shield, TrendingUp, Clock, Users } from 'lucide-react';
+import { AlertTriangle, Activity, Shield, TrendingUp, Clock, Users, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { toast } from 'sonner';
 
 interface SystemLog {
   id: string;
@@ -51,23 +52,31 @@ const MonitoringDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Получаем последние логи
+      // Получаем логи за последние 24 часа
+      const oneDayAgo = new Date();
+      oneDayAgo.setHours(oneDayAgo.getHours() - 24);
+      
       const { data: logsData } = await supabase
         .from('system_logs')
         .select('*')
+        .gte('created_at', oneDayAgo.toISOString())
         .order('created_at', { ascending: false })
-        .limit(50);
+        .limit(100);
 
-      // Получаем активные алерты
+      // Получаем активные алерты за последние 24 часа
       const { data: alertsData } = await supabase
         .from('system_alerts')
         .select('*')
         .eq('status', 'active')
+        .gte('created_at', oneDayAgo.toISOString())
         .order('created_at', { ascending: false });
 
-      // Получаем статистику
+      // Получаем статистику логов за последние 7 дней
       const { data: statsData } = await supabase
-        .rpc('get_log_statistics');
+        .rpc('get_log_statistics', {
+          p_start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+          p_end_date: new Date().toISOString().split('T')[0]
+        });
 
       setLogs(logsData || []);
       setAlerts(alertsData || []);
@@ -76,6 +85,25 @@ const MonitoringDashboard: React.FC = () => {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const cleanupOldLogs = async (daysToKeep: number = 7) => {
+    try {
+      const { data, error } = await supabase
+        .rpc('cleanup_old_logs', { days_to_keep: daysToKeep });
+
+      if (error) throw error;
+      
+      toast.success('Логи очищены', {
+        description: `Удалено ${data} старых записей`
+      });
+      
+      // Обновляем дашборд
+      fetchDashboardData();
+    } catch (error) {
+      console.error('Error cleaning logs:', error);
+      toast.error('Ошибка при очистке логов');
     }
   };
 
@@ -137,8 +165,25 @@ const MonitoringDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Мониторинг системы</h1>
-        <Button onClick={fetchDashboardData}>Обновить</Button>
+        <div>
+          <h1 className="text-3xl font-bold">Мониторинг системы</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Показаны данные за последние 24 часа
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => cleanupOldLogs(7)}
+            variant="outline"
+            size="sm"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Очистить старые логи
+          </Button>
+          <Button onClick={fetchDashboardData} size="sm">
+            Обновить
+          </Button>
+        </div>
       </div>
 
       {/* Активные алерты */}
