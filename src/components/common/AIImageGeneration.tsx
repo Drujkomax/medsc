@@ -119,9 +119,9 @@ export const AIImageGeneration = ({
       console.error('Error generating image:', error);
       // Fallback to one of the pre-generated images
       const fallbackImages = [
-        '/src/assets/equipment-ultrasound-1080x1350.jpg',
-        '/src/assets/equipment-mri-1080x1350.jpg', 
-        '/src/assets/equipment-xray-1080x1350.jpg'
+        '/assets/equipment-ultrasound-1080x1350.jpg',
+        '/assets/equipment-mri-1080x1350.jpg', 
+        '/assets/equipment-xray-1080x1350.jpg'
       ];
       return fallbackImages[Math.floor(Math.random() * fallbackImages.length)];
     }
