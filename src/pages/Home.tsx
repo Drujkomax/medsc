@@ -136,8 +136,7 @@ const Home = ({ language }: HomeProps) => {
                     </Button>
                     <Button
                       size="lg"
-                      variant="outline"
-                      className="border-white text-white hover:bg-white/10 font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
+                      className="bg-white/20 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/30 font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px] shadow-lg"
                       onClick={checkTelegramStatus}
                     >
                       <CheckCircle2 className="mr-2 w-5 h-5" />
