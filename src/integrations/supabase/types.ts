@@ -1399,6 +1399,7 @@ export type Database = {
         Args: { p_invite_id: string; p_user_id: string }
         Returns: Json
       }
+      cleanup_old_logs: { Args: { days_to_keep?: number }; Returns: number }
       confirm_user_registration: { Args: { user_id: string }; Returns: Json }
       create_first_director: { Args: { director_email: string }; Returns: Json }
       create_user_invite: {
