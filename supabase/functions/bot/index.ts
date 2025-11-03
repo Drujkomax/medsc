@@ -18,7 +18,6 @@ type LeadSession = {
 };
 
 type LeadContext = Context & SessionFlavor<LeadSession>;
-
 type LeadSessionData = LeadSession;
 
 const initialSession = (): LeadSessionData => ({
@@ -95,7 +94,6 @@ bot.on("message:text", async (ctx) => {
 
   switch (ctx.session.step) {
     case "awaiting_phone": {
-      // Пользователь решил отправить номер текстом
       let phoneNumber = text;
       if (!phoneNumber.startsWith("+")) {
         phoneNumber = `+${phoneNumber}`;
@@ -166,7 +164,6 @@ bot.on("message:text", async (ctx) => {
       }
 
       console.log("✅ Лид успешно сохранён", { telegramId });
-
       await ctx.reply("✅ Спасибо! Наш специалист свяжется с вами.");
       ctx.session = initialSession();
       return;
