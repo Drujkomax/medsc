@@ -92,9 +92,10 @@ serve(async (req) => {
         }
       } catch (error) {
         console.error(`Error processing notification ${notification.id}:`, error);
+        const message = error instanceof Error ? error.message : 'Unknown error';
         await supabase
           .from('notification_queue')
-          .update({ status: 'failed', error: error.message })
+          .update({ status: 'failed', error: message })
           .eq('id', notification.id);
         failed++;
       }
@@ -107,7 +108,8 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error('Error in process-notifications:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
