@@ -1,5 +1,3 @@
-console.log("🔧 bot function booted");
-
 import {
   Bot,
   Context,
@@ -29,7 +27,6 @@ const initialSession = (): LeadSession => ({
 });
 
 type LeadContext = Context & SessionFlavor<LeadSession>;
-
 const bot = new Bot<LeadContext>(botToken);
 
 bot.api.setMyCommands([
@@ -44,12 +41,8 @@ bot.catch((err) => {
 
 function normalizePhone(input: string): string | null {
   const digits = input.replace(/[^\d+]/g, "");
-  if (digits.startsWith("+998") && digits.length === 13) {
-    return digits;
-  }
-  if (digits.startsWith("998") && digits.length === 12) {
-    return `+${digits}`;
-  }
+  if (digits.startsWith("+998") && digits.length === 13) return digits;
+  if (digits.startsWith("998") && digits.length === 12) return `+${digits}`;
   return null;
 }
 
@@ -58,9 +51,7 @@ bot.command("start", async (ctx) => {
   ctx.session.phone = undefined;
   ctx.session.name = undefined;
 
-  const keyboard = new Keyboard()
-    .requestContact("📱 Отправить номер")
-    .resized();
+  const keyboard = new Keyboard().requestContact("📱 Отправить номер").resized();
 
   await ctx.reply(
     "Пожалуйста, отправьте ваш номер телефона в формате +998XXXXXXXXX или поделитесь контактом.",
@@ -77,18 +68,14 @@ bot.on("message", async (ctx) => {
     const normalized = normalizePhone(fromContact || fromText);
 
     if (!normalized) {
-      await ctx.reply(
-        "❗️ Пожалуйста, отправьте номер телефона в формате +998XXXXXXXXX.",
-      );
+      await ctx.reply("❗️ Пожалуйста, отправьте номер телефона в формате +998XXXXXXXXX.");
       return;
     }
 
     ctx.session.phone = normalized;
     ctx.session.step = "waiting_name";
 
-    await ctx.reply("Как вас зовут?", {
-      reply_markup: { remove_keyboard: true },
-    });
+    await ctx.reply("Как вас зовут?", { reply_markup: { remove_keyboard: true } });
     return;
   }
 
@@ -101,7 +88,6 @@ bot.on("message", async (ctx) => {
 
     ctx.session.name = name;
     ctx.session.step = "waiting_position";
-
     await ctx.reply("Какая у вас должность?");
     return;
   }
@@ -127,29 +113,19 @@ bot.on("message", async (ctx) => {
 
       if (error) {
         console.error("Failed to insert lead", error);
-        await ctx.reply(
-          "⚠️ Произошла ошибка при сохранении данных. Попробуйте позже.",
-        );
+        await ctx.reply("⚠️ Ошибка при сохранении. Попробуйте позже.");
         ctx.session = initialSession();
         return;
       }
 
       await ctx.reply("✅ Спасибо! Наш специалист свяжется с вами.");
-      console.log("Lead saved", {
-        telegramId,
-        phone: ctx.session.phone,
-        name: ctx.session.name,
-        position,
-      });
+      console.log("Lead saved:", { telegramId, phone: ctx.session.phone, name: ctx.session.name, position });
     } catch (insertError) {
       console.error("Unexpected error while saving lead", insertError);
-      await ctx.reply(
-        "⚠️ Произошла непредвиденная ошибка. Попробуйте позже.",
-      );
+      await ctx.reply("⚠️ Произошла ошибка. Попробуйте позже.");
     } finally {
       ctx.session = initialSession();
     }
-    return;
   }
 });
 
