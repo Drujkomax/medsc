@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      bot_state: {
+        Row: {
+          lead: Json
+          step: string
+          user_id: number
+        }
+        Insert: {
+          lead: Json
+          step: string
+          user_id: number
+        }
+        Update: {
+          lead?: Json
+          step?: string
+          user_id?: number
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -605,6 +623,7 @@ export type Database = {
           qualified_by: string | null
           source: string | null
           stage: string
+          telegram_id: number | null
           timeline: string | null
           updated_at: string
           value: number | null
@@ -633,6 +652,7 @@ export type Database = {
           qualified_by?: string | null
           source?: string | null
           stage?: string
+          telegram_id?: number | null
           timeline?: string | null
           updated_at?: string
           value?: number | null
@@ -661,6 +681,7 @@ export type Database = {
           qualified_by?: string | null
           source?: string | null
           stage?: string
+          telegram_id?: number | null
           timeline?: string | null
           updated_at?: string
           value?: number | null
@@ -1231,24 +1252,33 @@ export type Database = {
       }
       telegram_links: {
         Row: {
+          created_at: string | null
           id: string
           linked_at: string | null
-          tg_id: number
-          user_id: string
+          login_token: string | null
+          telegram_id: number
+          telegram_username: string | null
+          user_id: string | null
           verified: boolean | null
         }
         Insert: {
+          created_at?: string | null
           id?: string
           linked_at?: string | null
-          tg_id: number
-          user_id: string
+          login_token?: string | null
+          telegram_id: number
+          telegram_username?: string | null
+          user_id?: string | null
           verified?: boolean | null
         }
         Update: {
+          created_at?: string | null
           id?: string
           linked_at?: string | null
-          tg_id?: number
-          user_id?: string
+          login_token?: string | null
+          telegram_id?: number
+          telegram_username?: string | null
+          user_id?: string | null
           verified?: boolean | null
         }
         Relationships: []
@@ -1364,6 +1394,30 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      users: {
+        Row: {
+          created_at: string | null
+          goal: string | null
+          id: string
+          name: string | null
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          goal?: string | null
+          id: string
+          name?: string | null
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          goal?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
         }
         Relationships: []
       }
