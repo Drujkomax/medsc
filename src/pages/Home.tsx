@@ -137,7 +137,7 @@ const Home = ({ language }: HomeProps) => {
                         <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
                           <div className="relative">
                              <div 
-                               className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform cursor-pointer"
+                               className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform cursor-pointer relative overflow-hidden group"
                                onClick={() => {
                                  if (item.path.startsWith('/#')) {
                                    const section = document.querySelector(item.path.substring(1));
@@ -147,7 +147,15 @@ const Home = ({ language }: HomeProps) => {
                                  }
                                }}
                              >
-                               <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-white" />
+                               {/* Animated pulse ring */}
+                               <div className="absolute inset-0 rounded-full bg-white/30 animate-ping opacity-75" 
+                                    style={{ animationDuration: '3s', animationDelay: `${index * 0.5}s` }} />
+                               
+                               {/* Glow effect on hover */}
+                               <div className="absolute inset-0 rounded-full bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
+                               
+                               {/* Icon */}
+                               <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-white relative z-10" />
                             </div>
                             <span className="text-white text-xs sm:text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-1 sm:mt-2 pointer-events-none">
                               {item.label}
