@@ -1,10 +1,15 @@
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface FooterProps {
   language: 'ru' | 'en' | 'uz';
 }
 
 const Footer = ({ language }: FooterProps) => {
+  const { i18n } = useTranslation();
+  
+  // Get current language from i18n, fallback to prop
+  const currentLanguage = (i18n.language || language || 'ru') as 'ru' | 'en' | 'uz';
   const content = {
     ru: {
       company: 'Med Service Centre',
@@ -71,7 +76,7 @@ const Footer = ({ language }: FooterProps) => {
     }
   };
 
-  const t = content[language] || content['ru']; // Fallback to Russian if language is undefined
+  const t = content[currentLanguage] || content['ru']; // Fallback to Russian if language is undefined
 
   // Early return if content is not available
   if (!t) {
