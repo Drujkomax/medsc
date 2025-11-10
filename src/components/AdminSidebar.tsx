@@ -106,6 +106,11 @@ export function AdminSidebar() {
       conditionalItems.push({ name: 'Склад', href: '/admin/warehouse', icon: Warehouse, permission: 'view_products' });
     }
     
+    // Клиники - доступны при наличии права на товары
+    if (hasPermission('view_products')) {
+      conditionalItems.push({ name: 'Клиники', href: '/admin/clinics', icon: Building2, permission: 'view_products' });
+    }
+    
     // Аналитика - доступна при наличии права на аналитику
     if (hasPermission('view_analytics')) {
       conditionalItems.push({ name: 'Аналитика', href: '/admin/analytics', icon: BarChart3, permission: 'view_analytics' });
