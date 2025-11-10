@@ -33,6 +33,17 @@ const Header = () => {
 
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
+  const handleLanguageChange = (langCode: 'ru' | 'en' | 'uz') => {
+    i18n.changeLanguage(langCode);
+    const url = new URL(window.location.href);
+    if (langCode === 'ru') {
+      url.searchParams.delete('lang');
+    } else {
+      url.searchParams.set('lang', langCode);
+    }
+    window.history.replaceState(null, '', url.toString());
+  };
+
   const isActive = (href: string) => location.pathname === href;
 
   return (
@@ -83,7 +94,7 @@ const Header = () => {
                 {languages.map((lang) => (
                   <DropdownMenuItem
                     key={lang.code}
-                    onClick={() => i18n.changeLanguage(lang.code)}
+                    onClick={() => handleLanguageChange(lang.code)}
                     className="cursor-pointer"
                   >
                     <span className="mr-2">{lang.flag}</span>

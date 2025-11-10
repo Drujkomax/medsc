@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, UserPlus, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import SEOHead from "@/components/SEO/SEOHead";
 
 interface InviteData {
   email: string;
@@ -196,6 +197,11 @@ const RegisterWithInvite = () => {
   if (validating) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted px-4">
+        <SEOHead
+          title="Проверка приглашения - Med Service Centre"
+          description="Проверяем приглашение Med Service Centre™. Подтверждаем доступ к CRM™, чтобы продолжить регистрацию и управлять каталогом, заявками и сервисом клиник."
+          keywords="приглашение Med Service Centre, проверка доступа, регистрация администратора, CRM проверка, управление каталогом"
+        />
         <Card className="w-full max-w-md">
           <CardContent className="flex items-center justify-center py-8">
             <div className="flex items-center gap-2">
@@ -211,6 +217,11 @@ const RegisterWithInvite = () => {
   if (error && !inviteData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted px-4">
+        <SEOHead
+          title="Приглашение недействительно - Med Service Centre"
+          description="Приглашение Med Service Centre™ недействительно. Проверьте ссылку и запросите новую, чтобы вернуть доступ к админской CRM™, каталогу, заявкам и ролям."
+          keywords="приглашение недействительно, Med Service Centre, повторное приглашение, админская CRM, доступ к каталогу"
+        />
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-red-600">Ошибка</CardTitle>
@@ -233,6 +244,11 @@ const RegisterWithInvite = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted px-4">
+      <SEOHead
+        title="Регистрация по приглашению - Med Service Centre"
+        description="Регистрация по приглашению Med Service Centre™: задайте пароль, активируйте роль и войдите в админскую CRM™ чтобы управлять каталогом и лидами клиник."
+        keywords="регистрация по приглашению, Med Service Centre, активация роли, пароль CRM, админская панель, управление каталогом, лиды клиник"
+      />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <div className="flex justify-center mb-4">

@@ -119,10 +119,10 @@ const Catalog = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
-      <SEOHead 
+      <SEOHead
         title="Каталог медицинского оборудования - Med Service Centre"
-        description="Профессиональное медицинское оборудование от ведущих производителей. МРТ, УЗИ, рентген и другое медицинское оборудование в Узбекистане."
-        keywords="каталог медицинского оборудования, МРТ, УЗИ, рентген, медицинская техника, узбекистан"
+        description="Каталог медтехники Med Service Centre: УЗИ, МРТ аппараты, анализаторы ABL800 Flex, системы BOWA ARC 400, сервис аренда решения для клиник Узбекистана."
+        keywords="каталог медтехники, медицинское оборудование, УЗИ аппарат, МРТ системы, ABL800 Flex, BOWA ARC 400, аренда медоборудования"
         type="website"
       />
       {/* Header */}

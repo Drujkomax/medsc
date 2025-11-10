@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useTranslation } from 'react-i18next';
+import SEOHead from "@/components/SEO/SEOHead";
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -221,6 +222,11 @@ const Contacts = () => {
 
   return (
     <div className="min-h-screen bg-background py-20">
+      <SEOHead
+        title="Контакты Med Service Centre"
+        description="Контакты Med Service Centre™: офис в Ташкенте, телефон, e-mail, карта и онлайн-форма для закупки и аренды медтехники, сервисных заявок и консультаций."
+        keywords="контакты Med Service Centre, медицинское оборудование Ташкент, телефон медтехника, e-mail медоборудование, карта офиса Ташкент, онлайн форма заявки"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

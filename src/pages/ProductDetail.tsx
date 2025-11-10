@@ -13,6 +13,7 @@ import { useProduct } from '@/hooks/useProducts';
 import { useManufacturers } from '@/hooks/useManufacturers';
 import { useTranslation } from 'react-i18next';
 import { getCountryName, getCountryFlag } from '@/utils/countries';
+import SEOHead from "@/components/SEO/SEOHead";
 
 const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
   const categoryLabels = {
@@ -79,6 +80,11 @@ const ProductDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <SEOHead
+          title="Загрузка товара - Med Service Centre"
+          description="Карточка товара загружается. Скоро появятся данные о медицинском оборудовании Med Service Centre™ для выбора решения и оформления консультации онлайн."
+          keywords="каталог медоборудования, загрузка товара, Med Service Centre, медицинская техника, ожидание данных"
+        />
         <div className="flex items-center space-x-2">
           <Loader2 className="h-8 w-8 animate-spin" />
           <span className="text-lg">{translations.loading[language]}</span>
@@ -90,6 +96,11 @@ const ProductDetail = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <SEOHead
+          title="Ошибка загрузки товара - Med Service Centre"
+          description="Не удалось загрузить карточку медоборудования. Обновите страницу или вернитесь в каталог Med Service Centre™ для выбора оборудования и аренды клиники."
+          keywords="ошибка каталога, медицинское оборудование, Med Service Centre, загрузка товара, возврат в каталог"
+        />
         <div className="text-center">
           <h2 className="text-2xl font-bold text-destructive mb-2">{translations.error[language]}</h2>
           <p className="text-muted-foreground">{error}</p>
@@ -105,6 +116,11 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center">
+        <SEOHead
+          title="Товар не найден - Med Service Centre"
+          description="Карточка медицинского оборудования не найдена. Вернитесь в каталог Med Service Centre, чтобы подобрать подходящее решение и сервис аренды для клиники."
+          keywords="товар не найден, каталог медоборудования, Med Service Centre, выбор оборудования"
+        />
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">{translations.productNotFound[language]}</h1>
           <Button onClick={() => navigate('/catalog')}>
@@ -115,6 +131,30 @@ const ProductDetail = () => {
       </div>
     );
   }
+
+  const productName = product.name?.[language] || product.name?.ru || product.name?.en || 'Медицинское оборудование Med Service Centre';
+  const manufacturerName = manufacturer?.name?.[language] || manufacturer?.name?.ru || manufacturer?.name?.en || '';
+  const categoryLabel = getCategoryLabel(product.category, language);
+
+  const rawDescription = `${productName} — ${categoryLabel} оборудование Med Service Centre для клиник Узбекистана с поддержкой сервиса, аренды и поставки от официального партнёра.`;
+  const truncateToMetaLength = (text: string) => {
+    if (text.length > 150) {
+      return `${text.slice(0, 149)}…`;
+    }
+    return text;
+  };
+
+  const metaDescription = truncateToMetaLength(rawDescription);
+  const metaKeywords = [
+    productName,
+    manufacturerName,
+    categoryLabel,
+    'медицинское оборудование Узбекистан',
+    'Med Service Centre',
+    'аренда медоборудования'
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,6 +174,11 @@ const ProductDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <SEOHead
+        title={`${productName} - Med Service Centre`}
+        description={metaDescription}
+        keywords={metaKeywords}
+      />
       <div className="container mx-auto px-4 py-8">
         <Button 
           variant="outline" 

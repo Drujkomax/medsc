@@ -9,9 +9,9 @@ import {
 import { Languages } from 'lucide-react';
 
 const languages = [
-  { code: 'ru', name: 'Русский' },
-  { code: 'en', name: 'English' },
-  { code: 'uz', name: "O'zbek" },
+  { code: 'ru' as const, name: 'Русский' },
+  { code: 'en' as const, name: 'English' },
+  { code: 'uz' as const, name: "O'zbek" },
 ];
 
 const LanguageSwitcher = () => {
@@ -19,8 +19,15 @@ const LanguageSwitcher = () => {
 
   const currentLanguage = languages.find(lang => lang.code === i18n.language);
 
-  const changeLanguage = (langCode: string) => {
+  const changeLanguage = (langCode: 'ru' | 'en' | 'uz') => {
     i18n.changeLanguage(langCode);
+    const url = new URL(window.location.href);
+    if (langCode === 'ru') {
+      url.searchParams.delete('lang');
+    } else {
+      url.searchParams.set('lang', langCode);
+    }
+    window.history.replaceState(null, '', url.toString());
   };
 
   return (

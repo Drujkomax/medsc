@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Wrench, GraduationCap, Zap, Calendar, Check, Phone } from "lucide-react";
 import { useTranslation } from 'react-i18next';
+import SEOHead from "@/components/SEO/SEOHead";
 
 const Services = () => {
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
@@ -227,6 +228,11 @@ const Services = () => {
 
   return (
     <div className="min-h-screen bg-background py-20">
+      <SEOHead
+        title="Сервис и аренда медоборудования - Med Service Centre"
+        description="Сервис Med Service Centre™: монтаж, обучение, поддержка 24/7, аренда медоборудования, сервис-контракты и обслуживание медтехники клиникам Узбекистана."
+        keywords="сервис медоборудования, монтаж оборудования, обучение персонала медтехника, поддержка 24/7, аренда медоборудования, сервисные контракты, обслуживание клиник"
+      />
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-heading font-bold text-foreground mb-6">
