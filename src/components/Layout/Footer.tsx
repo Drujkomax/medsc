@@ -113,12 +113,6 @@ const Footer = ({ language }: FooterProps) => {
                   >
                     +998 (71) 237-33-08
                   </a>
-                  <a 
-                    href="tel:+998944444885"
-                    className="hover:text-msc-accent transition-colors"
-                  >
-                    +998 94 444 48 85
-                  </a>
                 </div>
               </div>
               <div className="flex items-center space-x-3">

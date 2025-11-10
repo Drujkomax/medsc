@@ -249,7 +249,6 @@ const Contacts = () => {
               <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.phone}</h3>
               <div className="space-y-1">
                 <p className="text-msc-primary text-lg font-medium">{contactData.phone}</p>
-                <p className="text-msc-primary text-lg font-medium">+998 94 444 48 85</p>
               </div>
             </CardContent>
           </Card>
