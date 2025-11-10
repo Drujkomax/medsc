@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import ROICalculator from '@/components/Calculator/ROICalculator';
 import LeadForm from '@/components/forms/LeadForm';
 import { useTranslation } from 'react-i18next';
+import { useEffect as useI18nEffect } from 'react';
 import SEOHead from "@/components/SEO/SEOHead";
 
 interface HomeProps {
@@ -16,7 +17,10 @@ const Home = ({ language }: HomeProps) => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  
+  // Get current language from i18n
+  const currentLanguage = (i18n.language || 'ru') as 'ru' | 'en' | 'uz';
 
   useEffect(() => {
     setIsVisible(true);
@@ -185,7 +189,7 @@ const Home = ({ language }: HomeProps) => {
           </div>
           
           <div className="flex justify-center">
-            <ROICalculator language={language} />
+            <ROICalculator language={currentLanguage} />
           </div>
           
           {/* Call to Action after Calculator */}
