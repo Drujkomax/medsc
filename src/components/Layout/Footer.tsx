@@ -22,8 +22,6 @@ const Footer = ({ language }: FooterProps) => {
       links: [
         { name: 'Каталог', href: '/catalog' },
         { name: 'Услуги', href: '/services' },
-        { name: 'Кейсы', href: '/cases' },
-        { name: 'О компании', href: '/about' },
       ],
       servicesList: [
         'Поставка оборудования',
@@ -43,8 +41,6 @@ const Footer = ({ language }: FooterProps) => {
       links: [
         { name: 'Catalog', href: '/catalog' },
         { name: 'Services', href: '/services' },
-        { name: 'Cases', href: '/cases' },
-        { name: 'About', href: '/about' },
       ],
       servicesList: [
         'Equipment Supply',
@@ -64,8 +60,6 @@ const Footer = ({ language }: FooterProps) => {
       links: [
         { name: 'Katalog', href: '/catalog' },
         { name: 'Xizmatlar', href: '/services' },
-        { name: 'Loyihalar', href: '/cases' },
-        { name: 'Kompaniya haqida', href: '/about' },
       ],
       servicesList: [
         'Uskunalar yetkazib berish',
