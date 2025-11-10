@@ -8,6 +8,7 @@ import { Loader2, Crown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import SEOHead from "@/components/SEO/SEOHead";
 
 const DirectorRegistration = () => {
   const { toast } = useToast();
@@ -103,6 +104,11 @@ const DirectorRegistration = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted px-4">
+      <SEOHead
+        title="Регистрация директора - Med Service Centre"
+        description="Регистрация директора Med Service Centre™: примите приглашение, задайте пароль и откройте доступ к админской CRM для контроля каталога заявок и ролей."
+        keywords="регистрация директора, Med Service Centre, админ панель доступ, пароль директора, CRM вход, управление каталогом, роли и заявки"
+      />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <div className="flex justify-center mb-4">

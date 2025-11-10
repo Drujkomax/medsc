@@ -8,6 +8,7 @@ import { Loader2, LogIn } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import SEOHead from "@/components/SEO/SEOHead";
 
 const AuthPage = () => {
   const { toast } = useToast();
@@ -77,6 +78,11 @@ const AuthPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted px-4">
+      <SEOHead
+        title="Вход в админ-панель Med Service Centre"
+        description="Вход в админ-панель Med Service Centre™: авторизация команды, контроль каталога, заявок и CRM-системы, вход по e-mail/паролю для админов и менеджеров."
+        keywords="админ панель вход, авторизация Med Service Centre, вход CRM, e-mail пароль доступ, управление каталогом, доступ менеджеров"
+      />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <div className="flex justify-center mb-4">

@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Crown, Loader2, Copy, CheckCircle } from 'lucide-react';
+import SEOHead from "@/components/SEO/SEOHead";
 
 const CreateFirstDirector = () => {
   const { toast } = useToast();
@@ -120,6 +121,11 @@ const CreateFirstDirector = () => {
 
   return (
     <div className="space-y-6">
+      <SEOHead
+        title="Создание первого директора - Med Service Centre"
+        description="Шаг создания директора Med Service Centre: отправьте приглашение, копируйте ссылку регистрации и включите админскую CRM для контроля каталога и ролей."
+        keywords="создание директора, приглашение администратора, регистрация админ панели, Med Service Centre, запуск CRM, контроль ролей"
+      />
       <div>
         <h2 className="text-3xl font-bold flex items-center gap-2">
           <Crown className="h-8 w-8 text-yellow-600" />
