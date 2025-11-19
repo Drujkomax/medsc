@@ -16,7 +16,7 @@ export const useCurrencyRates = () => {
       try {
         setLoading(true);
         // Fetch from SQB bank API
-        const response = await fetch('https://nbu.uz/en/exchange-rates/json/');
+        const response = await fetch('https://sqb.uz/api/exchange-rates');
         
         if (!response.ok) {
           throw new Error('Failed to fetch rates');
@@ -59,15 +59,19 @@ export const useCurrencyRates = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const convertToUZS = (amount: number, currency: 'USD' | 'EUR' | 'UZS'): number => {
-    if (currency === 'UZS') return amount;
+  const convertToUZS = (amount: string | number, currency: 'USD' | 'EUR' | 'UZS'): number => {
+    if (currency === 'UZS') return typeof amount === 'string' ? parseFloat(amount.replace(/\s+/g, '')) : amount;
     if (!rates) return 0;
-    return amount * rates[currency];
+    const numAmount = typeof amount === 'string' ? parseFloat(amount.replace(/\s+/g, '')) : amount;
+    if (isNaN(numAmount)) return 0;
+    return numAmount * rates[currency];
   };
 
   const formatPrice = (amount: string | null, currency: 'USD' | 'EUR' | 'UZS'): string => {
     if (!amount) return '';
-    const numAmount = parseFloat(amount);
+    // Remove spaces from price string before parsing
+    const cleanAmount = amount.replace(/\s+/g, '');
+    const numAmount = parseFloat(cleanAmount);
     if (isNaN(numAmount)) return '';
     
     if (currency === 'UZS') {
