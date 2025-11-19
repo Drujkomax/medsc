@@ -14,6 +14,7 @@ import { useManufacturers } from '@/hooks/useManufacturers';
 import { useTranslation } from 'react-i18next';
 import { getCountryName, getCountryFlag } from '@/utils/countries';
 import SEOHead from "@/components/SEO/SEOHead";
+import { useCurrencyRates } from '@/hooks/useCurrencyRates';
 
 const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
   const categoryLabels = {
@@ -73,6 +74,7 @@ const ProductDetail = () => {
 
   const { product, loading, error } = useProduct(id || '');
   const { manufacturers } = useManufacturers();
+  const { convertToUZS, formatPrice } = useCurrencyRates();
   
   const manufacturer = manufacturers.find(m => m.id === product?.manufacturer_id);
   const countryCode = manufacturer?.country_code || product?.country || null;
@@ -288,14 +290,41 @@ const ProductDetail = () => {
               <h1 className="text-3xl font-bold text-foreground mb-2">
                 {product.name[language]}
               </h1>
-              <div className="mb-4">
+              <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <Badge variant="outline" className="text-sm">
                   {getCategoryLabel(product.category, language)}
                 </Badge>
               </div>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-muted-foreground mb-6">
                 {product.description[language]}
               </p>
+
+              {/* Price Display */}
+              {product.price && product.currency && (
+                <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                  <CardContent className="pt-6">
+                    <div className="flex items-baseline gap-3">
+                      <span className="text-4xl font-bold text-primary">
+                        {formatPrice(product.price, product.currency)}
+                      </span>
+                      <span className="text-xl text-muted-foreground">
+                        {product.currency}
+                      </span>
+                    </div>
+                    {product.currency !== 'UZS' && (
+                      <div className="mt-2 text-sm text-muted-foreground">
+                        ≈ {formatPrice(
+                          convertToUZS(parseFloat(product.price), product.currency).toString(), 
+                          'UZS'
+                        )} <span className="font-medium">UZS</span>
+                        <div className="text-xs mt-1 opacity-70">
+                          По курсу НБУ на сегодня
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Features */}

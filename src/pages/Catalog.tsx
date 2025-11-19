@@ -15,6 +15,7 @@ import { getCountryFlag, getCountryName } from '@/utils/countries';
 import QuoteRequestForm from '@/components/forms/QuoteRequestForm';
 import { useTranslation } from 'react-i18next';
 import SEOHead from "@/components/SEO/SEOHead";
+import { useCurrencyRates } from '@/hooks/useCurrencyRates';
 
 // Function to get category display name
 const getCategoryTag = (category: string, language: 'ru' | 'en' | 'uz', allCategories: Record<string, { ru: string; en: string; uz: string }>) => {
@@ -52,6 +53,7 @@ const Catalog = () => {
   
   const { products, loading: productsLoading, error: productsError } = useProducts();
   const { categories: dbCategories, loading: categoriesLoading } = useCategories();
+  const { convertToUZS, formatPrice } = useCurrencyRates();
 
   // Update selected category when URL changes
   useEffect(() => {
@@ -265,6 +267,28 @@ const Catalog = () => {
                   </CardHeader>
                   
                   <CardContent className="flex flex-col justify-end mt-auto">
+                    {/* Price Display */}
+                    {product.price && product.currency && (
+                      <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-2xl font-bold text-primary">
+                            {formatPrice(product.price, product.currency)}
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {product.currency}
+                          </span>
+                        </div>
+                        {product.currency !== 'UZS' && (
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            ≈ {formatPrice(
+                              convertToUZS(parseFloat(product.price), product.currency).toString(), 
+                              'UZS'
+                            )} UZS
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     {/* Hide features on mobile, show on larger screens */}
                     {product.features && product.features[language] && product.features[language].length > 0 && (
                       <div className="mb-4 hidden sm:block">
