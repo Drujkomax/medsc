@@ -15,8 +15,8 @@ export const useCurrencyRates = () => {
     const fetchRates = async () => {
       try {
         setLoading(true);
-        // Fetch from SQB bank API
-        const response = await fetch('https://sqb.uz/api/exchange-rates');
+        // Fetch from Central Bank of Uzbekistan API
+        const response = await fetch('https://cbu.uz/ru/arkhiv-kursov-valyut/json/');
         
         if (!response.ok) {
           throw new Error('Failed to fetch rates');
@@ -24,14 +24,14 @@ export const useCurrencyRates = () => {
 
         const data = await response.json();
         
-        // Parse rates from NBU API
-        const usdRate = data.find((item: any) => item.code === 'USD');
-        const eurRate = data.find((item: any) => item.code === 'EUR');
+        // Parse rates from CBU API
+        const usdRate = data.find((item: any) => item.Ccy === 'USD');
+        const eurRate = data.find((item: any) => item.Ccy === 'EUR');
 
         if (usdRate && eurRate) {
           setRates({
-            USD: parseFloat(usdRate.cb_price),
-            EUR: parseFloat(eurRate.cb_price),
+            USD: parseFloat(usdRate.Rate),
+            EUR: parseFloat(eurRate.Rate),
             lastUpdated: new Date().toISOString()
           });
           setError(null);
