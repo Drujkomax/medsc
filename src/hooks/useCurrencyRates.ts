@@ -16,7 +16,7 @@ export const useCurrencyRates = () => {
       try {
         setLoading(true);
         // Fetch from Central Bank of Uzbekistan API
-        const response = await fetch('https://cbu.uz/ru/arkhiv-kursov-valyut/json/');
+        const response = await fetch('https://cbu.uz/oz/arkhiv-kursov-valyut/json/');
         
         if (!response.ok) {
           throw new Error('Failed to fetch rates');
