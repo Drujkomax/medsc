@@ -27,6 +27,7 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
     unit: item.unit,
     location: item.location || '',
     condition: item.condition,
+    status: (item as any).status || 'in_stock',
     purchase_price: item.purchase_price?.toString() || '',
     selling_price: item.selling_price?.toString() || '',
     notes: item.notes || '',
@@ -43,6 +44,7 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
       unit: item.unit,
       location: item.location || '',
       condition: item.condition,
+      status: (item as any).status || 'in_stock',
       purchase_price: item.purchase_price?.toString() || '',
       selling_price: item.selling_price?.toString() || '',
       notes: item.notes || '',
@@ -64,6 +66,7 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
         unit: formData.unit,
         location: formData.location || null,
         condition: formData.condition,
+        status: formData.status,
         purchase_price: formData.purchase_price ? Number(formData.purchase_price) : null,
         selling_price: formData.selling_price ? Number(formData.selling_price) : null,
         notes: formData.notes || null,
@@ -172,6 +175,23 @@ export const EditWarehouseItemDialog = ({ item, open, onOpenChange }: EditWareho
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div>
+            <Label>Статус</Label>
+            <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="in_stock">На складе</SelectItem>
+                <SelectItem value="reserved">В резерве</SelectItem>
+                <SelectItem value="in_transit">В пути</SelectItem>
+                <SelectItem value="sold">Продан</SelectItem>
+                <SelectItem value="written_off">Списан</SelectItem>
+                <SelectItem value="defective">Брак</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

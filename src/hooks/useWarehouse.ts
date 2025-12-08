@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
+export type WarehouseItemStatus = 'in_stock' | 'reserved' | 'in_transit' | 'sold' | 'written_off' | 'defective';
+
 export interface WarehouseItem {
   id: string;
   product_id?: string;
@@ -23,6 +25,7 @@ export interface WarehouseItem {
   unit: string;
   location?: string;
   condition: 'new' | 'used' | 'refurbished';
+  status: WarehouseItemStatus;
   purchase_price?: number;
   selling_price?: number;
   notes?: string;

@@ -27,6 +27,7 @@ export const AddWarehouseItemDialog = () => {
     unit: 'шт',
     location: '',
     condition: 'new' as 'new' | 'used' | 'refurbished',
+    status: 'in_stock' as 'in_stock' | 'reserved' | 'in_transit' | 'sold' | 'written_off' | 'defective',
     purchase_price: '',
     selling_price: '',
     notes: '',
@@ -48,6 +49,7 @@ export const AddWarehouseItemDialog = () => {
         unit: formData.unit,
         location: formData.location || null,
         condition: formData.condition,
+        status: formData.status,
         purchase_price: formData.purchase_price ? Number(formData.purchase_price) : null,
         selling_price: formData.selling_price ? Number(formData.selling_price) : null,
         notes: formData.notes || null,
@@ -74,6 +76,7 @@ export const AddWarehouseItemDialog = () => {
       unit: 'шт',
       location: '',
       condition: 'new',
+      status: 'in_stock',
       purchase_price: '',
       selling_price: '',
       notes: '',
@@ -233,6 +236,23 @@ export const AddWarehouseItemDialog = () => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          <div>
+            <Label>Статус</Label>
+            <Select value={formData.status} onValueChange={(value: any) => setFormData({ ...formData, status: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="in_stock">На складе</SelectItem>
+                <SelectItem value="reserved">В резерве</SelectItem>
+                <SelectItem value="in_transit">В пути</SelectItem>
+                <SelectItem value="sold">Продан</SelectItem>
+                <SelectItem value="written_off">Списан</SelectItem>
+                <SelectItem value="defective">Брак</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

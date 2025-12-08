@@ -1756,6 +1756,7 @@ export type Database = {
           purchase_price: number | null
           quantity: number
           selling_price: number | null
+          status: string
           unit: string
           updated_at: string
           updated_by: string | null
@@ -1779,6 +1780,7 @@ export type Database = {
           purchase_price?: number | null
           quantity?: number
           selling_price?: number | null
+          status?: string
           unit?: string
           updated_at?: string
           updated_by?: string | null
@@ -1802,6 +1804,7 @@ export type Database = {
           purchase_price?: number | null
           quantity?: number
           selling_price?: number | null
+          status?: string
           unit?: string
           updated_at?: string
           updated_by?: string | null
