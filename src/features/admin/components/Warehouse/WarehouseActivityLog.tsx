@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { useWarehouseActivityLogs } from '@/hooks/useWarehouseActivityLogs';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -19,6 +20,26 @@ export const WarehouseActivityLog = () => {
 
   useEffect(() => {
     fetchLogs(30);
+
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel('warehouse-activity-logs')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'warehouse_activity_logs'
+        },
+        () => {
+          fetchLogs(30);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [fetchLogs]);
 
   if (loading) {
