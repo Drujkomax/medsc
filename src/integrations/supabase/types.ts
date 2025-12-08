@@ -1736,6 +1736,50 @@ export type Database = {
         }
         Relationships: []
       }
+      warehouse_activity_logs: {
+        Row: {
+          action_type: string
+          changes: Json | null
+          created_at: string
+          id: string
+          item_name: Json
+          user_email: string | null
+          user_id: string
+          user_name: string | null
+          warehouse_item_id: string | null
+        }
+        Insert: {
+          action_type: string
+          changes?: Json | null
+          created_at?: string
+          id?: string
+          item_name: Json
+          user_email?: string | null
+          user_id: string
+          user_name?: string | null
+          warehouse_item_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          changes?: Json | null
+          created_at?: string
+          id?: string
+          item_name?: Json
+          user_email?: string | null
+          user_id?: string
+          user_name?: string | null
+          warehouse_item_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "warehouse_activity_logs_warehouse_item_id_fkey"
+            columns: ["warehouse_item_id"]
+            isOneToOne: false
+            referencedRelation: "warehouse_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       warehouse_items: {
         Row: {
           archived: boolean | null

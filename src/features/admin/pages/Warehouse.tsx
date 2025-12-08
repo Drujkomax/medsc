@@ -5,6 +5,7 @@ import { EditWarehouseItemDialog } from '../components/Warehouse/EditWarehouseIt
 import { WarehouseFiltersPanel, WarehouseFilters } from '../components/Warehouse/WarehouseFiltersPanel';
 import { BulkActionsDialog } from '../components/Warehouse/BulkActionsDialog';
 import { SeedWarehouseButton } from '../components/Warehouse/SeedWarehouseButton';
+import { WarehouseActivityLog } from '../components/Warehouse/WarehouseActivityLog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -429,6 +430,9 @@ export const Warehouse = () => {
           setSelectedIds([]);
         }}
       />
+
+      {/* Activity Log */}
+      <WarehouseActivityLog />
     </div>
   );
 };
