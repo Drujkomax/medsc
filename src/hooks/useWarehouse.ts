@@ -1,6 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+
+const logWarehouseActivity = async (
+  itemId: string | null,
+  itemName: { ru: string; en?: string; uz?: string },
+  actionType: 'added' | 'updated' | 'deleted' | 'archived',
+  changes: Record<string, any> = {}
+) => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name, email')
+      .eq('id', user.id)
+      .single();
+
+    await supabase.from('warehouse_activity_logs').insert({
+      warehouse_item_id: itemId,
+      item_name: itemName,
+      action_type: actionType,
+      user_id: user.id,
+      user_email: profile?.email || user.email,
+      user_name: profile?.full_name || user.email,
+      changes
+    });
+  } catch (error) {
+    console.error('Error logging warehouse activity:', error);
+  }
+};
 
 export type WarehouseItemStatus = 'in_stock' | 'reserved' | 'in_transit' | 'sold' | 'written_off' | 'defective';
 
@@ -91,6 +121,10 @@ export const useWarehouse = () => {
       if (error) throw error;
       
       setItems([data as WarehouseItem, ...items]);
+      
+      // Log activity
+      await logWarehouseActivity(data.id, itemData.name, 'added', { quantity: itemData.quantity });
+      
       toast.success('Товар успешно добавлен на склад');
       return data as WarehouseItem;
     } catch (err: any) {
@@ -104,6 +138,9 @@ export const useWarehouse = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Пользователь не авторизован');
 
+      // Get old item for logging changes
+      const oldItem = items.find(item => item.id === id);
+
       const { data, error } = await supabase
         .from('warehouse_items')
         .update({ ...itemData, updated_by: user.id })
@@ -114,6 +151,18 @@ export const useWarehouse = () => {
       if (error) throw error;
 
       setItems(items.map(item => item.id === id ? data as WarehouseItem : item));
+      
+      // Log activity with changes
+      const changes: Record<string, any> = {};
+      if (oldItem) {
+        Object.keys(itemData).forEach(key => {
+          if (JSON.stringify((oldItem as any)[key]) !== JSON.stringify((itemData as any)[key])) {
+            changes[key] = { old: (oldItem as any)[key], new: (itemData as any)[key] };
+          }
+        });
+      }
+      await logWarehouseActivity(id, data.name as any, 'updated', changes);
+      
       toast.success('Товар обновлен');
       return data as WarehouseItem;
     } catch (err: any) {
@@ -124,12 +173,19 @@ export const useWarehouse = () => {
 
   const deleteItem = async (id: string) => {
     try {
+      const itemToDelete = items.find(item => item.id === id);
+      
       const { error } = await supabase
         .from('warehouse_items')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
+
+      // Log activity before removing from state
+      if (itemToDelete) {
+        await logWarehouseActivity(null, itemToDelete.name, 'deleted', { quantity: itemToDelete.quantity });
+      }
 
       setItems(items.filter(item => item.id !== id));
       toast.success('Товар удален');
@@ -144,12 +200,19 @@ export const useWarehouse = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Пользователь не авторизован');
 
+      const itemToArchive = items.find(item => item.id === id);
+
       const { error } = await supabase.rpc('archive_warehouse_item', {
         item_id: id,
         user_id: user.id
       });
 
       if (error) throw error;
+
+      // Log activity
+      if (itemToArchive) {
+        await logWarehouseActivity(id, itemToArchive.name, 'archived', {});
+      }
 
       setItems(items.filter(item => item.id !== id));
       toast.success('Товар архивирован');
