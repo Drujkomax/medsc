@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -29,10 +29,17 @@ const Home = ({ language }: HomeProps) => {
   return (
     <div className="min-h-screen">
       <SEOHead
-        title="Med Service Centre - Медицинское оборудование в Узбекистане"
-        description="Med Service Centre — поставщик медтехники в Узбекистане: УЗИ, анализаторы ABL800 Flex, системы BOWA ARC 400, продажа, сервис и аренда клиникам страны."
-        keywords="медицинское оборудование Узбекистан, УЗИ аппарат Ташкент, лабораторное оборудование аренда, ABL800 Flex, хирургическое оборудование BOWA ARC 400, медицинская техника клиники Узбекистан"
+        title="Med Service Centre — медицинское оборудование в Узбекистане"
+        description="Med Service Centre — поставка медоборудования в Узбекистане: УЗИ, ABL800 Flex (аренда), BOWA ARC 400. Продажа, аренда, сервис. Ташкент и вся республика."
+        keywords="медицинское оборудование Узбекистан, УЗИ аппарат Ташкент, ABL800 Flex аренда, BOWA ARC 400, сервис медтехники"
         type="website"
+        ogTitle="Med Service Centre — медоборудование в Узбекистане"
+        ogDescription="УЗИ, ABL800 Flex (аренда), BOWA ARC 400. Продажа, аренда, сервис."
+        ogUrl="https://medsc.uz/"
+        ogImage="https://medsc.uz/og-cover.jpg"
+        twitterTitle="Med Service Centre — медоборудование в Узбекистане"
+        twitterDescription="УЗИ, ABL800 Flex (аренда), BOWA ARC 400. Продажа, аренда, сервис."
+        twitterImage="https://medsc.uz/og-cover.jpg"
       />
       {/* Hero Section */}
       <section 
@@ -336,3 +343,4 @@ const Home = ({ language }: HomeProps) => {
 };
 
 export default Home;
+

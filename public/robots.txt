@@ -1,6 +1,6 @@
 User-agent: *
-Allow: /
 Disallow: /admin
+Allow: /
 
 Sitemap: https://medsc.uz/sitemap.xml
 Host: medsc.uz
