@@ -23,6 +23,13 @@ export interface Client {
   archived_at?: string;
   archived_by?: string;
   last_contact?: string;
+  // New fields
+  contract_start_date?: string;
+  contract_end_date?: string;
+  contract_status?: 'active' | 'onboarding' | 'suspended' | 'expired';
+  cooperation_type?: string[];
+  assigned_manager?: string;
+  priority?: 'low' | 'medium' | 'high';
 }
 
 export interface ClientWithStockInfo {
@@ -53,6 +60,22 @@ export const useClients = () => {
       toast.error('Ошибка загрузки клиентов');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchClientById = async (id: string): Promise<Client | null> => {
+    try {
+      const { data, error } = await supabase
+        .from('clients')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) throw error;
+      return data as Client;
+    } catch (err: any) {
+      console.error('Error fetching client:', err);
+      return null;
     }
   };
 
@@ -162,6 +185,7 @@ export const useClients = () => {
     deleteClient,
     archiveClient,
     getClientsWithLowStock,
+    fetchClientById,
     refetch: fetchClients
   };
 };

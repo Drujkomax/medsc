@@ -330,9 +330,14 @@ export type Database = {
           archived: boolean | null
           archived_at: string | null
           archived_by: string | null
+          assigned_manager: string | null
           city: string | null
           company: string | null
           contact_person: string | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          contract_status: string | null
+          cooperation_type: string[] | null
           country: string | null
           created_at: string
           created_by: string | null
@@ -344,6 +349,7 @@ export type Database = {
           name: string
           notes: string | null
           phone: string | null
+          priority: string | null
           telegram_chat_id: string | null
           updated_at: string
           updated_by: string | null
@@ -353,9 +359,14 @@ export type Database = {
           archived?: boolean | null
           archived_at?: string | null
           archived_by?: string | null
+          assigned_manager?: string | null
           city?: string | null
           company?: string | null
           contact_person?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          contract_status?: string | null
+          cooperation_type?: string[] | null
           country?: string | null
           created_at?: string
           created_by?: string | null
@@ -367,6 +378,7 @@ export type Database = {
           name: string
           notes?: string | null
           phone?: string | null
+          priority?: string | null
           telegram_chat_id?: string | null
           updated_at?: string
           updated_by?: string | null
@@ -376,9 +388,14 @@ export type Database = {
           archived?: boolean | null
           archived_at?: string | null
           archived_by?: string | null
+          assigned_manager?: string | null
           city?: string | null
           company?: string | null
           contact_person?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          contract_status?: string | null
+          cooperation_type?: string[] | null
           country?: string | null
           created_at?: string
           created_by?: string | null
@@ -390,11 +407,171 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string | null
+          priority?: string | null
           telegram_chat_id?: string | null
           updated_at?: string
           updated_by?: string | null
         }
         Relationships: []
+      }
+      clinic_documents: {
+        Row: {
+          category: string | null
+          client_id: string
+          created_at: string | null
+          description: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          category?: string | null
+          client_id: string
+          created_at?: string | null
+          description?: string | null
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string | null
+          client_id?: string
+          created_at?: string | null
+          description?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_documents_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinic_invoices: {
+        Row: {
+          amount: number
+          client_id: string
+          created_at: string | null
+          created_by: string | null
+          currency: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          invoice_number: string
+          issue_date: string
+          paid_date: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount?: number
+          client_id: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number: string
+          issue_date?: string
+          paid_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          client_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          currency?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          invoice_number?: string
+          issue_date?: string
+          paid_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinic_shipments: {
+        Row: {
+          carrier: string | null
+          client_id: string
+          created_at: string | null
+          created_by: string | null
+          delivered_date: string | null
+          id: string
+          items: Json | null
+          notes: string | null
+          shipment_number: string | null
+          shipped_date: string | null
+          status: string | null
+          tracking_number: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          carrier?: string | null
+          client_id: string
+          created_at?: string | null
+          created_by?: string | null
+          delivered_date?: string | null
+          id?: string
+          items?: Json | null
+          notes?: string | null
+          shipment_number?: string | null
+          shipped_date?: string | null
+          status?: string | null
+          tracking_number?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          carrier?: string | null
+          client_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          delivered_date?: string | null
+          id?: string
+          items?: Json | null
+          notes?: string | null
+          shipment_number?: string | null
+          shipped_date?: string | null
+          status?: string | null
+          tracking_number?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinic_shipments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       contact_inquiries: {
         Row: {

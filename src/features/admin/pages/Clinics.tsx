@@ -1,23 +1,32 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useClients, type ClientWithStockInfo } from '@/hooks/useClients';
+import { useClients, type ClientWithStockInfo, type Client } from '@/hooks/useClients';
+import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, Building2, Plus, Search, Archive, Edit, Trash2, Package, AlertTriangle } from 'lucide-react';
+import { AlertCircle, Building2, Plus, Search, Archive, Edit, Trash2, AlertTriangle, User } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import AddClientDialog from '@/features/admin/components/Clients/AddClientDialog';
 import EditClientDialog from '@/features/admin/components/Clients/EditClientDialog';
-import ClientDetailsDialog from '@/features/admin/components/Clients/ClientDetailsDialog';
+import ClinicDetailView from '@/features/admin/components/Clients/ClinicDetailView';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+
+const CONTRACT_STATUS_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+  active: { label: 'Активный', variant: 'default' },
+  onboarding: { label: 'Онбординг', variant: 'secondary' },
+  suspended: { label: 'Приостановлен', variant: 'destructive' },
+  expired: { label: 'Истёк', variant: 'outline' },
+};
 
 export default function Clinics() {
   const { clients, loading, addClient, updateClient, deleteClient, archiveClient, getClientsWithLowStock, refetch } = useClients();
+  const { employees } = useEmployeesByRole();
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<any>(null);
-  const [viewingClient, setViewingClient] = useState<any>(null);
+  const [viewingClientId, setViewingClientId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [lowStockClients, setLowStockClients] = useState<ClientWithStockInfo[]>([]);
 
@@ -39,6 +48,12 @@ export default function Clinics() {
     );
   }, [clients, searchTerm]);
 
+  const getManagerName = (managerId?: string) => {
+    if (!managerId) return null;
+    const manager = employees.find(e => e.id === managerId);
+    return manager?.full_name || manager?.email || null;
+  };
+
   const handleArchive = async (id: string) => {
     if (confirm('Вы уверены, что хотите архивировать эту клинику?')) {
       await archiveClient(id);
@@ -53,6 +68,19 @@ export default function Clinics() {
       refetch();
     }
   };
+
+  // Show detail view if viewing a client
+  if (viewingClientId) {
+    return (
+      <ClinicDetailView
+        clientId={viewingClientId}
+        onBack={() => {
+          setViewingClientId(null);
+          refetch();
+        }}
+      />
+    );
+  }
 
   if (loading) {
     return (
@@ -147,39 +175,47 @@ export default function Clinics() {
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredClients.map(client => {
+          {filteredClients.map((client: Client) => {
             const lowStockInfo = lowStockClients.find(c => c.client_id === client.id);
+            const contractStatus = CONTRACT_STATUS_LABELS[client.contract_status || 'onboarding'];
+            const managerName = getManagerName(client.assigned_manager);
+
             return (
               <Card key={client.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader onClick={() => setViewingClient(client)}>
+                <CardHeader onClick={() => setViewingClientId(client.id)}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <CardTitle className="text-lg">{client.name}</CardTitle>
+                      <div className="flex items-center gap-2 mb-1">
+                        <CardTitle className="text-lg">{client.name}</CardTitle>
+                        {lowStockInfo && (
+                          <Badge variant={lowStockInfo.critical_count! > 0 ? 'destructive' : 'secondary'} className="text-xs">
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                            {lowStockInfo.critical_count! + lowStockInfo.low_stock_count!}
+                          </Badge>
+                        )}
+                      </div>
                       {client.legal_name && (
                         <CardDescription className="mt-1">{client.legal_name}</CardDescription>
                       )}
                     </div>
-                    {lowStockInfo && (
-                      <Badge variant={lowStockInfo.critical_count! > 0 ? 'destructive' : 'secondary'}>
-                        <AlertCircle className="h-3 w-3 mr-1" />
-                        {lowStockInfo.critical_count! + lowStockInfo.low_stock_count!}
-                      </Badge>
-                    )}
+                    <Badge variant={contractStatus.variant} className="shrink-0">
+                      {contractStatus.label}
+                    </Badge>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent onClick={() => setViewingClientId(client.id)}>
                   <div className="space-y-2 text-sm">
-                    {client.contact_person && (
-                      <p className="text-muted-foreground">👤 {client.contact_person}</p>
+                    {client.city && (
+                      <p className="text-muted-foreground">📍 {client.city}</p>
+                    )}
+                    {managerName && (
+                      <p className="text-muted-foreground flex items-center gap-1">
+                        <User className="h-3 w-3" />
+                        {managerName}
+                      </p>
                     )}
                     {client.phone && (
                       <p className="text-muted-foreground">📞 {client.phone}</p>
-                    )}
-                    {client.email && (
-                      <p className="text-muted-foreground truncate">✉️ {client.email}</p>
-                    )}
-                    {client.city && (
-                      <p className="text-muted-foreground">📍 {client.city}</p>
                     )}
                   </div>
                   <div className="flex gap-2 mt-4">
@@ -243,14 +279,6 @@ export default function Clinics() {
             setEditingClient(null);
             refetch();
           }}
-        />
-      )}
-
-      {viewingClient && (
-        <ClientDetailsDialog
-          open={!!viewingClient}
-          onOpenChange={(open) => !open && setViewingClient(null)}
-          client={viewingClient}
         />
       )}
 
