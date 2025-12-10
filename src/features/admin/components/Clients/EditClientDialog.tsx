@@ -257,14 +257,14 @@ export default function EditClientDialog({ open, onOpenChange, client, onUpdate 
               <div>
                 <Label>Ответственный менеджер</Label>
                 <Select
-                  value={formData.assigned_manager}
-                  onValueChange={(value) => setFormData({ ...formData, assigned_manager: value })}
+                  value={formData.assigned_manager || "none"}
+                  onValueChange={(value) => setFormData({ ...formData, assigned_manager: value === "none" ? "" : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Не назначен" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Не назначен</SelectItem>
+                    <SelectItem value="none">Не назначен</SelectItem>
                     {employees.map(emp => (
                       <SelectItem key={emp.id} value={emp.id}>
                         {emp.full_name || emp.email}
