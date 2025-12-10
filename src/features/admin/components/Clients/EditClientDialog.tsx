@@ -59,7 +59,7 @@ export default function EditClientDialog({ open, onOpenChange, client, onUpdate 
   });
 
   useEffect(() => {
-    if (client) {
+    if (open && client) {
       setFormData({
         name: client.name || '',
         legal_name: client.legal_name || '',
@@ -79,7 +79,7 @@ export default function EditClientDialog({ open, onOpenChange, client, onUpdate 
         priority: client.priority || 'medium',
       });
     }
-  }, [client]);
+  }, [open, client]);
 
   const handleCooperationTypeChange = (value: string, checked: boolean) => {
     if (checked) {
