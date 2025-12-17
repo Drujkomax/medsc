@@ -58,7 +58,7 @@ const translations = {
 const ProductDetail = () => {
   const { t, i18n } = useTranslation();
   const language = i18n.language as 'ru' | 'en' | 'uz' || 'ru';
-  const { slug } = useParams();
+  const { manufacturerSlug, productSlug } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
@@ -72,7 +72,8 @@ const ProductDetail = () => {
     message: ''
   });
 
-  const { product, loading, error } = useProduct(slug || '');
+  // Fetch product by productSlug (manufacturerSlug is for SEO/URL structure)
+  const { product, loading, error } = useProduct(productSlug || '');
   const { manufacturers } = useManufacturers();
   const { convertToUZS, formatPrice } = useCurrencyRates();
   

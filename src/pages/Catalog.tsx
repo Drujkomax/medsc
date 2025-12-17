@@ -9,6 +9,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink, Paginati
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Search, Filter, Heart, Eye, Loader2, Package, Menu } from "lucide-react";
 import { useProducts } from '@/hooks/useProducts';
+import { useManufacturers } from '@/hooks/useManufacturers';
 import { useCategories } from '@/hooks/useCategories';
 import { toast } from 'sonner';
 import { getCountryFlag, getCountryName } from '@/utils/countries';
@@ -53,7 +54,15 @@ const Catalog = () => {
   
   const { products, loading: productsLoading, error: productsError } = useProducts();
   const { categories: dbCategories, loading: categoriesLoading } = useCategories();
+  const { manufacturers } = useManufacturers();
   const { convertToUZS, formatPrice } = useCurrencyRates();
+  
+  // Helper to get manufacturer slug by ID
+  const getManufacturerSlug = (manufacturerId: string | null | undefined) => {
+    if (!manufacturerId) return 'unknown';
+    const manufacturer = manufacturers.find(m => m.id === manufacturerId);
+    return manufacturer?.slug || 'unknown';
+  };
 
   // Update selected category when URL changes
   useEffect(() => {
@@ -307,7 +316,11 @@ const Catalog = () => {
                     <div className="flex flex-col gap-2">
                       <Button 
                         className="w-full text-xs sm:text-sm" 
-                        onClick={() => navigate(`/catalog/products/${product.slug || product.id}`)}
+                        onClick={() => {
+                          const manufacturerSlug = getManufacturerSlug(product.manufacturer_id);
+                          const productSlug = product.slug || product.id;
+                          navigate(`/catalog/${manufacturerSlug}/${productSlug}`);
+                        }}
                       >
                         <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                         {translations.details[language]}
