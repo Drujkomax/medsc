@@ -189,7 +189,7 @@ export const useAdminProducts = () => {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .eq('archived', false)
+        .or('archived.eq.false,archived.is.null')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
