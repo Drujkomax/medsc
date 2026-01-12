@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { getCountryName, getCountryFlag } from '@/utils/countries';
 import SEOHead from "@/components/SEO/SEOHead";
 import { useCurrencyRates } from '@/hooks/useCurrencyRates';
+import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 
 const getCategoryLabel = (category: string, language: 'ru' | 'en' | 'uz') => {
   const categoryLabels = {
@@ -64,6 +65,7 @@ const ProductDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState('');
   const [formData, setFormData] = useState({
     companyName: '',
     contactPerson: '',
@@ -71,6 +73,25 @@ const ProductDetail = () => {
     email: '',
     message: ''
   });
+
+  const handlePhoneChange = (value: string) => {
+    if (!isValidUzbekPhoneLength(value)) return;
+    
+    const formatted = formatUzbekPhoneNumber(value);
+    setFormData(prev => ({ ...prev, phone: formatted }));
+    
+    if (formatted.length > 0) {
+      if (!isCompleteUzbekPhone(formatted)) {
+        setPhoneError(language === 'ru' ? 'Номер должен содержать 9 цифр' : language === 'en' ? 'Number must contain 9 digits' : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
+      } else if (!validateUzbekPhoneNumber(formatted)) {
+        setPhoneError(language === 'ru' ? 'Неверный формат номера' : language === 'en' ? 'Invalid phone format' : 'Noto\'g\'ri telefon formati');
+      } else {
+        setPhoneError('');
+      }
+    } else {
+      setPhoneError('');
+    }
+  };
 
   // Fetch product by productSlug (manufacturerSlug is for SEO/URL structure)
   const { product, loading, error } = useProduct(productSlug || '');
@@ -176,6 +197,13 @@ const ProductDetail = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate phone before submit
+    if (!isCompleteUzbekPhone(formData.phone) || !validateUzbekPhoneNumber(formData.phone)) {
+      setPhoneError(language === 'ru' ? 'Введите корректный узбекский номер' : language === 'en' ? 'Enter a valid Uzbek number' : 'To\'g\'ri O\'zbek raqamini kiriting');
+      return;
+    }
+    
     toast({
       title: translations.successMessage[language],
       description: `${product.name[language]} - ${formData.companyName}`,
@@ -188,6 +216,7 @@ const ProductDetail = () => {
       email: '',
       message: ''
     });
+    setPhoneError('');
   };
 
   return (
@@ -433,13 +462,28 @@ const ProductDetail = () => {
                   </div>
                   <div>
                     <Label htmlFor="phone">{translations.phone[language]}</Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      required
-                    />
+                    <div className="relative">
+                      <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
+                        <span className="text-base">🇺🇿</span>
+                        <span className="text-foreground font-medium text-sm">+998</span>
+                        <div className="w-px h-3 bg-border mx-1"></div>
+                      </div>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                        required
+                        className={`pl-20 ${phoneError ? 'border-destructive' : ''}`}
+                        placeholder="XX XXX XX XX"
+                        maxLength={12}
+                      />
+                    </div>
+                    {phoneError && (
+                      <p className="text-destructive text-xs mt-1 animate-in slide-in-from-top-1 duration-200">
+                        {phoneError}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="email">{translations.email[language]}</Label>
