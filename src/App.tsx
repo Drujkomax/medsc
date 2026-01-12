@@ -19,8 +19,7 @@ import RegisterWithInvite from "./pages/RegisterWithInvite";
 import CreateFirstDirector from "./pages/CreateFirstDirector";
 import DirectorRegistration from "./pages/DirectorRegistration";
 import Cases from "./pages/Cases";
-
-// Admin Components
+import ScrollToTop from "./components/common/ScrollToTop";
 import AdminWrapper from "./features/admin/components/AdminWrapper";
 
 
@@ -61,6 +60,7 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* Admin Routes - Standalone Layout */}
                     <Route path="/admin/*" element={<AdminWrapper />} />
