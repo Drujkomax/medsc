@@ -96,6 +96,11 @@ const Catalog = () => {
     setCurrentPage(1);
   }, [searchTerm, selectedCategory]);
 
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
   // Pagination calculations
   const totalItems = filteredProducts.length;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
