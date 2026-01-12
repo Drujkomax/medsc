@@ -145,11 +145,11 @@ const Home = ({ language }: HomeProps) => {
             <div className="flex justify-center">
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]">
                 {/* Central Logo */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10 pointer-events-none">
                   <img 
                     src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png" 
                     alt={t('home.hero.logoAlt')} 
-                    className="w-44 h-44 lg:w-52 lg:h-52 object-contain"
+                    className="w-44 h-44 lg:w-52 lg:h-52 object-contain select-none"
                   />
                 </div>
                 
@@ -488,11 +488,17 @@ const Home = ({ language }: HomeProps) => {
                     <ChevronDown className="w-5 h-5 text-msc-accent flex-shrink-0" />
                   )}
                 </button>
-                {openFaq === index && (
-                  <div className="px-6 py-4 bg-msc-bg/30 border-t border-msc-accent/10">
-                    <p className="text-msc-text-light">{item.answer}</p>
+                <div 
+                  className={`grid transition-all duration-300 ease-in-out ${
+                    openFaq === index ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-6 py-4 bg-msc-bg/30 border-t border-msc-accent/10">
+                      <p className="text-msc-text-light">{item.answer}</p>
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>

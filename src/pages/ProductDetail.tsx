@@ -458,6 +458,7 @@ const ProductDetail = () => {
                       value={formData.message}
                       onChange={(e) => setFormData({...formData, message: e.target.value})}
                       rows={3}
+                      className="resize-none"
                     />
                   </div>
                   <Button type="submit" className="w-full">

@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import LocationMap from '@/components/common/LocationMap';
+import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 
 const Contacts = () => {
   const { t, i18n } = useTranslation();
@@ -35,6 +36,7 @@ const Contacts = () => {
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
 
   // Load contact data from database
   useEffect(() => {
@@ -70,6 +72,13 @@ const Contacts = () => {
 
     loadContactData();
   }, []);
+  
+  const addressTranslations = {
+    ru: 'Узбекистан, Ташкент, ул. Асака, 32',
+    en: 'Uzbekistan, Tashkent, Asaka St., 32',
+    uz: 'O\'zbekiston, Toshkent, Asaka ko\'chasi, 32'
+  };
+  
   const content = {
     ru: {
       title: 'Контакты',
@@ -87,6 +96,7 @@ const Contacts = () => {
       phoneField: 'Телефон',
       emailField: 'Email',
       message: 'Сообщение',
+      messagePlaceholder: 'Ваше сообщение...',
       send: 'Отправить',
       fullAddress: 'Узбекистан, Ташкент, ул. Асака, 32',
       ourLocation: 'Наше местоположение',
@@ -108,6 +118,7 @@ const Contacts = () => {
       phoneField: 'Phone',
       emailField: 'Email',
       message: 'Message',
+      messagePlaceholder: 'Your message...',
       send: 'Send',
       fullAddress: 'Uzbekistan, Tashkent, Asaka St., 32',
       ourLocation: 'Our Location',
@@ -129,6 +140,7 @@ const Contacts = () => {
       phoneField: 'Telefon',
       emailField: 'Email',
       message: 'Xabar',
+      messagePlaceholder: 'Sizning xabaringiz...',
       send: 'Yuborish',
       fullAddress: 'O\'zbekiston, Toshkent, Asaka ko\'chasi, 32',
       ourLocation: 'Bizning joylashuvimiz',
@@ -174,10 +186,37 @@ const Contacts = () => {
   // Form handlers
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    if (name === 'phone') {
+      // Validate and format phone number
+      if (!isValidUzbekPhoneLength(value)) return;
+      
+      const formatted = formatUzbekPhoneNumber(value);
+      setFormData(prev => ({
+        ...prev,
+        [name]: formatted
+      }));
+      
+      // Show validation error
+      if (formatted.length > 0) {
+        if (!isCompleteUzbekPhone(formatted)) {
+          const lang = i18n.language;
+          setPhoneError(lang === 'ru' ? 'Номер должен содержать 9 цифр' : lang === 'en' ? 'Number must contain 9 digits' : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
+        } else if (!validateUzbekPhoneNumber(formatted)) {
+          const lang = i18n.language;
+          setPhoneError(lang === 'ru' ? 'Неверный формат номера' : lang === 'en' ? 'Invalid phone format' : 'Noto\'g\'ri telefon formati');
+        } else {
+          setPhoneError('');
+        }
+      } else {
+        setPhoneError('');
+      }
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -271,7 +310,7 @@ const Contacts = () => {
                 <MapPin className="w-5 h-5 text-white" />
               </div>
               <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.address}</h3>
-              <p className="text-muted-foreground text-lg">{contactData.address || currentContent.fullAddress}</p>
+              <p className="text-muted-foreground text-lg">{addressTranslations[i18n.language as 'ru' | 'en' | 'uz'] || addressTranslations.ru}</p>
             </CardContent>
           </Card>
 
@@ -377,14 +416,26 @@ const Contacts = () => {
                     <label className="block text-sm font-medium text-foreground mb-2">
                       {currentContent.phoneField}
                     </label>
-                    <Input 
-                      type="tel" 
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="h-12"
-                      required
-                    />
+                    <div className="relative">
+                      <div className="absolute left-3 top-3.5 flex items-center gap-1.5 pointer-events-none">
+                        <span className="text-base">🇺🇿</span>
+                        <span className="text-sm font-medium text-foreground">+998</span>
+                        <div className="w-px h-3 bg-gray-300 mx-1"></div>
+                      </div>
+                      <Input 
+                        type="tel" 
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className={`h-12 pl-20 ${phoneError ? 'border-red-500' : ''}`}
+                        placeholder="XX XXX XX XX"
+                        maxLength={12}
+                        required
+                      />
+                      {phoneError && (
+                        <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
@@ -411,7 +462,8 @@ const Contacts = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    placeholder="Ваше сообщение..."
+                    placeholder={currentContent.messagePlaceholder}
+                    className="resize-none"
                   />
                 </div>
                 

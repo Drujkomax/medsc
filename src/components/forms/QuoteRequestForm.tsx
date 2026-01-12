@@ -233,8 +233,8 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl animate-in slide-in-from-bottom-4 max-h-[90vh] overflow-y-auto">
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl animate-in slide-in-from-bottom-4 max-h-[90vh] overflow-y-auto relative z-10">
           {/* Header */}
           <div className="relative bg-gradient-to-r from-msc-primary to-msc-accent text-white p-4 rounded-t-2xl">
             <button onClick={onClose} className="absolute top-3 right-3 text-white/80 hover:text-white transition-colors">
@@ -346,7 +346,7 @@ const QuoteRequestForm: React.FC<QuoteRequestFormProps> = ({
                   id="message" 
                   value={formData.message} 
                   onChange={e => handleInputChange('message', e.target.value)} 
-                  className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 min-h-[80px]" 
+                  className="border-msc-primary/20 focus:border-msc-accent transition-all duration-200 min-h-[80px] resize-none" 
                   placeholder={t.messagePlaceholder}
                   rows={3}
                 />

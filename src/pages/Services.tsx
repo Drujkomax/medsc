@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,10 +9,13 @@ import { toast } from "sonner";
 import { Wrench, GraduationCap, Zap, Calendar, Check, Phone } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import SEOHead from "@/components/SEO/SEOHead";
+import { formatUzbekPhoneNumber, validateUzbekPhoneNumber, isValidUzbekPhoneLength, isCompleteUzbekPhone } from '@/lib/phoneValidation';
 
 const Services = () => {
   const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string>("");
+  const [phoneValue, setPhoneValue] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const { t, i18n } = useTranslation();
 
   const content = {
@@ -217,11 +220,42 @@ const Services = () => {
 
   const handleOrderService = (serviceName: string) => {
     setSelectedService(serviceName);
+    setPhoneValue("");
+    setPhoneError("");
     setIsOrderDialogOpen(true);
+  };
+
+  const handlePhoneChange = (value: string) => {
+    if (!isValidUzbekPhoneLength(value)) return;
+    
+    const formatted = formatUzbekPhoneNumber(value);
+    setPhoneValue(formatted);
+    
+    if (formatted.length > 0) {
+      if (!isCompleteUzbekPhone(formatted)) {
+        const lang = i18n.language;
+        setPhoneError(lang === 'ru' ? 'Номер должен содержать 9 цифр' : lang === 'en' ? 'Number must contain 9 digits' : 'Raqam 9 ta raqamdan iborat bo\'lishi kerak');
+      } else if (!validateUzbekPhoneNumber(formatted)) {
+        const lang = i18n.language;
+        setPhoneError(lang === 'ru' ? 'Неверный формат номера' : lang === 'en' ? 'Invalid phone format' : 'Noto\'g\'ri telefon formati');
+      } else {
+        setPhoneError('');
+      }
+    } else {
+      setPhoneError('');
+    }
   };
 
   const handleSubmitOrder = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate phone before submission
+    if (phoneValue && (!isCompleteUzbekPhone(phoneValue) || !validateUzbekPhoneNumber(phoneValue))) {
+      const lang = i18n.language;
+      setPhoneError(lang === 'ru' ? 'Введите корректный узбекский номер' : lang === 'en' ? 'Enter a valid Uzbek number' : 'To\'g\'ri O\'zbek raqamini kiriting');
+      return;
+    }
+    
     toast.success(currentContent.orderForm.success);
     setIsOrderDialogOpen(false);
   };
@@ -309,7 +343,26 @@ const Services = () => {
             </div>
             <div>
               <Label htmlFor="phone">{currentContent.orderForm.phone}</Label>
-              <Input id="phone" type="tel" required />
+              <div className="relative">
+                <div className="absolute left-3 top-2.5 flex items-center gap-1.5 pointer-events-none">
+                  <span className="text-base">🇺🇿</span>
+                  <span className="text-sm font-medium">+998</span>
+                  <div className="w-px h-3 bg-gray-300 mx-1"></div>
+                </div>
+                <Input 
+                  id="phone" 
+                  type="tel" 
+                  value={phoneValue}
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  className={`pl-20 ${phoneError ? 'border-red-500' : ''}`}
+                  placeholder="XX XXX XX XX"
+                  maxLength={12}
+                  required 
+                />
+                {phoneError && (
+                  <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+                )}
+              </div>
             </div>
             <div>
               <Label htmlFor="email">{currentContent.orderForm.email}</Label>
