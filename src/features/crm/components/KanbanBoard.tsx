@@ -167,37 +167,47 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
   };
 
   return (
-    <div className="p-6">
-      {/* Duplicate alerts */}
-      {duplicateGroups.length > 0 && (
-        <div className="mb-6 space-y-2">
-          {duplicateGroups.slice(0, 3).map((group, index) => (
-            <DuplicateAlert key={index} duplicateGroup={group} />
+    <div className="relative">
+      {/* Fixed navigation panel - centered on screen */}
+      {showNavigation && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-4 py-2 flex items-center gap-2">
+          {stages.map((stage) => (
+            <Button
+              key={stage.id}
+              variant="ghost"
+              size="sm"
+              className="rounded-full"
+              onClick={() => scrollToStage(stage.id)}
+            >
+              <div className={`w-2 h-2 rounded-full ${stage.color} mr-2`}></div>
+              {stage.title}
+            </Button>
           ))}
         </div>
       )}
 
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="overflow-x-auto">
-          {/* Navigation panel inside scrollable area */}
-          <div className="flex flex-wrap items-center gap-2 mb-6 min-w-max">
-            {showNavigation && stages.map((stage) => (
-              <Button
-                key={stage.id}
-                variant="outline"
-                size="sm"
-                onClick={() => scrollToStage(stage.id)}
-              >
-                {stage.title}
-              </Button>
+      <div className="p-6">
+        {/* Duplicate alerts */}
+        {duplicateGroups.length > 0 && (
+          <div className="mb-6 space-y-2">
+            {duplicateGroups.slice(0, 3).map((group, index) => (
+              <DuplicateAlert key={index} duplicateGroup={group} />
             ))}
-            {hasPermission('manage_all_leads') && (
-              <Button onClick={() => openLeadModal()} className={showNavigation ? "ml-auto" : ""}>
-                <Plus className="mr-2 h-4 w-4" />
-                Добавить лид
-              </Button>
-            )}
           </div>
+        )}
+
+        {/* Add lead button */}
+        {hasPermission('manage_all_leads') && (
+          <div className="mb-6">
+            <Button onClick={() => openLeadModal()}>
+              <Plus className="mr-2 h-4 w-4" />
+              Добавить лид
+            </Button>
+          </div>
+        )}
+
+        <DragDropContext onDragEnd={onDragEnd}>
+          <div className="overflow-x-auto">
           
           <div className="flex gap-6 pb-4 min-w-max">
           {stages.map((stage) => (
@@ -272,9 +282,10 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
               </Droppable>
             </div>
           ))}
-            </div>
+          </div>
           </div>
         </DragDropContext>
+      </div>
 
       <AddLeadDialog
         open={isAddLeadOpen}
