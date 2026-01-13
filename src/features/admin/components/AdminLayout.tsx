@@ -15,12 +15,15 @@ const AdminLayout = () => {
   const { t, i18n } = useTranslation();
   const { role } = useUserPermissions();
   
+  // Force re-render on language change by using i18n.language as dependency
+  const currentLang = i18n.language;
+  
   const navigation = [
     { name: t('admin.dashboard'), href: '/admin' },
-    { name: 'Аналитика', href: '/admin/analytics' },
-    { name: 'Лиды', href: '/admin/leads' },
+    { name: t('admin.analytics', 'Аналитика'), href: '/admin/analytics' },
+    { name: t('admin.leads', 'Лиды'), href: '/admin/leads' },
     { name: t('admin.products'), href: '/admin/products' },
-    { name: 'Услуги', href: '/admin/services' },
+    { name: t('admin.services', 'Услуги'), href: '/admin/services' },
     { name: t('admin.contacts'), href: '/admin/contacts' },
   ];
 
