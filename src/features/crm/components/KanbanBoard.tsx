@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Plus, Phone, Building, Eye, User } from 'lucide-react';
+import { Plus, Phone, Building, User } from 'lucide-react';
 import { useLeads, Lead } from '@/hooks/useLeads';
 import { useUserPermissions } from '@/hooks/useUserPermissions';
 import { useAuth } from '@/hooks/useAuth';
@@ -34,6 +34,14 @@ const KanbanBoard = () => {
   const [isCongratulationsOpen, setIsCongratulationsOpen] = useState(false);
   const [congratsLead, setCongratsLead] = useState<Lead | null>(null);
   const [employees, setEmployees] = useState<Array<{id: string, email: string, full_name: string}>>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToStage = (stageId: string) => {
+    const element = document.querySelector(`[data-stage-id="${stageId}"]`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  };
   const { leads, loading, changeLeadStage, refetch } = useLeads();
   const { hasPermission } = useUserPermissions();
   const { user } = useAuth();
@@ -157,14 +165,30 @@ const KanbanBoard = () => {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Канбан доска лидов</h1>
-        {hasPermission('manage_all_leads') && (
-          <Button onClick={() => openLeadModal()}>
-            <Plus className="mr-2 h-4 w-4" />
-            Добавить лид
-          </Button>
-        )}
+      {/* Fixed navigation panel */}
+      <div className="sticky left-0 z-10 bg-background pb-4 mb-4">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex flex-wrap gap-2">
+            {stages.map((stage) => (
+              <Button
+                key={stage.id}
+                variant="outline"
+                size="sm"
+                onClick={() => scrollToStage(stage.id)}
+                className="text-xs"
+              >
+                <div className={`w-2 h-2 rounded-full ${stage.color} mr-1.5`}></div>
+                {stage.title}
+              </Button>
+            ))}
+          </div>
+          {hasPermission('manage_all_leads') && (
+            <Button onClick={() => openLeadModal()} size="sm">
+              <Plus className="mr-1 h-4 w-4" />
+              Добавить лид
+            </Button>
+          )}
+        </div>
       </div>
       
       {/* Duplicate alerts */}
@@ -177,7 +201,7 @@ const KanbanBoard = () => {
       )}
 
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto" ref={scrollContainerRef}>
           <div className="flex gap-6 pb-4 min-w-max">
           {stages.map((stage) => (
             <div key={stage.id} data-stage-id={stage.id} className="bg-gray-50 rounded-lg p-4 min-w-80 flex-shrink-0">
