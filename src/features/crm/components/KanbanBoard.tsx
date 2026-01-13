@@ -179,25 +179,26 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="overflow-x-auto relative">
             {/* Sticky navigation panel with add button - centered relative to kanban container */}
-            <div className="fixed bottom-0 z-0 flex justify-center py-4 min-w-max">
-              <div className="bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-4 py-2 flex items-center gap-2">
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-10 flex justify-center">
+              <div className="bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-2 sm:px-4 py-2 flex items-center gap-1 sm:gap-2">
                 {showNavigation &&
                   stages.map((stage) => (
                     <Button
                       key={stage.id}
                       variant="ghost"
                       size="sm"
-                      className="rounded-full"
+                      className="rounded-full px-2 sm:px-3"
                       onClick={() => scrollToStage(stage.id)}
+                      title={stage.title}
                     >
-                      <div className={`w-2 h-2 rounded-full ${stage.color} mr-2`}></div>
-                      {stage.title}
+                      <div className={`w-3 h-3 sm:w-2 sm:h-2 rounded-full ${stage.color} sm:mr-2 flex-shrink-0`}></div>
+                      <span className="hidden sm:inline">{stage.title}</span>
                     </Button>
                   ))}
                 {hasPermission("manage_all_leads") && (
-                  <Button onClick={() => openLeadModal()} className="rounded-full">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Добавить лид
+                  <Button onClick={() => openLeadModal()} className="rounded-full px-3 sm:px-4" size="sm">
+                    <Plus className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Добавить лид</span>
                   </Button>
                 )}
               </div>
