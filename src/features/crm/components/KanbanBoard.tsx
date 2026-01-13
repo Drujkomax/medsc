@@ -178,33 +178,30 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
           </div>
         )}
 
-        {/* Fixed navigation panel - centered in page with low z-index */}
-        {showNavigation && (
-          <div className="fixed top-20 left-1/2 -translate-x-1/2 z-0 bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-4 py-2 flex items-center gap-2">
-            {stages.map((stage) => (
-              <Button
-                key={stage.id}
-                variant="ghost"
-                size="sm"
-                className="rounded-full"
-                onClick={() => scrollToStage(stage.id)}
-              >
-                <div className={`w-2 h-2 rounded-full ${stage.color} mr-2`}></div>
-                {stage.title}
-              </Button>
-            ))}
-          </div>
-        )}
-
-        {/* Add lead button */}
-        {hasPermission('manage_all_leads') && (
-          <div className="mb-6">
-            <Button onClick={() => openLeadModal()}>
+        {/* Fixed navigation panel with add button - centered in page with low z-index */}
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-0 bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-4 py-2 flex items-center gap-2">
+          {showNavigation && stages.map((stage) => (
+            <Button
+              key={stage.id}
+              variant="ghost"
+              size="sm"
+              className="rounded-full"
+              onClick={() => scrollToStage(stage.id)}
+            >
+              <div className={`w-2 h-2 rounded-full ${stage.color} mr-2`}></div>
+              {stage.title}
+            </Button>
+          ))}
+          {hasPermission('manage_all_leads') && (
+            <Button onClick={() => openLeadModal()} className="rounded-full">
               <Plus className="mr-2 h-4 w-4" />
               Добавить лид
             </Button>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Spacer for fixed panel */}
+        <div className="h-16 mb-6"></div>
 
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="overflow-x-auto">
