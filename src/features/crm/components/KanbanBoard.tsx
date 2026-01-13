@@ -27,7 +27,11 @@ const stages = [
   { id: 'lost', title: 'Отказ', color: 'bg-red-500' }
 ];
 
-const KanbanBoard = () => {
+interface KanbanBoardProps {
+  showNavigation?: boolean;
+}
+
+const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
@@ -155,16 +159,35 @@ const KanbanBoard = () => {
     );
   }
 
+  const scrollToStage = (stageId: string) => {
+    const element = document.querySelector(`[data-stage-id="${stageId}"]`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  };
+
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Канбан доска лидов</h1>
-        {hasPermission('manage_all_leads') && (
-          <Button onClick={() => openLeadModal()}>
-            <Plus className="mr-2 h-4 w-4" />
-            Добавить лид
-          </Button>
-        )}
+      {/* Fixed navigation bar */}
+      <div className="sticky left-0 z-10 mb-6">
+        <div className="flex flex-wrap items-center gap-2">
+          {showNavigation && stages.map((stage) => (
+            <Button
+              key={stage.id}
+              variant="outline"
+              size="sm"
+              onClick={() => scrollToStage(stage.id)}
+            >
+              {stage.title}
+            </Button>
+          ))}
+          {hasPermission('manage_all_leads') && (
+            <Button onClick={() => openLeadModal()} className={showNavigation ? "ml-auto" : ""}>
+              <Plus className="mr-2 h-4 w-4" />
+              Добавить лид
+            </Button>
+          )}
+        </div>
       </div>
       
       {/* Duplicate alerts */}
