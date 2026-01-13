@@ -166,10 +166,12 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
 
   return (
     <div className="relative">
-      {" "}
       <div>
-        <h1 className="text-3xl font-bold">Склад</h1>
-        <p className="text-muted-foreground">Управление складскими товарами</p>
+        <h1 className="text-3xl font-bold">Канбан-доска лидов</h1>
+        <p className="text-muted-foreground">
+          Перетаскивайте карточки между колонками, чтобы менять статус лидов. Используйте Drag & Drop для быстрого
+          обновления воронки продаж.
+        </p>
       </div>
       <div className="p-6">
         {/* Duplicate alerts */}
