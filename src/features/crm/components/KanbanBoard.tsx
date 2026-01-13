@@ -166,6 +166,11 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
 
   return (
     <div className="relative">
+      {" "}
+      <div>
+        <h1 className="text-3xl font-bold">Склад</h1>
+        <p className="text-muted-foreground">Управление складскими товарами</p>
+      </div>
       <div className="p-6">
         {/* Duplicate alerts */}
         {duplicateGroups.length > 0 && (
@@ -281,9 +286,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
           </div>
         </DragDropContext>
       </div>
-
       <AddLeadDialog open={isAddLeadOpen} onClose={() => setIsAddLeadOpen(false)} onSuccess={refetch} />
-
       <UnifiedLeadModal
         lead={selectedLead}
         isOpen={isModalOpen}
@@ -293,7 +296,6 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         }}
         onLeadUpdate={refetch}
       />
-
       <CongratulationsDialog
         open={isCongratulationsOpen}
         onClose={() => {
