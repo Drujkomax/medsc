@@ -51,7 +51,14 @@
     "youtubePlaceholder": "Kanal nomi",
     "searchByEmail": "Email bo'yicha qidirish...",
     "filterByRole": "Rol bo'yicha saralash",
-    "changeRole": "Rolni o'zgartirish"
+    "changeRole": "Rolni o'zgartirish",
+    "archive": "Arxiv",
+    "categories": "Kategoriyalar",
+    "warehouse": "Ombor",
+    "clinics": "Klinikalar",
+    "analytics": "Analitika",
+    "leads": "Lidlar",
+    "services": "Xizmatlar"
   },
   "products": {
     "title": "Mahsulotlar",
