@@ -51,7 +51,14 @@
     "youtubePlaceholder": "Channel Name",
     "searchByEmail": "Search by email...",
     "filterByRole": "Filter by role",
-    "changeRole": "Change role"
+    "changeRole": "Change role",
+    "archive": "Archive",
+    "categories": "Categories",
+    "warehouse": "Warehouse",
+    "clinics": "Clinics",
+    "analytics": "Analytics",
+    "leads": "Leads",
+    "services": "Services"
   },
   "products": {
     "title": "Products",

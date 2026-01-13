@@ -20,10 +20,10 @@ const AdminLayout = () => {
   
   const navigation = [
     { name: t('admin.dashboard'), href: '/admin' },
-    { name: t('admin.analytics', 'Аналитика'), href: '/admin/analytics' },
-    { name: t('admin.leads', 'Лиды'), href: '/admin/leads' },
+    { name: t('admin.analytics'), href: '/admin/analytics' },
+    { name: t('admin.leads'), href: '/admin/leads' },
     { name: t('admin.products'), href: '/admin/products' },
-    { name: t('admin.services', 'Услуги'), href: '/admin/services' },
+    { name: t('admin.services'), href: '/admin/services' },
     { name: t('admin.contacts'), href: '/admin/contacts' },
   ];
 
