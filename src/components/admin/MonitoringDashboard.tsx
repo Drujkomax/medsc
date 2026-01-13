@@ -91,15 +91,12 @@ const MonitoringDashboard: React.FC = () => {
   const cleanupOldLogs = async (daysToKeep: number = 7) => {
     try {
       const { data, error } = await supabase
-        .rpc('cleanup_old_logs', { days_to_keep: daysToKeep });
+        .rpc('cleanup_old_logs' as any, { days_to_keep: daysToKeep });
 
       if (error) throw error;
       
-      // data возвращает массив с одной строкой, содержащей count
-      const deletedCount = Array.isArray(data) && data.length > 0 ? data[0] : 0;
-      
       toast.success('Логи очищены', {
-        description: `Удалено ${deletedCount} старых записей`
+        description: `Удалено ${data} старых записей`
       });
       
       // Обновляем дашборд
