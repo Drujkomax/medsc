@@ -179,7 +179,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="overflow-x-auto relative">
             {/* Sticky navigation panel with add button - centered relative to kanban container */}
-            <div className="fixed top-0 z-0 flex justify-center py-9 min-w-max">
+            <div className="fixed top-0 z-0 flex justify-center py-4 min-w-max">
               <div className="bg-background/95 backdrop-blur-sm border rounded-full shadow-lg px-4 py-2 flex items-center gap-2">
                 {showNavigation &&
                   stages.map((stage) => (
@@ -203,7 +203,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
               </div>
             </div>
 
-            <div className="flex gap-6 pb-4 min-w-max">
+            <div className="flex gap-6 pt-7 pb-4 min-w-max">
               {stages.map((stage) => (
                 <div
                   key={stage.id}
