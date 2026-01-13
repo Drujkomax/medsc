@@ -168,11 +168,6 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
     <div className="relative">
       <div className="p-6">
         <div>
-          <h1></h1>
-          <p>
-            На этой странице отображаются все лиды по стадиям воронки продаж. Используйте навигацию выше для перехода
-            между стадиями.
-          </p>
           <h2 className="text-3xl font-bold">Канбан-доска лидов</h2>
           <p className="text-muted-foreground">
             На этой странице отображаются все лиды по стадиям воронки продаж. Используйте навигацию выше для перехода
