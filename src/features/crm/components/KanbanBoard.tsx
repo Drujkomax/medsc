@@ -166,13 +166,6 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
 
   return (
     <div className="relative">
-      <div className="p-4">
-        <h1 className="text-3xl font-bold">Канбан-доска лидов</h1>
-        <p className="text-muted-foreground">
-          Перетаскивайте карточки между колонками, чтобы менять статус лидов. Используйте Drag & Drop для быстрого
-          обновления воронки продаж.
-        </p>
-      </div>
       <div className="p-6">
         {/* Duplicate alerts */}
         {duplicateGroups.length > 0 && (
@@ -288,7 +281,9 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
           </div>
         </DragDropContext>
       </div>
+
       <AddLeadDialog open={isAddLeadOpen} onClose={() => setIsAddLeadOpen(false)} onSuccess={refetch} />
+
       <UnifiedLeadModal
         lead={selectedLead}
         isOpen={isModalOpen}
@@ -298,6 +293,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         }}
         onLeadUpdate={refetch}
       />
+
       <CongratulationsDialog
         open={isCongratulationsOpen}
         onClose={() => {

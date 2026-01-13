@@ -67,14 +67,7 @@
     "youtubePlaceholder": "Название канала",
     "searchByEmail": "Поиск по email...",
     "filterByRole": "Фильтр по роли",
-    "changeRole": "Изменить роль",
-    "archive": "Архив",
-    "categories": "Категории",
-    "warehouse": "Склад",
-    "clinics": "Клиники",
-    "analytics": "Аналитика",
-    "leads": "Лиды",
-    "services": "Услуги"
+    "changeRole": "Изменить роль"
   },
   "products": {
     "title": "Товары",
