@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { AlertTriangle, Activity, Shield, TrendingUp, Clock, Users, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
+import { ru, enUS, uz } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 interface SystemLog {
@@ -40,10 +41,19 @@ interface LogStatistics {
 }
 
 const MonitoringDashboard: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [alerts, setAlerts] = useState<SystemAlert[]>([]);
   const [statistics, setStatistics] = useState<LogStatistics[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const getDateLocale = () => {
+    switch (i18n.language) {
+      case 'en': return enUS;
+      case 'uz': return uz;
+      default: return ru;
+    }
+  };
 
   useEffect(() => {
     fetchDashboardData();
@@ -52,7 +62,6 @@ const MonitoringDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // Получаем логи за последние 24 часа
       const oneDayAgo = new Date();
       oneDayAgo.setHours(oneDayAgo.getHours() - 24);
       
@@ -63,7 +72,6 @@ const MonitoringDashboard: React.FC = () => {
         .order('created_at', { ascending: false })
         .limit(100);
 
-      // Получаем активные алерты за последние 24 часа
       const { data: alertsData } = await supabase
         .from('system_alerts')
         .select('*')
@@ -71,7 +79,6 @@ const MonitoringDashboard: React.FC = () => {
         .gte('created_at', oneDayAgo.toISOString())
         .order('created_at', { ascending: false });
 
-      // Получаем статистику логов за последние 7 дней
       const { data: statsData } = await supabase
         .rpc('get_log_statistics', {
           p_start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -90,13 +97,11 @@ const MonitoringDashboard: React.FC = () => {
 
   const cleanupOldLogs = async (daysToKeep: number = 7) => {
     try {
-      // Очистка логов
       const { data: logsDeleted, error: logsError } = await supabase
         .rpc('cleanup_old_logs' as any, { days_to_keep: daysToKeep });
 
       if (logsError) throw logsError;
 
-      // Очистка старых алертов (удаляем acknowledged/resolved алерты старше указанных дней)
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
       
@@ -113,15 +118,14 @@ const MonitoringDashboard: React.FC = () => {
 
       const alertsDeleted = alertsData?.length || 0;
       
-      toast.success('Данные очищены', {
-        description: `Удалено ${logsDeleted || 0} логов и ${alertsDeleted} алертов`
+      toast.success(t('monitoring.dataCleared', 'Данные очищены'), {
+        description: t('monitoring.deletedCount', 'Удалено {{logs}} логов и {{alerts}} алертов', { logs: logsDeleted || 0, alerts: alertsDeleted })
       });
       
-      // Обновляем дашборд
       fetchDashboardData();
     } catch (error) {
       console.error('Error cleaning logs:', error);
-      toast.error('Ошибка при очистке данных');
+      toast.error(t('monitoring.clearError', 'Ошибка при очистке данных'));
     }
   };
 
@@ -173,7 +177,7 @@ const MonitoringDashboard: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center p-8">Загрузка...</div>;
+    return <div className="flex justify-center p-8">{t('common.loading', 'Загрузка...')}</div>;
   }
 
   const totalErrors = statistics.reduce((sum, stat) => sum + stat.error_count, 0);
@@ -184,9 +188,9 @@ const MonitoringDashboard: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Мониторинг системы</h1>
+          <h1 className="text-3xl font-bold">{t('monitoring.title', 'Мониторинг системы')}</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Показаны данные за последние 24 часа
+            {t('monitoring.subtitle', 'Показаны данные за последние 24 часа')}
           </p>
         </div>
         <div className="flex gap-2">
@@ -196,20 +200,20 @@ const MonitoringDashboard: React.FC = () => {
             size="sm"
           >
             <Trash2 className="w-4 h-4 mr-2" />
-            Очистить старые логи
+            {t('monitoring.cleanupLogs', 'Очистить старые логи')}
           </Button>
           <Button onClick={fetchDashboardData} size="sm">
-            Обновить
+            {t('common.refresh', 'Обновить')}
           </Button>
         </div>
       </div>
 
-      {/* Активные алерты */}
+      {/* Active Alerts */}
       {alerts.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xl font-semibold flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-red-500" />
-            Активные алерты ({alerts.length})
+            {t('monitoring.activeAlerts', 'Активные алерты')} ({alerts.length})
           </h2>
           {alerts.map((alert) => (
             <Alert key={alert.id} className="border-red-200">
@@ -224,7 +228,7 @@ const MonitoringDashboard: React.FC = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">{alert.description}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {format(new Date(alert.created_at), 'dd MMM yyyy HH:mm', { locale: ru })}
+                    {format(new Date(alert.created_at), 'dd MMM yyyy HH:mm', { locale: getDateLocale() })}
                   </p>
                 </div>
                 <Button 
@@ -232,7 +236,7 @@ const MonitoringDashboard: React.FC = () => {
                   size="sm"
                   onClick={() => acknowledgeAlert(alert.id)}
                 >
-                  Подтвердить
+                  {t('monitoring.acknowledge', 'Подтвердить')}
                 </Button>
               </AlertDescription>
             </Alert>
@@ -240,64 +244,64 @@ const MonitoringDashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Статистика */}
+      {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Всего логов</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('monitoring.totalLogs', 'Всего логов')}</CardTitle>
             <Activity className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalLogs}</div>
-            <p className="text-xs text-muted-foreground">За последние 7 дней</p>
+            <p className="text-xs text-muted-foreground">{t('monitoring.last7Days', 'За последние 7 дней')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Ошибки</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('monitoring.errors', 'Ошибки')}</CardTitle>
             <AlertTriangle className="w-4 h-4 text-red-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-500">{totalErrors}</div>
-            <p className="text-xs text-muted-foreground">Требуют внимания</p>
+            <p className="text-xs text-muted-foreground">{t('monitoring.requireAttention', 'Требуют внимания')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Предупреждения</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('monitoring.warnings', 'Предупреждения')}</CardTitle>
             <AlertTriangle className="w-4 h-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-500">{totalWarnings}</div>
-            <p className="text-xs text-muted-foreground">Мониторинг</p>
+            <p className="text-xs text-muted-foreground">{t('monitoring.monitoring', 'Мониторинг')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Активные алерты</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('monitoring.activeAlertsCount', 'Активные алерты')}</CardTitle>
             <Clock className="w-4 h-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{alerts.length}</div>
-            <p className="text-xs text-muted-foreground">Требуют действий</p>
+            <p className="text-xs text-muted-foreground">{t('monitoring.requireAction', 'Требуют действий')}</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Детальная информация */}
+      {/* Detailed Information */}
       <Tabs defaultValue="logs" className="w-full">
         <TabsList>
-          <TabsTrigger value="logs">Системные логи</TabsTrigger>
-          <TabsTrigger value="statistics">Статистика</TabsTrigger>
+          <TabsTrigger value="logs">{t('monitoring.systemLogs', 'Системные логи')}</TabsTrigger>
+          <TabsTrigger value="statistics">{t('monitoring.statistics', 'Статистика')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="logs" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Последние системные события</CardTitle>
+              <CardTitle>{t('monitoring.recentEvents', 'Последние системные события')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -312,14 +316,14 @@ const MonitoringDashboard: React.FC = () => {
                         <Badge variant="outline">{log.category}</Badge>
                       </div>
                       <span className="text-xs text-muted-foreground">
-                        {format(new Date(log.created_at), 'dd MMM HH:mm', { locale: ru })}
+                        {format(new Date(log.created_at), 'dd MMM HH:mm', { locale: getDateLocale() })}
                       </span>
                     </div>
                     <p className="text-sm">{log.message}</p>
                     {log.details && Object.keys(log.details).length > 0 && (
                       <details className="text-xs">
                         <summary className="cursor-pointer text-muted-foreground">
-                          Детали события
+                          {t('monitoring.eventDetails', 'Детали события')}
                         </summary>
                         <pre className="mt-2 bg-muted p-2 rounded text-xs overflow-x-auto">
                           {JSON.stringify(log.details, null, 2)}
@@ -336,7 +340,7 @@ const MonitoringDashboard: React.FC = () => {
         <TabsContent value="statistics" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Статистика по дням</CardTitle>
+              <CardTitle>{t('monitoring.dailyStats', 'Статистика по дням')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -344,21 +348,21 @@ const MonitoringDashboard: React.FC = () => {
                   <div key={stat.date} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-medium">
-                        {format(new Date(stat.date), 'dd MMMM yyyy', { locale: ru })}
+                        {format(new Date(stat.date), 'dd MMMM yyyy', { locale: getDateLocale() })}
                       </h3>
                       <span className="text-sm text-muted-foreground">
-                        Всего: {stat.total_logs}
+                        {t('monitoring.total', 'Всего')}: {stat.total_logs}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div className="text-red-500">
-                        Ошибки: {stat.error_count}
+                        {t('monitoring.errors', 'Ошибки')}: {stat.error_count}
                       </div>
                       <div className="text-yellow-500">
-                        Предупреждения: {stat.warn_count}
+                        {t('monitoring.warnings', 'Предупреждения')}: {stat.warn_count}
                       </div>
                       <div className="text-blue-500">
-                        Информация: {stat.info_count}
+                        {t('monitoring.info', 'Информация')}: {stat.info_count}
                       </div>
                     </div>
                     {stat.categories && (

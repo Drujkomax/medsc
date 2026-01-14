@@ -14,6 +14,7 @@ import { UserPlus, Edit, Trash2, Activity, Eye } from 'lucide-react';
 import RoleBasedAccess from '@/components/auth/RoleBasedAccess';
 import ViewEmployeeModal from '@/features/admin/components/ViewEmployeeModal';
 import { useActivityLogger } from '@/hooks/useActivityLogger';
+import { getRoleTranslation } from '@/utils/roleTranslations';
 
 interface Employee {
   id: string;
@@ -34,7 +35,7 @@ interface ActivityLog {
 }
 
 const Employees = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { logActivity } = useActivityLogger();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
@@ -48,19 +49,9 @@ const Employees = () => {
     role: 'salesperson'
   });
 
-  const roleLabels = {
-    'director': 'Директор',
-    'sales_manager': 'Руководитель', 
-    'admin': 'Администратор',
-    'salesperson': 'Специалист по продажам',
-    'accountant': 'Бухгалтер',
-    'engineer': 'Инженер'
-  };
-
   useEffect(() => {
     fetchEmployees();
     fetchActivityLogs();
-    // Логируем посещение страницы
     logActivity('page_view', 'admin_page', 'employees', {
       page: '/admin/employees',
       timestamp: new Date().toISOString()
@@ -69,7 +60,6 @@ const Employees = () => {
 
   const fetchEmployees = async () => {
     try {
-      // Get employee roles
       const { data: rolesData, error: rolesError } = await supabase
         .from('user_roles')
         .select(`
@@ -83,19 +73,17 @@ const Employees = () => {
 
       if (rolesError) throw rolesError;
 
-      // Get employee profiles using the secure function
       const { data: profilesData, error: profilesError } = await supabase
         .rpc('get_employee_profiles');
 
       if (profilesError) throw profilesError;
 
-      // Merge roles with profiles
       const employeesWithProfiles = rolesData?.map(roleItem => {
         const profile = profilesData?.find(p => p.id === roleItem.user_id);
         return {
           id: roleItem.user_id,
-          email: profile?.email || 'Не указан',
-          full_name: profile?.full_name || profile?.email || 'Имя не указано',
+          email: profile?.email || t('employees.notSpecified', 'Не указан'),
+          full_name: profile?.full_name || profile?.email || t('employees.nameNotSpecified', 'Имя не указано'),
           role: roleItem.role,
           created_at: roleItem.created_at,
           last_sign_in_at: null
@@ -105,7 +93,7 @@ const Employees = () => {
       setEmployees(employeesWithProfiles);
     } catch (error) {
       console.error('Error fetching employees:', error);
-      toast.error('Ошибка при загрузке сотрудников');
+      toast.error(t('employees.loadError', 'Ошибка при загрузке сотрудников'));
     } finally {
       setLoading(false);
     }
@@ -128,14 +116,12 @@ const Employees = () => {
 
   const handleAddEmployee = async () => {
     try {
-      // Create user through Supabase Auth Admin API would be needed here
-      // For now, we'll create a placeholder
-      toast.success('Функция создания сотрудников будет реализована в следующей версии');
+      toast.success(t('employees.createFeatureComingSoon', 'Функция создания сотрудников будет реализована в следующей версии'));
       setIsAddDialogOpen(false);
       setNewEmployeeData({ email: '', password: '', role: 'salesperson' });
     } catch (error) {
       console.error('Error adding employee:', error);
-      toast.error('Ошибка при добавлении сотрудника');
+      toast.error(t('employees.addError', 'Ошибка при добавлении сотрудника'));
     }
   };
 
@@ -148,11 +134,11 @@ const Employees = () => {
 
       if (error) throw error;
 
-      toast.success('Сотрудник удален');
+      toast.success(t('employees.deleted', 'Сотрудник удален'));
       fetchEmployees();
     } catch (error) {
       console.error('Error deleting employee:', error);
-      toast.error('Ошибка при удалении сотрудника');
+      toast.error(t('employees.deleteError', 'Ошибка при удалении сотрудника'));
     }
   };
 
@@ -168,21 +154,21 @@ const Employees = () => {
     <RoleBasedAccess roles={['director']}>
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Управление сотрудниками</h1>
+          <h1 className="text-3xl font-bold">{t('employees.title', 'Управление сотрудниками')}</h1>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <UserPlus className="w-4 h-4 mr-2" />
-                Добавить сотрудника
+                {t('employees.addEmployee', 'Добавить сотрудника')}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Добавить нового сотрудника</DialogTitle>
+                <DialogTitle>{t('employees.addNewEmployee', 'Добавить нового сотрудника')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('employees.email', 'Email')}</Label>
                   <Input
                     id="email"
                     type="email"
@@ -192,31 +178,31 @@ const Employees = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="password">Пароль</Label>
+                  <Label htmlFor="password">{t('employees.password', 'Пароль')}</Label>
                   <Input
                     id="password"
                     type="password"
                     value={newEmployeeData.password}
                     onChange={(e) => setNewEmployeeData(prev => ({ ...prev, password: e.target.value }))}
-                    placeholder="Минимум 6 символов"
+                    placeholder={t('employees.minChars', 'Минимум 6 символов')}
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role">Роль</Label>
+                  <Label htmlFor="role">{t('employees.role', 'Роль')}</Label>
                   <Select value={newEmployeeData.role} onValueChange={(value) => setNewEmployeeData(prev => ({ ...prev, role: value }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="salesperson">Специалист по продажам</SelectItem>
-                      <SelectItem value="sales_manager">Руководитель</SelectItem>
-                      <SelectItem value="accountant">Бухгалтер</SelectItem>
-                      <SelectItem value="engineer">Инженер</SelectItem>
+                      <SelectItem value="salesperson">{t('roles.salesperson', 'Специалист по продажам')}</SelectItem>
+                      <SelectItem value="sales_manager">{t('roles.salesManager', 'Руководитель')}</SelectItem>
+                      <SelectItem value="accountant">{t('roles.accountant', 'Бухгалтер')}</SelectItem>
+                      <SelectItem value="engineer">{t('roles.engineer', 'Инженер')}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <Button onClick={handleAddEmployee} className="w-full">
-                  Создать сотрудника
+                  {t('employees.create', 'Создать сотрудника')}
                 </Button>
               </div>
             </DialogContent>
@@ -227,7 +213,7 @@ const Employees = () => {
           {/* Employees List */}
           <Card>
             <CardHeader>
-              <CardTitle>Список сотрудников</CardTitle>
+              <CardTitle>{t('employees.list', 'Список сотрудников')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -239,10 +225,10 @@ const Employees = () => {
                         <p className="text-sm text-muted-foreground">{employee.email}</p>
                         <div className="flex items-center space-x-2 mt-1">
                           <Badge variant="outline">
-                            {roleLabels[employee.role as keyof typeof roleLabels]}
+                            {getRoleTranslation(employee.role, i18n.language)}
                           </Badge>
                           <span className="text-sm text-muted-foreground">
-                            Создан: {new Date(employee.created_at).toLocaleDateString('ru-RU')}
+                            {t('employees.created', 'Создан')}: {new Date(employee.created_at).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'uz' ? 'uz-UZ' : 'en-US')}
                           </span>
                         </div>
                       </div>
@@ -273,7 +259,7 @@ const Employees = () => {
                 ))}
                 {employees.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">
-                    Сотрудники не найдены
+                    {t('employees.notFound', 'Сотрудники не найдены')}
                   </p>
                 )}
               </div>
@@ -285,7 +271,7 @@ const Employees = () => {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Activity className="w-5 h-5" />
-                <span>Журнал активности</span>
+                <span>{t('employees.activityLog', 'Журнал активности')}</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -295,7 +281,7 @@ const Employees = () => {
                     <div className="flex justify-between items-start">
                       <span className="font-medium">{log.action}</span>
                       <span className="text-xs text-muted-foreground">
-                        {new Date(log.created_at).toLocaleString('ru-RU')}
+                        {new Date(log.created_at).toLocaleString(i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'uz' ? 'uz-UZ' : 'en-US')}
                       </span>
                     </div>
                     <p className="text-muted-foreground mt-1">
@@ -305,7 +291,7 @@ const Employees = () => {
                 ))}
                 {activityLogs.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">
-                    Записи активности не найдены
+                    {t('employees.noActivityLogs', 'Записи активности не найдены')}
                   </p>
                 )}
               </div>
