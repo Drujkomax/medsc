@@ -90,20 +90,38 @@ const MonitoringDashboard: React.FC = () => {
 
   const cleanupOldLogs = async (daysToKeep: number = 7) => {
     try {
-      const { data, error } = await supabase
+      // Очистка логов
+      const { data: logsDeleted, error: logsError } = await supabase
         .rpc('cleanup_old_logs' as any, { days_to_keep: daysToKeep });
 
-      if (error) throw error;
+      if (logsError) throw logsError;
+
+      // Очистка старых алертов (удаляем acknowledged/resolved алерты старше указанных дней)
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - daysToKeep);
       
-      toast.success('Логи очищены', {
-        description: `Удалено ${data} старых записей`
+      const { data: alertsData, error: alertsError } = await supabase
+        .from('system_alerts')
+        .delete()
+        .or(`status.eq.acknowledged,status.eq.resolved`)
+        .lt('created_at', cutoffDate.toISOString())
+        .select('id');
+
+      if (alertsError) {
+        console.error('Error cleaning alerts:', alertsError);
+      }
+
+      const alertsDeleted = alertsData?.length || 0;
+      
+      toast.success('Данные очищены', {
+        description: `Удалено ${logsDeleted || 0} логов и ${alertsDeleted} алертов`
       });
       
       // Обновляем дашборд
       fetchDashboardData();
     } catch (error) {
       console.error('Error cleaning logs:', error);
-      toast.error('Ошибка при очистке логов');
+      toast.error('Ошибка при очистке данных');
     }
   };
 

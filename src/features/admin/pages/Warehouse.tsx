@@ -4,7 +4,7 @@ import { AddWarehouseItemDialog } from '../components/Warehouse/AddWarehouseItem
 import { EditWarehouseItemDialog } from '../components/Warehouse/EditWarehouseItemDialog';
 import { WarehouseFiltersPanel, WarehouseFilters } from '../components/Warehouse/WarehouseFiltersPanel';
 import { BulkActionsDialog } from '../components/Warehouse/BulkActionsDialog';
-import { SeedWarehouseButton } from '../components/Warehouse/SeedWarehouseButton';
+
 import { WarehouseActivityLog } from '../components/Warehouse/WarehouseActivityLog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -178,8 +178,7 @@ export const Warehouse = () => {
           <p className="text-muted-foreground">Управление складскими товарами</p>
         </div>
         <div className="flex gap-2">
-          <SeedWarehouseButton />
-          <WarehouseFiltersPanel 
+          <WarehouseFiltersPanel
             filters={filters} 
             onFiltersChange={setFilters}
             locations={locations}
