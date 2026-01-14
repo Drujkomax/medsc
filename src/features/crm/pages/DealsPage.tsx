@@ -77,7 +77,7 @@ const DealsPage = () => {
 
   const quickStats = isAccountant ? [
     {
-      title: 'Ожидание',
+      title: t('deals.payment.waiting', 'Ожидание'),
       value: waitingDeals.toString(),
       icon: Calendar,
       color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20',
@@ -85,7 +85,7 @@ const DealsPage = () => {
       changeType: 'neutral' as const
     },
     {
-      title: 'Оплачено',
+      title: t('deals.payment.paid', 'Оплачено'),
       value: paidDeals.toString(),
       icon: DollarSign,
       color: 'text-green-600 bg-green-50 dark:bg-green-900/20',
@@ -93,7 +93,7 @@ const DealsPage = () => {
       changeType: 'positive' as const
     },
     {
-      title: 'Не реализовано',
+      title: t('deals.payment.notRealized', 'Не реализовано'),
       value: notRealizedDeals.toString(),
       icon: Users,
       color: 'text-orange-600 bg-orange-50 dark:bg-orange-900/20',
@@ -101,7 +101,7 @@ const DealsPage = () => {
       changeType: 'neutral' as const
     },
     {
-      title: 'Задолженность',
+      title: t('deals.payment.debt', 'Задолженность'),
       value: debtorsCount.toString(),
       icon: TrendingUp,
       color: 'text-red-600 bg-red-50 dark:bg-red-900/20',
@@ -213,8 +213,8 @@ const DealsPage = () => {
                   <AlertCircle className="w-10 h-10 text-white" />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-semibold text-red-700 dark:text-red-400 uppercase tracking-wider mb-2">
-                    ⚠️ Общая сумма задолженности
+                <p className="text-sm font-semibold text-red-700 dark:text-red-400 uppercase tracking-wider mb-2">
+                    ⚠️ {t('deals.totalDebt', 'Общая сумма задолженности')}
                   </p>
                   <p className="text-5xl font-black text-red-600 dark:text-red-400 tracking-tight">
                     {totalDebtAmount.toLocaleString('ru-RU', {
@@ -242,7 +242,7 @@ const DealsPage = () => {
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">Аналитика</span>
+              <span className="hidden sm:inline">{t('deals.analytics', 'Аналитика')}</span>
             </TabsTrigger>
           </TabsList>
           

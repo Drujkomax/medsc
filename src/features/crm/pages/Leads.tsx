@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,6 +46,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 
 const Leads = () => {
+  const { t } = useTranslation();
   // Force cache refresh
   const { toast } = useToast();
   const { leads, loading, deleteLead, archiveLead, changeLeadStage, refetch } = useLeads();
@@ -72,13 +74,13 @@ const Leads = () => {
   // Helper functions for lead stages
   const getStageLabel = (stage: string) => {
     const stageMap: Record<string, string> = {
-      new: 'Новый',
-      contacted: 'Связались',
-      qualified: 'Квалифицирован',
-      proposal: 'Отправил КП',
-      negotiation: 'Переговоры',
-      closed: 'Успешно',
-      lost: 'Отказ'
+      new: t('leads.stages.new', 'Новый'),
+      contacted: t('leads.stages.contacted', 'Связались'),
+      qualified: t('leads.stages.qualified', 'Квалифицирован'),
+      proposal: t('leads.stages.proposal', 'Отправил КП'),
+      negotiation: t('leads.stages.negotiation', 'Переговоры'),
+      closed: t('leads.stages.closed', 'Успешно'),
+      lost: t('leads.stages.lost', 'Отказ')
     };
     return stageMap[stage] || stage;
   };
@@ -98,7 +100,7 @@ const Leads = () => {
 
   const getAssignedUserName = (userId: string) => {
     const employee = employees.find(emp => emp.id === userId);
-    return employee ? employee.email : 'Назначен';
+    return employee ? employee.email : t('leads.assigned', 'Назначен');
   };
 
   const handleAssignLead = async (leadId: string, assigneeId: string | null) => {
@@ -115,27 +117,27 @@ const Leads = () => {
       
       await refetch();
       toast({
-        title: 'Успешно',
-        description: assigneeId ? 'Лид назначен' : 'Назначение лида снято',
+        title: t('common.success', 'Успешно'),
+        description: assigneeId ? t('leads.leadAssigned', 'Лид назначен') : t('leads.leadUnassigned', 'Назначение лида снято'),
       });
     } catch (error) {
       console.error('Error assigning lead:', error);
       toast({
-        title: 'Ошибка',
-        description: 'Ошибка при назначении лида',
+        title: t('common.error', 'Ошибка'),
+        description: t('leads.assignError', 'Ошибка при назначении лида'),
         variant: 'destructive',
       });
     }
   };
 
   const leadStages = [
-    { value: 'new', label: 'Новые', count: 0, color: 'bg-blue-500' },
-    { value: 'contacted', label: 'Связались', count: 0, color: 'bg-yellow-500' },
-    { value: 'qualified', label: 'Квалифицированы', count: 0, color: 'bg-purple-500' },
-    { value: 'proposal', label: 'Отправил КП', count: 0, color: 'bg-orange-500' },
-    { value: 'negotiation', label: 'Переговоры', count: 0, color: 'bg-indigo-500' },
-    { value: 'closed', label: 'Успешно', count: 0, color: 'bg-green-500' },
-    { value: 'lost', label: 'Отказ', count: 0, color: 'bg-red-500' },
+    { value: 'new', label: t('leads.stages.new', 'Новые'), count: 0, color: 'bg-blue-500' },
+    { value: 'contacted', label: t('leads.stages.contacted', 'Связались'), count: 0, color: 'bg-yellow-500' },
+    { value: 'qualified', label: t('leads.stages.qualified', 'Квалифицированы'), count: 0, color: 'bg-purple-500' },
+    { value: 'proposal', label: t('leads.stages.proposal', 'Отправил КП'), count: 0, color: 'bg-orange-500' },
+    { value: 'negotiation', label: t('leads.stages.negotiation', 'Переговоры'), count: 0, color: 'bg-indigo-500' },
+    { value: 'closed', label: t('leads.stages.closed', 'Успешно'), count: 0, color: 'bg-green-500' },
+    { value: 'lost', label: t('leads.stages.lost', 'Отказ'), count: 0, color: 'bg-red-500' },
   ];
 
   useEffect(() => {
@@ -443,16 +445,16 @@ const Leads = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-bold">Лиды</h2>
+          <h2 className="text-3xl font-bold">{t('leads.title', 'Лиды')}</h2>
           <p className="text-muted-foreground">
-            Управление заявками клиентов
-            {selectedLeadIds.length > 0 && ` | Выбрано: ${selectedLeadIds.length}`}
+            {t('leads.subtitle', 'Управление заявками клиентов')}
+            {selectedLeadIds.length > 0 && ` | ${t('leads.selected', 'Выбрано')}: ${selectedLeadIds.length}`}
           </p>
         </div>
         <RoleBasedAccess roles={['director', 'admin', 'sales_manager', 'salesperson']}>
           <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Добавить лида
+            {t('leads.addLead', 'Добавить лида')}
           </Button>
         </RoleBasedAccess>
       </div>
@@ -462,14 +464,14 @@ const Leads = () => {
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="pt-6">
             <div className="flex flex-wrap gap-3 items-center">
-              <span className="text-sm font-medium">Массовые действия:</span>
+              <span className="text-sm font-medium">{t('leads.bulkActions', 'Массовые действия')}:</span>
               <Select onValueChange={handleBulkAssign}>
                 <SelectTrigger className="w-[250px]">
-                  <SelectValue placeholder="Назначить на..." />
+                  <SelectValue placeholder={t('leads.assignTo', 'Назначить на...')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="unassign">
-                    ❌ Снять назначение
+                    ❌ {t('leads.removeAssignment', 'Снять назначение')}
                   </SelectItem>
                   {employees.map((emp) => (
                     <SelectItem key={emp.id} value={emp.id}>
@@ -480,10 +482,10 @@ const Leads = () => {
               </Select>
               <Button variant="destructive" onClick={handleBulkArchive}>
                 <Archive className="mr-2 h-4 w-4" />
-                Архивировать ({selectedLeadIds.length})
+                {t('leads.archive', 'Архивировать')} ({selectedLeadIds.length})
               </Button>
               <Button variant="outline" onClick={() => setSelectedLeadIds([])}>
-                Отменить выбор
+                {t('leads.cancelSelection', 'Отменить выбор')}
               </Button>
             </div>
           </CardContent>
@@ -495,7 +497,7 @@ const Leads = () => {
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-orange-600" />
-            <h3 className="text-lg font-semibold">Обнаружены дубликаты</h3>
+            <h3 className="text-lg font-semibold">{t('leads.duplicatesDetected', 'Обнаружены дубликаты')}</h3>
           </div>
           {duplicateGroups.slice(0, 3).map((group, index) => (
             <DuplicateAlert 
@@ -506,7 +508,7 @@ const Leads = () => {
           ))}
           {duplicateGroups.length > 3 && (
             <p className="text-sm text-muted-foreground">
-              И еще {duplicateGroups.length - 3} групп дубликатов...
+              {t('leads.moreDuplicates', 'И еще {{count}} групп дубликатов...', { count: duplicateGroups.length - 3 })}
             </p>
           )}
         </div>
@@ -521,7 +523,7 @@ const Leads = () => {
               <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-primary" />
               <div>
                 <p className="text-xs md:text-sm font-medium leading-tight">
-                  {role === 'salesperson' ? 'Мои лиды' : 'Всего лидов'}
+                  {role === 'salesperson' ? t('leads.myLeads', 'Мои лиды') : t('leads.totalLeads', 'Всего лидов')}
                 </p>
                 <p className="text-lg md:text-2xl font-bold">
                   {role === 'salesperson' 
@@ -562,7 +564,7 @@ const Leads = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Поиск..."
+                  placeholder={t('common.search', 'Поиск...')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -574,10 +576,10 @@ const Leads = () => {
               <Select value={stageFilter} onValueChange={setStageFilter}>
                 <SelectTrigger>
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Фильтр по статусу" />
+                  <SelectValue placeholder={t('leads.filterByStatus', 'Фильтр по статусу')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Все статусы</SelectItem>
+                  <SelectItem value="all">{t('leads.allStatuses', 'Все статусы')}</SelectItem>
                   {leadStages.map((stage) => (
                     <SelectItem key={stage.value} value={stage.value}>
                       {stage.label}
@@ -591,13 +593,13 @@ const Leads = () => {
               <Select value={qualityFilter} onValueChange={setQualityFilter}>
                 <SelectTrigger>
                   <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Качество лида" />
+                  <SelectValue placeholder={t('leads.leadQuality', 'Качество лида')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Все качества</SelectItem>
-                  <SelectItem value="A">A - Целевой</SelectItem>
-                  <SelectItem value="B">B - Потенциальный</SelectItem>
-                  <SelectItem value="C">C - Мусор</SelectItem>
+                  <SelectItem value="all">{t('leads.allQualities', 'Все качества')}</SelectItem>
+                  <SelectItem value="A">{t('leads.qualityA', 'A - Целевой')}</SelectItem>
+                  <SelectItem value="B">{t('leads.qualityB', 'B - Потенциальный')}</SelectItem>
+                  <SelectItem value="C">{t('leads.qualityC', 'C - Мусор')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -607,11 +609,11 @@ const Leads = () => {
                 <Select value={assignedFilter} onValueChange={setAssignedFilter}>
                   <SelectTrigger>
                     <User className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Назначен" />
+                    <SelectValue placeholder={t('leads.assignedTo', 'Назначен')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Все</SelectItem>
-                    <SelectItem value="unassigned">Не назначен</SelectItem>
+                    <SelectItem value="all">{t('common.all', 'Все')}</SelectItem>
+                    <SelectItem value="unassigned">{t('leads.notAssigned', 'Не назначен')}</SelectItem>
                     {employees.map((employee) => (
                       <SelectItem key={employee.id} value={employee.id}>
                         {employee.email}
@@ -681,9 +683,9 @@ const Leads = () => {
           {filteredAndSortedLeads.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8">
               <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Лиды не найдены</h3>
+              <h3 className="text-lg font-medium mb-2">{t('leads.noLeadsFound', 'Лиды не найдены')}</h3>
               <p className="text-muted-foreground text-center">
-                Попробуйте изменить фильтры или добавить новых лидов
+                {t('leads.tryFilters', 'Попробуйте изменить фильтры или добавить новых лидов')}
               </p>
             </div>
           ) : (

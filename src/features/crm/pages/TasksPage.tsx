@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTasks } from '@/hooks/useTasks';
 import { useLeads } from '@/hooks/useLeads';
 import { useDeals } from '@/hooks/useDeals';
@@ -17,6 +18,7 @@ import { toast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 const TasksPage = () => {
+  const { t } = useTranslation();
   const { tasks, loading, deleteTask, completeTask, reopenTask } = useTasks();
   const { leads } = useLeads();
   const { deals } = useDeals();
@@ -73,13 +75,13 @@ const TasksPage = () => {
     try {
       await deleteTask(taskId);
       toast({
-        title: "Задача удалена",
-        description: "Задача успешно удалена",
+        title: t('tasks.taskDeleted', 'Задача удалена'),
+        description: t('tasks.taskDeletedDesc', 'Задача успешно удалена'),
       });
     } catch (error) {
       toast({
-        title: "Ошибка",
-        description: "Не удалось удалить задачу",
+        title: t('common.error', 'Ошибка'),
+        description: t('tasks.deleteError', 'Не удалось удалить задачу'),
         variant: "destructive",
       });
     }
@@ -89,13 +91,13 @@ const TasksPage = () => {
     try {
       await completeTask(taskId);
       toast({
-        title: "Задача выполнена",
-        description: "Задача отмечена как выполненная",
+        title: t('tasks.taskCompleted', 'Задача выполнена'),
+        description: t('tasks.taskCompletedDesc', 'Задача отмечена как выполненная'),
       });
     } catch (error) {
       toast({
-        title: "Ошибка",
-        description: "Не удалось обновить статус задачи",
+        title: t('common.error', 'Ошибка'),
+        description: t('tasks.statusError', 'Не удалось обновить статус задачи'),
         variant: "destructive",
       });
     }
@@ -114,13 +116,13 @@ const TasksPage = () => {
     try {
       await reopenTask(reopeningTask.id, comment);
       toast({
-        title: "Задача отправлена на переработку",
-        description: "Задача возвращена в статус 'В ожидании'",
+        title: t('tasks.taskReopened', 'Задача отправлена на переработку'),
+        description: t('tasks.taskReopenedDesc', "Задача возвращена в статус 'В ожидании'"),
       });
     } catch (error) {
       toast({
-        title: "Ошибка",
-        description: "Не удалось отправить задачу на переработку",
+        title: t('common.error', 'Ошибка'),
+        description: t('tasks.reopenError', 'Не удалось отправить задачу на переработку'),
         variant: "destructive",
       });
     }
@@ -208,12 +210,12 @@ const TasksPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Управление задачами</h1>
+          <h1 className="text-3xl font-bold">{t('tasks.title', 'Управление задачами')}</h1>
           <p className="text-muted-foreground">
-            {stats.total} {stats.total === 1 ? 'задача' : stats.total < 5 ? 'задачи' : 'задач'} • 
+            {stats.total} {stats.total === 1 ? t('tasks.taskSingular', 'задача') : stats.total < 5 ? t('tasks.taskPlural', 'задачи') : t('tasks.taskMany', 'задач')} • 
             {stats.overdue > 0 && (
               <span className="text-red-600 ml-1">
-                {stats.overdue} просроченных
+                {stats.overdue} {t('tasks.overdue', 'просроченных')}
               </span>
             )}
           </p>
@@ -221,7 +223,7 @@ const TasksPage = () => {
         {(role === 'director' || role === 'sales_manager') && (
           <Button onClick={handleAddTask} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
-            Новая задача
+            {t('tasks.newTask', 'Новая задача')}
           </Button>
         )}
       </div>
@@ -230,7 +232,7 @@ const TasksPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Всего задач</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('tasks.stats.total', 'Всего задач')}</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -240,7 +242,7 @@ const TasksPage = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">В ожидании</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('tasks.stats.pending', 'В ожидании')}</CardTitle>
             <Clock className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
@@ -250,7 +252,7 @@ const TasksPage = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">В работе</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('tasks.stats.inProgress', 'В работе')}</CardTitle>
             <Calendar className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
@@ -260,7 +262,7 @@ const TasksPage = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Выполнено</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('tasks.stats.completed', 'Выполнено')}</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -270,7 +272,7 @@ const TasksPage = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Просрочено</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('tasks.stats.overdue', 'Просрочено')}</CardTitle>
             <AlertTriangle className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
@@ -282,7 +284,7 @@ const TasksPage = () => {
       {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Фильтры</CardTitle>
+          <CardTitle className="text-lg">{t('common.filters', 'Фильтры')}</CardTitle>
         </CardHeader>
         <CardContent>
           <TaskFilters
@@ -310,18 +312,18 @@ const TasksPage = () => {
           <CardContent className="py-12 text-center">
             <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium mb-2">
-              {tasks?.length === 0 ? 'Пока нет задач' : 'Задачи не найдены'}
+              {tasks?.length === 0 ? t('tasks.noTasks', 'Пока нет задач') : t('tasks.noTasksFound', 'Задачи не найдены')}
             </h3>
             <p className="text-muted-foreground mb-4">
               {tasks?.length === 0 
-                ? 'Создайте первую задачу для начала работы'
-                : 'Попробуйте изменить фильтры поиска'
+                ? t('tasks.createFirst', 'Создайте первую задачу для начала работы')
+                : t('tasks.tryFilters', 'Попробуйте изменить фильтры поиска')
               }
             </p>
             {tasks?.length === 0 && (role === 'director' || role === 'sales_manager') && (
               <Button onClick={handleAddTask}>
                 <Plus className="h-4 w-4 mr-2" />
-                Создать задачу
+                {t('tasks.createTask', 'Создать задачу')}
               </Button>
             )}
           </CardContent>

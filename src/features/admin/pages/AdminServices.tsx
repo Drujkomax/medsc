@@ -76,21 +76,21 @@ const AdminServices = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Самая популярная категория</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('services.popularCategory', 'Самая популярная категория')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Консультации</div>
-            <p className="text-xs text-muted-foreground">Наиболее запрашиваемая</p>
+            <div className="text-2xl font-bold">{t('services.consultations', 'Консультации')}</div>
+            <p className="text-xs text-muted-foreground">{t('services.mostRequested', 'Наиболее запрашиваемая')}</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Средняя стоимость</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('services.avgCost', 'Средняя стоимость')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">1,200,000</div>
-            <p className="text-xs text-muted-foreground">сум за услугу</p>
+            <p className="text-xs text-muted-foreground">{t('services.perService', 'сум за услугу')}</p>
           </CardContent>
         </Card>
       </div>
@@ -98,7 +98,7 @@ const AdminServices = () => {
       {/* Таблица услуг */}
       <Card>
         <CardHeader>
-          <CardTitle>Список услуг</CardTitle>
+          <CardTitle>{t('services.servicesList', 'Список услуг')}</CardTitle>
         </CardHeader>
         <CardContent>
           {!services || services.length === 0 ? (
@@ -138,7 +138,7 @@ const AdminServices = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {service.price ? `${service.price} ${service.currency}` : 'По запросу'}
+                      {service.price ? `${service.price} ${service.currency}` : t('common.onRequest', 'По запросу')}
                     </TableCell>
                     <TableCell>
                       <Badge variant={service.status === 'active' ? 'default' : 'secondary'}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +28,7 @@ import DraftManager from '../components/DraftManager';
 import { getCountryName } from '@/utils/countries';
 
 const AdminProducts = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { hasPermission } = useUserPermissions();
@@ -60,9 +62,9 @@ const AdminProducts = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-green-100 text-green-800">Активный</Badge>;
+        return <Badge className="bg-green-100 text-green-800">{t('products.status.active', 'Активный')}</Badge>;
       case 'draft':
-        return <Badge variant="secondary">Черновик</Badge>;
+        return <Badge variant="secondary">{t('products.status.draft', 'Черновик')}</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -97,7 +99,7 @@ const AdminProducts = () => {
       <div className="flex items-center justify-center h-64">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-8 w-8 animate-spin" />
-          <span className="text-lg">Загружаем товары...</span>
+          <span className="text-lg">{t('products.loading', 'Загружаем товары...')}</span>
         </div>
       </div>
     );
@@ -106,7 +108,7 @@ const AdminProducts = () => {
   if (error) {
     return (
       <div className="text-center py-16">
-        <h2 className="text-2xl font-bold text-destructive mb-2">Ошибка загрузки</h2>
+        <h2 className="text-2xl font-bold text-destructive mb-2">{t('common.loadError', 'Ошибка загрузки')}</h2>
         <p className="text-muted-foreground">{error}</p>
       </div>
     );
@@ -116,8 +118,8 @@ const AdminProducts = () => {
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Управление товарами</h1>
-          <p className="text-muted-foreground">Создавайте, редактируйте и управляйте товарами в каталоге</p>
+          <h1 className="text-3xl font-bold">{t('products.title', 'Управление товарами')}</h1>
+          <p className="text-muted-foreground">{t('products.subtitle', 'Создавайте, редактируйте и управляйте товарами в каталоге')}</p>
         </div>
         {hasPermission('manage_products') && <AddProductDialog />}
       </div>
@@ -128,7 +130,7 @@ const AdminProducts = () => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Package className="w-4 h-4 text-primary" />
-              Всего товаров
+              {t('products.stats.total', 'Всего товаров')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -140,7 +142,7 @@ const AdminProducts = () => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Package className="w-4 h-4 text-green-500" />
-              Активные
+              {t('products.stats.active', 'Активные')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -154,7 +156,7 @@ const AdminProducts = () => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <FileText className="w-4 h-4 text-orange-500" />
-              Черновики
+              {t('products.stats.drafts', 'Черновики')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -168,7 +170,7 @@ const AdminProducts = () => {
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
               <Archive className="w-4 h-4 text-red-500" />
-              В архиве
+              {t('products.stats.archived', 'В архиве')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -182,20 +184,20 @@ const AdminProducts = () => {
       <div className="space-y-6">
         <Tabs defaultValue="active" className="w-full">
           <TabsList className={`grid w-full ${hasPermission('view_products') && hasPermission('view_archive') ? 'grid-cols-3' : hasPermission('view_products') || hasPermission('view_archive') ? 'grid-cols-2' : 'grid-cols-1'}`}>
-            <TabsTrigger value="active">Активные</TabsTrigger>
-            {hasPermission('view_products') && <TabsTrigger value="drafts">Черновики</TabsTrigger>}
-            {hasPermission('view_archive') && <TabsTrigger value="archived">Архив</TabsTrigger>}
+            <TabsTrigger value="active">{t('products.tabs.active', 'Активные')}</TabsTrigger>
+            {hasPermission('view_products') && <TabsTrigger value="drafts">{t('products.tabs.drafts', 'Черновики')}</TabsTrigger>}
+            {hasPermission('view_archive') && <TabsTrigger value="archived">{t('products.tabs.archived', 'Архив')}</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="active" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Активные товары</CardTitle>
+                <CardTitle>{t('products.activeProducts', 'Активные товары')}</CardTitle>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <Input
-                      placeholder="Поиск товаров..."
+                      placeholder={t('products.searchPlaceholder', 'Поиск товаров...')}
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                       className="pl-10"
