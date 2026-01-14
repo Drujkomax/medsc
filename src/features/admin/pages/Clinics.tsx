@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useClients, type ClientWithStockInfo, type Client } from '@/hooks/useClients';
 import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { logClinicActivity } from '@/hooks/useClinicActivityLogs';
@@ -16,14 +17,8 @@ import ClinicDetailView from '@/features/admin/components/Clients/ClinicDetailVi
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Helmet } from 'react-helmet-async';
 
-const CONTRACT_STATUS_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  active: { label: 'Активный', variant: 'default' },
-  onboarding: { label: 'Онбординг', variant: 'secondary' },
-  suspended: { label: 'Приостановлен', variant: 'destructive' },
-  expired: { label: 'Истёк', variant: 'outline' },
-};
-
 export default function Clinics() {
+  const { t } = useTranslation();
   const { clients, loading, addClient, updateClient, deleteClient, archiveClient, getClientsWithLowStock, refetch } = useClients();
   const { employees } = useEmployeesByRole();
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,6 +27,13 @@ export default function Clinics() {
   const [viewingClientId, setViewingClientId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [lowStockClients, setLowStockClients] = useState<ClientWithStockInfo[]>([]);
+
+  const CONTRACT_STATUS_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+    active: { label: t('clinics.status.active', 'Активный'), variant: 'default' },
+    onboarding: { label: t('clinics.status.onboarding', 'Онбординг'), variant: 'secondary' },
+    suspended: { label: t('clinics.status.suspended', 'Приостановлен'), variant: 'destructive' },
+    expired: { label: t('clinics.status.expired', 'Истёк'), variant: 'outline' },
+  };
 
   useEffect(() => {
     loadLowStockClients();
@@ -59,7 +61,7 @@ export default function Clinics() {
 
   const handleArchive = async (id: string) => {
     const clientToArchive = clients.find(c => c.id === id);
-    if (confirm('Вы уверены, что хотите архивировать эту клинику?')) {
+    if (confirm(t('clinics.confirmArchive', 'Вы уверены, что хотите архивировать эту клинику?'))) {
       await archiveClient(id);
       if (clientToArchive) {
         await logClinicActivity(id, 'archived', `Клиника "${clientToArchive.name}" архивирована`);
@@ -70,7 +72,6 @@ export default function Clinics() {
 
   const handleDelete = async () => {
     if (deleteConfirmId) {
-      // Note: Activity log for delete is not stored since the client record is cascade-deleted
       await deleteClient(deleteConfirmId);
       setDeleteConfirmId(null);
       refetch();
@@ -104,9 +105,9 @@ export default function Clinics() {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <Helmet>
-        <title>Клиники — Панель управления | Med Service Centre</title>
+        <title>{t('clinics.pageTitle', 'Клиники — Панель управления | Med Service Centre')}</title>
         <meta name="robots" content="noindex, nofollow" />
-        <meta name="description" content="Управление клиниками и их инвентарем медицинского оборудования" />
+        <meta name="description" content={t('clinics.pageDescription', 'Управление клиниками и их инвентарем медицинского оборудования')} />
         <link rel="canonical" href="https://medsc.uz/admin/clinics" />
       </Helmet>
       
@@ -115,31 +116,31 @@ export default function Clinics() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Building2 className="h-8 w-8" />
-            Клиники — Управление клиентами
+            {t('clinics.title', 'Клиники — Управление клиентами')}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Управление клиентами и их инвентарем медицинского оборудования
+            {t('clinics.subtitle', 'Управление клиентами и их инвентарем медицинского оборудования')}
           </p>
         </div>
         <Button onClick={() => setIsAddDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Добавить клинику
+          {t('clinics.addClinic', 'Добавить клинику')}
         </Button>
       </header>
 
       {/* Internal Navigation Links */}
-      <nav className="flex flex-wrap gap-2" aria-label="Связанные разделы">
+      <nav className="flex flex-wrap gap-2" aria-label={t('clinics.relatedSections', 'Связанные разделы')}>
         <Link to="/admin/warehouse" className="text-sm text-primary hover:underline flex items-center gap-1">
           <Package className="h-4 w-4" />
-          Склад
+          {t('admin.warehouse', 'Склад')}
         </Link>
         <Link to="/admin/leads" className="text-sm text-primary hover:underline flex items-center gap-1">
           <FileText className="h-4 w-4" />
-          Лиды
+          {t('admin.leads', 'Лиды')}
         </Link>
         <Link to="/admin/analytics" className="text-sm text-primary hover:underline flex items-center gap-1">
           <BarChart3 className="h-4 w-4" />
-          Аналитика
+          {t('admin.analytics', 'Аналитика')}
         </Link>
       </nav>
 
@@ -148,11 +149,11 @@ export default function Clinics() {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            <strong>Низкие остатки у клиник:</strong>{' '}
+            <strong>{t('clinics.lowStockAlert', 'Низкие остатки у клиник:')}</strong>{' '}
             {lowStockClients.map((c, i) => (
               <span key={c.client_id}>
                 {i > 0 && ', '}
-                {c.client_name} ({c.critical_count} критических, {c.low_stock_count} низких)
+                {c.client_name} ({c.critical_count} {t('clinics.critical', 'критических')}, {c.low_stock_count} {t('clinics.low', 'низких')})
               </span>
             ))}
           </AlertDescription>
@@ -161,23 +162,23 @@ export default function Clinics() {
 
       {/* Stats Section */}
       <section aria-labelledby="stats-heading">
-        <h2 id="stats-heading" className="text-xl font-semibold mb-4">Статистика клиник</h2>
+        <h2 id="stats-heading" className="text-xl font-semibold mb-4">{t('clinics.stats.title', 'Статистика клиник')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Всего клиник</CardDescription>
+              <CardDescription>{t('clinics.stats.total', 'Всего клиник')}</CardDescription>
               <CardTitle className="text-3xl">{clients.length}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>С низкими остатками</CardDescription>
+              <CardDescription>{t('clinics.stats.lowStock', 'С низкими остатками')}</CardDescription>
               <CardTitle className="text-3xl text-orange-500">{lowStockClients.length}</CardTitle>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
-              <CardDescription>Критические остатки</CardDescription>
+              <CardDescription>{t('clinics.stats.critical', 'Критические остатки')}</CardDescription>
               <CardTitle className="text-3xl text-red-500">
                 {lowStockClients.reduce((sum, c) => sum + (c.critical_count || 0), 0)}
               </CardTitle>
@@ -188,11 +189,11 @@ export default function Clinics() {
 
       {/* Search Section */}
       <section aria-labelledby="search-heading">
-        <h2 id="search-heading" className="sr-only">Поиск клиник</h2>
+        <h2 id="search-heading" className="sr-only">{t('clinics.search', 'Поиск клиник')}</h2>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Поиск клиник..."
+            placeholder={t('clinics.searchPlaceholder', 'Поиск клиник...')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -202,13 +203,13 @@ export default function Clinics() {
 
       {/* Clients Grid Section */}
       <section aria-labelledby="clients-heading">
-        <h2 id="clients-heading" className="text-xl font-semibold mb-4">Список клиник</h2>
+        <h2 id="clients-heading" className="text-xl font-semibold mb-4">{t('clinics.list', 'Список клиник')}</h2>
         {filteredClients.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
               <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
               <p className="text-muted-foreground">
-                {searchTerm ? 'Клиники не найдены' : 'Нет клиник. Добавьте первую клинику.'}
+                {searchTerm ? t('clinics.notFound', 'Клиники не найдены') : t('clinics.noClients', 'Нет клиник. Добавьте первую клинику.')}
               </p>
             </CardContent>
           </Card>
@@ -264,12 +265,11 @@ export default function Clinics() {
                       className="flex-1"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Create a fresh copy to ensure useEffect triggers
                         setEditingClient({ ...client });
                       }}
                     >
                       <Edit className="h-3 w-3 mr-1" />
-                      Изменить
+                      {t('common.edit', 'Изменить')}
                     </Button>
                     <Button 
                       variant="outline" 
@@ -319,7 +319,6 @@ export default function Clinics() {
           onOpenChange={(open) => !open && setEditingClient(null)}
           client={editingClient}
           onUpdate={async (data) => {
-            // Track changed fields
             const changedFields: Record<string, { old: any; new: any }> = {};
             const fieldKeys = ['name', 'legal_name', 'contact_person', 'email', 'phone', 'address', 'city', 'country', 'inn', 'notes', 'contract_status', 'contract_start_date', 'contract_end_date', 'cooperation_type', 'assigned_manager', 'priority'];
             
@@ -333,7 +332,6 @@ export default function Clinics() {
             
             await updateClient(editingClient.id, data);
             
-            // Log the update activity
             if (Object.keys(changedFields).length > 0) {
               await logClinicActivity(
                 editingClient.id,
@@ -352,15 +350,15 @@ export default function Clinics() {
       <AlertDialog open={!!deleteConfirmId} onOpenChange={() => setDeleteConfirmId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Удалить клинику?</AlertDialogTitle>
+            <AlertDialogTitle>{t('clinics.deleteTitle', 'Удалить клинику?')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Это действие нельзя отменить. Все данные клиники и её инвентарь будут безвозвратно удалены.
+              {t('clinics.deleteDescription', 'Это действие нельзя отменить. Все данные клиники и её инвентарь будут безвозвратно удалены.')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogCancel>{t('common.cancel', 'Отмена')}</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
-              Удалить
+              {t('common.delete', 'Удалить')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
