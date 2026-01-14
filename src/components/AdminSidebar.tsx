@@ -78,7 +78,7 @@ export function AdminSidebar() {
 
     // Архив - доступен специалистам по продажам, админу, руководителю и директору
     if (hasPermission('view_archive')) {
-      conditionalItems.push({ name: 'Архив', href: '/admin/archived', icon: Archive, permission: 'view_archive' });
+      conditionalItems.push({ name: t('admin.archive', 'Архив'), href: '/admin/archived', icon: Archive, permission: 'view_archive' });
     }
 
     // Продукты - доступны при наличии любого права на товары (просмотр или управление)
@@ -88,7 +88,7 @@ export function AdminSidebar() {
     
     // Категории - доступны при наличии права на категории
     if (hasPermission('view_categories')) {
-      conditionalItems.push({ name: 'Категории', href: '/admin/categories', icon: Tags, permission: 'view_categories' });
+      conditionalItems.push({ name: t('admin.categories', 'Категории'), href: '/admin/categories', icon: Tags, permission: 'view_categories' });
     }
 
     // Услуги - доступны при наличии права на услуги
@@ -103,17 +103,17 @@ export function AdminSidebar() {
     
     // Склад - доступен при наличии права на товары
     if (hasPermission('view_products')) {
-      conditionalItems.push({ name: 'Склад', href: '/admin/warehouse', icon: Warehouse, permission: 'view_products' });
+      conditionalItems.push({ name: t('admin.warehouse', 'Склад'), href: '/admin/warehouse', icon: Warehouse, permission: 'view_products' });
     }
     
     // Клиники - доступны при наличии права на товары
     if (hasPermission('view_products')) {
-      conditionalItems.push({ name: 'Клиники', href: '/admin/clinics', icon: Building2, permission: 'view_products' });
+      conditionalItems.push({ name: t('admin.clinics', 'Клиники'), href: '/admin/clinics', icon: Building2, permission: 'view_products' });
     }
     
     // Аналитика - доступна при наличии права на аналитику
     if (hasPermission('view_analytics')) {
-      conditionalItems.push({ name: 'Аналитика', href: '/admin/analytics', icon: BarChart3, permission: 'view_analytics' });
+      conditionalItems.push({ name: t('admin.analytics', 'Аналитика'), href: '/admin/analytics', icon: BarChart3, permission: 'view_analytics' });
     }
 
     // Управление сотрудниками - только при наличии права на управление пользователями

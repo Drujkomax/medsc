@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import ManufacturersTab from './ManufacturersTab';
 
 const Categories = () => {
+  const { t } = useTranslation();
   const { categories, loading, addCategory, deleteCategory, updateCategory } = useCategories();
   const { toast } = useToast();
   
@@ -39,8 +41,8 @@ const Categories = () => {
     if (!formData.value.trim() || !formData.name.ru.trim()) {
       toast({
         variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Заполните обязательные поля: значение и название на русском'
+        title: t('common.validationError', 'Ошибка валидации'),
+        description: t('categories.fillRequiredFields', 'Заполните обязательные поля: значение и название на русском')
       });
       return;
     }
@@ -49,16 +51,16 @@ const Categories = () => {
     try {
       await addCategory(formData);
       toast({
-        title: 'Успешно!',
-        description: 'Категория добавлена'
+        title: t('common.success', 'Успешно!'),
+        description: t('categories.categoryAdded', 'Категория добавлена')
       });
       resetForm();
       setShowAddDialog(false);
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Ошибка',
-        description: error instanceof Error ? error.message : 'Не удалось добавить категорию'
+        title: t('common.error', 'Ошибка'),
+        description: error instanceof Error ? error.message : t('categories.failedToAdd', 'Не удалось добавить категорию')
       });
     } finally {
       setSubmitting(false);
@@ -71,8 +73,8 @@ const Categories = () => {
     if (!editingCategory || !formData.value.trim() || !formData.name.ru.trim()) {
       toast({
         variant: 'destructive',
-        title: 'Ошибка валидации',
-        description: 'Заполните обязательные поля'
+        title: t('common.validationError', 'Ошибка валидации'),
+        description: t('categories.fillRequiredFields', 'Заполните обязательные поля')
       });
       return;
     }
@@ -81,8 +83,8 @@ const Categories = () => {
     try {
       await updateCategory(editingCategory.id, formData);
       toast({
-        title: 'Успешно!',
-        description: 'Категория обновлена'
+        title: t('common.success', 'Успешно!'),
+        description: t('categories.categoryUpdated', 'Категория обновлена')
       });
       resetForm();
       setShowEditDialog(false);
@@ -90,8 +92,8 @@ const Categories = () => {
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Ошибка',
-        description: error instanceof Error ? error.message : 'Не удалось обновить категорию'
+        title: t('common.error', 'Ошибка'),
+        description: error instanceof Error ? error.message : t('categories.failedToUpdate', 'Не удалось обновить категорию')
       });
     } finally {
       setSubmitting(false);
@@ -102,14 +104,14 @@ const Categories = () => {
     try {
       await deleteCategory(categoryId);
       toast({
-        title: 'Успешно!',
-        description: 'Категория удалена'
+        title: t('common.success', 'Успешно!'),
+        description: t('categories.categoryDeleted', 'Категория удалена')
       });
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Ошибка',
-        description: error instanceof Error ? error.message : 'Не удалось удалить категорию'
+        title: t('common.error', 'Ошибка'),
+        description: error instanceof Error ? error.message : t('categories.failedToDelete', 'Не удалось удалить категорию')
       });
     }
   };
@@ -128,7 +130,7 @@ const Categories = () => {
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="flex items-center space-x-2">
           <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Загрузка категорий...</span>
+          <span>{t('categories.loading', 'Загрузка категорий...')}</span>
         </div>
       </div>
     );
@@ -138,19 +140,19 @@ const Categories = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Категории и производители</h1>
-        <p className="text-muted-foreground">Управление категориями товаров и производителями</p>
+        <h1 className="text-3xl font-bold">{t('categories.title', 'Категории и производители')}</h1>
+        <p className="text-muted-foreground">{t('categories.description', 'Управление категориями товаров и производителями')}</p>
       </div>
 
       <Tabs defaultValue="categories" className="space-y-6">
         <TabsList>
           <TabsTrigger value="categories">
             <Package className="w-4 h-4 mr-2" />
-            Категории товаров
+            {t('categories.productCategories', 'Категории товаров')}
           </TabsTrigger>
           <TabsTrigger value="manufacturers">
             <Building2 className="w-4 h-4 mr-2" />
-            Производители
+            {t('categories.manufacturers', 'Производители')}
           </TabsTrigger>
         </TabsList>
 
@@ -160,31 +162,31 @@ const Categories = () => {
               <DialogTrigger asChild>
                 <Button onClick={resetForm}>
                   <Plus className="w-4 h-4 mr-2" />
-                  Добавить категорию
+                  {t('categories.addCategory', 'Добавить категорию')}
                 </Button>
               </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Добавить новую категорию</DialogTitle>
+              <DialogTitle>{t('categories.addNewCategory', 'Добавить новую категорию')}</DialogTitle>
               <DialogDescription>
-                Создайте новую категорию для товаров. Заполните название на всех языках.
+                {t('categories.addCategoryDescription', 'Создайте новую категорию для товаров. Заполните название на всех языках.')}
               </DialogDescription>
             </DialogHeader>
             
             <form onSubmit={handleAdd} className="space-y-4">
               <div>
-                <Label htmlFor="value">Значение (латиницей) *</Label>
+                <Label htmlFor="value">{t('categories.valueLabel', 'Значение (латиницей)')} *</Label>
                 <Input
                   id="value"
                   value={formData.value}
                   onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
-                  placeholder="например: cardiology"
+                  placeholder={t('categories.valuePlaceholder', 'например: cardiology')}
                   required
                 />
               </div>
               
               <div>
-                <Label htmlFor="name-ru">Название (RU) *</Label>
+                <Label htmlFor="name-ru">{t('categories.nameRu', 'Название (RU)')} *</Label>
                 <Input
                   id="name-ru"
                   value={formData.name.ru}
@@ -192,13 +194,13 @@ const Categories = () => {
                     ...prev,
                     name: { ...prev.name, ru: e.target.value }
                   }))}
-                  placeholder="Кардиология"
+                  placeholder={t('categories.nameRuPlaceholder', 'Кардиология')}
                   required
                 />
               </div>
               
               <div>
-                <Label htmlFor="name-en">Название (EN)</Label>
+                <Label htmlFor="name-en">{t('categories.nameEn', 'Название (EN)')}</Label>
                 <Input
                   id="name-en"
                   value={formData.name.en}
@@ -206,12 +208,12 @@ const Categories = () => {
                     ...prev,
                     name: { ...prev.name, en: e.target.value }
                   }))}
-                  placeholder="Cardiology"
+                  placeholder={t('categories.nameEnPlaceholder', 'Cardiology')}
                 />
               </div>
               
               <div>
-                <Label htmlFor="name-uz">Название (UZ)</Label>
+                <Label htmlFor="name-uz">{t('categories.nameUz', 'Название (UZ)')}</Label>
                 <Input
                   id="name-uz"
                   value={formData.name.uz}
@@ -219,17 +221,17 @@ const Categories = () => {
                     ...prev,
                     name: { ...prev.name, uz: e.target.value }
                   }))}
-                  placeholder="Kardiologiya"
+                  placeholder={t('categories.nameUzPlaceholder', 'Kardiologiya')}
                 />
               </div>
 
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setShowAddDialog(false)}>
-                  Отмена
+                  {t('common.cancel', 'Отмена')}
                 </Button>
                 <Button type="submit" disabled={submitting}>
                   {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  Добавить
+                  {t('common.add', 'Добавить')}
                 </Button>
               </DialogFooter>
             </form>
@@ -242,29 +244,29 @@ const Categories = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Package className="w-5 h-5" />
-            Категории товаров ({categories.length})
+            {t('categories.productCategories', 'Категории товаров')} ({categories.length})
           </CardTitle>
           <CardDescription>
-            Управляйте категориями для классификации товаров в каталоге
+            {t('categories.manageCategories', 'Управляйте категориями для классификации товаров в каталоге')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {categories.length === 0 ? (
             <div className="text-center py-8">
               <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-lg text-muted-foreground">Категорий пока нет</p>
-              <p className="text-sm text-muted-foreground">Добавьте первую категорию для начала работы</p>
+              <p className="text-lg text-muted-foreground">{t('categories.noCategories', 'Категорий пока нет')}</p>
+              <p className="text-sm text-muted-foreground">{t('categories.addFirstCategory', 'Добавьте первую категорию для начала работы')}</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Значение</TableHead>
-                  <TableHead>Название (RU)</TableHead>
-                  <TableHead>Название (EN)</TableHead>
-                  <TableHead>Название (UZ)</TableHead>
-                  <TableHead>Создано</TableHead>
-                  <TableHead className="text-right">Действия</TableHead>
+                  <TableHead>{t('categories.value', 'Значение')}</TableHead>
+                  <TableHead>{t('categories.nameRu', 'Название (RU)')}</TableHead>
+                  <TableHead>{t('categories.nameEn', 'Название (EN)')}</TableHead>
+                  <TableHead>{t('categories.nameUz', 'Название (UZ)')}</TableHead>
+                  <TableHead>{t('categories.created', 'Создано')}</TableHead>
+                  <TableHead className="text-right">{t('common.actions', 'Действия')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -297,21 +299,21 @@ const Categories = () => {
                             <AlertDialogHeader>
                               <AlertDialogTitle className="flex items-center gap-2">
                                 <AlertTriangle className="w-5 h-5 text-destructive" />
-                                Удалить категорию?
+                                {t('categories.deleteCategory', 'Удалить категорию?')}
                               </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Вы действительно хотите удалить категорию <strong>"{category.name.ru}"</strong>?
+                                {t('categories.deleteConfirmPart1', 'Вы действительно хотите удалить категорию')} <strong>"{category.name.ru}"</strong>?
                                 <br />
-                                Это действие нельзя отменить. Категория будет удалена только если она не используется в товарах.
+                                {t('categories.deleteConfirmPart2', 'Это действие нельзя отменить. Категория будет удалена только если она не используется в товарах.')}
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                              <AlertDialogCancel>Отмена</AlertDialogCancel>
+                              <AlertDialogCancel>{t('common.cancel', 'Отмена')}</AlertDialogCancel>
                               <AlertDialogAction 
                                 onClick={() => handleDelete(category.id)}
                                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                               >
-                                Удалить
+                                {t('common.delete', 'Удалить')}
                               </AlertDialogAction>
                             </AlertDialogFooter>
                           </AlertDialogContent>
@@ -330,26 +332,26 @@ const Categories = () => {
         <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Редактировать категорию</DialogTitle>
+            <DialogTitle>{t('categories.editCategory', 'Редактировать категорию')}</DialogTitle>
             <DialogDescription>
-              Измените информацию о категории. Обязательные поля отмечены звездочкой.
+              {t('categories.editCategoryDescription', 'Измените информацию о категории. Обязательные поля отмечены звездочкой.')}
             </DialogDescription>
           </DialogHeader>
           
           <form onSubmit={handleEdit} className="space-y-4">
             <div>
-              <Label htmlFor="edit-value">Значение (латиницей) *</Label>
+              <Label htmlFor="edit-value">{t('categories.valueLabel', 'Значение (латиницей)')} *</Label>
               <Input
                 id="edit-value"
                 value={formData.value}
                 onChange={(e) => setFormData(prev => ({ ...prev, value: e.target.value }))}
-                placeholder="например: cardiology"
+                placeholder={t('categories.valuePlaceholder', 'например: cardiology')}
                 required
               />
             </div>
             
             <div>
-              <Label htmlFor="edit-name-ru">Название (RU) *</Label>
+              <Label htmlFor="edit-name-ru">{t('categories.nameRu', 'Название (RU)')} *</Label>
               <Input
                 id="edit-name-ru"
                 value={formData.name.ru}
@@ -357,13 +359,13 @@ const Categories = () => {
                   ...prev,
                   name: { ...prev.name, ru: e.target.value }
                 }))}
-                placeholder="Кардиология"
+                placeholder={t('categories.nameRuPlaceholder', 'Кардиология')}
                 required
               />
             </div>
             
             <div>
-              <Label htmlFor="edit-name-en">Название (EN)</Label>
+              <Label htmlFor="edit-name-en">{t('categories.nameEn', 'Название (EN)')}</Label>
               <Input
                 id="edit-name-en"
                 value={formData.name.en}
@@ -371,12 +373,12 @@ const Categories = () => {
                   ...prev,
                   name: { ...prev.name, en: e.target.value }
                 }))}
-                placeholder="Cardiology"
+                placeholder={t('categories.nameEnPlaceholder', 'Cardiology')}
               />
             </div>
             
             <div>
-              <Label htmlFor="edit-name-uz">Название (UZ)</Label>
+              <Label htmlFor="edit-name-uz">{t('categories.nameUz', 'Название (UZ)')}</Label>
               <Input
                 id="edit-name-uz"
                 value={formData.name.uz}
@@ -384,7 +386,7 @@ const Categories = () => {
                   ...prev,
                   name: { ...prev.name, uz: e.target.value }
                 }))}
-                placeholder="Kardiologiya"
+                placeholder={t('categories.nameUzPlaceholder', 'Kardiologiya')}
               />
             </div>
 
@@ -398,11 +400,11 @@ const Categories = () => {
                   resetForm();
                 }}
               >
-                Отмена
+                {t('common.cancel', 'Отмена')}
               </Button>
               <Button type="submit" disabled={submitting}>
                 {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                Сохранить
+                {t('common.save', 'Сохранить')}
               </Button>
             </DialogFooter>
           </form>

@@ -16,12 +16,12 @@ const AdminLayout = () => {
   const { role } = useUserPermissions();
   
   const navigation = [
-    { name: t('admin.dashboard'), href: '/admin' },
-    { name: 'Аналитика', href: '/admin/analytics' },
-    { name: 'Лиды', href: '/admin/leads' },
-    { name: t('admin.products'), href: '/admin/products' },
-    { name: 'Услуги', href: '/admin/services' },
-    { name: t('admin.contacts'), href: '/admin/contacts' },
+    { name: t('admin.dashboard', 'Дашборд'), href: '/admin' },
+    { name: t('admin.analytics', 'Аналитика'), href: '/admin/analytics' },
+    { name: t('admin.leads', 'Лиды'), href: '/admin/leads' },
+    { name: t('admin.products', 'Товары'), href: '/admin/products' },
+    { name: t('admin.services', 'Услуги'), href: '/admin/services' },
+    { name: t('admin.contacts', 'Контакты'), href: '/admin/contacts' },
   ];
 
   const isActive = (href: string) => {

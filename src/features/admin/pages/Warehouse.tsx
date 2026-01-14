@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useWarehouse, LowStockItem, WarehouseItem } from '@/hooks/useWarehouse';
 import { AddWarehouseItemDialog } from '../components/Warehouse/AddWarehouseItemDialog';
 import { EditWarehouseItemDialog } from '../components/Warehouse/EditWarehouseItemDialog';
@@ -16,6 +17,7 @@ import { Package, MapPin, Archive, Pencil, Trash2, Search, AlertTriangle, CheckS
 import { toast } from 'sonner';
 
 export const Warehouse = () => {
+  const { t } = useTranslation();
   const { items, loading, archiveItem, deleteItem, getLowStockItems } = useWarehouse();
   const [searchTerm, setSearchTerm] = useState('');
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -119,15 +121,15 @@ export const Warehouse = () => {
 
   const getConditionBadge = (condition: string) => {
     const variants: Record<string, { label: string; variant: any }> = {
-      new: { label: 'Новое', variant: 'default' },
-      used: { label: 'Б/У', variant: 'secondary' },
-      refurbished: { label: 'Восстановленное', variant: 'outline' }
+      new: { label: t('warehouse.conditionNew', 'Новое'), variant: 'default' },
+      used: { label: t('warehouse.conditionUsed', 'Б/У'), variant: 'secondary' },
+      refurbished: { label: t('warehouse.conditionRefurbished', 'Восстановленное'), variant: 'outline' }
     };
     return variants[condition] || variants.new;
   };
 
   const handleArchive = async (id: string) => {
-    if (window.confirm('Вы уверены, что хотите архивировать этот товар?')) {
+    if (window.confirm(t('warehouse.confirmArchive', 'Вы уверены, что хотите архивировать этот товар?'))) {
       try {
         await archiveItem(id);
         setSelectedIds(selectedIds.filter(sid => sid !== id));
@@ -138,7 +140,7 @@ export const Warehouse = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот товар? Это действие необратимо.')) {
+    if (window.confirm(t('warehouse.confirmDelete', 'Вы уверены, что хотите удалить этот товар? Это действие необратимо.'))) {
       try {
         await deleteItem(id);
         setSelectedIds(selectedIds.filter(sid => sid !== id));
@@ -174,8 +176,8 @@ export const Warehouse = () => {
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Склад</h1>
-          <p className="text-muted-foreground">Управление складскими товарами</p>
+          <h1 className="text-3xl font-bold">{t('admin.warehouse', 'Склад')}</h1>
+          <p className="text-muted-foreground">{t('warehouse.description', 'Управление складскими товарами')}</p>
         </div>
         <div className="flex gap-2">
           <WarehouseFiltersPanel
@@ -191,12 +193,12 @@ export const Warehouse = () => {
       {lowStockItems.length > 0 && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Низкие остатки на складе</AlertTitle>
+          <AlertTitle>{t('warehouse.lowStockAlert', 'Низкие остатки на складе')}</AlertTitle>
           <AlertDescription>
             <div className="mt-2 space-y-1">
               {lowStockItems.map((item) => (
                 <div key={item.id} className="text-sm">
-                  <span className="font-medium">{item.name.ru}</span> - осталось {item.quantity} из минимум {item.minimum_stock}
+                  <span className="font-medium">{item.name.ru}</span> - {t('warehouse.remaining', 'осталось')} {item.quantity} {t('warehouse.ofMinimum', 'из минимум')} {item.minimum_stock}
                   {item.location && <span className="text-muted-foreground ml-2">({item.location})</span>}
                 </div>
               ))}
@@ -209,7 +211,7 @@ export const Warehouse = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Всего позиций</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('warehouse.totalPositions', 'Всего позиций')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{items.length}</div>
@@ -217,7 +219,7 @@ export const Warehouse = () => {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Всего единиц</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('warehouse.totalUnits', 'Всего единиц')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{items.reduce((sum, item) => sum + item.quantity, 0)}</div>
@@ -225,7 +227,7 @@ export const Warehouse = () => {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Новые товары</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('warehouse.newItems', 'Новые товары')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{items.filter(i => i.condition === 'new').length}</div>
@@ -233,7 +235,7 @@ export const Warehouse = () => {
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Б/У товары</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">{t('warehouse.usedItems', 'Б/У товары')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{items.filter(i => i.condition === 'used').length}</div>
@@ -246,7 +248,7 @@ export const Warehouse = () => {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Поиск по названию или местоположению..."
+            placeholder={t('warehouse.searchPlaceholder', 'Поиск по названию или местоположению...')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -256,7 +258,7 @@ export const Warehouse = () => {
         {selectedIds.length > 0 && (
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="text-sm">
-              Выбрано: {selectedIds.length}
+              {t('warehouse.selected', 'Выбрано')}: {selectedIds.length}
             </Badge>
             <Button 
               variant="outline" 
@@ -264,7 +266,7 @@ export const Warehouse = () => {
               onClick={() => setBulkActionsOpen(true)}
             >
               <CheckSquare className="h-4 w-4 mr-2" />
-              Массовые действия
+              {t('warehouse.bulkActions', 'Массовые действия')}
             </Button>
             <Button
               variant="ghost"
@@ -289,7 +291,7 @@ export const Warehouse = () => {
             htmlFor="select-all" 
             className="text-sm text-muted-foreground cursor-pointer"
           >
-            Выбрать все ({filteredItems.length})
+            {t('warehouse.selectAll', 'Выбрать все')} ({filteredItems.length})
           </label>
         </div>
       )}
@@ -343,20 +345,20 @@ export const Warehouse = () => {
                   <div className="flex justify-between">
                     {item.purchase_price && (
                       <div>
-                        <span className="text-muted-foreground">Закупка: </span>
+                        <span className="text-muted-foreground">{t('warehouse.purchasePrice', 'Закупка')}: </span>
                         <span className="font-medium">${item.purchase_price}</span>
                       </div>
                     )}
                     {item.selling_price && (
                       <div>
-                        <span className="text-muted-foreground">Продажа: </span>
+                        <span className="text-muted-foreground">{t('warehouse.sellingPrice', 'Продажа')}: </span>
                         <span className="font-medium">${item.selling_price}</span>
                       </div>
                     )}
                   </div>
                   {item.purchase_price && item.selling_price && item.purchase_price > 0 && (
                     <div className="flex justify-between items-center pt-1 border-t border-border/50">
-                      <span className="text-muted-foreground">Маржа: </span>
+                      <span className="text-muted-foreground">{t('warehouse.margin', 'Маржа')}: </span>
                       <span className={`font-semibold ${
                         ((item.selling_price - item.purchase_price) / item.purchase_price * 100) >= 20 
                           ? 'text-green-600' 
@@ -379,7 +381,7 @@ export const Warehouse = () => {
                   onClick={() => setEditingItem(item)}
                 >
                   <Pencil className="h-3 w-3 mr-1" />
-                  Изменить
+                  {t('common.edit', 'Изменить')}
                 </Button>
                 <Button
                   variant="outline"
@@ -404,9 +406,9 @@ export const Warehouse = () => {
       {filteredItems.length === 0 && (
         <div className="text-center py-12">
           <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">Товары не найдены</h3>
+          <h3 className="text-lg font-medium mb-2">{t('warehouse.noItemsFound', 'Товары не найдены')}</h3>
           <p className="text-muted-foreground">
-            {searchTerm ? 'Попробуйте изменить параметры поиска' : 'Начните добавлять товары на склад'}
+            {searchTerm ? t('warehouse.tryDifferentSearch', 'Попробуйте изменить параметры поиска') : t('warehouse.startAddingItems', 'Начните добавлять товары на склад')}
           </p>
         </div>
       )}
