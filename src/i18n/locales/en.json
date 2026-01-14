@@ -15,7 +15,10 @@
     "back": "Back",
     "next": "Next",
     "previous": "Previous",
-    "close": "Close"
+    "close": "Close",
+    "day": "day",
+    "days": "days",
+    "over": "Over"
   },
   "navigation": {
     "home": "Home",
@@ -154,12 +157,74 @@
     "requireProcessing": "Require processing",
     "stages": {
       "new": "New",
-      "contacted": "Contacted",
+      "contacted": "In Progress",
       "qualified": "Qualified",
       "proposal": "Sent Quote",
       "negotiation": "Negotiation",
-      "closed": "Success/Reject",
+      "closed": "Closed",
       "lost": "Lost"
+    },
+    "executive": {
+      "title": "Executive Dashboard",
+      "subtitle": "Consolidated Analytics for Decision-Making",
+      "attention": "Attention Required",
+      "totalRevenue": "Total Revenue",
+      "alerts": {
+        "lowProductConversion": "Low product conversion rate",
+        "optimizeCatalog": "Catalog optimization required",
+        "lowLeadConversion": "Low lead conversion rate",
+        "improveLeadManagement": "Need to improve lead management",
+        "lowEmployeeActivity": "Low employee activity",
+        "actionsPerDay": "actions/day",
+        "checkWorkload": "Check staff workload"
+      },
+      "metrics": {
+        "totalRevenue": "Total Revenue",
+        "productConversion": "Product Conversion",
+        "viewsToQuotes": "Views → Quotes",
+        "leadConversion": "Lead Conversion",
+        "leadsToDeals": "Leads → Deals",
+        "teamActivity": "Team Activity",
+        "actionsPerEmployee": "Actions/Employee"
+      },
+      "tabs": {
+        "mainPanel": "Main Panel",
+        "systemMonitoring": "System Monitoring",
+        "products": "Products",
+        "leadsDeals": "Leads & Deals",
+        "team": "Team"
+      },
+      "products": {
+        "overview": "Product Overview",
+        "activeProducts": "Active Products",
+        "highConversion": "High Conversion",
+        "totalViews": "Total Views",
+        "quoteRequests": "Quote Requests",
+        "topProducts": "Top Products",
+        "noName": "No name"
+      },
+      "leads": {
+        "funnel": "Lead Funnel",
+        "totalLeads": "Total Leads",
+        "newLeads": "New Leads",
+        "conversion": "Conversion",
+        "stageDistribution": "Stage Distribution"
+      },
+      "team": {
+        "activity": "Team Activity",
+        "activeEmployees": "Active Employees",
+        "totalActions": "Total Actions",
+        "averagePerPerson": "Average per Person",
+        "recommendations": "Recommendations"
+      },
+      "recommendations": {
+        "catalogOptimization": "Catalog Optimization",
+        "improveDescriptions": "Improve product descriptions and images",
+        "leadManagement": "Lead Management",
+        "speedUpProcessing": "Speed up processing and follow-up",
+        "teamMotivation": "Team Motivation",
+        "checkProcesses": "Check workload and processes"
+      }
     }
   },
   "employees": {
@@ -460,12 +525,7 @@
         "href": "/about"
       }
     ],
-    "servicesList": [
-      "Equipment Supply",
-      "Installation & Setup",
-      "Staff Training",
-      "Technical Support"
-    ],
+    "servicesList": ["Equipment Supply", "Installation & Setup", "Staff Training", "Technical Support"],
     "downloads": {
       "terms": "Terms of Use",
       "catalog": "MSC Catalog"
