@@ -8,7 +8,6 @@ const Dashboard = () => {
   const { hasPermission } = useUserPermissions();
   const { t } = useTranslation();
 
-  // Только директора и админы могут видеть мониторинг
   const canViewMonitoring = hasPermission("view_analytics");
 
   return (
@@ -16,8 +15,10 @@ const Dashboard = () => {
       {canViewMonitoring ? (
         <Tabs defaultValue="dashboard" className="w-full">
           <TabsList>
-            <TabsTrigger value="dashboard">{t("dashboard.tabs.main", "Основная панель")}</TabsTrigger>
-            <TabsTrigger value="monitoring">{t("dashboard.tabs.monitoring", "Мониторинг системы")}</TabsTrigger>
+            <TabsTrigger value="dashboard">{t("dashboard.executive.tabs.mainPanel", "Основная панель")}</TabsTrigger>
+            <TabsTrigger value="monitoring">
+              {t("dashboard.executive.tabs.systemMonitoring", "Мониторинг системы")}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard">
