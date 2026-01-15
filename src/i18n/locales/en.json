@@ -1,9 +1,11 @@
 {
   "common": {
     "loading": "Loading...",
+    "refresh": "Refresh",
     "error": "Error",
     "success": "Success",
     "save": "Save",
+    "confirm": "Confirm",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
@@ -72,6 +74,15 @@
     "notFound": "No products found",
     "sum": "sum",
     "pieces": "pcs."
+  },
+  "stages": {
+    "new": "New",
+    "contacted": "Contacted",
+    "qualified": "Qualified",
+    "proposal": "Sent Quote",
+    "negotiation": "Negotiation",
+    "closed": "Closed",
+    "lost": "Lost"
   },
   "clients": {
     "title": "Clients",
@@ -155,15 +166,6 @@
     "efficiency": "Efficiency",
     "new": "New",
     "requireProcessing": "Require processing",
-    "stages": {
-      "new": "New",
-      "contacted": "In Progress",
-      "qualified": "Qualified",
-      "proposal": "Sent Quote",
-      "negotiation": "Negotiation",
-      "closed": "Closed",
-      "lost": "Lost"
-    },
     "executive": {
       "title": "Executive Dashboard",
       "subtitle": "Consolidated Analytics for Decision-Making",
@@ -225,6 +227,31 @@
         "teamMotivation": "Team Motivation",
         "checkProcesses": "Check workload and processes"
       }
+    },
+    "monitoring": {
+      "title": "System Monitoring",
+      "subtitle": "Data from the last 24 hours",
+      "dataCleared": "Data cleared",
+      "deletedCount": "Deleted {{logs}} logs and {{alerts}} alerts",
+      "clearError": "Error clearing data",
+      "cleanupLogs": "Clean up",
+      "activeAlerts": "Active alerts",
+      "acknowledge": "Acknowledge",
+      "totalLogs": "Total logs",
+      "last7Days": "Last 7 days",
+      "errors": "Errors",
+      "requireAttention": "Require attention",
+      "warnings": "Warnings",
+      "monitoring": "Monitoring",
+      "activeAlertsCount": "Active alerts",
+      "requireAction": "Require action",
+      "systemLogs": "System logs",
+      "statistics": "Statistics",
+      "recentEvents": "Recent system events",
+      "eventDetails": "Event details",
+      "dailyStats": "Daily statistics",
+      "total": "Total",
+      "info": "Information"
     }
   },
   "employees": {
@@ -271,10 +298,132 @@
   },
   "leads": {
     "title": "Leads",
-    "activeLead": "Active Leads",
-    "newLeads": "New Leads",
+    "subtitle": "Client request management",
+    "selected": "Selected",
+    "addLead": "Add Lead",
+    "bulkActions": "Bulk Actions",
+    "assignTo": "Assign to...",
+    "removeAssignment": "Remove Assignment",
+    "archive": "Archive",
+    "cancelSelection": "Cancel Selection",
+    "duplicatesDetected": "Duplicates Detected",
+    "moreDuplicates": "And {{count}} more duplicate groups...",
     "myLeads": "My Leads",
-    "myLeadsByStage": "My Leads by Stage"
+    "totalLeads": "Total Leads",
+    "filterByStatus": "Filter by status",
+    "allStatuses": "All statuses",
+    "leadQuality": "Lead quality",
+    "allQualities": "All qualities",
+    "qualityA": "A - Target",
+    "qualityB": "B - Potential",
+    "qualityC": "C - Trash",
+    "assignedTo": "Assigned to",
+    "notAssigned": "Not assigned",
+    "from": "From",
+    "to": "To",
+    "noLeadsFound": "No leads found",
+    "tryFilters": "Try changing filters or add new leads",
+    "name": "Name",
+    "company": "Company",
+    "city": "City",
+    "phone": "Phone",
+    "status": "Status",
+    "quality": "Quality",
+    "leadCreatedDate": "Lead Creation Date",
+    "createdInCRM": "Created in CRM",
+    "assigned": "Assigned",
+    "actions": "Actions",
+    "view": "View",
+    "edit": "Edit",
+    "createDeal": "Create Deal",
+    "leadAdded": "Lead successfully added",
+    "leadAssigned": "Lead assigned",
+    "leadUnassigned": "Lead assignment removed",
+    "assignError": "Error assigning lead",
+    "leadArchived": "Lead archived",
+    "archiveError": "Error archiving lead",
+    "stageUpdated": "Lead status updated",
+    "stageUpdateError": "Error updating status:",
+    "unknownError": "Unknown error",
+    "dealCreatedRedirect": "Deal created. Redirecting to deals section...",
+    "authError": "User not authenticated",
+    "bulkAssignSuccess": "{{count}} leads assigned",
+    "bulkUnassignSuccess": "Assignment removed from {{count}} leads",
+    "bulkAssignError": "Failed to assign leads",
+    "bulkArchiveSuccess": "{{count}} leads archived",
+    "bulkArchiveError": "Failed to archive leads",
+    "addLeadDialog": {
+      "description": "Fill in information to create a new lead",
+      "sections": {
+        "basicInfo": "Basic Information",
+        "interests": "Interests and Needs",
+        "additionalInfo": "Additional Information"
+      },
+      "fields": {
+        "position": "Position",
+        "email": "Email",
+        "equipmentInterest": "Equipment interest",
+        "budgetRange": "Budget",
+        "timeline": "Timeline",
+        "source": "Source",
+        "notes": "Notes"
+      },
+      "placeholders": {
+        "name": "Enter client name",
+        "position": "Position in company",
+        "phone": "+998 (xx) xxx-xx-xx",
+        "email": "email@example.com",
+        "company": "Company name",
+        "city": "City",
+        "equipmentInterest": "Select equipment type",
+        "budgetRange": "Select budget range",
+        "leadQuality": "Select lead quality",
+        "timeline": "Select timeframe",
+        "source": "Select source",
+        "stage": "Select status",
+        "notes": "Additional information about the lead, special requirements, negotiation notes"
+      },
+      "sources": {
+        "manual": "Manual entry",
+        "website_form": "Website form",
+        "phone_call": "Phone call",
+        "email": "Email",
+        "social_media": "Social media",
+        "referral": "Referral",
+        "other": "Other"
+      },
+      "budgetRanges": {
+        "under_10k": "Up to $10,000",
+        "10k_50k": "$10,000 - $50,000",
+        "50k_100k": "$50,000 - $100,000",
+        "100k_500k": "$100,000 - $500,000",
+        "over_500k": "Over $500,000",
+        "not_specified": "Not specified"
+      },
+      "timelines": {
+        "immediate": "Immediately",
+        "1_month": "Within a month",
+        "3_months": "Within 3 months",
+        "6_months": "Within 6 months",
+        "1_year": "Within a year",
+        "not_specified": "Not specified"
+      },
+      "equipmentTypes": {
+        "mri": "MRI equipment",
+        "ct": "CT scanners",
+        "ultrasound": "Ultrasound machines",
+        "xray": "X-ray equipment",
+        "laboratory": "Laboratory equipment",
+        "surgical": "Surgical equipment",
+        "other": "Other"
+      },
+      "validation": {
+        "nameRequired": "Client name is required"
+      },
+      "error": "Error adding lead",
+      "adding": "Adding...",
+      "addButton": "Add Lead"
+    }
   },
   "services": {
     "title": "Service Management",
