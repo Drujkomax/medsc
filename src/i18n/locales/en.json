@@ -299,6 +299,21 @@
   "leads": {
     "title": "Leads",
     "subtitle": "Client request management",
+    "activeLead": "Active leads",
+    "newLeads": "New leads",
+    "myLeads": "My Leads",
+    "totalLeads": "Total Leads",
+    "estimatedValue": "Estimated value",
+    "myLeadsByStage": "My leads by stage",
+    "dashboard": "Dashboard",
+    "conversion": "Conversion",
+    "teamConversion": "Team conversion",
+    "overallEfficiency": "Overall efficiency",
+    "requireAttention": "Require attention",
+    "activeLeads": "Active leads",
+    "monthResult": "Month result",
+    "closedDeals": "Closed deals",
+    "stageStats": "Stage statistics",
     "selected": "Selected",
     "addLead": "Add Lead",
     "bulkActions": "Bulk Actions",
@@ -308,8 +323,6 @@
     "cancelSelection": "Cancel Selection",
     "duplicatesDetected": "Duplicates Detected",
     "moreDuplicates": "And {{count}} more duplicate groups...",
-    "myLeads": "My Leads",
-    "totalLeads": "Total Leads",
     "filterByStatus": "Filter by status",
     "allStatuses": "All statuses",
     "leadQuality": "Lead quality",
@@ -352,7 +365,126 @@
     "bulkAssignError": "Failed to assign leads",
     "bulkArchiveSuccess": "{{count}} leads archived",
     "bulkArchiveError": "Failed to archive leads",
+    "stages": {
+      "new": "New",
+      "contacted": "Contacted",
+      "qualified": "Qualified",
+      "proposal": "Sent Quote",
+      "negotiation": "Negotiation",
+      "closed": "Closed",
+      "lost": "Lost"
+    },
+    "kanban": {
+      "title": "Leads Kanban",
+      "subtitle": "Drag and drop leads between stages to update status",
+      "cardCount": "{{count}} lead(s)",
+      "dropHere": "Drop lead here",
+      "noLeads": "No leads at this stage",
+      "leadMoved": "Lead moved",
+      "movedToStage": "{{name}} moved to {{stage}}"
+    },
+    "card": {
+      "noName": "No name",
+      "noCompany": "No company",
+      "notAssigned": "Not assigned",
+      "daysAgo": "{{days}} days ago",
+      "today": "Today",
+      "viewDetails": "View details",
+      "qualityLabel": "Quality: {{quality}}",
+      "valueLabel": "Value: {{value}}",
+      "assignedLabel": "Assigned: {{name}}"
+    },
+    "editModal": {
+      "title": "Edit Lead",
+      "subtitle": "Update lead information",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "sections": {
+        "basicInfo": "Basic Information",
+        "contactInfo": "Contact Information",
+        "qualification": "Qualification",
+        "notes": "Notes"
+      },
+      "fields": {
+        "name": "Client Name",
+        "company": "Company",
+        "position": "Position",
+        "phone": "Phone",
+        "email": "Email",
+        "city": "City",
+        "stage": "Stage",
+        "leadQuality": "Lead Quality",
+        "source": "Source",
+        "equipmentInterest": "Equipment Interest",
+        "budgetRange": "Budget",
+        "timeline": "Timeline",
+        "notes": "Notes"
+      },
+      "placeholders": {
+        "name": "Enter client name",
+        "company": "Company name",
+        "position": "Position at company",
+        "phone": "+998 (xx) xxx-xx-xx",
+        "email": "email@example.com",
+        "city": "City",
+        "notes": "Additional information about the lead"
+      },
+      "success": "Lead successfully updated",
+      "error": "Error updating lead"
+    },
+    "activity": {
+      "title": "Activity History",
+      "noActivity": "No activity records",
+      "loadMore": "Load more",
+      "addNote": "Add note",
+      "notePlaceholder": "Enter a note...",
+      "noteAdded": "Note added",
+      "noteError": "Error adding note",
+      "types": {
+        "created": "Created",
+        "updated": "Updated",
+        "stageChanged": "Stage changed",
+        "assigned": "Assigned",
+        "note": "Note",
+        "call": "Call",
+        "email": "Email",
+        "meeting": "Meeting"
+      },
+      "stageChange": "{{from}} → {{to}}",
+      "assignedTo": "Assigned to {{name}}"
+    },
+    "duplicates": {
+      "title": "Possible duplicates detected",
+      "subtitle": "Review these leads for matches",
+      "matchField": "Match by",
+      "matchValue": "{{field}}: {{value}}",
+      "ignore": "Ignore",
+      "merge": "Merge",
+      "viewDetails": "View details",
+      "groupCount": "Group {{current}} of {{total}}",
+      "confirmMerge": "Confirm merge",
+      "mergeDescription": "Select primary lead for merging",
+      "mergePrimary": "Primary",
+      "mergeSecondary": "Secondary",
+      "mergeSuccess": "Leads successfully merged",
+      "mergeError": "Error merging leads",
+      "fields": {
+        "phone": "Phone",
+        "email": "Email",
+        "company": "Company"
+      }
+    },
+    "congratulations": {
+      "title": "Congratulations!",
+      "subtitle": "Lead successfully converted",
+      "message": "Client {{name}} successfully converted to deal",
+      "dealCreated": "Deal created",
+      "viewDeal": "Go to deal",
+      "createAnother": "Create another lead",
+      "close": "Close"
+    },
     "addLeadDialog": {
+      "title": "Add Lead",
       "description": "Fill in information to create a new lead",
       "sections": {
         "basicInfo": "Basic Information",
@@ -453,38 +585,7 @@
       "notSpecified": "Not specified",
       "loading": "Loading...",
       "statusUpdated": "Lead status updated",
-      "statusUpdateError": "Error updating status",
-      "sources": {
-        "websiteForm": "Website Form"
-      },
-      "budgetRanges": {
-        "under_50k": "Up to $50,000",
-        "50k_100k": "$50,000 - $100,000",
-        "100k_500k": "$100,000 - $500,000",
-        "500k_1m": "$500,000 - $1,000,000",
-        "over_1m": "Over $1,000,000",
-        "not_disclosed": "Not disclosed"
-      },
-      "equipmentTypes": {
-        "mri": "MRI equipment",
-        "ct": "CT equipment",
-        "ultrasound": "Ultrasound equipment",
-        "xray": "X-ray equipment",
-        "laboratory": "Laboratory equipment",
-        "surgical": "Surgical equipment",
-        "anesthesia": "Anesthesia equipment",
-        "monitoring": "Monitoring equipment",
-        "rehabilitation": "Rehabilitation equipment",
-        "other": "Other"
-      },
-      "timelines": {
-        "immediate": "Immediately",
-        "within_month": "Within a month",
-        "within_quarter": "Within a quarter",
-        "within_year": "Within a year",
-        "over_year": "Over a year",
-        "research": "Researching the market"
-      }
+      "statusUpdateError": "Error updating status"
     },
     "enhancedLeadModal": {
       "id": "ID",
@@ -517,37 +618,6 @@
         "assignedTo": "Assigned To",
         "closedDate": "Closed Date",
         "potentialAmount": "Potential Amount"
-      },
-      "sources": {
-        "websiteForm": "Website Form",
-        "manual": "Manual Entry",
-        "phoneCall": "Phone Call"
-      },
-      "budgetRanges": {
-        "under_10k": "Up to $10,000",
-        "10k_50k": "$10,000 - $50,000",
-        "50k_100k": "$50,000 - $100,000",
-        "100k_500k": "$100,000 - $500,000",
-        "over_500k": "Over $500,000",
-        "not_specified": "Not specified"
-      },
-      "equipmentTypes": {
-        "mri": "MRI",
-        "ct": "CT",
-        "ultrasound": "Ultrasound",
-        "xray": "X-ray",
-        "mammography": "Mammography",
-        "endoscopy": "Endoscopy",
-        "laboratory": "Laboratory equipment",
-        "other": "Other"
-      },
-      "timelines": {
-        "immediate": "Immediately (within a month)",
-        "quarter": "Within a quarter",
-        "half_year": "Within half a year",
-        "year": "Within a year",
-        "over_year": "Over a year",
-        "research": "Researching the market"
       }
     },
     "viewLeadModal": {
