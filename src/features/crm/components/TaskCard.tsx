@@ -5,6 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Calendar, CheckCircle2, Edit, Eye, MoreVertical, Repeat, Trash2, User, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { useTranslation } from 'react-i18next';
 
 interface TaskCardProps {
   task: any;
@@ -18,6 +19,8 @@ interface TaskCardProps {
 }
 
 export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen, canComplete = true, canReopen = false }: TaskCardProps) => {
+  const { t } = useTranslation();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
@@ -40,20 +43,20 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
 
   const getStatusText = (status: string) => {
     switch (status) {
-      case 'pending': return 'В ожидании';
-      case 'in_progress': return 'В работе';
-      case 'completed': return 'Выполнено';
-      case 'cancelled': return 'Отменено';
+      case 'pending': return t('tasks.status.pending', 'В ожидании');
+      case 'in_progress': return t('tasks.status.in_progress', 'В работе');
+      case 'completed': return t('tasks.status.completed', 'Выполнено');
+      case 'cancelled': return t('tasks.status.cancelled', 'Отменено');
       default: return status;
     }
   };
 
   const getPriorityText = (priority: string) => {
     switch (priority) {
-      case 'low': return 'Низкий';
-      case 'medium': return 'Средний';
-      case 'high': return 'Высокий';
-      case 'urgent': return 'Срочно';
+      case 'low': return t('tasks.priorities.low', 'Низкий');
+      case 'medium': return t('tasks.priorities.medium', 'Средний');
+      case 'high': return t('tasks.priorities.high', 'Высокий');
+      case 'urgent': return t('tasks.priorities.urgent', 'Срочно');
       default: return priority;
     }
   };
@@ -77,13 +80,13 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
               {isRecurring && (
                 <Badge variant="outline" className="flex items-center gap-1">
                   <Repeat className="h-3 w-3" />
-                  Периодическая
+                  {t('tasks.recurring', 'Периодическая')}
                 </Badge>
               )}
               {isOverdue && (
                 <Badge variant="destructive" className="flex items-center gap-1">
                   <AlertTriangle className="h-3 w-3" />
-                  Просрочено
+                  {t('tasks.overdue', 'Просрочено')}
                 </Badge>
               )}
             </div>
@@ -98,24 +101,24 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onView(task)}>
                 <Eye className="mr-2 h-4 w-4" />
-                Просмотр
+                {t('common.view', 'Просмотр')}
               </DropdownMenuItem>
               {onEdit && (
                 <DropdownMenuItem onClick={() => onEdit && onEdit(task)}>
                   <Edit className="mr-2 h-4 w-4" />
-                  Редактировать
+                  {t('common.edit', 'Редактировать')}
                 </DropdownMenuItem>
               )}
               {task.status !== 'completed' && (
                 <DropdownMenuItem onClick={() => onComplete(task.id)}>
                   <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Выполнить
+                  {t('tasks.complete', 'Выполнить')}
                 </DropdownMenuItem>
               )}
               {task.status === 'completed' && canReopen && onReopen && (
                 <DropdownMenuItem onClick={() => onReopen(task.id)}>
                   <AlertTriangle className="mr-2 h-4 w-4" />
-                  Отправить на переработку
+                  {t('tasks.sendToRework', 'Отправить на переработку')}
                 </DropdownMenuItem>
               )}
               {onDelete && (
@@ -124,7 +127,7 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
                   className="text-red-600"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Удалить
+                  {t('common.delete', 'Удалить')}
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>
@@ -154,14 +157,14 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
               <User className="h-3 w-3" />
               <span>
                 {task.assignee_ids && task.assignee_ids.length > 0 
-                  ? `Назначено (${task.assignee_ids.length})`
-                  : 'Назначено'}
+                  ? t('tasks.assignedCount', 'Назначено ({{count}})', { count: task.assignee_ids.length })
+                  : t('tasks.assigned', 'Назначено')}
               </span>
             </div>
           )}
 
           <div className="flex items-center gap-2">
-            <span>Создано: {format(new Date(task.created_at), 'dd MMM', { locale: ru })}</span>
+            <span>{t('tasks.createdAt', 'Создано')}: {format(new Date(task.created_at), 'dd MMM', { locale: ru })}</span>
           </div>
         </div>
 
@@ -174,7 +177,7 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
             className="flex-1"
           >
             <Eye className="h-3 w-3 mr-1" />
-            Открыть
+            {t('tasks.open', 'Открыть')}
           </Button>
           {task.status !== 'completed' && (
             <Button 
@@ -183,7 +186,7 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
               className="flex-1"
             >
               <CheckCircle2 className="h-3 w-3 mr-1" />
-              Выполнить
+              {t('tasks.complete', 'Выполнить')}
             </Button>
           )}
           {task.status === 'completed' && canReopen && onReopen && (
@@ -194,7 +197,7 @@ export const TaskCard = ({ task, onView, onEdit, onDelete, onComplete, onReopen,
               className="flex-1"
             >
               <AlertTriangle className="h-3 w-3 mr-1" />
-              На переработку
+              {t('tasks.toRework', 'На переработку')}
             </Button>
           )}
         </div>
