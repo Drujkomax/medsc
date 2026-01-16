@@ -547,6 +547,39 @@
       "qualityA": "A - Maqsadli",
       "qualityB": "B - Potensial",
       "qualityC": "C - Chiqindi"
+    },
+    "leadModal": {
+      "createTitle": "Lead yaratish",
+      "editTitle": "Leadni tahrirlash",
+      "stageLabel": "Bosqich",
+      "notesLabel": "Eslatmalar",
+      "created": "Lead yaratildi",
+      "updated": "Lead yangilandi",
+      "saveError": "Leadni saqlab bo'lmadi"
+    },
+    "export": {
+      "title": "Leadlarni eksport qilish",
+      "exportCSV": "CSV ga eksport",
+      "exportJSON": "JSON ga eksport",
+      "exportExcel": "Excel ga eksport",
+      "exporting": "Eksport qilinmoqda...",
+      "selectFormat": "Formatni tanlang",
+      "allLeads": "Barcha leadlar",
+      "filteredLeads": "Filtrlangan leadlar",
+      "selectedLeads": "Tanlangan leadlar",
+      "noLeadsToExport": "Eksport qilish uchun lead yo'q"
+    },
+    "editForm": {
+      "title": "Leadni tahrirlash",
+      "saving": "Saqlanmoqda...",
+      "save": "Saqlash",
+      "cancel": "Bekor qilish",
+      "basicInfo": "Asosiy ma'lumotlar",
+      "contactInfo": "Kontakt ma'lumotlari",
+      "qualificationInfo": "Kvalifikatsiya",
+      "additionalInfo": "Qo'shimcha",
+      "success": "Lead muvaffaqiyatli yangilandi",
+      "error": "Leadni yangilashda xatolik"
     }
   },
   "services": {

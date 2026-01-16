@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface Lead {
   id: string;
@@ -26,17 +27,8 @@ interface LeadModalProps {
   onSave: () => void;
 }
 
-const stages = [
-  { value: 'new', label: 'Новый лид' },
-  { value: 'contacted', label: 'Связались' },
-  { value: 'qualified', label: 'Квалифицирован' },
-  { value: 'proposal', label: 'Предложение' },
-  { value: 'negotiation', label: 'Переговоры' },
-  { value: 'closed', label: 'Закрыт' },
-  { value: 'lost', label: 'Потерян' }
-];
-
 const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -46,6 +38,16 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
   });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+
+  const stages = [
+    { value: 'new', label: t('leads.stages.new', 'Новый лид') },
+    { value: 'contacted', label: t('leads.stages.contacted', 'Связались') },
+    { value: 'qualified', label: t('leads.stages.qualified', 'Квалифицирован') },
+    { value: 'proposal', label: t('leads.stages.proposal', 'Предложение') },
+    { value: 'negotiation', label: t('leads.stages.negotiation', 'Переговоры') },
+    { value: 'closed', label: t('leads.stages.closed', 'Закрыт') },
+    { value: 'lost', label: t('leads.stages.lost', 'Потерян') }
+  ];
 
   useEffect(() => {
     if (lead) {
@@ -89,8 +91,8 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
         if (error) throw error;
 
         toast({
-          title: "Успешно",
-          description: "Лид обновлен",
+          title: t('common.success', 'Успешно'),
+          description: t('leads.leadModal.updated', 'Лид обновлен'),
         });
       } else {
         const { error } = await supabase
@@ -100,8 +102,8 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
         if (error) throw error;
 
         toast({
-          title: "Успешно",
-          description: "Лид создан",
+          title: t('common.success', 'Успешно'),
+          description: t('leads.leadModal.created', 'Лид создан'),
         });
       }
 
@@ -110,8 +112,8 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
     } catch (error) {
       console.error('Error saving lead:', error);
       toast({
-        title: "Ошибка",
-        description: "Не удалось сохранить лид",
+        title: t('common.error', 'Ошибка'),
+        description: t('leads.leadModal.saveError', 'Не удалось сохранить лид'),
         variant: "destructive",
       });
     } finally {
@@ -128,13 +130,13 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
       <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {lead ? 'Редактировать лид' : 'Создать лид'}
+            {lead ? t('leads.leadModal.editTitle', 'Редактировать лид') : t('leads.leadModal.createTitle', 'Создать лид')}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="name">Имя *</Label>
+            <Label htmlFor="name">{t('leads.name', 'Имя')} *</Label>
             <Input
               id="name"
               value={formData.name}
@@ -144,7 +146,7 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
           </div>
 
           <div>
-            <Label htmlFor="phone">Телефон</Label>
+            <Label htmlFor="phone">{t('leads.phone', 'Телефон')}</Label>
             <Input
               id="phone"
               value={formData.phone}
@@ -153,7 +155,7 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
           </div>
 
           <div>
-            <Label htmlFor="company">Компания</Label>
+            <Label htmlFor="company">{t('leads.company', 'Компания')}</Label>
             <Input
               id="company"
               value={formData.company}
@@ -162,7 +164,7 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
           </div>
 
           <div>
-            <Label htmlFor="stage">Этап</Label>
+            <Label htmlFor="stage">{t('leads.leadModal.stageLabel', 'Этап')}</Label>
             <Select value={formData.stage} onValueChange={(value) => handleChange('stage', value)}>
               <SelectTrigger>
                 <SelectValue />
@@ -178,7 +180,7 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
           </div>
 
           <div>
-            <Label htmlFor="notes">Заметки</Label>
+            <Label htmlFor="notes">{t('leads.leadModal.notesLabel', 'Заметки')}</Label>
             <Textarea
               id="notes"
               value={formData.notes}
@@ -189,10 +191,10 @@ const LeadModal = ({ isOpen, onClose, lead, onSave }: LeadModalProps) => {
 
           <div className="flex justify-end space-x-2">
             <Button type="button" variant="outline" onClick={onClose}>
-              Отмена
+              {t('common.cancel', 'Отмена')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? 'Сохранение...' : 'Сохранить'}
+              {loading ? t('common.saving', 'Сохранение...') : t('common.save', 'Сохранить')}
             </Button>
           </div>
         </form>
