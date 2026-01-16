@@ -579,6 +579,185 @@
       "error": "Ошибка при добавлении лида",
       "adding": "Добавление...",
       "addButton": "Добавить лид"
+    },
+    "unifiedLeadModal": {
+      "id": "ID",
+      "editButton": "Редактировать",
+      "sections": {
+        "contactInfo": "Контактная информация",
+        "systemInfo": "Системная информация",
+        "qualificationData": "Квалификационные данные",
+        "notes": "Заметки",
+        "activityHistory": "История активности"
+      },
+      "fields": {
+        "email": "Email",
+        "phone": "Телефон",
+        "company": "Компания",
+        "position": "Должность",
+        "city": "Город",
+        "leadCreatedDate": "Дата создания лида",
+        "createdInCRM": "Создан в CRM",
+        "updated": "Обновлен",
+        "source": "Источник",
+        "potentialValue": "Потенциальная стоимость",
+        "assignedTo": "Назначен на",
+        "budget": "Бюджет",
+        "equipmentInterest": "Интерес к оборудованию",
+        "timeline": "Сроки"
+      },
+      "notSpecified": "Не указан",
+      "loading": "Загрузка...",
+      "statusUpdated": "Статус лида обновлен",
+      "statusUpdateError": "Ошибка обновления статуса",
+      "sources": {
+        "websiteForm": "Форма сайта"
+      },
+      "budgetRanges": {
+        "under_50k": "До $50,000",
+        "50k_100k": "$50,000 - $100,000",
+        "100k_500k": "$100,000 - $500,000",
+        "500k_1m": "$500,000 - $1,000,000",
+        "over_1m": "Свыше $1,000,000",
+        "not_disclosed": "Не раскрыт"
+      },
+      "equipmentTypes": {
+        "mri": "МРТ оборудование",
+        "ct": "КТ оборудование",
+        "ultrasound": "УЗИ оборудование",
+        "xray": "Рентгеновское оборудование",
+        "laboratory": "Лабораторное оборудование",
+        "surgical": "Хирургическое оборудование",
+        "anesthesia": "Оборудование для анестезии",
+        "monitoring": "Мониторинговое оборудование",
+        "rehabilitation": "Реабилитационное оборудование",
+        "other": "Другое"
+      },
+      "timelines": {
+        "immediate": "Немедленно",
+        "within_month": "В течение месяца",
+        "within_quarter": "В течение квартала",
+        "within_year": "В течение года",
+        "over_year": "Более года",
+        "research": "Пока изучаем рынок"
+      }
+    },
+    "enhancedLeadModal": {
+      "id": "ID",
+      "tabs": {
+        "overview": "Обзор",
+        "activity": "Активность",
+        "edit": "Редактировать"
+      },
+      "sections": {
+        "contactInfo": "Контактная информация",
+        "systemInfo": "Системная информация",
+        "leadQualification": "Квалификация лида",
+        "notes": "Основные заметки"
+      },
+      "fields": {
+        "name": "Имя",
+        "phone": "Телефон",
+        "email": "Email",
+        "company": "Компания",
+        "status": "Статус",
+        "leadCreatedDate": "Дата создания лида",
+        "createdInCRM": "Создан в CRM",
+        "lastUpdated": "Последнее обновление",
+        "source": "Источник",
+        "budget": "Бюджет",
+        "position": "Позиция/Должность",
+        "equipmentInterest": "Интерес к оборудованию",
+        "timeline": "Сроки реализации",
+        "qualificationDate": "Дата квалификации",
+        "assignedTo": "Назначен",
+        "closedDate": "Дата закрытия",
+        "potentialAmount": "Потенциальная сумма"
+      },
+      "sources": {
+        "websiteForm": "Форма на сайте",
+        "manual": "Ручной ввод",
+        "phoneCall": "Телефонный звонок"
+      },
+      "budgetRanges": {
+        "under_10k": "До $10,000",
+        "10k_50k": "$10,000 - $50,000",
+        "50k_100k": "$50,000 - $100,000",
+        "100k_500k": "$100,000 - $500,000",
+        "over_500k": "Свыше $500,000",
+        "not_specified": "Не указан"
+      },
+      "equipmentTypes": {
+        "mri": "МРТ",
+        "ct": "КТ",
+        "ultrasound": "УЗИ",
+        "xray": "Рентген",
+        "mammography": "Маммография",
+        "endoscopy": "Эндоскопия",
+        "laboratory": "Лабораторное оборудование",
+        "other": "Другое"
+      },
+      "timelines": {
+        "immediate": "Немедленно (в течение месяца)",
+        "quarter": "В течение квартала",
+        "half_year": "В течение полугода",
+        "year": "В течение года",
+        "over_year": "Более года",
+        "research": "Пока изучаем рынок"
+      }
+    },
+    "viewLeadModal": {
+      "title": "Просмотр лида",
+      "loading": "Загрузка...",
+      "fields": {
+        "name": "Имя",
+        "phone": "Телефон",
+        "company": "Компания",
+        "status": "Статус",
+        "leadQuality": "Качество лида",
+        "leadCreatedDate": "Дата создания лида",
+        "createdInCRM": "Создан в CRM",
+        "lastUpdated": "Последнее обновление",
+        "notes": "Заметки",
+        "assigned": "Назначен",
+        "closedDate": "Дата закрытия"
+      },
+      "qualityA": "A - Целевой",
+      "qualityB": "B - Потенциальный",
+      "qualityC": "C - Мусор"
+    },
+    "leadModal": {
+      "createTitle": "Создать лид",
+      "editTitle": "Редактировать лид",
+      "stageLabel": "Этап",
+      "notesLabel": "Заметки",
+      "created": "Лид создан",
+      "updated": "Лид обновлен",
+      "saveError": "Не удалось сохранить лид"
+    },
+    "export": {
+      "title": "Экспорт лидов",
+      "exportCSV": "Экспорт в CSV",
+      "exportJSON": "Экспорт в JSON",
+      "exportExcel": "Экспорт в Excel",
+      "exporting": "Экспорт...",
+      "selectFormat": "Выберите формат",
+      "allLeads": "Все лиды",
+      "filteredLeads": "Отфильтрованные лиды",
+      "selectedLeads": "Выбранные лиды",
+      "noLeadsToExport": "Нет лидов для экспорта"
+    },
+    "editForm": {
+      "title": "Редактирование лида",
+      "saving": "Сохранение...",
+      "save": "Сохранить",
+      "cancel": "Отмена",
+      "basicInfo": "Основная информация",
+      "contactInfo": "Контактная информация",
+      "qualificationInfo": "Квалификация",
+      "additionalInfo": "Дополнительно",
+      "success": "Лид успешно обновлен",
+      "error": "Ошибка при обновлении лида"
     }
   },
   "director": {

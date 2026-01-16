@@ -642,6 +642,15 @@
       "qualityA": "A - Target",
       "qualityB": "B - Potential",
       "qualityC": "C - Trash"
+    },
+    "leadModal": {
+      "createTitle": "Create Lead",
+      "editTitle": "Edit Lead",
+      "stageLabel": "Stage",
+      "notesLabel": "Notes",
+      "created": "Lead created",
+      "updated": "Lead updated",
+      "saveError": "Failed to save lead"
     }
   },
   "services": {
