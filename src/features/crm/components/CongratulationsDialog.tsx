@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { PartyPopper, FileText } from 'lucide-react';
 import { Lead } from '@/hooks/useLeads';
+import { useTranslation } from 'react-i18next';
 
 interface CongratulationsDialogProps {
   open: boolean;
@@ -11,6 +12,8 @@ interface CongratulationsDialogProps {
 }
 
 export const CongratulationsDialog = ({ open, onClose, lead, onCreateDeal }: CongratulationsDialogProps) => {
+  const { t } = useTranslation();
+  
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -20,12 +23,12 @@ export const CongratulationsDialog = ({ open, onClose, lead, onCreateDeal }: Con
               <PartyPopper className="h-8 w-8 text-green-600" />
             </div>
           </div>
-          <DialogTitle className="text-center text-2xl">Поздравляем!</DialogTitle>
+          <DialogTitle className="text-center text-2xl">{t('leads.congratulations.title', 'Поздравляем!')}</DialogTitle>
           <DialogDescription className="text-center text-base pt-2">
-            Вы успешно отправили коммерческое предложение для лида{' '}
+            {t('leads.congratulations.message', 'Вы успешно отправили коммерческое предложение для лида')}{' '}
             <span className="font-semibold text-foreground">{lead?.name}</span>
             {lead?.company && (
-              <span> из компании <span className="font-semibold text-foreground">{lead.company}</span></span>
+              <span> {t('leads.congratulations.fromCompany', 'из компании')} <span className="font-semibold text-foreground">{lead.company}</span></span>
             )}
           </DialogDescription>
         </DialogHeader>
@@ -37,7 +40,7 @@ export const CongratulationsDialog = ({ open, onClose, lead, onCreateDeal }: Con
             size="lg"
           >
             <FileText className="mr-2 h-5 w-5" />
-            Создать сделку
+            {t('leads.congratulations.createDeal', 'Создать сделку')}
           </Button>
           
           <Button 
@@ -46,7 +49,7 @@ export const CongratulationsDialog = ({ open, onClose, lead, onCreateDeal }: Con
             className="w-full"
             size="lg"
           >
-            Закрыть
+            {t('common.close', 'Закрыть')}
           </Button>
         </div>
       </DialogContent>

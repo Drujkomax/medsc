@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 interface LeadActivityChatProps {
   leadId: string;
@@ -66,32 +67,40 @@ const getActivityColor = (type: LeadActivity['type']) => {
   }
 };
 
-const getActivityLabel = (type: LeadActivity['type']) => {
-  switch (type) {
-    case 'note':
-      return 'Заметка';
-    case 'contact':
-      return 'Контакт';
-    case 'status_change':
-      return 'Изменение статуса';
-    case 'assignment':
-      return 'Назначение';
-    case 'field_update':
-      return 'Обновление данных';
-    case 'system':
-      return 'Система';
-    default:
-      return 'Активность';
-  }
-};
-
 export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) => {
+  const { t } = useTranslation();
   const { activities, loading, addNote, addContactRecord } = useLeadActivities(leadId);
   const { user } = useAuth();
   const [newNote, setNewNote] = useState('');
   const [newContact, setNewContact] = useState('');
   const [activeTab, setActiveTab] = useState<'note' | 'contact'>('note');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const getActivityLabel = (type: LeadActivity['type']) => {
+    switch (type) {
+      case 'note':
+        return t('leads.activityChat.types.note', 'Заметка');
+      case 'contact':
+        return t('leads.activityChat.types.contact', 'Контакт');
+      case 'status_change':
+        return t('leads.activityChat.types.statusChange', 'Изменение статуса');
+      case 'assignment':
+        return t('leads.activityChat.types.assignment', 'Назначение');
+      case 'field_update':
+        return t('leads.activityChat.types.fieldUpdate', 'Обновление данных');
+      case 'system':
+        return t('leads.activityChat.types.system', 'Система');
+      default:
+        return t('leads.activityChat.types.activity', 'Активность');
+    }
+  };
+
+  const fieldNames: Record<string, string> = {
+    name: t('leads.name', 'Имя'),
+    phone: t('leads.phone', 'Телефон'),
+    company: t('leads.company', 'Компания'),
+    email: t('leads.email', 'Email')
+  };
 
   const handleSubmitNote = async () => {
     if (!newNote.trim()) return;
@@ -133,7 +142,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
       <Card className={className}>
         <CardContent className="p-6">
           <div className="flex items-center justify-center">
-            <p className="text-muted-foreground">Загрузка активности...</p>
+            <p className="text-muted-foreground">{t('leads.activityChat.loading', 'Загрузка активности...')}</p>
           </div>
         </CardContent>
       </Card>
@@ -153,7 +162,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
               className="flex items-center gap-2"
             >
               <FileText className="h-4 w-4" />
-              Заметка
+              {t('leads.activityChat.noteTab', 'Заметка')}
             </Button>
             <Button
               variant={activeTab === 'contact' ? 'default' : 'outline'}
@@ -162,7 +171,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
               className="flex items-center gap-2"
             >
               <Phone className="h-4 w-4" />
-              Контакт
+              {t('leads.activityChat.contactTab', 'Контакт')}
             </Button>
           </div>
 
@@ -170,7 +179,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
           {activeTab === 'note' && (
             <div className="space-y-2">
               <Textarea
-                placeholder="Добавить заметку... (Ctrl+Enter для отправки)"
+                placeholder={t('leads.activityChat.notePlaceholder', 'Добавить заметку... (Ctrl+Enter для отправки)')}
                 value={newNote}
                 onChange={(e) => setNewNote(e.target.value)}
                 onKeyDown={(e) => handleKeyPress(e, handleSubmitNote)}
@@ -185,7 +194,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
                   className="flex items-center gap-2"
                 >
                   <Send className="h-4 w-4" />
-                  Добавить заметку
+                  {t('leads.activityChat.addNote', 'Добавить заметку')}
                 </Button>
               </div>
             </div>
@@ -195,7 +204,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
           {activeTab === 'contact' && (
             <div className="space-y-2">
               <Textarea
-                placeholder="Описание контакта с клиентом... (Ctrl+Enter для отправки)"
+                placeholder={t('leads.activityChat.contactPlaceholder', 'Описание контакта с клиентом... (Ctrl+Enter для отправки)')}
                 value={newContact}
                 onChange={(e) => setNewContact(e.target.value)}
                 onKeyDown={(e) => handleKeyPress(e, handleSubmitContact)}
@@ -210,7 +219,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
                   className="flex items-center gap-2"
                 >
                   <Send className="h-4 w-4" />
-                  Записать контакт
+                  {t('leads.activityChat.recordContact', 'Записать контакт')}
                 </Button>
               </div>
             </div>
@@ -225,8 +234,8 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
             {activities.length === 0 ? (
               <div className="text-center py-8">
                 <MessageCircle className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground">Нет записей активности</p>
-                <p className="text-sm text-muted-foreground">Добавьте первую заметку или запись о контакте</p>
+                <p className="text-muted-foreground">{t('leads.activityChat.noActivities', 'Нет записей активности')}</p>
+                <p className="text-sm text-muted-foreground">{t('leads.activityChat.addFirstActivity', 'Добавьте первую заметку или запись о контакте')}</p>
               </div>
             ) : (
               activities.map((activity, index) => (
@@ -248,7 +257,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
                         {activity.created_by && (
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <User className="h-3 w-3" />
-                            {activity.created_by === user?.id ? 'Вы' : 'Менеджер'}
+                            {activity.created_by === user?.id ? t('leads.activityChat.you', 'Вы') : t('leads.activityChat.manager', 'Менеджер')}
                           </div>
                         )}
                       </div>
@@ -260,20 +269,14 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
                       {/* Show field updates metadata */}
                       {activity.type === 'field_update' && activity.metadata?.updated_fields && (
                         <div className="text-xs text-muted-foreground bg-muted/30 p-2 rounded border-l-2 border-muted-foreground/20">
-                          <div className="font-medium mb-1">Изменения:</div>
+                          <div className="font-medium mb-1">{t('leads.activityChat.changes', 'Изменения')}:</div>
                           {Object.entries(activity.metadata.updated_fields).map(([field, change]: [string, any]) => {
                             if (!change) return null;
-                            const fieldNames: Record<string, string> = {
-                              name: 'Имя',
-                              phone: 'Телефон',
-                              company: 'Компания',
-                              email: 'Email'
-                            };
                             return (
                               <div key={field} className="text-xs">
                                 <span className="font-medium">{fieldNames[field] || field}:</span>{' '}
-                                <span className="line-through">{change.old || 'не указано'}</span>{' '}
-                                → <span>{change.new || 'не указано'}</span>
+                                <span className="line-through">{change.old || t('leads.activityChat.notSpecified', 'не указано')}</span>{' '}
+                                → <span>{change.new || t('leads.activityChat.notSpecified', 'не указано')}</span>
                               </div>
                             );
                           })}
@@ -283,7 +286,7 @@ export const LeadActivityChat = ({ leadId, className }: LeadActivityChatProps) =
                       {/* Show contact type for contact activities */}
                       {activity.type === 'contact' && activity.metadata?.contact_type && (
                         <div className="text-xs text-muted-foreground">
-                          Тип контакта: {activity.metadata.contact_type === 'call' ? 'Звонок' : activity.metadata.contact_type}
+                          {t('leads.activityChat.contactType', 'Тип контакта')}: {activity.metadata.contact_type === 'call' ? t('leads.activityChat.call', 'Звонок') : activity.metadata.contact_type}
                         </div>
                       )}
                     </div>

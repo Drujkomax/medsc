@@ -15,23 +15,14 @@ import { UnifiedLeadModal } from "./UnifiedLeadModal";
 import { DuplicateAlert } from "./DuplicateAlert";
 import { CongratulationsDialog } from "./CongratulationsDialog";
 import { useNavigate } from "react-router-dom";
-
-// Unified lead stages
-const stages = [
-  { id: "new", title: "Новый лид", color: "bg-blue-500" },
-  { id: "contacted", title: "Связались", color: "bg-yellow-500" },
-  { id: "qualified", title: "Квалифицирован", color: "bg-purple-500" },
-  { id: "proposal", title: "Отправил КП", color: "bg-orange-500" },
-  { id: "negotiation", title: "Переговоры", color: "bg-indigo-500" },
-  { id: "closed", title: "Успешно", color: "bg-green-500" },
-  { id: "lost", title: "Отказ", color: "bg-red-500" },
-];
+import { useTranslation } from "react-i18next";
 
 interface KanbanBoardProps {
   showNavigation?: boolean;
 }
 
 const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
+  const { t } = useTranslation();
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
@@ -44,6 +35,17 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
   const { duplicateGroups } = useDuplicateDetection(leads);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Unified lead stages with i18n
+  const stages = [
+    { id: "new", title: t("leads.stages.new", "Новый лид"), color: "bg-blue-500" },
+    { id: "contacted", title: t("leads.stages.contacted", "Связались"), color: "bg-yellow-500" },
+    { id: "qualified", title: t("leads.stages.qualified", "Квалифицирован"), color: "bg-purple-500" },
+    { id: "proposal", title: t("leads.stages.proposal", "Отправил КП"), color: "bg-orange-500" },
+    { id: "negotiation", title: t("leads.stages.negotiation", "Переговоры"), color: "bg-indigo-500" },
+    { id: "closed", title: t("leads.stages.closed", "Успешно"), color: "bg-green-500" },
+    { id: "lost", title: t("leads.stages.lost", "Отказ"), color: "bg-red-500" },
+  ];
 
   // Fetch employee profiles for assigned users display
   useEffect(() => {
@@ -91,8 +93,8 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
 
     if (!canEdit) {
       toast({
-        title: "Нет прав",
-        description: "У вас нет прав для изменения этапа этого лида",
+        title: t("leads.kanban.noPermission", "Нет прав"),
+        description: t("leads.kanban.noPermissionDescription", "У вас нет прав для изменения этапа этого лида"),
         variant: "destructive",
       });
       return;
@@ -107,15 +109,15 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         setIsCongratulationsOpen(true);
       } else {
         toast({
-          title: "Успешно",
-          description: "Этап лида обновлен",
+          title: t("common.success", "Успешно"),
+          description: t("leads.kanban.stageUpdated", "Этап лида обновлен"),
         });
       }
     } catch (error) {
       console.error("Error updating lead stage:", error);
       toast({
-        title: "Ошибка",
-        description: "Не удалось обновить этап лида",
+        title: t("common.error", "Ошибка"),
+        description: t("leads.kanban.stageUpdateError", "Не удалось обновить этап лида"),
         variant: "destructive",
       });
     }
@@ -146,7 +148,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
 
   const getAssignedUserName = (userId: string) => {
     const employee = employees.find((emp) => emp.id === userId);
-    return employee ? employee.email : "Назначен";
+    return employee ? employee.email : t("leads.assigned", "Назначен");
   };
 
   if (loading) {
@@ -168,10 +170,9 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
     <div className="relative">
       <div className="p-6">
         <div className="py-2">
-          <h2 className="text-3xl font-bold">Канбан-доска лидов</h2>
+          <h2 className="text-3xl font-bold">{t("leads.kanban.title", "Канбан-доска лидов")}</h2>
           <p className="text-muted-foreground">
-            На этой странице отображаются все лиды по стадиям воронки продаж. Используйте навигацию выше для перехода
-            между стадиями.
+            {t("leads.kanban.description", "На этой странице отображаются все лиды по стадиям воронки продаж. Используйте навигацию выше для перехода между стадиями.")}
           </p>
         </div>
         {/* Duplicate alerts */}
@@ -204,7 +205,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
                 {hasPermission("manage_all_leads") && (
                   <Button onClick={() => openLeadModal()} className="rounded-full">
                     <Plus className="mr-2 h-4 w-4" />
-                    Добавить лид
+                    {t("leads.addLead", "Добавить лид")}
                   </Button>
                 )}
               </div>
@@ -247,7 +248,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
                                         className="text-xs bg-blue-50 text-blue-700 border-blue-200"
                                       >
                                         <User className="mr-1 h-3 w-3" />
-                                        {getAssignedUserName(lead.assigned_to).split(" ")[0] || "Назначен"}
+                                        {getAssignedUserName(lead.assigned_to).split(" ")[0] || t("leads.assigned", "Назначен")}
                                       </Badge>
                                     )}
                                   </div>

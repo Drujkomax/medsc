@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { DuplicateAlert } from './DuplicateAlert';
 import { Eye, Edit, Archive, MoreVertical, Phone, Building2, Calendar, User, DollarSign, MapPin } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface LeadHybridCardProps {
   lead: Lead;
@@ -21,16 +22,6 @@ interface LeadHybridCardProps {
   onCreateDeal?: (lead: Lead) => void;
 }
 
-const stages = [
-  { value: 'new', label: 'Новый', color: 'bg-blue-500' },
-  { value: 'contacted', label: 'Связались', color: 'bg-yellow-500' },
-  { value: 'qualified', label: 'Квалифицирован', color: 'bg-purple-500' },
-  { value: 'proposal', label: 'Предложение', color: 'bg-orange-500' },
-  { value: 'negotiation', label: 'Переговоры', color: 'bg-indigo-500' },
-  { value: 'closed', label: 'Закрыт', color: 'bg-green-500' },
-  { value: 'lost', label: 'Потерян', color: 'bg-red-500' },
-];
-
 export const LeadHybridCard = ({ 
   lead, 
   allLeads, 
@@ -40,10 +31,21 @@ export const LeadHybridCard = ({
   onStageChange,
   onCreateDeal
 }: LeadHybridCardProps) => {
+  const { t } = useTranslation();
   const { getDuplicatesForLead } = useDuplicateDetection(allLeads);
   const { hasPermission } = useUserPermissions();
   const { user } = useAuth();
   const [showDuplicates, setShowDuplicates] = useState(false);
+  
+  const stages = [
+    { value: 'new', label: t('leads.stages.new', 'Новый'), color: 'bg-blue-500' },
+    { value: 'contacted', label: t('leads.stages.contacted', 'Связались'), color: 'bg-yellow-500' },
+    { value: 'qualified', label: t('leads.stages.qualified', 'Квалифицирован'), color: 'bg-purple-500' },
+    { value: 'proposal', label: t('leads.stages.proposal', 'Предложение'), color: 'bg-orange-500' },
+    { value: 'negotiation', label: t('leads.stages.negotiation', 'Переговоры'), color: 'bg-indigo-500' },
+    { value: 'closed', label: t('leads.stages.closed', 'Закрыт'), color: 'bg-green-500' },
+    { value: 'lost', label: t('leads.stages.lost', 'Потерян'), color: 'bg-red-500' },
+  ];
   
   const duplicates = getDuplicatesForLead(lead.id);
   const currentStage = stages.find(s => s.value === lead.stage);
@@ -81,7 +83,7 @@ export const LeadHybridCard = ({
             >
               <SelectTrigger className="w-auto h-7 text-xs bg-white border">
                 <SelectValue>
-                  {currentStage?.label || 'Статус'}
+                  {currentStage?.label || t('leads.hybridCard.status', 'Статус')}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
@@ -125,7 +127,7 @@ export const LeadHybridCard = ({
             {lead.assigned_to && (
               <div className="flex items-center gap-1">
                 <User className="h-3 w-3" />
-                <span>Назначен</span>
+                <span>{t('leads.assigned', 'Назначен')}</span>
               </div>
             )}
           </div>
@@ -140,24 +142,24 @@ export const LeadHybridCard = ({
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onView(lead)}>
               <Eye className="h-4 w-4 mr-2" />
-              Просмотр
+              {t('leads.hybridCard.view', 'Просмотр')}
             </DropdownMenuItem>
             {canEdit && (
               <DropdownMenuItem onClick={() => onEdit(lead)}>
                 <Edit className="h-4 w-4 mr-2" />
-                Редактировать
+                {t('leads.hybridCard.edit', 'Редактировать')}
               </DropdownMenuItem>
             )}
             {onCreateDeal && hasPermission('manage_all_leads') && (
               <DropdownMenuItem onClick={() => onCreateDeal(lead)}>
                 <DollarSign className="h-4 w-4 mr-2" />
-                Создать сделку
+                {t('leads.hybridCard.createDeal', 'Создать сделку')}
               </DropdownMenuItem>
             )}
             {canArchive && (
               <DropdownMenuItem onClick={() => onArchive(lead.id)}>
                 <Archive className="h-4 w-4 mr-2" />
-                Архивировать
+                {t('leads.hybridCard.archive', 'Архивировать')}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -170,7 +172,7 @@ export const LeadHybridCard = ({
 
       {showDuplicates && duplicates.length > 0 && (
         <div className="mt-3 pt-3 border-t">
-          <h4 className="text-sm font-medium mb-2">Похожие лиды:</h4>
+          <h4 className="text-sm font-medium mb-2">{t('leads.hybridCard.similarLeads', 'Похожие лиды')}:</h4>
           <div className="space-y-1">
             {duplicates.map(dup => (
               <div key={dup.id} className="text-xs p-2 bg-orange-50 rounded">

@@ -9,6 +9,7 @@ import { DuplicateGroup } from '@/hooks/useDuplicateDetection';
 import { useLeadMerge } from '@/hooks/useLeadMerge';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 interface DuplicateDetailModalProps {
   duplicateGroup: DuplicateGroup | null;
@@ -23,6 +24,7 @@ export const DuplicateDetailModal = ({
   onClose,
   onMergeComplete
 }: DuplicateDetailModalProps) => {
+  const { t } = useTranslation();
   const { mergeLeads, loading } = useLeadMerge();
   const [dismissing, setDismissing] = useState(false);
 
@@ -55,10 +57,10 @@ export const DuplicateDetailModal = ({
 
   const getTypeText = () => {
     switch (duplicateType) {
-      case 'both': return 'Имя и телефон';
-      case 'name': return 'Имя';
-      case 'phone': return 'Телефон';
-      default: return 'Неизвестно';
+      case 'both': return t('leads.duplicates.types.both', 'Имя и телефон');
+      case 'name': return t('leads.duplicates.types.name', 'Имя');
+      case 'phone': return t('leads.duplicates.types.phone', 'Телефон');
+      default: return t('leads.duplicates.types.unknown', 'Неизвестно');
     }
   };
 
@@ -68,16 +70,20 @@ export const DuplicateDetailModal = ({
     return 'text-yellow-600';
   };
 
+  const getStageLabel = (stage: string) => {
+    return t(`leads.stages.${stage}`, stage);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-orange-600" />
-            Обнаружены дубликаты лидов
+            {t('leads.duplicates.modal.title', 'Обнаружены дубликаты лидов')}
           </DialogTitle>
           <DialogDescription>
-            Найдено {leads.length} похожих лидов. Проверьте детали и выберите действие.
+            {t('leads.duplicates.modal.description', 'Найдено {{count}} похожих лидов. Проверьте детали и выберите действие.', { count: leads.length })}
           </DialogDescription>
         </DialogHeader>
 
@@ -87,14 +93,14 @@ export const DuplicateDetailModal = ({
             <CardHeader className="pb-3">
               <CardTitle className="text-sm flex items-center gap-2">
                 <div className="flex items-center gap-2">
-                  <span>Тип совпадения:</span>
+                  <span>{t('leads.duplicates.modal.matchType', 'Тип совпадения')}:</span>
                   <Badge variant={getBadgeVariant()}>
                     {getTypeText()}
                   </Badge>
                 </div>
                 <Separator orientation="vertical" className="h-4" />
                 <div className="flex items-center gap-1">
-                  <span>Точность:</span>
+                  <span>{t('leads.duplicates.modal.accuracy', 'Точность')}:</span>
                   <span className={`font-bold ${getScoreColor()}`}>{score}%</span>
                 </div>
               </CardTitle>
@@ -104,7 +110,7 @@ export const DuplicateDetailModal = ({
           {/* Список дубликатов */}
           <div className="grid gap-3">
             <h3 className="font-medium text-sm text-muted-foreground">
-              Похожие лиды ({leads.length}):
+              {t('leads.duplicates.modal.similarLeads', 'Похожие лиды')} ({leads.length}):
             </h3>
             
             {leads.map((lead, index) => (
@@ -113,7 +119,7 @@ export const DuplicateDetailModal = ({
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full bg-primary" />
-                      Лид #{index + 1}
+                      {t('leads.duplicates.modal.leadNumber', 'Лид #{{number}}', { number: index + 1 })}
                     </CardTitle>
                     <Badge variant="outline" className="text-xs">
                       ID: {lead.id.slice(-8)}
@@ -125,12 +131,12 @@ export const DuplicateDetailModal = ({
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-muted-foreground" />
-                        <span className="font-medium">{lead.name || 'Не указано'}</span>
+                        <span className="font-medium">{lead.name || t('leads.duplicates.modal.notSpecified', 'Не указано')}</span>
                       </div>
                       
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span>{lead.phone || 'Не указано'}</span>
+                        <span>{lead.phone || t('leads.duplicates.modal.notSpecified', 'Не указано')}</span>
                       </div>
                       
                       {lead.company && (
@@ -145,7 +151,7 @@ export const DuplicateDetailModal = ({
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-muted-foreground" />
                         <span className="text-xs">
-                          Создан {formatDistanceToNow(new Date(lead.created_at), { 
+                          {t('leads.duplicates.modal.created', 'Создан')} {formatDistanceToNow(new Date(lead.created_at), { 
                             addSuffix: true, 
                             locale: ru 
                           })}
@@ -154,19 +160,13 @@ export const DuplicateDetailModal = ({
                       
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs">
-                          {lead.stage === 'new' && 'Новый'}
-                          {lead.stage === 'contacted' && 'Связались'}
-                          {lead.stage === 'qualified' && 'Квалифицирован'}
-                          {lead.stage === 'proposal' && 'Предложение'}
-                          {lead.stage === 'negotiation' && 'Переговоры'}
-                          {lead.stage === 'closed' && 'Закрыт'}
-                          {lead.stage === 'lost' && 'Потерян'}
+                          {getStageLabel(lead.stage)}
                         </Badge>
                       </div>
                       
                       {lead.notes && (
                         <div className="text-xs text-muted-foreground">
-                          <span className="font-medium">Заметки:</span> {lead.notes.slice(0, 100)}
+                          <span className="font-medium">{t('leads.duplicates.modal.notes', 'Заметки')}:</span> {lead.notes.slice(0, 100)}
                           {lead.notes.length > 100 && '...'}
                         </div>
                       )}
@@ -182,10 +182,9 @@ export const DuplicateDetailModal = ({
             <div className="flex gap-2">
               <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
               <div className="text-sm">
-                <p className="font-medium text-yellow-800">Внимание!</p>
+                <p className="font-medium text-yellow-800">{t('leads.duplicates.modal.warning', 'Внимание!')}</p>
                 <p className="text-yellow-700">
-                  При слиянии информация из всех лидов будет объединена в один, а остальные будут удалены.
-                  Это действие нельзя отменить.
+                  {t('leads.duplicates.modal.warningText', 'При слиянии информация из всех лидов будет объединена в один, а остальные будут удалены. Это действие нельзя отменить.')}
                 </p>
               </div>
             </div>
@@ -199,7 +198,7 @@ export const DuplicateDetailModal = ({
             disabled={loading || dismissing}
           >
             <X className="h-4 w-4 mr-2" />
-            {dismissing ? 'Помечаем...' : 'Не дубликат'}
+            {dismissing ? t('leads.duplicates.modal.marking', 'Помечаем...') : t('leads.duplicates.modal.notDuplicate', 'Не дубликат')}
           </Button>
           
           <Button
@@ -208,7 +207,7 @@ export const DuplicateDetailModal = ({
             className="bg-orange-600 hover:bg-orange-700 text-white"
           >
             <Merge className="h-4 w-4 mr-2" />
-            {loading ? 'Объединяем...' : 'Объединить лиды'}
+            {loading ? t('leads.duplicates.modal.merging', 'Объединяем...') : t('leads.duplicates.modal.mergeLeads', 'Объединить лиды')}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, Users, Eye } from 'lucide-react';
 import { DuplicateGroup } from '@/hooks/useDuplicateDetection';
+import { useTranslation } from 'react-i18next';
 
 interface DuplicateAlertProps {
   duplicateGroup: DuplicateGroup;
@@ -10,6 +11,7 @@ interface DuplicateAlertProps {
 }
 
 export const DuplicateAlert = ({ duplicateGroup, onViewDetails }: DuplicateAlertProps) => {
+  const { t } = useTranslation();
   const { leads, duplicateType, score } = duplicateGroup;
 
   const getBadgeVariant = () => {
@@ -20,10 +22,10 @@ export const DuplicateAlert = ({ duplicateGroup, onViewDetails }: DuplicateAlert
 
   const getTypeText = () => {
     switch (duplicateType) {
-      case 'both': return 'Имя и телефон';
-      case 'name': return 'Имя';
-      case 'phone': return 'Телефон';
-      default: return 'Неизвестно';
+      case 'both': return t('leads.duplicates.types.both', 'Имя и телефон');
+      case 'name': return t('leads.duplicates.types.name', 'Имя');
+      case 'phone': return t('leads.duplicates.types.phone', 'Телефон');
+      default: return t('leads.duplicates.types.unknown', 'Неизвестно');
     }
   };
 
@@ -33,7 +35,7 @@ export const DuplicateAlert = ({ duplicateGroup, onViewDetails }: DuplicateAlert
       <AlertDescription className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Users className="h-4 w-4" />
-          <span>Найдено {leads.length} похожих лидов</span>
+          <span>{t('leads.duplicates.foundCount', 'Найдено {{count}} похожих лидов', { count: leads.length })}</span>
           <Badge variant={getBadgeVariant()}>
             {getTypeText()} ({score}%)
           </Badge>
@@ -47,7 +49,7 @@ export const DuplicateAlert = ({ duplicateGroup, onViewDetails }: DuplicateAlert
               className="text-orange-700 hover:text-orange-800"
             >
               <Eye className="h-3 w-3 mr-1" />
-              Подробности
+              {t('leads.duplicates.details', 'Подробности')}
             </Button>
           )}
         </div>

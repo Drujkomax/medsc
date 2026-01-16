@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Lead, useLeads } from '@/hooks/useLeads';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface EditLeadModalProps {
   lead: Lead | null;
@@ -16,39 +17,8 @@ interface EditLeadModalProps {
   onSuccess?: () => void;
 }
 
-const stages = [
-  { value: 'new', label: 'Новый' },
-  { value: 'contacted', label: 'Связались' },
-  { value: 'qualified', label: 'Квалифицирован' },
-  { value: 'proposal', label: 'Предложение' },
-  { value: 'negotiation', label: 'Переговоры' },
-  { value: 'closed', label: 'Закрыт' },
-  { value: 'lost', label: 'Потерян' }
-];
-
-const budgetRanges = [
-  { value: 'under_50k', label: 'До $50,000' },
-  { value: '50k_100k', label: '$50,000 - $100,000' },
-  { value: '100k_500k', label: '$100,000 - $500,000' },
-  { value: '500k_1m', label: '$500,000 - $1,000,000' },
-  { value: 'over_1m', label: 'Свыше $1,000,000' },
-  { value: 'not_disclosed', label: 'Не раскрыт' }
-];
-
-const equipmentTypes = [
-  { value: 'mri', label: 'МРТ оборудование' },
-  { value: 'ct', label: 'КТ оборудование' },
-  { value: 'ultrasound', label: 'УЗИ оборудование' },
-  { value: 'xray', label: 'Рентгеновское оборудование' },
-  { value: 'laboratory', label: 'Лабораторное оборудование' },
-  { value: 'surgical', label: 'Хирургическое оборудование' },
-  { value: 'anesthesia', label: 'Оборудование для анестезии' },
-  { value: 'monitoring', label: 'Мониторинговое оборудование' },
-  { value: 'rehabilitation', label: 'Реабилитационное оборудование' },
-  { value: 'other', label: 'Другое' }
-];
-
 export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModalProps) => {
+  const { t } = useTranslation();
   const { updateLead } = useLeads();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
@@ -66,6 +36,38 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
     lead_quality: '',
     lead_created_date: ''
   });
+
+  const stages = [
+    { value: 'new', label: t('leads.stages.new', 'Новый') },
+    { value: 'contacted', label: t('leads.stages.contacted', 'Связались') },
+    { value: 'qualified', label: t('leads.stages.qualified', 'Квалифицирован') },
+    { value: 'proposal', label: t('leads.stages.proposal', 'Предложение') },
+    { value: 'negotiation', label: t('leads.stages.negotiation', 'Переговоры') },
+    { value: 'closed', label: t('leads.stages.closed', 'Закрыт') },
+    { value: 'lost', label: t('leads.stages.lost', 'Потерян') }
+  ];
+
+  const budgetRanges = [
+    { value: 'under_50k', label: t('leads.editModal.budgetRanges.under_50k', 'До $50,000') },
+    { value: '50k_100k', label: t('leads.editModal.budgetRanges.50k_100k', '$50,000 - $100,000') },
+    { value: '100k_500k', label: t('leads.editModal.budgetRanges.100k_500k', '$100,000 - $500,000') },
+    { value: '500k_1m', label: t('leads.editModal.budgetRanges.500k_1m', '$500,000 - $1,000,000') },
+    { value: 'over_1m', label: t('leads.editModal.budgetRanges.over_1m', 'Свыше $1,000,000') },
+    { value: 'not_disclosed', label: t('leads.editModal.budgetRanges.not_disclosed', 'Не раскрыт') }
+  ];
+
+  const equipmentTypes = [
+    { value: 'mri', label: t('leads.editModal.equipmentTypes.mri', 'МРТ оборудование') },
+    { value: 'ct', label: t('leads.editModal.equipmentTypes.ct', 'КТ оборудование') },
+    { value: 'ultrasound', label: t('leads.editModal.equipmentTypes.ultrasound', 'УЗИ оборудование') },
+    { value: 'xray', label: t('leads.editModal.equipmentTypes.xray', 'Рентгеновское оборудование') },
+    { value: 'laboratory', label: t('leads.editModal.equipmentTypes.laboratory', 'Лабораторное оборудование') },
+    { value: 'surgical', label: t('leads.editModal.equipmentTypes.surgical', 'Хирургическое оборудование') },
+    { value: 'anesthesia', label: t('leads.editModal.equipmentTypes.anesthesia', 'Оборудование для анестезии') },
+    { value: 'monitoring', label: t('leads.editModal.equipmentTypes.monitoring', 'Мониторинговое оборудование') },
+    { value: 'rehabilitation', label: t('leads.editModal.equipmentTypes.rehabilitation', 'Реабилитационное оборудование') },
+    { value: 'other', label: t('leads.editModal.equipmentTypes.other', 'Другое') }
+  ];
 
   useEffect(() => {
     if (lead) {
@@ -108,16 +110,16 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
       });
       
       toast({
-        title: 'Успешно',
-        description: 'Лид обновлен',
+        title: t('common.success', 'Успешно'),
+        description: t('leads.editModal.leadUpdated', 'Лид обновлен'),
       });
       
       onSuccess?.();
       onClose();
     } catch (error) {
       toast({
-        title: 'Ошибка',
-        description: 'Ошибка при обновлении лида',
+        title: t('common.error', 'Ошибка'),
+        description: t('leads.editModal.updateError', 'Ошибка при обновлении лида'),
         variant: 'destructive',
       });
     } finally {
@@ -138,16 +140,16 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] bg-background overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Редактировать лид</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">{t('leads.editModal.title', 'Редактировать лид')}</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Основная информация */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-foreground border-b pb-2">Основная информация</h3>
+            <h3 className="text-lg font-medium text-foreground border-b pb-2">{t('leads.editModal.sections.basicInfo', 'Основная информация')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="lead_created_date">Дата создания лида</Label>
+                <Label htmlFor="lead_created_date">{t('leads.leadCreatedDate', 'Дата создания лида')}</Label>
                 <Input
                   id="lead_created_date"
                   type="datetime-local"
@@ -158,65 +160,65 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="name">Имя *</Label>
+                <Label htmlFor="name">{t('leads.name', 'Имя')} *</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  placeholder="Введите имя"
+                  placeholder={t('leads.editModal.placeholders.name', 'Введите имя')}
                   required
                   className="focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('leads.email', 'Email')}</Label>
                 <Input
                   id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="Введите email"
+                  placeholder={t('leads.editModal.placeholders.email', 'Введите email')}
                   className="focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone">Телефон</Label>
+                <Label htmlFor="phone">{t('leads.phone', 'Телефон')}</Label>
                 <Input
                   id="phone"
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="Введите телефон"
+                  placeholder={t('leads.editModal.placeholders.phone', 'Введите телефон')}
                   type="tel"
                   className="focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="company">Компания</Label>
+                <Label htmlFor="company">{t('leads.company', 'Компания')}</Label>
                 <Input
                   id="company"
                   value={formData.company}
                   onChange={(e) => handleInputChange('company', e.target.value)}
-                  placeholder="Введите название компании"
+                  placeholder={t('leads.editModal.placeholders.company', 'Введите название компании')}
                   className="focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="position">Должность</Label>
+                <Label htmlFor="position">{t('leads.editModal.fields.position', 'Должность')}</Label>
                 <Input
                   id="position"
                   value={formData.position}
                   onChange={(e) => handleInputChange('position', e.target.value)}
-                  placeholder="Введите должность"
+                  placeholder={t('leads.editModal.placeholders.position', 'Введите должность')}
                   className="focus:ring-2 focus:ring-primary"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="value">Потенциальная стоимость</Label>
+                <Label htmlFor="value">{t('leads.editModal.fields.potentialValue', 'Потенциальная стоимость')}</Label>
                 <Input
                   id="value"
                   type="number"
@@ -231,13 +233,13 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
 
           {/* Статус и классификация */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-foreground border-b pb-2">Статус и классификация</h3>
+            <h3 className="text-lg font-medium text-foreground border-b pb-2">{t('leads.editModal.sections.statusClassification', 'Статус и классификация')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="stage">Статус</Label>
+                <Label htmlFor="stage">{t('leads.status', 'Статус')}</Label>
                 <Select value={formData.stage} onValueChange={(value) => handleInputChange('stage', value)}>
                   <SelectTrigger className="focus:ring-2 focus:ring-primary">
-                    <SelectValue placeholder="Выберите статус" />
+                    <SelectValue placeholder={t('leads.editModal.placeholders.status', 'Выберите статус')} />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
                     {stages.map((stage) => (
@@ -250,10 +252,10 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="budget_range">Бюджет</Label>
+                <Label htmlFor="budget_range">{t('leads.editModal.fields.budget', 'Бюджет')}</Label>
                 <Select value={formData.budget_range} onValueChange={(value) => handleInputChange('budget_range', value)}>
                   <SelectTrigger className="focus:ring-2 focus:ring-primary">
-                    <SelectValue placeholder="Выберите диапазон бюджета" />
+                    <SelectValue placeholder={t('leads.editModal.placeholders.budget', 'Выберите диапазон бюджета')} />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
                     {budgetRanges.map((budget) => (
@@ -266,25 +268,25 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lead_quality">Качество лида</Label>
+                <Label htmlFor="lead_quality">{t('leads.leadQuality', 'Качество лида')}</Label>
                 <Select value={formData.lead_quality} onValueChange={(value) => handleInputChange('lead_quality', value)}>
                   <SelectTrigger className="focus:ring-2 focus:ring-primary">
-                    <SelectValue placeholder="Выберите качество лида" />
+                    <SelectValue placeholder={t('leads.editModal.placeholders.quality', 'Выберите качество лида')} />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
-                    <SelectItem value="A">A - Целевой</SelectItem>
-                    <SelectItem value="B">B - Потенциальный</SelectItem>
-                    <SelectItem value="C">C - Мусор</SelectItem>
+                    <SelectItem value="A">{t('leads.qualityA', 'A - Целевой')}</SelectItem>
+                    <SelectItem value="B">{t('leads.qualityB', 'B - Потенциальный')}</SelectItem>
+                    <SelectItem value="C">{t('leads.qualityC', 'C - Мусор')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
 
               <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="equipment_interest">Интересующее оборудование</Label>
+                <Label htmlFor="equipment_interest">{t('leads.editModal.fields.equipmentInterest', 'Интересующее оборудование')}</Label>
                 <Select value={formData.equipment_interest} onValueChange={(value) => handleInputChange('equipment_interest', value)}>
                   <SelectTrigger className="focus:ring-2 focus:ring-primary">
-                    <SelectValue placeholder="Выберите тип оборудования" />
+                    <SelectValue placeholder={t('leads.editModal.placeholders.equipment', 'Выберите тип оборудования')} />
                   </SelectTrigger>
                   <SelectContent className="bg-background z-50">
                     {equipmentTypes.map((equipment) => (
@@ -300,14 +302,14 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
 
           {/* Заметки */}
           <div className="space-y-4">
-            <h3 className="text-lg font-medium text-foreground border-b pb-2">Дополнительная информация</h3>
+            <h3 className="text-lg font-medium text-foreground border-b pb-2">{t('leads.editModal.sections.additionalInfo', 'Дополнительная информация')}</h3>
             <div className="space-y-2">
-              <Label htmlFor="notes">Заметки</Label>
+              <Label htmlFor="notes">{t('leads.editModal.fields.notes', 'Заметки')}</Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
                 onChange={(e) => handleInputChange('notes', e.target.value)}
-                placeholder="Введите заметки о лиде..."
+                placeholder={t('leads.editModal.placeholders.notes', 'Введите заметки о лиде...')}
                 rows={4}
                 className="focus:ring-2 focus:ring-primary resize-none"
               />
@@ -316,11 +318,11 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
 
           <DialogFooter className="gap-2 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose} disabled={loading} className="px-6">
-              Отмена
+              {t('common.cancel', 'Отмена')}
             </Button>
             <Button type="submit" disabled={loading || !formData.name.trim()} className="px-6">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Сохранить изменения
+              {t('leads.editModal.saveChanges', 'Сохранить изменения')}
             </Button>
           </DialogFooter>
         </form>
