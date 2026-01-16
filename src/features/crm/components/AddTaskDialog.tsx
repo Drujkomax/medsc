@@ -18,6 +18,7 @@ import { useLeads } from '@/hooks/useLeads';
 import { useDeals } from '@/hooks/useDeals';
 import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { toast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 const taskSchema = z.object({
   title: z.string().min(1, "Название задачи обязательно"),
@@ -43,6 +44,7 @@ interface AddTaskDialogProps {
 }
 
 export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialogProps) => {
+  const { t } = useTranslation();
   const { addTask, updateTask } = useTasks();
   const { leads } = useLeads();
   const { deals } = useDeals();
@@ -102,14 +104,14 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
       if (editingTask) {
         await updateTask(editingTask.id, taskData);
         toast({
-          title: "Задача обновлена",
-          description: "Задача успешно обновлена",
+          title: t('tasks.taskUpdated', 'Задача обновлена'),
+          description: t('tasks.taskUpdatedDesc', 'Задача успешно обновлена'),
         });
       } else {
         await addTask(taskData);
         toast({
-          title: "Задача создана",
-          description: "Новая задача успешно создана",
+          title: t('tasks.taskCreated', 'Задача создана'),
+          description: t('tasks.taskCreatedDesc', 'Новая задача успешно создана'),
         });
       }
       
@@ -117,8 +119,8 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
       form.reset();
     } catch (error) {
       toast({
-        title: "Ошибка",
-        description: "Не удалось сохранить задачу",
+        title: t('common.error', 'Ошибка'),
+        description: t('tasks.taskSaveError', 'Не удалось сохранить задачу'),
         variant: "destructive",
       });
     } finally {
@@ -132,7 +134,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" />
-            {editingTask ? 'Редактировать задачу' : 'Новая задача'}
+            {editingTask ? t('tasks.editTask', 'Редактировать задачу') : t('tasks.newTask', 'Новая задача')}
           </DialogTitle>
         </DialogHeader>
 
@@ -144,9 +146,9 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 name="title"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Название задачи *</FormLabel>
+                    <FormLabel>{t('tasks.taskTitle', 'Название задачи')} *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Введите название задачи" {...field} />
+                      <Input placeholder={t('tasks.taskTitlePlaceholder', 'Введите название задачи')} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -158,10 +160,10 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 name="description"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Описание</FormLabel>
+                    <FormLabel>{t('tasks.description', 'Описание')}</FormLabel>
                     <FormControl>
                       <Textarea 
-                        placeholder="Описание задачи..." 
+                        placeholder={t('tasks.descriptionPlaceholder', 'Описание задачи...')}
                         className="min-h-[100px]"
                         {...field} 
                       />
@@ -176,7 +178,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 name="assignee_ids"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2">
-                    <FormLabel>Назначить сотрудникам (можно выбрать несколько)</FormLabel>
+                    <FormLabel>{t('tasks.assignToEmployees', 'Назначить сотрудникам (можно выбрать несколько)')}</FormLabel>
                     <div className="border rounded-md p-3 max-h-[200px] overflow-y-auto space-y-2">
                       {employees && employees.length > 0 ? (
                         employees.map((employee) => (
@@ -204,11 +206,11 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                           </div>
                         ))
                       ) : (
-                        <p className="text-sm text-muted-foreground">Нет доступных сотрудников</p>
+                        <p className="text-sm text-muted-foreground">{t('tasks.noEmployeesAvailable', 'Нет доступных сотрудников')}</p>
                       )}
                     </div>
                     <FormDescription>
-                      Выбрано: {field.value?.length || 0} сотрудников
+                      {t('tasks.selectedCount', 'Выбрано')}: {field.value?.length || 0} {t('tasks.employees', 'сотрудников')}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -220,18 +222,18 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Статус</FormLabel>
+                    <FormLabel>{t('tasks.statusLabel', 'Статус')}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите статус" />
+                          <SelectValue placeholder={t('tasks.selectStatus', 'Выберите статус')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="pending">В ожидании</SelectItem>
-                        <SelectItem value="in_progress">В работе</SelectItem>
-                        <SelectItem value="completed">Выполнено</SelectItem>
-                        <SelectItem value="cancelled">Отменено</SelectItem>
+                        <SelectItem value="pending">{t('tasks.status.pending', 'В ожидании')}</SelectItem>
+                        <SelectItem value="in_progress">{t('tasks.status.in_progress', 'В работе')}</SelectItem>
+                        <SelectItem value="completed">{t('tasks.status.completed', 'Выполнено')}</SelectItem>
+                        <SelectItem value="cancelled">{t('tasks.status.cancelled', 'Отменено')}</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -244,18 +246,18 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 name="priority"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Приоритет</FormLabel>
+                    <FormLabel>{t('tasks.priorityLabel', 'Приоритет')}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите приоритет" />
+                          <SelectValue placeholder={t('tasks.selectPriority', 'Выберите приоритет')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="low">Низкий</SelectItem>
-                        <SelectItem value="medium">Средний</SelectItem>
-                        <SelectItem value="high">Высокий</SelectItem>
-                        <SelectItem value="urgent">Срочно</SelectItem>
+                        <SelectItem value="low">{t('tasks.priorities.low', 'Низкий')}</SelectItem>
+                        <SelectItem value="medium">{t('tasks.priorities.medium', 'Средний')}</SelectItem>
+                        <SelectItem value="high">{t('tasks.priorities.high', 'Высокий')}</SelectItem>
+                        <SelectItem value="urgent">{t('tasks.priorities.urgent', 'Срочно')}</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -268,7 +270,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 name="due_date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Срок выполнения</FormLabel>
+                    <FormLabel>{t('tasks.dueDate', 'Срок выполнения')}</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -282,7 +284,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                             {field.value ? (
                               format(field.value, "dd.MM.yyyy")
                             ) : (
-                              <span>Выберите дату</span>
+                              <span>{t('tasks.selectDate', 'Выберите дату')}</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -308,15 +310,15 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                 name="deal_id"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Связанная сделка</FormLabel>
+                    <FormLabel>{t('tasks.relatedDeal', 'Связанная сделка')}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите сделку" />
+                          <SelectValue placeholder={t('tasks.selectDeal', 'Выберите сделку')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Без сделки</SelectItem>
+                        <SelectItem value="none">{t('tasks.noDeal', 'Без сделки')}</SelectItem>
                         {deals?.map((deal) => (
                           <SelectItem key={deal.id} value={deal.id}>
                             {deal.title}
@@ -332,26 +334,26 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
 
             {/* Recurrence Settings */}
             <div className="space-y-4 p-4 border rounded-lg bg-muted/20">
-              <h3 className="font-semibold text-sm">Настройки повторения</h3>
+              <h3 className="font-semibold text-sm">{t('tasks.recurrenceSettings', 'Настройки повторения')}</h3>
               
               <FormField
                 control={form.control}
                 name="recurrence_type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Тип повторения</FormLabel>
+                    <FormLabel>{t('tasks.recurrenceType', 'Тип повторения')}</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Выберите тип" />
+                          <SelectValue placeholder={t('tasks.selectType', 'Выберите тип')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="none">Единоразовая задача</SelectItem>
-                        <SelectItem value="daily">Ежедневно</SelectItem>
-                        <SelectItem value="weekly">Еженедельно</SelectItem>
-                        <SelectItem value="monthly">Ежемесячно</SelectItem>
-                        <SelectItem value="yearly">Ежегодно</SelectItem>
+                        <SelectItem value="none">{t('tasks.recurrence.none', 'Единоразовая задача')}</SelectItem>
+                        <SelectItem value="daily">{t('tasks.recurrence.daily', 'Ежедневно')}</SelectItem>
+                        <SelectItem value="weekly">{t('tasks.recurrence.weekly', 'Еженедельно')}</SelectItem>
+                        <SelectItem value="monthly">{t('tasks.recurrence.monthly', 'Ежемесячно')}</SelectItem>
+                        <SelectItem value="yearly">{t('tasks.recurrence.yearly', 'Ежегодно')}</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -366,7 +368,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                     name="recurrence_interval"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Интервал повторения</FormLabel>
+                        <FormLabel>{t('tasks.recurrenceInterval', 'Интервал повторения')}</FormLabel>
                         <FormControl>
                           <Input 
                             type="number" 
@@ -377,11 +379,11 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                           />
                         </FormControl>
                         <FormDescription>
-                          Каждые {field.value} {
-                            watchRecurrenceType === 'daily' ? 'дней' :
-                            watchRecurrenceType === 'weekly' ? 'недель' :
-                            watchRecurrenceType === 'monthly' ? 'месяцев' :
-                            'лет'
+                          {t('tasks.every', 'Каждые')} {field.value} {
+                            watchRecurrenceType === 'daily' ? t('tasks.interval.days', 'дней') :
+                            watchRecurrenceType === 'weekly' ? t('tasks.interval.weeks', 'недель') :
+                            watchRecurrenceType === 'monthly' ? t('tasks.interval.months', 'месяцев') :
+                            t('tasks.interval.years', 'лет')
                           }
                         </FormDescription>
                         <FormMessage />
@@ -394,7 +396,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                     name="recurrence_end_date"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Окончание повторения</FormLabel>
+                        <FormLabel>{t('tasks.recurrenceEndDate', 'Окончание повторения')}</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -408,7 +410,7 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                                 {field.value ? (
                                   format(field.value, "dd.MM.yyyy")
                                 ) : (
-                                  <span>Без ограничений</span>
+                                  <span>{t('tasks.noLimit', 'Без ограничений')}</span>
                                 )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
@@ -424,9 +426,6 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
                             />
                           </PopoverContent>
                         </Popover>
-                        <FormDescription>
-                          Оставьте пустым для бесконечного повторения
-                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -435,21 +434,12 @@ export const AddTaskDialog = ({ open, onOpenChange, editingTask }: AddTaskDialog
               )}
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button 
-                type="submit" 
-                disabled={loading}
-                className="flex-1"
-              >
-                {loading ? 'Сохранение...' : editingTask ? 'Обновить' : 'Создать задачу'}
+            <div className="flex justify-end gap-3">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                {t('common.cancel', 'Отмена')}
               </Button>
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => onOpenChange(false)}
-                className="flex-1"
-              >
-                Отмена
+              <Button type="submit" disabled={loading}>
+                {loading ? t('common.saving', 'Сохранение...') : (editingTask ? t('common.save', 'Сохранить') : t('common.create', 'Создать'))}
               </Button>
             </div>
           </form>
