@@ -20,7 +20,8 @@
     "close": "Yopish",
     "day": "kun",
     "days": "kun",
-    "over": "Ustidan"
+    "over": "Ustidan",
+    "for": "Uchun"
   },
   "navigation": {
     "home": "Asosiy sahifa",
@@ -84,8 +85,8 @@
     "closed": "Yopildi",
     "lost": "Yoʻqotildi"
   },
-  "common": {
-    "filters": "Filtrlash"
+  "filters": {
+    "title": "Filtrlash"
   },
   "clients": {
     "title": "Mijozlar",

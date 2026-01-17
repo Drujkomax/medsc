@@ -85,8 +85,8 @@
     "closed": "Closed",
     "lost": "Lost"
   },
-  "common": {
-    "filters": "Filters"
+  "filters": {
+    "title": "Filters"
   },
   "clients": {
     "title": "Clients",
