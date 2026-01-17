@@ -21,7 +21,8 @@
     "day": "day",
     "days": "days",
     "over": "Over",
-    "forDays": "For {{count}} days"
+      "for":"For"
+""
   },
   "navigation": {
     "home": "Home",
