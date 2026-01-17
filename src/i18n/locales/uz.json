@@ -492,6 +492,22 @@
       "stageChange": "{{from}} dan {{to}} ga",
       "assignedTo": "{{name}} ga tayinlandi"
     },
+    "activityChat": {
+      "noteTab": "Eslatma",
+      "contactTab": "Aloqa",
+      "notePlaceholder": "Eslatma qoʻshing... (Yuborish uchun Ctrl+Enter)",
+      "addNote": "Eslatma qoʻshish",
+      "contactPlaceholder": "Mijoz bilan aloqa tavsifi... (Yuborish uchun Ctrl+Enter)",
+      "recordContact": "Aloqani yozish",
+      "noActivities": "Faollik yozuvlari yoʻq",
+      "addFirstActivity": "Birinchi eslatma yoki aloqa yozuvini qoʻshing",
+      "you": "Siz",
+      "manager": "Menejer",
+      "changes": "Oʻzgarishlar",
+      "notSpecified": "koʻrsatilmagan",
+      "contactType": "Aloqa turi",
+      "call": "Qoʻngʻiroq"
+    },
     "duplicates": {
       "title": "Mumkin boʻlgan dublikatlar aniqlangan",
       "subtitle": "Moslik uchun ushbu lidlarni koʻrib chiqing",

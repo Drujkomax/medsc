@@ -492,6 +492,22 @@
       "stageChange": "{{from}} → {{to}}",
       "assignedTo": "Assigned to {{name}}"
     },
+    "activityChat": {
+      "noteTab": "Note",
+      "contactTab": "Contact",
+      "notePlaceholder": "Add a note... (Ctrl+Enter to send)",
+      "addNote": "Add note",
+      "contactPlaceholder": "Description of contact with client... (Ctrl+Enter to send)",
+      "recordContact": "Record contact",
+      "noActivities": "No activity records",
+      "addFirstActivity": "Add the first note or contact record",
+      "you": "You",
+      "manager": "Manager",
+      "changes": "Changes",
+      "notSpecified": "not specified",
+      "contactType": "Contact type",
+      "call": "Call"
+    },
     "duplicates": {
       "title": "Possible duplicates detected",
       "subtitle": "Review these leads for matches",
