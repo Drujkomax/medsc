@@ -42,7 +42,7 @@ const ExecutiveOverview = () => {
     loadExecutiveData();
   }, [dateRange]);
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const loadExecutiveData = async () => {
     const endDate = format(new Date(), "yyyy-MM-dd");
@@ -345,7 +345,7 @@ const ExecutiveOverview = () => {
                             {index + 1}
                           </div>
                           <span className="text-sm font-medium truncate max-w-32">
-                            {product.name?.ru || t("dashboard.executive.products.noName", "Без названия")}
+                            {(product.name as any)?.[i18n.language] || (product.name as any)?.ru || t("dashboard.executive.products.noName", "Без названия")}
                           </span>
                         </div>
                         <Badge variant="outline">{((product.conversion_rate || 0) * 100).toFixed(1)}%</Badge>
