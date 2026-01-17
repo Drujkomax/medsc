@@ -428,18 +428,46 @@
         "source": "Source",
         "equipmentInterest": "Equipment Interest",
         "budgetRange": "Budget",
+        "budget": "Budget",
         "timeline": "Timeline",
-        "notes": "Notes"
+        "notes": "Notes",
+        "potentialValue": "Potential Value"
       },
       "placeholders": {
-        "name": "Enter client name",
-        "company": "Company name",
-        "position": "Position at company",
-        "phone": "+998 (xx) xxx-xx-xx",
-        "email": "email@example.com",
+        "name": "Enter name",
+        "company": "Enter company name",
+        "position": "Enter position",
+        "phone": "Enter phone",
+        "email": "Enter email",
         "city": "City",
-        "notes": "Additional information about the lead"
+        "notes": "Enter notes about lead...",
+        "status": "Select status",
+        "budget": "Select budget range",
+        "quality": "Select lead quality",
+        "equipment": "Select equipment type"
       },
+      "budgetRanges": {
+        "under_50k": "Under $50,000",
+        "50k_100k": "$50,000 - $100,000",
+        "100k_500k": "$100,000 - $500,000",
+        "500k_1m": "$500,000 - $1,000,000",
+        "over_1m": "Over $1,000,000",
+        "not_disclosed": "Not disclosed"
+      },
+      "equipmentTypes": {
+        "mri": "MRI Equipment",
+        "ct": "CT Equipment",
+        "ultrasound": "Ultrasound Equipment",
+        "xray": "X-ray Equipment",
+        "laboratory": "Laboratory Equipment",
+        "surgical": "Surgical Equipment",
+        "anesthesia": "Anesthesia Equipment",
+        "monitoring": "Monitoring Equipment",
+        "rehabilitation": "Rehabilitation Equipment",
+        "other": "Other"
+      },
+      "leadUpdated": "Lead updated",
+      "updateError": "Error updating lead",
       "success": "Lead successfully updated",
       "error": "Error updating lead"
     },

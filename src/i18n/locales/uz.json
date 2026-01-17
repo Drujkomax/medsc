@@ -428,18 +428,46 @@
         "source": "Manba",
         "equipmentInterest": "Uskuna qiziqishi",
         "budgetRange": "Byudjet",
+        "budget": "Byudjet",
         "timeline": "Vaqt jadvali",
-        "notes": "Eslatmalar"
+        "notes": "Eslatmalar",
+        "potentialValue": "Potentsial qiymat"
       },
       "placeholders": {
-        "name": "Mijoz ismini kiriting",
-        "company": "Kompaniya nomi",
-        "position": "Kompaniyadagi lavozimi",
-        "phone": "+998 (xx) xxx-xx-xx",
-        "email": "email@example.com",
+        "name": "Ismni kiriting",
+        "company": "Kompaniya nomini kiriting",
+        "position": "Lavozimni kiriting",
+        "phone": "Telefonni kiriting",
+        "email": "Emailni kiriting",
         "city": "Shahar",
-        "notes": "Lid haqida qoʻshimcha maʼlumot"
+        "notes": "Lid haqida eslatmalar kiriting...",
+        "status": "Statusni tanlang",
+        "budget": "Byudjet diapazonini tanlang",
+        "quality": "Lid sifatini tanlang",
+        "equipment": "Uskuna turini tanlang"
       },
+      "budgetRanges": {
+        "under_50k": "$50,000 gacha",
+        "50k_100k": "$50,000 - $100,000",
+        "100k_500k": "$100,000 - $500,000",
+        "500k_1m": "$500,000 - $1,000,000",
+        "over_1m": "$1,000,000 dan yuqori",
+        "not_disclosed": "Oshkor qilinmagan"
+      },
+      "equipmentTypes": {
+        "mri": "MRT uskunasi",
+        "ct": "KT uskunasi",
+        "ultrasound": "UZI uskunasi",
+        "xray": "Rentgen uskunasi",
+        "laboratory": "Laboratoriya uskunasi",
+        "surgical": "Jarrohlik uskunasi",
+        "anesthesia": "Anesteziya uskunasi",
+        "monitoring": "Monitoring uskunasi",
+        "rehabilitation": "Reabilitatsiya uskunasi",
+        "other": "Boshqa"
+      },
+      "leadUpdated": "Lid yangilandi",
+      "updateError": "Lidni yangilashda xatolik",
       "success": "Lid muvaffaqiyatli yangilandi",
       "error": "Lidni yangilashda xatolik"
     },
