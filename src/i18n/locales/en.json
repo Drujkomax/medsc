@@ -412,7 +412,9 @@
         "basicInfo": "Basic Information",
         "contactInfo": "Contact Information",
         "qualification": "Qualification",
-        "notes": "Notes"
+        "notes": "Notes",
+        "statusClassification": "Status and Classification",
+        "additionalInfo": "Additional Information"
       },
       "fields": {
         "name": "Client Name",

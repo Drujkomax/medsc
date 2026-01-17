@@ -412,7 +412,9 @@
         "basicInfo": "Asosiy maʼlumotlar",
         "contactInfo": "Aloqa maʼlumotlari",
         "qualification": "Sifatlanish",
-        "notes": "Eslatmalar"
+        "notes": "Eslatmalar",
+        "statusClassification": "Status va tasniflash",
+        "additionalInfo": "Qoʻshimcha maʼlumotlar"
       },
       "fields": {
         "name": "Mijoz ismi",
