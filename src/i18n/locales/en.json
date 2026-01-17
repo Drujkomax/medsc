@@ -170,6 +170,11 @@
     "efficiency": "Efficiency",
     "new": "New",
     "requireProcessing": "Require processing",
+    "stages": {
+      "new": "New",
+      "contacted": "In Progress",
+      "closed": "Closed"
+    },
     "executive": {
       "title": "Executive Dashboard",
       "subtitle": "Consolidated Analytics for Decision-Making",

@@ -170,6 +170,11 @@
     "efficiency": "Samaradorlik",
     "new": "Yangi",
     "requireProcessing": "Qayta ishlash talab qilinadi",
+    "stages": {
+      "new": "Yangi",
+      "contacted": "Jarayonda",
+      "closed": "Yopildi"
+    },
     "executive": {
       "title": "Rahbarlar paneli",
       "subtitle": "Qaror qabul qilish uchun birlashtirilgan analitika",
