@@ -162,19 +162,10 @@ const ExecutiveOverview = () => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="7">
-              {/* Вариант с раздельным переводом: */}
-              {t("common.for", "За")} 7 {t("common.days", "дней")}
-            </SelectItem>
-            <SelectItem value="14">
-              {t("common.for", "За")} 14 {t("common.days", "дней")}
-            </SelectItem>
-            <SelectItem value="30">
-              {t("common.for", "За")} 30 {t("common.days", "дней")}
-            </SelectItem>
-            <SelectItem value="90">
-              {t("common.for", "За")} 90 {t("common.days", "дней")}
-            </SelectItem>
+            <SelectItem value="7">7 {t("common.days", "дней")}</SelectItem>
+            <SelectItem value="14">14 {t("common.days", "дней")}</SelectItem>
+            <SelectItem value="30">30 {t("common.days", "дней")}</SelectItem>
+            <SelectItem value="90">90 {t("common.days", "дней")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
