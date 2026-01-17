@@ -206,7 +206,7 @@ const ExecutiveOverview = () => {
             <div className="text-2xl font-bold">${metrics.totalRevenue.toLocaleString()}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
-              {t("common.over", "За")} {dateRange} {t("common.days", "дней")}
+              {t("common.forDays", { count: parseInt(dateRange), defaultValue: "За {{count}} дней" })}
             </div>
           </CardContent>
         </Card>
