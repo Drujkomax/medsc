@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { generateSlug } from '@/lib/slugify';
 
 export interface Product {
   id: string;
@@ -73,8 +74,12 @@ export const useProducts = () => {
         uz: productData.features?.uz?.filter(f => f.trim()) || []
       };
 
+      // Generate slug from English name if not provided
+      const slug = productData.slug || generateSlug(productData.name.en);
+
       const cleanedData = {
         ...productData,
+        slug,
         features: cleanedFeatures
       };
 
@@ -95,9 +100,15 @@ export const useProducts = () => {
 
   const updateProduct = async (id: string, productData: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>) => {
     try {
+      // If name.en is being updated, regenerate slug
+      const dataToUpdate = { ...productData };
+      if (productData.name?.en && !productData.slug) {
+        dataToUpdate.slug = generateSlug(productData.name.en);
+      }
+      
       const { data, error } = await supabase
         .from('products')
-        .update(productData)
+        .update(dataToUpdate)
         .eq('id', id)
         .select()
         .single();
@@ -258,9 +269,15 @@ export const useAdminProducts = () => {
 
   const updateProduct = async (id: string, productData: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>) => {
     try {
+      // If name.en is being updated, regenerate slug
+      const dataToUpdate = { ...productData };
+      if (productData.name?.en && !productData.slug) {
+        dataToUpdate.slug = generateSlug(productData.name.en);
+      }
+      
       const { data, error } = await supabase
         .from('products')
-        .update(productData)
+        .update(dataToUpdate)
         .eq('id', id)
         .select()
         .single();
@@ -296,8 +313,12 @@ export const useAdminProducts = () => {
       };
       console.log('Cleaned features:', cleanedFeatures);
 
+      // Generate slug from English name if not provided
+      const slug = productData.slug || generateSlug(productData.name.en);
+
       const cleanedData = {
         ...safeData,
+        slug,
         features: cleanedFeatures
       };
 
