@@ -158,11 +158,11 @@ const seoDescription =
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
-        title="Каталог медоборудования — Med Service Centre"
-        description="Каталог медтехники: УЗИ, лабораторные анализаторы (ABL800 Flex — аренда), хирургические системы BOWA. Поставка и сервис по Узбекистану."
-        keywords="каталог медтехники, медицинское оборудование, УЗИ аппарат, лабораторные анализаторы, ABL800 Flex аренда, BOWA ARC 400, аренда медоборудования"
-        type="website"
-      />
+  title={seoTitle}
+  description={seoDescription}
+  canonical={`https://medsc.uz/catalog${selectedCategory !== 'all' ? `?category=${selectedCategory}` : ''}`}
+  type="website"
+/>
       {/* Header */}
       <div 
         className="relative py-16 bg-cover bg-center bg-no-repeat"
