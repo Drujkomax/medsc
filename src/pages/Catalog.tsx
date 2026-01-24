@@ -346,7 +346,11 @@ const seoDescription =
                         onClick={() => {
                           const manufacturerSlug = getManufacturerSlug(product.manufacturer_id);
                           const productSlug = product.slug || product.id;
-                          navigate(`/catalog/${manufacturerSlug}/${productSlug}`);
+                          // SEO-friendly: use /catalog/manufacturer/product or /catalog/product (if no manufacturer)
+                          const url = manufacturerSlug && manufacturerSlug !== 'unknown' 
+                            ? `/catalog/${manufacturerSlug}/${productSlug}`
+                            : `/catalog/${productSlug}`;
+                          navigate(url);
                         }}
                       >
                         <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />

@@ -219,12 +219,23 @@ const ProductDetail = () => {
     setPhoneError('');
   };
 
+  // Generate canonical URL
+  const canonicalUrl = (() => {
+    const baseUrl = 'https://medsc.uz/catalog';
+    const productSlugValue = product.slug || product.id;
+    if (manufacturer?.slug) {
+      return `${baseUrl}/${manufacturer.slug}/${productSlugValue}`;
+    }
+    return `${baseUrl}/${productSlugValue}`;
+  })();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
         title={`${productName} - Med Service Centre`}
         description={metaDescription}
         keywords={metaKeywords}
+        canonical={canonicalUrl}
       />
       <div className="container mx-auto px-4 py-8">
         <Button 

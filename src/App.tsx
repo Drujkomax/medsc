@@ -77,6 +77,7 @@ const App = () => {
                     <Route path="/auth" element={<AuthPage />} />
                     <Route path="/catalog" element={<Catalog />} />
                     <Route path="/catalog/:manufacturerSlug/:productSlug" element={<ProductDetail />} />
+                    <Route path="/catalog/:productSlug" element={<ProductDetail />} />
                     {/* Legacy redirects for old URL formats */}
                     <Route path="/catalog/products/:slug" element={<ProductRedirect />} />
                     <Route path="/product/:id" element={<ProductRedirect />} />
