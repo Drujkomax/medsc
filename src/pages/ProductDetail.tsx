@@ -161,7 +161,15 @@ const ProductDetail = () => {
       const objName = product.name as Record<string, string>;
       return objName[language] || objName.ru || objName.en || 'Медицинское оборудование Med Service Centre';
     }
-    return product.name || 'Медицинское оборудование Med Service Centre';
+    return String(product.name) || 'Медицинское оборудование Med Service Centre';
+  })();
+
+  const productDescription = (() => {
+    if (typeof product.description === 'object' && product.description !== null) {
+      const objDesc = product.description as Record<string, string>;
+      return objDesc[language] || objDesc.ru || objDesc.en || '';
+    }
+    return String(product.description) || '';
   })();
   
   const manufacturerName = (() => {
@@ -206,7 +214,7 @@ const ProductDetail = () => {
     
     toast({
       title: translations.successMessage[language],
-      description: `${product.name[language]} - ${formData.companyName}`,
+      description: `${productName} - ${formData.companyName}`,
     });
     setIsDialogOpen(false);
     setFormData({
@@ -229,13 +237,93 @@ const ProductDetail = () => {
     return `${baseUrl}/${productSlugValue}`;
   })();
 
+  // Build Product structured data for SEO
+  const productStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": productName,
+    "description": productDescription || metaDescription,
+    "image": product.images?.cover ? 
+      (product.images.cover.startsWith('http') ? product.images.cover : `https://medsc.uz${product.images.cover}`) : 
+      "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png",
+    "sku": product.id,
+    "brand": {
+      "@type": "Brand",
+      "name": manufacturerName || "Med Service Centre"
+    },
+    "manufacturer": {
+      "@type": "Organization",
+      "name": manufacturerName || "Med Service Centre"
+    },
+    "category": categoryLabel,
+    "url": canonicalUrl,
+    ...(product.price && {
+      "offers": {
+        "@type": "Offer",
+        "url": canonicalUrl,
+        "priceCurrency": product.currency || "USD",
+        "price": product.price,
+        "availability": "https://schema.org/InStock",
+        "seller": {
+          "@type": "Organization",
+          "name": "Med Service Centre",
+          "url": "https://medsc.uz"
+        }
+      }
+    })
+  };
+
+  // BreadcrumbList for better SEO navigation
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Главная",
+        "item": "https://medsc.uz"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Каталог",
+        "item": "https://medsc.uz/catalog"
+      },
+      ...(manufacturer?.slug ? [{
+        "@type": "ListItem",
+        "position": 3,
+        "name": manufacturerName,
+        "item": `https://medsc.uz/catalog?manufacturer=${manufacturer.slug}`
+      }] : []),
+      {
+        "@type": "ListItem",
+        "position": manufacturer?.slug ? 4 : 3,
+        "name": productName,
+        "item": canonicalUrl
+      }
+    ]
+  };
+
+  // OG Image - use product cover or fallback
+  const ogImage = product.images?.cover ? 
+    (product.images.cover.startsWith('http') ? product.images.cover : `https://medsc.uz${product.images.cover}`) : 
+    "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <SEOHead
-        title={`${productName} - Med Service Centre`}
+        title={`${productName} — купить в Узбекистане | Med Service Centre`}
         description={metaDescription}
         keywords={metaKeywords}
         canonical={canonicalUrl}
+        ogTitle={`${productName} — медицинское оборудование`}
+        ogDescription={`${productName}. Официальная поставка, сервис и аренда медицинского оборудования в Узбекистане от Med Service Centre.`}
+        ogImage={ogImage}
+        twitterTitle={productName}
+        twitterDescription={`${productName} — ${categoryLabel} оборудование. Купить или арендовать в Med Service Centre.`}
+        twitterImage={ogImage}
+        structuredData={[productStructuredData, breadcrumbStructuredData]}
       />
       <div className="container mx-auto px-4 py-8">
         <Button 
@@ -255,7 +343,7 @@ const ProductDetail = () => {
               {product.images?.cover || selectedImage ? (
                 <img
                   src={selectedImage || product.images.cover}
-                  alt={product.name[language]}
+                  alt={productName}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder.svg';
@@ -293,7 +381,7 @@ const ProductDetail = () => {
                   >
                     <img
                       src={product.images.cover}
-                      alt={`${product.name[language]} - основное изображение`}
+                      alt={`${productName} - основное изображение`}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.src = '/placeholder.svg';
@@ -313,7 +401,7 @@ const ProductDetail = () => {
                   >
                     <img
                       src={image}
-                      alt={`${product.name[language]} - изображение ${index + 1}`}
+                      alt={`${productName} - изображение ${index + 1}`}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.src = '/placeholder.svg';
@@ -329,7 +417,7 @@ const ProductDetail = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl font-bold text-foreground mb-2">
-                {product.name[language]}
+                {productName}
               </h1>
               <div className="mb-4 flex items-center gap-2 flex-wrap">
                 <Badge variant="outline" className="text-sm">
@@ -337,7 +425,7 @@ const ProductDetail = () => {
                 </Badge>
               </div>
               <p className="text-lg text-muted-foreground mb-6">
-                {product.description[language]}
+                {productDescription}
               </p>
 
               {/* Price Display */}
