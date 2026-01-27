@@ -111,10 +111,6 @@ export function AdminSidebar() {
       conditionalItems.push({ name: t('admin.clinics', 'Клиники'), href: '/admin/clinics', icon: Building2, permission: 'view_products' });
     }
     
-    // Аналитика - доступна при наличии права на аналитику
-    if (hasPermission('view_analytics')) {
-      conditionalItems.push({ name: t('admin.analytics', 'Аналитика'), href: '/admin/analytics', icon: BarChart3, permission: 'view_analytics' });
-    }
 
     // Управление сотрудниками - только при наличии права на управление пользователями
     if (hasPermission('manage_users')) {
