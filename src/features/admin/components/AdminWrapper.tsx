@@ -20,7 +20,7 @@ import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
 import UserManagement from '../pages/UserManagement';
 import EmployeeManagement from '../pages/EmployeeManagement';
-import Analytics from '../pages/Analytics';
+
 import Categories from '../pages/Categories';
 import { Warehouse } from '../pages/Warehouse';
 import Clinics from '../pages/Clinics';
@@ -124,12 +124,6 @@ const AdminWrapper = () => {
           </ProtectedRoute>
         } />
         
-        {/* Аналитика - только для директора и админа */}
-        <Route path="analytics" element={
-          <ProtectedRoute permission="view_analytics" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
-            <Analytics />
-          </ProtectedRoute>
-        } />
         
         {/* Продукты - просмотр или управление */}
         <Route path="products" element={

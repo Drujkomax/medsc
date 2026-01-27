@@ -138,10 +138,6 @@ export default function Clinics() {
           <FileText className="h-4 w-4" />
           {t('admin.leads', 'Лиды')}
         </Link>
-        <Link to="/admin/analytics" className="text-sm text-primary hover:underline flex items-center gap-1">
-          <BarChart3 className="h-4 w-4" />
-          {t('admin.analytics', 'Аналитика')}
-        </Link>
       </nav>
 
       {/* Low Stock Alerts */}
