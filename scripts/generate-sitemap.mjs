@@ -123,6 +123,23 @@ const staticUrls = [
   { loc: normalizeUrl("/contacts"), changefreq: "monthly", priority: "0.6", lastmod: isoDate() },
 ];
 
+// Fetch categories for SEO
+const { data: categories, error: categoriesError } = await supabase
+  .from("product_categories")
+  .select("value, updated_at");
+
+if (categoriesError) {
+  console.error("Failed to load categories:", categoriesError.message);
+  process.exit(1);
+}
+
+const categoryUrls = (categories || []).map((category) => ({
+  loc: normalizeUrl(`/catalog?category=${encodeURIComponent(category.value)}`),
+  lastmod: isoDate(category.updated_at),
+  changefreq: "weekly",
+  priority: "0.8",
+}));
+
 const { data: manufacturers, error: manufacturersError } = await supabase
   .from("manufacturers")
   .select("id, slug");
@@ -163,7 +180,7 @@ const productUrls = (products || []).map((product) => {
   };
 });
 
-const urlEntries = [...staticUrls, ...productUrls]
+const urlEntries = [...staticUrls, ...categoryUrls, ...productUrls]
   .map((entry) => {
     const lastmod = entry.lastmod ? `<lastmod>${entry.lastmod}</lastmod>` : "";
     return [
@@ -191,5 +208,5 @@ const outputPath = resolve("public/sitemap.xml");
 await writeFile(outputPath, xml, "utf8");
 
 console.log(
-  `Sitemap updated: ${outputPath} (${staticUrls.length} static, ${productUrls.length} products)`,
+  `Sitemap updated: ${outputPath} (${staticUrls.length} static, ${categoryUrls.length} categories, ${productUrls.length} products)`,
 );
