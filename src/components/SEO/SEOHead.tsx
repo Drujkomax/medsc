@@ -44,7 +44,10 @@ const SEOHead = ({
 
   // Build full URLs
   const baseUrl = "https://medsc.uz";
-  const currentUrl = url || `${baseUrl}${location.pathname}${location.search}`;
+  // Use explicitly passed canonical first, then build from location
+  const currentPath = `${location.pathname}${location.search}`;
+  const currentUrl = url || `${baseUrl}${currentPath}`;
+  // Canonical should be the explicitly set value OR the current URL with query params
   const canonicalUrl = canonical || currentUrl;
   const fullImageUrl = image?.startsWith("http") ? image : `${baseUrl}${image}`;
 
@@ -64,10 +67,10 @@ const SEOHead = ({
   if (nofollow) robotsContent.push("nofollow");
   if (robotsContent.length === 0) robotsContent.push("index", "follow");
 
-  // Build alternate URLs for languages
-  const currentUrlObject = new URL(currentUrl);
+  // Build alternate URLs for languages based on canonical URL
+  const canonicalUrlObject = new URL(canonicalUrl);
   const buildLocalizedHref = (lang: "ru" | "uz" | "en") => {
-    const localized = new URL(currentUrlObject.toString());
+    const localized = new URL(canonicalUrlObject.toString());
     if (lang === "ru") {
       localized.searchParams.delete("lang");
     } else {
@@ -76,10 +79,11 @@ const SEOHead = ({
     return localized.toString();
   };
 
-  const searchParamsWithoutLang = new URLSearchParams(currentUrlObject.search);
+  // x-default should point to canonical URL without lang param
+  const searchParamsWithoutLang = new URLSearchParams(canonicalUrlObject.search);
   searchParamsWithoutLang.delete("lang");
   const searchWithoutLang = searchParamsWithoutLang.toString();
-  const basePathWithSearch = `${currentUrlObject.origin}${currentUrlObject.pathname}${searchWithoutLang ? `?${searchWithoutLang}` : ""}`;
+  const xDefaultUrl = `${canonicalUrlObject.origin}${canonicalUrlObject.pathname}${searchWithoutLang ? `?${searchWithoutLang}` : ""}`;
 
   return (
     <Helmet>
@@ -97,7 +101,7 @@ const SEOHead = ({
       <link rel="alternate" hrefLang="ru" href={buildLocalizedHref("ru")} />
       <link rel="alternate" hrefLang="en" href={buildLocalizedHref("en")} />
       <link rel="alternate" hrefLang="uz" href={buildLocalizedHref("uz")} />
-      <link rel="alternate" hrefLang="x-default" href={basePathWithSearch} />
+      <link rel="alternate" hrefLang="x-default" href={xDefaultUrl} />
 
       {/* Open Graph */}
       <meta property="og:title" content={resolvedOgTitle} />
