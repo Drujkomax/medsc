@@ -123,8 +123,21 @@ const staticUrls = [
   { loc: normalizeUrl("/contacts"), changefreq: "monthly", priority: "0.6", lastmod: isoDate() },
 ];
 
-// Fetch categories for SEO
-const { data: categories, error: categoriesError } = await supabase
+// SEO-optimized categories (must match catalogSeo.ts)
+const seoCategories = [
+  "diagnostic",
+  "laboratory", 
+  "surgical",
+  "dental",
+  "rehabilitation",
+  "monitoring",
+  "sterilization",
+  "furniture",
+  "consumables",
+];
+
+// Fetch categories from DB for updated_at timestamps
+const { data: dbCategories, error: categoriesError } = await supabase
   .from("product_categories")
   .select("value, updated_at");
 
@@ -133,9 +146,15 @@ if (categoriesError) {
   process.exit(1);
 }
 
-const categoryUrls = (categories || []).map((category) => ({
-  loc: normalizeUrl(`/catalog?category=${encodeURIComponent(category.value)}`),
-  lastmod: isoDate(category.updated_at),
+// Create a map of category values to their updated_at
+const categoryTimestamps = new Map(
+  (dbCategories || []).map((cat) => [cat.value, cat.updated_at])
+);
+
+// Generate URLs for all SEO categories
+const categoryUrls = seoCategories.map((category) => ({
+  loc: normalizeUrl(`/catalog?category=${category}`),
+  lastmod: isoDate(categoryTimestamps.get(category)),
   changefreq: "weekly",
   priority: "0.8",
 }));
