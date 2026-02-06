@@ -123,20 +123,7 @@ const staticUrls = [
   { loc: normalizeUrl("/contacts"), changefreq: "monthly", priority: "0.6", lastmod: isoDate() },
 ];
 
-// SEO-optimized categories (must match catalogSeo.ts)
-const seoCategories = [
-  "diagnostic",
-  "laboratory", 
-  "surgical",
-  "dental",
-  "rehabilitation",
-  "monitoring",
-  "sterilization",
-  "furniture",
-  "consumables",
-];
-
-// Fetch categories from DB for updated_at timestamps
+// Fetch categories from DB for sitemap URLs.
 const { data: dbCategories, error: categoriesError } = await supabase
   .from("product_categories")
   .select("value, updated_at");
@@ -146,18 +133,16 @@ if (categoriesError) {
   process.exit(1);
 }
 
-// Create a map of category values to their updated_at
-const categoryTimestamps = new Map(
-  (dbCategories || []).map((cat) => [cat.value, cat.updated_at])
-);
-
-// Generate URLs for all SEO categories
-const categoryUrls = seoCategories.map((category) => ({
-  loc: normalizeUrl(`/catalog?category=${category}`),
-  lastmod: isoDate(categoryTimestamps.get(category)),
-  changefreq: "weekly",
-  priority: "0.8",
-}));
+const categoryUrls = (dbCategories || [])
+  .filter((category) => category.value)
+  .map((category) => ({
+    loc: normalizeUrl(
+      `/catalog?category=${encodeURIComponent(category.value)}`,
+    ),
+    lastmod: isoDate(category.updated_at),
+    changefreq: "weekly",
+    priority: "0.8",
+  }));
 
 const { data: manufacturers, error: manufacturersError } = await supabase
   .from("manufacturers")
@@ -173,6 +158,15 @@ const manufacturerSlugMap = new Map(
     .filter((manufacturer) => manufacturer.slug)
     .map((manufacturer) => [manufacturer.id, toAsciiSlug(manufacturer.slug)]),
 );
+
+const manufacturerUrls = Array.from(manufacturerSlugMap.values())
+  .filter(Boolean)
+  .map((slug) => ({
+    loc: normalizeUrl(`/catalog?manufacturer=${encodeURIComponent(slug)}`),
+    lastmod: isoDate(),
+    changefreq: "weekly",
+    priority: "0.6",
+  }));
 
 const { data: products, error: productsError } = await supabase
   .from("products")
@@ -199,7 +193,12 @@ const productUrls = (products || []).map((product) => {
   };
 });
 
-const urlEntries = [...staticUrls, ...categoryUrls, ...productUrls]
+const urlEntries = [
+  ...staticUrls,
+  ...categoryUrls,
+  ...manufacturerUrls,
+  ...productUrls,
+]
   .map((entry) => {
     const lastmod = entry.lastmod ? `<lastmod>${entry.lastmod}</lastmod>` : "";
     return [
@@ -227,5 +226,5 @@ const outputPath = resolve("public/sitemap.xml");
 await writeFile(outputPath, xml, "utf8");
 
 console.log(
-  `Sitemap updated: ${outputPath} (${staticUrls.length} static, ${categoryUrls.length} categories, ${productUrls.length} products)`,
+  `Sitemap updated: ${outputPath} (${staticUrls.length} static, ${categoryUrls.length} categories, ${manufacturerUrls.length} manufacturers, ${productUrls.length} products)`,
 );

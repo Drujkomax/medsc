@@ -301,7 +301,9 @@ const ProductDetail = () => {
   })();
   const manufacturerSlugSafe = toUrlSlug(manufacturer?.slug);
   const categoryLabel = getCategoryLabel(product.category, language);
-  const categoryPath = `/catalog?category=${product.category}`;
+  const categoryPath = `/catalog?category=${encodeURIComponent(
+    product.category,
+  )}`;
 
   const rawDescription = `${productName} — ${categoryLabel} оборудование Med Service Centre для клиник Узбекистана с поддержкой сервиса, аренды и поставки от официального партнёра.`;
   const truncateToMetaLength = (text: string) => {
@@ -717,7 +719,18 @@ const ProductDetail = () => {
                       )}
                       <div className="space-y-2">
                         <div className="font-medium text-lg">
-                          {manufacturer.name}
+                          {manufacturerSlugSafe ? (
+                            <Link
+                              to={`/catalog?manufacturer=${encodeURIComponent(
+                                manufacturerSlugSafe,
+                              )}`}
+                              className="hover:underline"
+                            >
+                              {manufacturer.name}
+                            </Link>
+                          ) : (
+                            manufacturer.name
+                          )}
                         </div>
                         {manufacturer.legal_name && (
                           <div className="text-sm text-muted-foreground">

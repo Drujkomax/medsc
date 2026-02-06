@@ -109,6 +109,9 @@ const Catalog = () => {
   const [selectedCategory, setSelectedCategory] = useState(
     searchParams.get("category") || "all",
   );
+  const [selectedManufacturer, setSelectedManufacturer] = useState(
+    searchParams.get("manufacturer") || "all",
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
   const [showQuoteForm, setShowQuoteForm] = useState(false);
@@ -156,6 +159,13 @@ const Catalog = () => {
     setSearchTerm((prev) => (prev === searchFromUrl ? prev : searchFromUrl));
   }, [searchParams]);
 
+  useEffect(() => {
+    const manufacturerFromUrl = searchParams.get("manufacturer") || "all";
+    if (manufacturerFromUrl !== selectedManufacturer) {
+      setSelectedManufacturer(manufacturerFromUrl);
+    }
+  }, [searchParams, selectedManufacturer]);
+
   const language = (i18n.language as "ru" | "en" | "uz") || "ru";
 
   // Combine fallback categories with database categories
@@ -170,21 +180,43 @@ const Catalog = () => {
     ),
   };
 
+  const manufacturerNameById = new Map(
+    manufacturers.map((manufacturer) => {
+      const name = manufacturer.name;
+      if (typeof name === "object") {
+        const objName = name as Record<string, string>;
+        return [
+          manufacturer.id,
+          objName[language] || objName.ru || objName.en || "",
+        ] as const;
+      }
+      return [manufacturer.id, String(name)] as const;
+    }),
+  );
+
   const filteredProducts = products.filter((product) => {
+    const manufacturerNameForSearch =
+      manufacturerNameById.get(product.manufacturer_id || "") || "";
     const matchesSearch =
       product.name[language].toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description[language]
         .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      manufacturerNameForSearch
+        .toLowerCase()
         .includes(searchTerm.toLowerCase());
     const matchesCategory =
       selectedCategory === "all" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesManufacturer = selectedManufacturerId
+      ? product.manufacturer_id === selectedManufacturerId
+      : true;
+    return matchesSearch && matchesCategory && matchesManufacturer;
   });
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, selectedManufacturer]);
 
   // Scroll to top when page changes
   useEffect(() => {
@@ -231,39 +263,134 @@ const Catalog = () => {
     allCategories,
   );
 
-  const seoTitle =
-    selectedCategory === "all"
-      ? {
-          ru: "Каталог медицинского оборудования в Узбекистане",
-          en: "Medical Equipment Catalog in Uzbekistan",
-          uz: "O‘zbekistonda tibbiy uskunalar katalogi",
-        }[language]
-      : `${categoryName} — медицинское оборудование в Узбекистане`;
+  const selectedManufacturerEntity =
+    selectedManufacturer === "all"
+      ? null
+      : manufacturers.find(
+          (manufacturer) =>
+            toUrlSlug(manufacturer.slug) === toUrlSlug(selectedManufacturer),
+        ) || null;
+  const selectedManufacturerId = selectedManufacturerEntity?.id || null;
 
-  const seoDescription =
-    selectedCategory === "all"
-      ? {
-          ru: "Продажа и аренда медицинского оборудования: УЗИ, анализаторы, хирургические системы. Поставка по Узбекистану.",
-          en: "Medical equipment sales and rental in Uzbekistan.",
-          uz: "O‘zbekistonda tibbiy uskunalarni sotish va ijaraga berish.",
-        }[language]
-      : `${categoryName}. Продажа, сервис и аренда медицинского оборудования по Узбекистану.`;
+  const manufacturerName = (() => {
+    if (!selectedManufacturerEntity?.name) return "";
+    const name = selectedManufacturerEntity.name;
+    if (typeof name === "object") {
+      const objName = name as Record<string, string>;
+      return objName[language] || objName.ru || objName.en || "";
+    }
+    return String(name);
+  })();
 
-  const seoKeywords =
-    selectedCategory === "all"
+  const catalogTitleByLanguage = {
+    ru: "Каталог медицинского оборудования в Узбекистане",
+    en: "Medical Equipment Catalog in Uzbekistan",
+    uz: "O‘zbekistonda tibbiy uskunalar katalogi",
+  }[language];
+
+  const locationByLanguage = {
+    ru: "в Узбекистане и Ташкенте",
+    en: "in Uzbekistan and Tashkent",
+    uz: "O‘zbekistonda va Toshkentda",
+  }[language];
+
+  const seoTitle = (() => {
+    if (selectedCategory !== "all" && manufacturerName) {
+      return language === "ru"
+        ? `${categoryName} ${manufacturerName} — купить в Узбекистане`
+        : language === "en"
+          ? `${categoryName} ${manufacturerName} — buy in Uzbekistan`
+          : `${categoryName} ${manufacturerName} — O‘zbekistonda sotib olish`;
+    }
+    if (selectedCategory !== "all") {
+      return language === "ru"
+        ? `${categoryName} — купить в Узбекистане`
+        : language === "en"
+          ? `${categoryName} — buy in Uzbekistan`
+          : `${categoryName} — O‘zbekistonda sotib olish`;
+    }
+    if (manufacturerName) {
+      return language === "ru"
+        ? `${manufacturerName} — купить медоборудование в Узбекистане`
+        : language === "en"
+          ? `${manufacturerName} — buy medical equipment in Uzbekistan`
+          : `${manufacturerName} — O‘zbekistonda tibbiy uskunalarni sotib olish`;
+    }
+    return catalogTitleByLanguage;
+  })();
+
+  const seoDescription = (() => {
+    if (selectedCategory !== "all" && manufacturerName) {
+      return language === "ru"
+        ? `${categoryName} ${manufacturerName} — продажа, сервис и аренда медицинского оборудования ${locationByLanguage}.`
+        : language === "en"
+          ? `${categoryName} ${manufacturerName} — sales, service, and rental of medical equipment ${locationByLanguage}.`
+          : `${categoryName} ${manufacturerName} — tibbiy uskunalarni sotish, servis va ijara ${locationByLanguage}.`;
+    }
+    if (selectedCategory !== "all") {
+      return language === "ru"
+        ? `${categoryName}. Продажа, сервис и аренда медицинского оборудования ${locationByLanguage}.`
+        : language === "en"
+          ? `${categoryName}. Medical equipment sales, service, and rental ${locationByLanguage}.`
+          : `${categoryName}. Tibbiy uskunalarni sotish, servis va ijara ${locationByLanguage}.`;
+    }
+    if (manufacturerName) {
+      return language === "ru"
+        ? `${manufacturerName} — медицинское оборудование: продажа, аренда и сервис ${locationByLanguage}.`
+        : language === "en"
+          ? `${manufacturerName} — medical equipment: sales, rental, and service ${locationByLanguage}.`
+          : `${manufacturerName} — tibbiy uskunalar: sotuv, ijara va servis ${locationByLanguage}.`;
+    }
+    return {
+      ru: "Продажа и аренда медицинского оборудования: УЗИ, анализаторы, хирургические системы. Поставка по Узбекистану и Ташкенту.",
+      en: "Medical equipment sales and rental in Uzbekistan and Tashkent.",
+      uz: "O‘zbekistonda va Toshkentda tibbiy uskunalarni sotish va ijaraga berish.",
+    }[language];
+  })();
+
+  const seoKeywords = [
+    "медицинское оборудование Узбекистан",
+    "медицинское оборудование Ташкент",
+    "купить медоборудование",
+    "аренда медицинского оборудования",
+    "medical equipment Uzbekistan",
+    "buy medical equipment Tashkent",
+    "Med Service Centre",
+    ...(selectedCategory !== "all"
       ? [
-          "медицинское оборудование Узбекистан",
-          "купить медтехнику Ташкент",
-          "аренда медицинского оборудования",
-          "каталог медоборудования",
-          "Med Service Centre",
-        ]
-      : [
           `${categoryName} оборудование`,
           `купить ${categoryName.toLowerCase()}`,
-          "медицинское оборудование Узбекистан",
-          "Med Service Centre",
-        ];
+          `купить ${categoryName.toLowerCase()} в Ташкенте`,
+        ]
+      : []),
+    ...(manufacturerName
+      ? [
+          `${manufacturerName} оборудование`,
+          `купить мед оборудование ${manufacturerName}`,
+          `купить медицинские аппараты ${manufacturerName}`,
+          `купить мед оборудование ${manufacturerName} в Ташкенте`,
+          `купить мед оборудование ${manufacturerName} в Узбекистане`,
+        ]
+      : []),
+  ];
+
+  const queryParams = new URLSearchParams();
+  const normalizedCategoryValue =
+    selectedCategory !== "all"
+      ? Object.keys(allCategories).find(
+          (key) => key.toLowerCase() === selectedCategory.toLowerCase(),
+        ) || selectedCategory
+      : null;
+  const normalizedManufacturerSlug = selectedManufacturerEntity
+    ? toUrlSlug(selectedManufacturerEntity.slug)
+    : null;
+  if (normalizedCategoryValue) {
+    queryParams.set("category", normalizedCategoryValue);
+  }
+  if (normalizedManufacturerSlug) {
+    queryParams.set("manufacturer", normalizedManufacturerSlug);
+  }
+  const canonicalUrl = `https://medsc.uz/catalog${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
 
   // Structured data для каталога
   const catalogSchema = {
@@ -271,7 +398,7 @@ const Catalog = () => {
     "@type": "CollectionPage",
     name: seoTitle,
     description: seoDescription,
-    url: `https://medsc.uz/catalog${selectedCategory !== "all" ? `?category=${selectedCategory}` : ""}`,
+    url: canonicalUrl,
     isPartOf: {
       "@type": "WebSite",
       name: "Med Service Centre",
@@ -311,9 +438,10 @@ const Catalog = () => {
         title={seoTitle}
         description={seoDescription}
         keywords={seoKeywords.join(", ")}
-        canonical={`${baseUrl}/catalog${selectedCategory !== "all" ? `?category=${selectedCategory}` : ""}`}
+        canonical={canonicalUrl}
         type="website"
         structuredData={[catalogSchema, itemListSchema]}
+        noindex={Boolean(searchTerm)}
       />
       {/* Header */}
       <div
@@ -325,10 +453,18 @@ const Catalog = () => {
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
-            {selectedCategory === "all" ? translations.title[language] : categoryName}
+            {selectedCategory !== "all" && manufacturerName
+              ? `${categoryName} ${manufacturerName}`
+              : selectedCategory !== "all"
+                ? categoryName
+                : manufacturerName
+                  ? manufacturerName
+                  : translations.title[language]}
           </h1>
           <p className="text-lg text-white/90 max-w-2xl mx-auto">
-            {selectedCategory === "all" ? translations.subtitle[language] : seoDescription}
+            {selectedCategory === "all" && !manufacturerName
+              ? translations.subtitle[language]
+              : seoDescription}
           </p>
         </div>
       </div>
@@ -346,7 +482,11 @@ const Catalog = () => {
                 {Object.entries(allCategories).map(([key, value]) => (
                   <Link
                     key={key}
-                    to={key === "all" ? "/catalog" : `/catalog?category=${key}`}
+                    to={
+                      key === "all"
+                        ? "/catalog"
+                        : `/catalog?category=${encodeURIComponent(key)}`
+                    }
                     onClick={() => setSelectedCategory(key)}
                     className={`block w-full text-left px-3 py-2 rounded-md text-sm leading-snug transition-colors ${
                       selectedCategory === key
@@ -396,7 +536,7 @@ const Catalog = () => {
                             to={
                               key === "all"
                                 ? "/catalog"
-                                : `/catalog?category=${key}`
+                                : `/catalog?category=${encodeURIComponent(key)}`
                             }
                             onClick={() => {
                               setSelectedCategory(key);
