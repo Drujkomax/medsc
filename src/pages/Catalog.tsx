@@ -194,6 +194,15 @@ const Catalog = () => {
     }),
   );
 
+  const selectedManufacturerEntity =
+    selectedManufacturer === "all"
+      ? null
+      : manufacturers.find(
+          (manufacturer) =>
+            toUrlSlug(manufacturer.slug) === toUrlSlug(selectedManufacturer),
+        ) || null;
+  const selectedManufacturerId = selectedManufacturerEntity?.id || null;
+
   const filteredProducts = products.filter((product) => {
     const manufacturerNameForSearch =
       manufacturerNameById.get(product.manufacturer_id || "") || "";
@@ -262,15 +271,6 @@ const Catalog = () => {
     language,
     allCategories,
   );
-
-  const selectedManufacturerEntity =
-    selectedManufacturer === "all"
-      ? null
-      : manufacturers.find(
-          (manufacturer) =>
-            toUrlSlug(manufacturer.slug) === toUrlSlug(selectedManufacturer),
-        ) || null;
-  const selectedManufacturerId = selectedManufacturerEntity?.id || null;
 
   const manufacturerName = (() => {
     if (!selectedManufacturerEntity?.name) return "";
