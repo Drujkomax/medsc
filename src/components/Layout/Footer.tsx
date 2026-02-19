@@ -9,6 +9,7 @@ const Footer = ({ language }: FooterProps) => {
   const { t } = useTranslation();
   const links = t('footer.links', { returnObjects: true }) as { name: string; href: string }[];
   const servicesList = t('footer.servicesList', { returnObjects: true }) as string[];
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-msc-primary text-white">
@@ -115,7 +116,7 @@ const Footer = ({ language }: FooterProps) => {
         <div className="border-t border-white/20 mt-8 pt-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
             <p className="text-white/60 text-sm">
-              © 2024 {t('footer.company')}. {t('footer.rights')}
+              © {currentYear} {t('footer.company')}. {t('footer.rights')}
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-3 text-sm">
               <a
