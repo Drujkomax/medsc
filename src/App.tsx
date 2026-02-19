@@ -10,7 +10,6 @@ import {
   Navigate,
   useParams,
 } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async"; // Новый импорт
 import ErrorBoundary from "@/components/providers/ErrorBoundary";
 import { setupGlobalErrorHandling } from "@/utils/globalErrorHandler";
 import Header from "./components/Layout/Header";
@@ -66,85 +65,83 @@ const App = () => {
   }, []);
 
   return (
-    <HelmetProvider>
-      <QueryClientProvider client={queryClient}>
-        <ErrorBoundary>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <ScrollToTop />
-              <Routes>
-                {/* Admin Routes */}
-                <Route path="/admin/*" element={<AdminWrapper />} />
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
+              {/* Admin Routes */}
+              <Route path="/admin/*" element={<AdminWrapper />} />
 
-                {/* Public Routes */}
-                <Route
-                  path="/*"
-                  element={
-                    <div className="min-h-screen flex flex-col">
-                      <Header />
-                      <main className="flex-1">
-                        <Routes>
-                          <Route
-                            path="/"
-                            element={<Home language={language} />}
-                          />
-                          <Route
-                            path="/setup-director"
-                            element={<CreateFirstDirector />}
-                          />
-                          <Route
-                            path="/director-registration"
-                            element={<DirectorRegistration />}
-                          />
-                          <Route path="/auth" element={<AuthPage />} />
-                          <Route path="/catalog" element={<Catalog />} />
-                          <Route
-                            path="/catalog/:manufacturerSlug/:productSlug"
-                            element={<ProductDetail />}
-                          />
-                          <Route
-                            path="/catalog/:productSlug"
-                            element={<ProductDetail />}
-                          />
-                          {/* Legacy redirects */}
-                          <Route
-                            path="/catalog/products/:slug"
-                            element={<ProductRedirect />}
-                          />
-                          <Route
-                            path="/product/:id"
-                            element={<ProductRedirect />}
-                          />
-                          <Route
-                            path="/products/:id"
-                            element={<ProductRedirect />}
-                          />
-                          <Route path="/services" element={<Services />} />
-                          <Route path="/cases" element={<Cases />} />
-                          <Route
-                            path="/about"
-                            element={<About />}
-                          />
-                          <Route
-                            path="/privacy-policy"
-                            element={<PrivacyPolicy />}
-                          />
-                          <Route path="/contacts" element={<Contacts />} />
-                          <Route path="*" element={<NotFound />} />
-                        </Routes>
-                      </main>
-                      <Footer language={language} />
-                    </div>
-                  }
-                />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </ErrorBoundary>
-      </QueryClientProvider>
-    </HelmetProvider>
+              {/* Public Routes */}
+              <Route
+                path="/*"
+                element={
+                  <div className="min-h-screen flex flex-col">
+                    <Header />
+                    <main className="flex-1">
+                      <Routes>
+                        <Route
+                          path="/"
+                          element={<Home language={language} />}
+                        />
+                        <Route
+                          path="/setup-director"
+                          element={<CreateFirstDirector />}
+                        />
+                        <Route
+                          path="/director-registration"
+                          element={<DirectorRegistration />}
+                        />
+                        <Route path="/auth" element={<AuthPage />} />
+                        <Route path="/catalog" element={<Catalog />} />
+                        <Route
+                          path="/catalog/:manufacturerSlug/:productSlug"
+                          element={<ProductDetail />}
+                        />
+                        <Route
+                          path="/catalog/:productSlug"
+                          element={<ProductDetail />}
+                        />
+                        {/* Legacy redirects */}
+                        <Route
+                          path="/catalog/products/:slug"
+                          element={<ProductRedirect />}
+                        />
+                        <Route
+                          path="/product/:id"
+                          element={<ProductRedirect />}
+                        />
+                        <Route
+                          path="/products/:id"
+                          element={<ProductRedirect />}
+                        />
+                        <Route path="/services" element={<Services />} />
+                        <Route path="/cases" element={<Cases />} />
+                        <Route
+                          path="/about"
+                          element={<About />}
+                        />
+                        <Route
+                          path="/privacy-policy"
+                          element={<PrivacyPolicy />}
+                        />
+                        <Route path="/contacts" element={<Contacts />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </main>
+                    <Footer language={language} />
+                  </div>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ErrorBoundary>
+    </QueryClientProvider>
   );
 };
 

@@ -1,6 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 
+type SupportedLang = "ru" | "en" | "uz";
+
 interface SEOHeadProps {
   title?: string;
   description?: string;
@@ -20,6 +22,51 @@ interface SEOHeadProps {
   nofollow?: boolean;
   structuredData?: object | object[];
 }
+
+const BASE_URL = "https://medsc.uz";
+const LOCALE_BY_LANG: Record<SupportedLang, string> = {
+  ru: "ru_RU",
+  en: "en_US",
+  uz: "uz_UZ",
+};
+const TRACKING_QUERY_PARAMS = new Set([
+  "gclid",
+  "fbclid",
+  "yclid",
+  "msclkid",
+  "_openstat",
+  "ref",
+  "source",
+]);
+
+const resolveAbsoluteUrl = (value: string, baseUrl: string) => {
+  try {
+    return new URL(value, baseUrl);
+  } catch {
+    return new URL(baseUrl);
+  }
+};
+
+const normalizeCanonicalUrl = (value: string, baseUrl: string) => {
+  const url = resolveAbsoluteUrl(value, baseUrl);
+
+  url.hash = "";
+  url.pathname = url.pathname.replace(/\/{2,}/g, "/");
+  if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
+    url.pathname = url.pathname.slice(0, -1);
+  }
+
+  for (const key of [...url.searchParams.keys()]) {
+    const lowerKey = key.toLowerCase();
+    if (lowerKey.startsWith("utm_") || TRACKING_QUERY_PARAMS.has(lowerKey)) {
+      url.searchParams.delete(key);
+    }
+  }
+  url.searchParams.sort();
+
+  const search = url.searchParams.toString();
+  return `${url.origin}${url.pathname}${search ? `?${search}` : ""}`;
+};
 
 const SEOHead = ({
   title = "Med Service Centre - Медицинское оборудование в Узбекистане",
@@ -42,14 +89,22 @@ const SEOHead = ({
 }: SEOHeadProps) => {
   const location = useLocation();
 
-  // Build full URLs
-  const baseUrl = "https://medsc.uz";
-  // Use explicitly passed canonical first, then build from location
+  // Canonical uses route URL by default and is normalized to prevent duplicates.
   const currentPath = `${location.pathname}${location.search}`;
-  const currentUrl = url || `${baseUrl}${currentPath}`;
-  // Canonical should be the explicitly set value OR the current URL with query params
-  const canonicalUrl = canonical || currentUrl;
-  const fullImageUrl = image?.startsWith("http") ? image : `${baseUrl}${image}`;
+  const currentUrl = url || `${BASE_URL}${currentPath}`;
+  const canonicalUrl = normalizeCanonicalUrl(canonical || currentUrl, BASE_URL);
+  const canonicalUrlObject = new URL(canonicalUrl);
+  const fullImageUrl = resolveAbsoluteUrl(image, BASE_URL).toString();
+
+  const langParam = canonicalUrlObject.searchParams.get("lang");
+  const activeLang: SupportedLang =
+    langParam === "en" || langParam === "uz" ? langParam : "ru";
+  const activeLocale = LOCALE_BY_LANG[activeLang];
+  const alternateLocales = (Object.entries(LOCALE_BY_LANG) as Array<
+    [SupportedLang, string]
+  >)
+    .filter(([lang]) => lang !== activeLang)
+    .map(([, locale]) => locale);
 
   // Resolve OG and Twitter values
   const resolvedOgTitle = ogTitle || title;
@@ -61,14 +116,17 @@ const SEOHead = ({
     twitterDescription || resolvedOgDescription;
   const resolvedTwitterImage = twitterImage || resolvedOgImage;
 
-  // Build robots meta
-  const robotsContent = [];
-  if (noindex) robotsContent.push("noindex");
-  if (nofollow) robotsContent.push("nofollow");
-  if (robotsContent.length === 0) robotsContent.push("index", "follow");
+  const robotsDirectives = [noindex ? "noindex" : "index"];
+  robotsDirectives.push(nofollow ? "nofollow" : "follow");
+  if (!noindex) {
+    robotsDirectives.push(
+      "max-snippet:-1",
+      "max-image-preview:large",
+      "max-video-preview:-1",
+    );
+  }
+  const robotsValue = robotsDirectives.join(", ");
 
-  // Build alternate URLs for languages based on canonical URL
-  const canonicalUrlObject = new URL(canonicalUrl);
   const buildLocalizedHref = (lang: "ru" | "uz" | "en") => {
     const localized = new URL(canonicalUrlObject.toString());
     if (lang === "ru") {
@@ -76,23 +134,27 @@ const SEOHead = ({
     } else {
       localized.searchParams.set("lang", lang);
     }
+    localized.searchParams.sort();
     return localized.toString();
   };
 
-  // x-default should point to canonical URL without lang param
   const searchParamsWithoutLang = new URLSearchParams(canonicalUrlObject.search);
   searchParamsWithoutLang.delete("lang");
+  searchParamsWithoutLang.sort();
   const searchWithoutLang = searchParamsWithoutLang.toString();
   const xDefaultUrl = `${canonicalUrlObject.origin}${canonicalUrlObject.pathname}${searchWithoutLang ? `?${searchWithoutLang}` : ""}`;
 
   return (
     <Helmet>
+      <html lang={activeLang} />
+
       {/* Basic Meta Tags */}
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <meta name="author" content="Med Service Centre" />
-      <meta name="robots" content={robotsContent.join(", ")} />
+      <meta name="robots" content={robotsValue} />
+      <meta name="googlebot" content={robotsValue} />
 
       {/* Canonical */}
       <link rel="canonical" href={canonicalUrl} />
@@ -109,10 +171,12 @@ const SEOHead = ({
       <meta property="og:type" content={type} />
       <meta property="og:url" content={resolvedOgUrl} />
       <meta property="og:image" content={resolvedOgImage} />
+      <meta property="og:image:alt" content={resolvedOgTitle} />
       <meta property="og:site_name" content="Med Service Centre" />
-      <meta property="og:locale" content="ru_RU" />
-      <meta property="og:locale:alternate" content="en_US" />
-      <meta property="og:locale:alternate" content="uz_UZ" />
+      <meta property="og:locale" content={activeLocale} />
+      {alternateLocales.map((locale) => (
+        <meta key={locale} property="og:locale:alternate" content={locale} />
+      ))}
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -136,10 +200,10 @@ const SEOHead = ({
           "@type": "Organization",
           name: "Med Service Centre",
           description: description,
-          url: baseUrl,
+          url: BASE_URL,
           logo: {
             "@type": "ImageObject",
-            url: `${baseUrl}/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png`,
+            url: `${BASE_URL}/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png`,
           },
           contactPoint: {
             "@type": "ContactPoint",

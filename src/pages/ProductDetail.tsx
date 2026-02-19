@@ -380,9 +380,9 @@ const ProductDetail = () => {
   // Generate canonical URL
   const canonicalUrl = (() => {
     const baseUrl = "https://medsc.uz/catalog";
-    const productSlugValue = product.slug || product.id;
+    const productSlugValue = encodeURIComponent(product.slug || product.id);
     if (manufacturerSlugSafe) {
-      return `${baseUrl}/${manufacturerSlugSafe}/${productSlugValue}`;
+      return `${baseUrl}/${encodeURIComponent(manufacturerSlugSafe)}/${productSlugValue}`;
     }
     return `${baseUrl}/${productSlugValue}`;
   })();
