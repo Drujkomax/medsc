@@ -111,7 +111,7 @@ const rolePermissions: Record<string, Permission[]> = {
     'view_kanban'
   ],
   'sales_manager': [
-    // Руководитель имеет доступ ко всему
+    // Руководитель имеет доступ ко всему, кроме лога активности (только директор)
     'view_all_leads',
     'manage_all_leads',
     'assign_leads',
@@ -124,7 +124,6 @@ const rolePermissions: Record<string, Permission[]> = {
     'view_contacts',
     'manage_contacts',
     'manage_users',
-    'view_activity_logs',
     'view_analytics',
     'view_deals',
     'manage_deals',
@@ -150,12 +149,14 @@ const rolePermissions: Record<string, Permission[]> = {
     'manage_deals'
   ],
   'salesperson': [
-    // Специалист по продажам: полный доступ к лидам, сделки, задачи, канбан, архив
+    // Специалист по продажам: видит только СВОИ лиды (RLS фильтрует по
+    // assigned_to). view_all_leads/manage_all_leads нужны лишь чтобы
+    // показать пункт меню и форму — реальный доступ режется на стороне БД.
+    // assign_leads/export_leads/import_leads — НЕ выдаём по умолчанию:
+    // их можно включить через employee_custom_permissions "Полный доступ"
+    // в разделе "leads".
     'view_all_leads',
     'manage_all_leads',
-    'assign_leads',
-    'export_leads',
-    'import_leads',
     'view_deals',
     'manage_deals',
     'view_tasks',

@@ -37,7 +37,8 @@ import {
   Factory,
   Warehouse,
   Building2,
-  MapPin
+  MapPin,
+  Activity
 } from 'lucide-react';
 
 export function AdminSidebar() {
@@ -118,6 +119,11 @@ export function AdminSidebar() {
     // Управление сотрудниками - только при наличии права на управление пользователями
     if (hasPermission('manage_users')) {
       conditionalItems.push({ name: t('navigation2.employees'), href: '/admin/employees', icon: UserCheck, permission: 'manage_users' });
+    }
+
+    // Журнал активности — только директор (view_activity_logs)
+    if (hasPermission('view_activity_logs')) {
+      conditionalItems.push({ name: t('admin.activityLogs', 'Активность'), href: '/admin/activity', icon: Activity, permission: 'view_activity_logs' });
     }
 
     return [...baseItems, ...conditionalItems];

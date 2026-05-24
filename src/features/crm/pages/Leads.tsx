@@ -471,7 +471,7 @@ const Leads = () => {
 
   const isDirector = role === "director";
   const canBulkActions = ["director", "admin", "sales_manager", "salesperson"].includes(role || "");
-  const canAssignLeads = ["director", "admin", "sales_manager"].includes(role || "");
+  const canAssignLeads = hasPermission("assign_leads");
 
   if (loading) {
     return (
@@ -647,7 +647,7 @@ const Leads = () => {
               </Select>
             </div>
 
-            <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
+            {canAssignLeads && (
               <div>
                 <Select value={assignedFilter} onValueChange={setAssignedFilter}>
                   <SelectTrigger>
@@ -665,7 +665,7 @@ const Leads = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </RoleBasedAccess>
+            )}
 
             <div className="flex gap-2">
               <Popover>
@@ -775,9 +775,7 @@ const Leads = () => {
                       {sortField === "created_at" && <ArrowUpDown className="h-4 w-4" />}
                     </div>
                   </TableHead>
-                  <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
-                    <TableHead>{t("leads.assigned", "Назначен")}</TableHead>
-                  </RoleBasedAccess>
+                  {canAssignLeads && <TableHead>{t("leads.assigned", "Назначен")}</TableHead>}
                   <TableHead className="text-right">{t("leads.actions", "Действия")}</TableHead>
                 </TableRow>
               </TableHeader>
@@ -872,47 +870,39 @@ const Leads = () => {
                         return isNaN(date.getTime()) ? "-" : format(date, "dd.MM.yyyy", { locale: ru });
                       })()}
                     </TableCell>
-                    <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
+                    {canAssignLeads && (
                       <TableCell>
-                        {canAssignLeads ? (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 px-3 text-xs font-medium hover:bg-accent">
-                                {lead.assigned_to
-                                  ? getAssignedUserName(lead.assigned_to)
-                                  : t("leads.notAssigned", "Не назначен")}
-                                <ChevronDown className="ml-1 h-3 w-3" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 px-3 text-xs font-medium hover:bg-accent">
+                              {lead.assigned_to
+                                ? getAssignedUserName(lead.assigned_to)
+                                : t("leads.notAssigned", "Не назначен")}
+                              <ChevronDown className="ml-1 h-3 w-3" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
+                            <DropdownMenuItem
+                              onClick={() => handleAssignLead(lead.id, null)}
+                              className="hover:bg-accent"
+                            >
+                              <User className="mr-2 h-4 w-4" />
+                              {t("leads.notAssigned", "Не назначен")}
+                            </DropdownMenuItem>
+                            {employees.map((employee) => (
                               <DropdownMenuItem
-                                onClick={() => handleAssignLead(lead.id, null)}
+                                key={employee.id}
+                                onClick={() => handleAssignLead(lead.id, employee.id)}
                                 className="hover:bg-accent"
                               >
                                 <User className="mr-2 h-4 w-4" />
-                                {t("leads.notAssigned", "Не назначен")}
+                                {employee.email}
                               </DropdownMenuItem>
-                              {employees.map((employee) => (
-                                <DropdownMenuItem
-                                  key={employee.id}
-                                  onClick={() => handleAssignLead(lead.id, employee.id)}
-                                  className="hover:bg-accent"
-                                >
-                                  <User className="mr-2 h-4 w-4" />
-                                  {employee.email}
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        ) : (
-                          <span className="text-xs font-medium text-muted-foreground">
-                            {lead.assigned_to
-                              ? getAssignedUserName(lead.assigned_to)
-                              : t("leads.notAssigned", "Не назначен")}
-                          </span>
-                        )}
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
-                    </RoleBasedAccess>
+                    )}
                     <TableCell className="text-right">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

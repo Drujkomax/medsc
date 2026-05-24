@@ -20,6 +20,7 @@ import AdminServices from '../pages/AdminServices';
 import AdminContacts from '../pages/AdminContacts';
 import UserManagement from '../pages/UserManagement';
 import EmployeeManagement from '../pages/EmployeeManagement';
+import ActivityLogs from '../pages/ActivityLogs';
 
 import Categories from '../pages/Categories';
 import { Warehouse } from '../pages/Warehouse';
@@ -200,6 +201,13 @@ const AdminWrapper = () => {
         <Route path="users" element={
           <ProtectedRoute permission="manage_users" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
             <UserManagement />
+          </ProtectedRoute>
+        } />
+
+        {/* Журнал активности — только для директора */}
+        <Route path="activity" element={
+          <ProtectedRoute permission="view_activity_logs" fallback={<div className="p-8 text-center text-muted-foreground">Доступ запрещен</div>}>
+            <ActivityLogs />
           </ProtectedRoute>
         } />
       </Route>
