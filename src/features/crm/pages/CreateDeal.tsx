@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { SearchableSelect, type SearchableSelectOption } from '@/components/ui/searchable-select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useDeals } from '@/hooks/useDeals';
@@ -192,6 +193,58 @@ const CreateDeal = () => {
     const lead = leads.find(l => l.id === leadId);
     return lead ? `${lead.name} (${lead.company || 'Без компании'})` : '';
   };
+
+  const localizedName = (val: any): string =>
+    typeof val === 'string' ? val : val?.ru || val?.en || val?.uz || '';
+
+  const clientOptions = useMemo<SearchableSelectOption[]>(
+    () =>
+      leads
+        .filter((lead) => !lead.archived)
+        .map((lead) => ({
+          value: lead.id,
+          label: lead.name + (lead.company ? ` (${lead.company})` : ''),
+          description: [lead.phone, lead.email].filter(Boolean).join(' · ') || undefined,
+          keywords: [lead.phone, lead.email, lead.company, lead.city].filter(Boolean) as string[],
+        })),
+    [leads],
+  );
+
+  const productOptions = useMemo<SearchableSelectOption[]>(
+    () =>
+      products
+        .filter((p: any) => p.status === 'active' && !p.archived)
+        .map((p: any) => {
+          const ru = localizedName(p.name);
+          const en = typeof p.name === 'object' ? p.name?.en : undefined;
+          const uz = typeof p.name === 'object' ? p.name?.uz : undefined;
+          return {
+            value: p.id,
+            label: ru || en || uz || 'Товар',
+            description: p.category || undefined,
+            keywords: [en, uz, p.category, p.country].filter(Boolean) as string[],
+          };
+        }),
+    [products],
+  );
+
+  const serviceOptions = useMemo<SearchableSelectOption[]>(
+    () =>
+      services
+        .filter((s: any) => s.status === 'active')
+        .map((s: any) => {
+          const ru = localizedName(s.title);
+          const en = typeof s.title === 'object' ? s.title?.en : undefined;
+          const uz = typeof s.title === 'object' ? s.title?.uz : undefined;
+          return {
+            value: s.id,
+            label: ru || en || uz || 'Услуга',
+            description: s.category || undefined,
+            keywords: [en, uz, s.category].filter(Boolean) as string[],
+          };
+        }),
+    [services],
+  );
 
   const calculateTotalAmount = () => {
     const productsTotal = dealProducts.reduce((sum, p) => {
@@ -458,20 +511,17 @@ const CreateDeal = () => {
 
                   <div>
                     <Label htmlFor="lead_id">Клиент</Label>
-                    <Select value={formData.lead_id} onValueChange={(value) => handleInputChange('lead_id', value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Выберите клиента" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {leads.filter(lead => !lead.archived).map((lead) => (
-                          <SelectItem key={lead.id} value={lead.id}>
-                            {lead.name} {lead.company && `(${lead.company})`}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <SearchableSelect
+                      options={clientOptions}
+                      value={formData.lead_id}
+                      onChange={(value) => handleInputChange('lead_id', value)}
+                      placeholder="Выберите клиента"
+                      searchPlaceholder="Поиск по имени, компании, телефону..."
+                      emptyMessage="Клиенты не найдены"
+                      showCount
+                    />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Клиентов: {leads.filter(l => !l.archived).length}
+                      Клиентов: {clientOptions.length}
                     </p>
                   </div>
 
@@ -565,23 +615,16 @@ const CreateDeal = () => {
                           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div className="md:col-span-2">
                               <Label>Товар *</Label>
-                              <Select 
-                                value={product.product_id} 
-                                onValueChange={(value) => updateProduct(product.id, 'product_id', value)}
-                              >
-                                <SelectTrigger className={errors[`product_${index}`] ? 'border-red-500' : ''}>
-                                  <SelectValue placeholder="Выберите товар" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {products
-                                    .filter(p => p.status === 'active' && !p.archived)
-                                    .map((prod) => (
-                                    <SelectItem key={prod.id} value={prod.id}>
-                                      {getProductName(prod.id)}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <SearchableSelect
+                                options={productOptions}
+                                value={product.product_id}
+                                onChange={(value) => updateProduct(product.id, 'product_id', value)}
+                                placeholder="Выберите товар"
+                                searchPlaceholder="Поиск по названию, категории..."
+                                emptyMessage="Товары не найдены"
+                                className={errors[`product_${index}`] ? 'border-red-500' : ''}
+                                showCount
+                              />
                               {errors[`product_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`product_${index}`]}</p>}
                             </div>
                             
@@ -702,23 +745,16 @@ const CreateDeal = () => {
                           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                             <div className="md:col-span-2">
                               <Label>Услуга *</Label>
-                              <Select 
-                                value={service.service_id} 
-                                onValueChange={(value) => updateService(service.id, 'service_id', value)}
-                              >
-                                <SelectTrigger className={errors[`service_${index}`] ? 'border-red-500' : ''}>
-                                  <SelectValue placeholder="Выберите услугу" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {services
-                                    .filter(s => s.status === 'active')
-                                    .map((serv) => (
-                                    <SelectItem key={serv.id} value={serv.id}>
-                                      {getServiceName(serv.id)}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <SearchableSelect
+                                options={serviceOptions}
+                                value={service.service_id}
+                                onChange={(value) => updateService(service.id, 'service_id', value)}
+                                placeholder="Выберите услугу"
+                                searchPlaceholder="Поиск по названию, категории..."
+                                emptyMessage="Услуги не найдены"
+                                className={errors[`service_${index}`] ? 'border-red-500' : ''}
+                                showCount
+                              />
                               {errors[`service_${index}`] && <p className="text-sm text-red-500 mt-1">{errors[`service_${index}`]}</p>}
                             </div>
                             

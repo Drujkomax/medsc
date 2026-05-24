@@ -54,7 +54,10 @@ export const useProducts = () => {
         .select('*')
         .eq('status', 'active')
         .eq('archived', false)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        // Override PostgREST default cap of 1000 rows so the deal-create
+        // dropdown actually lists the full active catalog.
+        .range(0, 4999);
 
       if (error) throw error;
       setProducts((data || []) as unknown as Product[]);

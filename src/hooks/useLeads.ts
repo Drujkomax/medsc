@@ -42,7 +42,9 @@ export const useLeads = () => {
       const { data, error } = await supabase
         .from('leads')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        // PostgREST режет по умолчанию до 1000 — поднимаем явно.
+        .range(0, 4999);
 
       if (error) throw error;
       setLeads((data || []) as Lead[]);

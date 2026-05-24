@@ -38,7 +38,10 @@ export const useServices = () => {
       const { data, error } = await supabase
         .from('services')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        // PostgREST режет по умолчанию до 1000 — поднимаем явно, чтобы
+        // дропдаун выбора услуги в форме сделки показывал всё.
+        .range(0, 4999);
 
       if (error) throw error;
       setServices((data || []) as Service[]);
