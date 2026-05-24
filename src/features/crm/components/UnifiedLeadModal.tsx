@@ -206,8 +206,8 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-6xl max-h-[90vh] bg-background overflow-hidden">
-          <DialogHeader className="pb-4">
+        <DialogContent className="max-w-6xl max-h-[90vh] bg-background flex flex-col overflow-hidden">
+          <DialogHeader className="pb-4 shrink-0">
             <DialogTitle className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <User className="h-6 w-6" />
@@ -233,9 +233,9 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-hidden h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-0">
             {/* Основная информация - 2 колонки */}
-            <div className="lg:col-span-2 space-y-6 overflow-y-auto pr-2">
+            <div className="lg:col-span-2 space-y-6 overflow-y-auto pr-2 min-h-0">
               {/* Контактная информация */}
               <Card>
                 <CardContent className="p-6">
@@ -458,12 +458,12 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
             </div>
 
             {/* Активность - 1 колонка */}
-            <div className="lg:col-span-1 border-l pl-6">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <div className="lg:col-span-1 border-l pl-6 overflow-y-auto min-h-0 flex flex-col">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 shrink-0">
                 <MessageSquare className="h-5 w-5" />
                 {t("leads.unifiedLeadModal.sections.activityHistory", "История активности")}
               </h3>
-              <div className="h-[500px] overflow-hidden">
+              <div className="flex-1 min-h-0 overflow-hidden">
                 <LeadActivityChat leadId={lead.id} />
               </div>
             </div>
