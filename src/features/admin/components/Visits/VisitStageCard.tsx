@@ -82,8 +82,12 @@ function hasPayloadContent(stageType: string, payload: Record<string, unknown>):
     ].some((k) => payload[k]);
   }
   if (stageType === 'briefing') {
-    const answers = payload.answers;
-    return Boolean(payload.category) || (Array.isArray(answers) && answers.length > 0);
+    const answers = payload.qa_pairs ?? payload.answers;
+    return (
+      Boolean(payload.equipment) ||
+      Boolean(payload.category) ||
+      (Array.isArray(answers) && answers.length > 0)
+    );
   }
   if (stageType === 'completion') {
     return Boolean(payload.outcome);
@@ -114,7 +118,11 @@ export default function VisitStageCard({ stage }: Props) {
   });
 
   const payload = (stage.payload ?? {}) as Record<string, unknown>;
-  const briefingAnswers = Array.isArray(payload.answers) ? (payload.answers as BriefingAnswer[]) : [];
+  const briefingAnswers = Array.isArray(payload.qa_pairs)
+    ? (payload.qa_pairs as BriefingAnswer[])
+    : Array.isArray(payload.answers)
+      ? (payload.answers as BriefingAnswer[])
+      : [];
   const showPhotos = stage.stage_type !== 'briefing' && stage.photo_urls.length > 0;
   const isEmpty =
     !stage.text_note &&
@@ -181,11 +189,13 @@ export default function VisitStageCard({ stage }: Props) {
 
         {stage.stage_type === 'briefing' && (
           <div className="space-y-3">
-            {typeof payload.category === 'string' && (
+            {typeof payload.equipment === 'string' && payload.equipment ? (
+              <Badge variant="secondary">{payload.equipment}</Badge>
+            ) : typeof payload.category === 'string' ? (
               <Badge variant="secondary">
                 {BRIEFING_CATEGORY_LABEL[payload.category] ?? payload.category}
               </Badge>
-            )}
+            ) : null}
             {briefingAnswers.length > 0 && (
               <ol className="space-y-2.5 text-sm list-decimal pl-5 marker:text-muted-foreground">
                 {briefingAnswers.map((item, i) => (
