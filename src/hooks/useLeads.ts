@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Lead {
@@ -31,14 +31,26 @@ export interface Lead {
   lead_created_date?: string;
 }
 
-export const useLeads = () => {
+export const useLeads = (options?: { autoFetch?: boolean }) => {
+  // autoFetch=false — для потребителей, которым нужны только мутации
+  // (AddLeadDialog, EditLeadModal, StatusDropdown). Они НЕ должны грузить весь
+  // список лидов на маунт и рефетчить его после мутации: за обновление страницы
+  // отвечает её собственный инстанс useLeads через onSuccess/refetch.
+  const autoFetch = options?.autoFetch ?? true;
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(autoFetch);
   const [error, setError] = useState<string | null>(null);
+  // Полноэкранный спиннер показываем ТОЛЬКО при первой загрузке. Любой
+  // последующий refetch (после смены статуса, добавления, назначения и т.д.)
+  // выполняется «тихо», не размонтируя таблицу. Иначе размонтирование таблицы
+  // в момент закрытия Radix-оверлея (dropdown/select/dialog) оставляет
+  // document.body со стилем pointer-events:none и весь интерфейс перестаёт
+  // реагировать на клики («кнопки больше не работают»).
+  const hasLoadedRef = useRef(false);
 
   const fetchLeads = async () => {
     try {
-      setLoading(true);
+      if (!hasLoadedRef.current) setLoading(true);
       const { data, error } = await supabase
         .from('leads')
         .select('*')
@@ -51,6 +63,7 @@ export const useLeads = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {
+      hasLoadedRef.current = true;
       setLoading(false);
     }
   };
@@ -103,7 +116,7 @@ export const useLeads = () => {
         .single();
 
       if (error) throw error;
-      await fetchLeads(); // Refresh the list
+      if (autoFetch) await fetchLeads(); // Refresh the list
       return data;
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Ошибка при добавлении лида');
@@ -126,7 +139,7 @@ export const useLeads = () => {
       }
       
       console.log('Lead updated successfully:', data);
-      await fetchLeads(); // Refresh the list
+      if (autoFetch) await fetchLeads(); // Refresh the list
       return data;
     } catch (err) {
       console.error('updateLead error:', err);
@@ -142,7 +155,7 @@ export const useLeads = () => {
         .eq('id', id);
 
       if (error) throw error;
-      await fetchLeads(); // Refresh the list
+      if (autoFetch) await fetchLeads(); // Refresh the list
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Ошибка при удалении лида');
     }
@@ -157,7 +170,7 @@ export const useLeads = () => {
         .rpc('archive_lead', { lead_id: id, user_id: user.id });
 
       if (error) throw error;
-      await fetchLeads(); // Refresh the list
+      if (autoFetch) await fetchLeads(); // Refresh the list
     } catch (err) {
       throw new Error(err instanceof Error ? err.message : 'Ошибка при архивировании лида');
     }
@@ -182,8 +195,8 @@ export const useLeads = () => {
   };
 
   useEffect(() => {
-    fetchLeads();
-  }, []);
+    if (autoFetch) fetchLeads();
+  }, [autoFetch]);
 
   return {
     leads,

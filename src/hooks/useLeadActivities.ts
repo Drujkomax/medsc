@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -20,6 +20,11 @@ export const useLeadActivities = (leadId?: string) => {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Полноэкранный спиннер «Загрузка активности...» — только при первой загрузке.
+  // Иначе каждый realtime-INSERT (или ручной refetch после добавления заметки)
+  // на миг размонтировал бы весь список активностей.
+  const hasLoadedRef = useRef(false);
+
   const fetchActivities = async () => {
     if (!leadId) {
       setActivities([]);
@@ -28,7 +33,7 @@ export const useLeadActivities = (leadId?: string) => {
     }
 
     try {
-      setLoading(true);
+      if (!hasLoadedRef.current) setLoading(true);
       const { data, error } = await supabase
         .from('lead_activities')
         .select('*')
@@ -46,6 +51,7 @@ export const useLeadActivities = (leadId?: string) => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ошибка при загрузке активности');
     } finally {
+      hasLoadedRef.current = true;
       setLoading(false);
     }
   };
@@ -124,6 +130,8 @@ export const useLeadActivities = (leadId?: string) => {
   };
 
   useEffect(() => {
+    // при смене лида снова показываем спиннер один раз
+    hasLoadedRef.current = false;
     fetchActivities();
   }, [leadId]);
 
@@ -131,8 +139,10 @@ export const useLeadActivities = (leadId?: string) => {
   useEffect(() => {
     if (!leadId) return;
 
+    // Имя канала уникально для каждого лида — иначе несколько экземпляров
+    // LeadActivityChat на одном (singleton) клиенте Supabase конфликтовали бы.
     const channel = supabase
-      .channel('lead-activities-changes')
+      .channel(`lead-activities-${leadId}`)
       .on(
         'postgres_changes',
         {

@@ -9,6 +9,14 @@ import { Lead, useLeads } from '@/hooks/useLeads';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import {
+  BUDGET_RANGES,
+  EQUIPMENT_TYPES,
+  TIMELINES,
+  LEAD_STAGES,
+  withCurrentValue,
+  toDatetimeLocal,
+} from '../leadFieldOptions';
 
 interface EditLeadModalProps {
   lead: Lead | null;
@@ -19,7 +27,7 @@ interface EditLeadModalProps {
 
 export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModalProps) => {
   const { t } = useTranslation();
-  const { updateLead } = useLeads();
+  const { updateLead } = useLeads({ autoFetch: false });
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,6 +38,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
     stage: 'new',
     budget_range: '',
     equipment_interest: '',
+    timeline: '',
     position: '',
     value: '',
     notes: '',
@@ -37,39 +46,17 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
     lead_created_date: ''
   });
 
-  const stages = [
-    { value: 'new', label: t('leads.stages.new', 'Новый') },
-    { value: 'contacted', label: t('leads.stages.contacted', 'Связались') },
-    { value: 'qualified', label: t('leads.stages.qualified', 'Квалифицирован') },
-    { value: 'proposal', label: t('leads.stages.proposal', 'Предложение') },
-    { value: 'negotiation', label: t('leads.stages.negotiation', 'Переговоры') },
-    { value: 'closed', label: t('leads.stages.closed', 'Закрыт') },
-    { value: 'lost', label: t('leads.stages.lost', 'Потерян') }
-  ];
+  // Общие списки опций (единые для Add/Edit/View), чтобы значения не терялись.
+  const stages = LEAD_STAGES;
+  const budgetRanges = withCurrentValue(BUDGET_RANGES, formData.budget_range);
+  const equipmentTypes = withCurrentValue(EQUIPMENT_TYPES, formData.equipment_interest);
+  const timelines = withCurrentValue(TIMELINES, formData.timeline);
 
-  const budgetRanges = [
-    { value: 'under_50k', label: t('leads.editModal.budgetRanges.under_50k', 'До $50,000') },
-    { value: '50k_100k', label: t('leads.editModal.budgetRanges.50k_100k', '$50,000 - $100,000') },
-    { value: '100k_500k', label: t('leads.editModal.budgetRanges.100k_500k', '$100,000 - $500,000') },
-    { value: '500k_1m', label: t('leads.editModal.budgetRanges.500k_1m', '$500,000 - $1,000,000') },
-    { value: 'over_1m', label: t('leads.editModal.budgetRanges.over_1m', 'Свыше $1,000,000') },
-    { value: 'not_disclosed', label: t('leads.editModal.budgetRanges.not_disclosed', 'Не раскрыт') }
-  ];
-
-  const equipmentTypes = [
-    { value: 'mrt_mskt', label: t('leads.editModal.equipmentTypes.mrt_mskt', 'МРТ и МСКТ оборудование') },
-    { value: 'ultrasound', label: t('leads.editModal.equipmentTypes.ultrasound', 'УЗИ оборудование') },
-    { value: 'xray', label: t('leads.editModal.equipmentTypes.xray', 'Рентгеновское оборудование') },
-    { value: 'gynecology', label: t('leads.editModal.equipmentTypes.gynecology', 'Гинекологическое оборудование') },
-    { value: 'laboratory', label: t('leads.editModal.equipmentTypes.laboratory', 'Лабораторное оборудование') },
-    { value: 'surgical', label: t('leads.editModal.equipmentTypes.surgical', 'Хирургическое оборудование') },
-    { value: 'physiotherapy', label: t('leads.editModal.equipmentTypes.physiotherapy', 'Физиотерапевтическое оборудование') },
-    { value: 'resuscitation', label: t('leads.editModal.equipmentTypes.resuscitation', 'Реанимационное оборудование') },
-    { value: 'other', label: t('leads.editModal.equipmentTypes.other', 'Другое') }
-  ];
-
+  // Пере-инициализируем форму при КАЖДОМ открытии — иначе несохранённые правки
+  // «прилипают» к следующему открытию того же лида. Локальное (не UTC) время для
+  // datetime-local, чтобы не было сдвига на часовой пояс.
   useEffect(() => {
-    if (lead) {
+    if (isOpen && lead) {
       setFormData({
         name: lead.name || '',
         email: lead.email || '',
@@ -78,14 +65,15 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
         stage: lead.stage || 'new',
         budget_range: lead.budget_range || '',
         equipment_interest: lead.equipment_interest || '',
+        timeline: lead.timeline || '',
         position: lead.position || '',
         value: lead.value?.toString() || '',
         notes: lead.notes || '',
         lead_quality: lead.lead_quality || '',
-        lead_created_date: lead.lead_created_date ? new Date(lead.lead_created_date).toISOString().slice(0, 16) : ''
+        lead_created_date: lead.lead_created_date ? toDatetimeLocal(new Date(lead.lead_created_date)) : ''
       });
     }
-  }, [lead]);
+  }, [lead, isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,6 +89,7 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
         stage: formData.stage,
         budget_range: formData.budget_range || undefined,
         equipment_interest: formData.equipment_interest || undefined,
+        timeline: formData.timeline || undefined,
         position: formData.position.trim() || undefined,
         value: formData.value ? parseFloat(formData.value) : undefined,
         notes: formData.notes.trim() || undefined,
@@ -291,6 +280,22 @@ export const EditLeadModal = ({ lead, isOpen, onClose, onSuccess }: EditLeadModa
                     {equipmentTypes.map((equipment) => (
                       <SelectItem key={equipment.value} value={equipment.value}>
                         {equipment.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="timeline">{t('leads.editModal.fields.timeline', 'Временные рамки')}</Label>
+                <Select value={formData.timeline} onValueChange={(value) => handleInputChange('timeline', value)}>
+                  <SelectTrigger className="focus:ring-2 focus:ring-primary">
+                    <SelectValue placeholder={t('leads.editModal.placeholders.timeline', 'Выберите сроки')} />
+                  </SelectTrigger>
+                  <SelectContent className="bg-background z-50">
+                    {timelines.map((timeline) => (
+                      <SelectItem key={timeline.value} value={timeline.value}>
+                        {timeline.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -22,6 +22,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { Lead, useLeads } from "@/hooks/useLeads";
+import { BUDGET_RANGES, EQUIPMENT_TYPES, TIMELINES, labelFor } from "../leadFieldOptions";
 import { EditLeadModal } from "./EditLeadModal";
 import { LeadActivityChat } from "./LeadActivityChat";
 import { useToast } from "@/hooks/use-toast";
@@ -54,7 +55,7 @@ interface StatusDropdownProps {
 }
 
 const StatusDropdown = ({ currentStage, leadId, onStageChange }: StatusDropdownProps) => {
-  const { changeLeadStage } = useLeads();
+  const { changeLeadStage } = useLeads({ autoFetch: false });
   const { toast } = useToast();
   const { t } = useTranslation();
 
@@ -105,52 +106,8 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
     email: string;
     full_name: string;
   } | null>(null);
+  const [assignedLoading, setAssignedLoading] = useState(false);
 
-  // Статические объекты с ключами переводов
-  const stageLabels = {
-    new: t("leads.stages.new", "Новый"),
-    contacted: t("leads.stages.contacted", "Связались"),
-    qualified: t("leads.stages.qualified", "Квалифицирован"),
-    proposal: t("leads.stages.proposal", "Предложение"),
-    negotiation: t("leads.stages.negotiation", "Переговоры"),
-    closed: t("leads.stages.closed", "Закрыт"),
-    lost: t("leads.stages.lost", "Потерян"),
-  };
-
-  const budgetLabels = {
-    under_50k: t("leads.unifiedLeadModal.budgetRanges.under_50k", "До $50,000"),
-    "50k_100k": t("leads.unifiedLeadModal.budgetRanges.50k_100k", "$50,000 - $100,000"),
-    "100k_500k": t("leads.unifiedLeadModal.budgetRanges.100k_500k", "$100,000 - $500,000"),
-    "500k_1m": t("leads.unifiedLeadModal.budgetRanges.500k_1m", "$500,000 - $1,000,000"),
-    over_1m: t("leads.unifiedLeadModal.budgetRanges.over_1m", "Свыше $1,000,000"),
-    not_disclosed: t("leads.unifiedLeadModal.budgetRanges.not_disclosed", "Не раскрыт"),
-  };
-
-  const equipmentLabels = {
-    mrt_mskt: t("leads.unifiedLeadModal.equipmentTypes.mrt_mskt", "МРТ и МСКТ оборудование"),
-    gynecology: t("leads.unifiedLeadModal.equipmentTypes.gynecology", "Гинекологическое оборудование"),
-    physiotherapy: t("leads.unifiedLeadModal.equipmentTypes.physiotherapy", "Физиотерапевтическое оборудование"),
-    resuscitation: t("leads.unifiedLeadModal.equipmentTypes.resuscitation", "Реанимационное оборудование"),
-    mri: t("leads.unifiedLeadModal.equipmentTypes.mri", "МРТ оборудование"),
-    ct: t("leads.unifiedLeadModal.equipmentTypes.ct", "КТ оборудование"),
-    ultrasound: t("leads.unifiedLeadModal.equipmentTypes.ultrasound", "УЗИ оборудование"),
-    xray: t("leads.unifiedLeadModal.equipmentTypes.xray", "Рентгеновское оборудование"),
-    laboratory: t("leads.unifiedLeadModal.equipmentTypes.laboratory", "Лабораторное оборудование"),
-    surgical: t("leads.unifiedLeadModal.equipmentTypes.surgical", "Хирургическое оборудование"),
-    anesthesia: t("leads.unifiedLeadModal.equipmentTypes.anesthesia", "Оборудование для анестезии"),
-    monitoring: t("leads.unifiedLeadModal.equipmentTypes.monitoring", "Мониторинговое оборудование"),
-    rehabilitation: t("leads.unifiedLeadModal.equipmentTypes.rehabilitation", "Реабилитационное оборудование"),
-    other: t("leads.unifiedLeadModal.equipmentTypes.other", "Другое"),
-  };
-
-  const timelineLabels = {
-    immediate: t("leads.unifiedLeadModal.timelines.immediate", "Немедленно"),
-    within_month: t("leads.unifiedLeadModal.timelines.within_month", "В течение месяца"),
-    within_quarter: t("leads.unifiedLeadModal.timelines.within_quarter", "В течение квартала"),
-    within_year: t("leads.unifiedLeadModal.timelines.within_year", "В течение года"),
-    over_year: t("leads.unifiedLeadModal.timelines.over_year", "Более года"),
-    research: t("leads.unifiedLeadModal.timelines.research", "Пока изучаем рынок"),
-  };
 
   const stages = [
     { value: "new", label: t("leads.stages.new", "Новый") },
@@ -176,18 +133,23 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
         return;
       }
 
+      setAssignedLoading(true);
       try {
+        // maybeSingle, чтобы удалённый/отсутствующий профиль не выбрасывал
+        // ошибку и не оставлял поле «Назначен на» в вечной «Загрузке...».
         const { data: profile, error } = await supabase
           .from("profiles")
           .select("id, email, full_name")
           .eq("id", lead.assigned_to)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
-        setAssignedUser(profile);
+        setAssignedUser(profile ?? null);
       } catch (error) {
         console.error("Error fetching assigned user:", error);
         setAssignedUser(null);
+      } finally {
+        setAssignedLoading(false);
       }
     };
 
@@ -378,7 +340,11 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                             {t("leads.unifiedLeadModal.fields.assignedTo", "Назначен на")}
                           </div>
                           <div className="font-medium">
-                            {assignedUser ? assignedUser.email : t("leads.unifiedLeadModal.loading", "Загрузка...")}
+                            {assignedLoading
+                              ? t("leads.unifiedLeadModal.loading", "Загрузка...")
+                              : assignedUser
+                                ? assignedUser.email
+                                : t("leads.unifiedLeadModal.userNotFound", "Пользователь не найден")}
                           </div>
                         </div>
                       </div>
@@ -404,7 +370,7 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                               {t("leads.unifiedLeadModal.fields.budget", "Бюджет")}
                             </div>
                             <div className="font-medium">
-                              {budgetLabels[lead.budget_range as keyof typeof budgetLabels] || lead.budget_range}
+                              {labelFor(BUDGET_RANGES, lead.budget_range)}
                             </div>
                           </div>
                         </div>
@@ -417,8 +383,7 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                               {t("leads.unifiedLeadModal.fields.equipmentInterest", "Интересующее оборудование")}
                             </div>
                             <div className="font-medium">
-                              {equipmentLabels[lead.equipment_interest as keyof typeof equipmentLabels] ||
-                                lead.equipment_interest}
+                              {labelFor(EQUIPMENT_TYPES, lead.equipment_interest)}
                             </div>
                           </div>
                         </div>
@@ -431,7 +396,7 @@ export const UnifiedLeadModal = ({ lead, isOpen, onClose, onLeadUpdate }: Unifie
                               {t("leads.unifiedLeadModal.fields.timeline", "Временные рамки")}
                             </div>
                             <div className="font-medium">
-                              {timelineLabels[lead.timeline as keyof typeof timelineLabels] || lead.timeline}
+                              {labelFor(TIMELINES, lead.timeline)}
                             </div>
                           </div>
                         </div>

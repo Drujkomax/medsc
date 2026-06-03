@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLeads } from "@/hooks/useLeads";
 import { useTranslation } from "react-i18next";
 import { Plus, User, Phone, Building, FileText, Tag, MapPin, Mail, Briefcase, Clock, DollarSign } from "lucide-react";
+import { BUDGET_RANGES, TIMELINES, EQUIPMENT_TYPES, LEAD_STAGES, toDatetimeLocal } from "../leadFieldOptions";
 
 interface AddLeadDialogProps {
   open: boolean;
@@ -19,7 +20,7 @@ interface AddLeadDialogProps {
 export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) => {
   const { toast } = useToast();
   const { t } = useTranslation();
-  const { addLead } = useLeads();
+  const { addLead } = useLeads({ autoFetch: false });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -35,7 +36,7 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
     source: "manual",
     stage: "new",
     lead_quality: "",
-    lead_created_date: new Date().toISOString().slice(0, 16),
+    lead_created_date: toDatetimeLocal(),
   });
 
   const leadSources = [
@@ -63,116 +64,12 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
     { value: "other", label: t("leads.addLeadDialog.sources.other", "Другое") },
   ];
 
-  const leadStages = [
-    { value: "new", label: t("leads.stages.new", "Новый") },
-    { value: "contacted", label: t("leads.stages.contacted", "Связались") },
-    {
-      value: "qualified",
-      label: t("leads.stages.qualified", "Квалифицирован"),
-    },
-    { value: "proposal", label: t("leads.stages.proposal", "Отправил КП") },
-    {
-      value: "negotiation",
-      label: t("leads.stages.negotiation", "Переговоры"),
-    },
-  ];
-
-  const budgetRanges = [
-    {
-      value: "3k_5k",
-      label: t("leads.addLeadDialog.budgetRanges.3k_5k", "$3,000 - $5,000"),
-    },
-    {
-      value: "5k_10k",
-      label: t("leads.addLeadDialog.budgetRanges.5k_10k", "$5,000 - $10,000"),
-    },
-    {
-      value: "10k_50k",
-      label: t("leads.addLeadDialog.budgetRanges.10k_50k", "$10,000 - $50,000"),
-    },
-    {
-      value: "50k_100k",
-      label: t("leads.addLeadDialog.budgetRanges.50k_100k", "$50,000 - $100,000"),
-    },
-    {
-      value: "100k_500k",
-      label: t("leads.addLeadDialog.budgetRanges.100k_500k", "$100,000 - $500,000"),
-    },
-    {
-      value: "over_500k",
-      label: t("leads.addLeadDialog.budgetRanges.over_500k", "Свыше $500,000"),
-    },
-    {
-      value: "not_specified",
-      label: t("leads.addLeadDialog.budgetRanges.not_specified", "Не указан"),
-    },
-  ];
-
-  const timelines = [
-    {
-      value: "immediate",
-      label: t("leads.addLeadDialog.timelines.immediate", "Немедленно"),
-    },
-    {
-      value: "1_month",
-      label: t("leads.addLeadDialog.timelines.1_month", "В течение месяца"),
-    },
-    {
-      value: "3_months",
-      label: t("leads.addLeadDialog.timelines.3_months", "В течение 3 месяцев"),
-    },
-    {
-      value: "6_months",
-      label: t("leads.addLeadDialog.timelines.6_months", "В течение 6 месяцев"),
-    },
-    {
-      value: "1_year",
-      label: t("leads.addLeadDialog.timelines.1_year", "В течение года"),
-    },
-    {
-      value: "not_specified",
-      label: t("leads.addLeadDialog.timelines.not_specified", "Не указан"),
-    },
-  ];
-
-  const equipmentTypes = [
-    {
-      value: "mrt_mskt",
-      label: t("leads.addLeadDialog.equipmentTypes.mrt_mskt", "МРТ и МСКТ оборудование"),
-    },
-    {
-      value: "ultrasound",
-      label: t("leads.addLeadDialog.equipmentTypes.ultrasound", "УЗИ оборудование"),
-    },
-    {
-      value: "xray",
-      label: t("leads.addLeadDialog.equipmentTypes.xray", "Рентген оборудование"),
-    },
-    {
-      value: "gynecology",
-      label: t("leads.addLeadDialog.equipmentTypes.gynecology", "Гинекологическое оборудование"),
-    },
-    {
-      value: "laboratory",
-      label: t("leads.addLeadDialog.equipmentTypes.laboratory", "Лабораторное оборудование"),
-    },
-    {
-      value: "surgical",
-      label: t("leads.addLeadDialog.equipmentTypes.surgical", "Хирургическое оборудование"),
-    },
-    {
-      value: "physiotherapy",
-      label: t("leads.addLeadDialog.equipmentTypes.physiotherapy", "Физиотерапевтическое оборудование"),
-    },
-    {
-      value: "resuscitation",
-      label: t("leads.addLeadDialog.equipmentTypes.resuscitation", "Реанимационное оборудование"),
-    },
-    {
-      value: "other",
-      label: t("leads.addLeadDialog.equipmentTypes.other", "Другое"),
-    },
-  ];
+  // Общие списки (единые для Add/Edit/View). Для создания не предлагаем
+  // финальные этапы closed/lost.
+  const leadStages = LEAD_STAGES.filter((s) => !["closed", "lost"].includes(s.value));
+  const budgetRanges = BUDGET_RANGES;
+  const timelines = TIMELINES;
+  const equipmentTypes = EQUIPMENT_TYPES;
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -233,7 +130,7 @@ export const AddLeadDialog = ({ open, onClose, onSuccess }: AddLeadDialogProps) 
         source: "manual",
         stage: "new",
         lead_quality: "",
-        lead_created_date: new Date().toISOString().slice(0, 16),
+        lead_created_date: toDatetimeLocal(),
       });
 
       onSuccess?.();

@@ -31,14 +31,16 @@ export const useLeadMerge = () => {
       
       // Merge all information into the primary lead
       const mergedData = mergeLeadData(primaryLead, duplicateLeads);
-      
-      // Start transaction-like operations
-      const { error: updateError } = await supabase
-        .from('leads')
-        .update(mergedData)
-        .eq('id', primaryLead.id);
 
-      if (updateError) throw updateError;
+      // Обновляем основной лид только если есть что менять (пустой patch -> no-op).
+      if (Object.keys(mergedData).length > 0) {
+        const { error: updateError } = await supabase
+          .from('leads')
+          .update(mergedData)
+          .eq('id', primaryLead.id);
+
+        if (updateError) throw updateError;
+      }
 
       // Log the merge action for the primary lead
       const mergeDetails = {
@@ -67,11 +69,31 @@ export const useLeadMerge = () => {
 
       if (logError) console.warn('Failed to log merge action:', logError);
 
-      // Delete duplicate leads
+      const duplicateIds = duplicateLeads.map(lead => lead.id);
+
+      // ВАЖНО: переносим связанные записи дубликатов на основной лид ДО удаления.
+      // У lead_activities FK leads(id) ON DELETE CASCADE — без переноса вся
+      // история (заметки/звонки/смены статуса) дубликатов была бы безвозвратно
+      // удалена при merge. Сделки тоже перецепляем, чтобы не осиротить/не упереться в FK.
+      const { error: activitiesError } = await supabase
+        .from('lead_activities')
+        .update({ lead_id: primaryLead.id })
+        .in('lead_id', duplicateIds);
+      if (activitiesError) throw activitiesError;
+
+      const { error: dealsError } = await supabase
+        .from('deals')
+        .update({ lead_id: primaryLead.id })
+        .in('lead_id', duplicateIds);
+      // deals может не иметь записей/таблицы под текущей ролью — не валим merge,
+      // но логируем, чтобы не терять сигнал.
+      if (dealsError) console.warn('Failed to re-link deals on merge:', dealsError);
+
+      // Delete duplicate leads (история уже перенесена на основной лид)
       const { error: deleteError } = await supabase
         .from('leads')
         .delete()
-        .in('id', duplicateLeads.map(lead => lead.id));
+        .in('id', duplicateIds);
 
       if (deleteError) throw deleteError;
 
@@ -124,27 +146,30 @@ const selectPrimaryLead = (leads: Lead[]): Lead => {
   });
 };
 
-// Helper function to merge lead data intelligently
-const mergeLeadData = (primary: Lead, duplicates: Lead[]) => {
-  const merged = { ...primary };
+// Возвращает ТОЛЬКО изменяемые поля для UPDATE основного лида. Раньше сюда
+// попадал весь объект лида целиком (включая id, created_at, updated_at, archived…),
+// что перезаписывало системные/неизменяемые колонки.
+const mergeLeadData = (primary: Lead, duplicates: Lead[]): Partial<Lead> => {
   const allLeads = [primary, ...duplicates];
+  const patch: Partial<Lead> = {};
 
   // Merge notes from all leads
   const allNotes = allLeads
     .map(lead => lead.notes?.trim())
-    .filter(note => note && note.length > 0);
-  
+    .filter((note): note is string => !!note && note.length > 0);
+
   if (allNotes.length > 1) {
     const uniqueNotes = [...new Set(allNotes)];
-    merged.notes = uniqueNotes.join('\n\n--- Объединенные заметки ---\n');
+    patch.notes = uniqueNotes.join('\n\n--- Объединенные заметки ---\n');
   }
 
-  // Prefer non-empty fields from any lead
-  for (const lead of allLeads) {
-    if (!merged.company?.trim() && lead.company?.trim()) {
-      merged.company = lead.company;
-    }
-  }
+  // Заполняем недостающие у основного лида контактные поля из дубликатов
+  const fillIfEmpty = (field: 'company' | 'phone' | 'email' | 'city' | 'position') => {
+    if (primary[field]?.trim()) return;
+    const donor = allLeads.find(l => l[field]?.trim());
+    if (donor) patch[field] = donor[field];
+  };
+  (['company', 'phone', 'email', 'city', 'position'] as const).forEach(fillIfEmpty);
 
   // Use the most advanced stage
   const stageOrder = ['new', 'contacted', 'qualified', 'proposal', 'negotiation', 'closed', 'lost'];
@@ -154,8 +179,8 @@ const mergeLeadData = (primary: Lead, duplicates: Lead[]) => {
     const currentIndex = stageOrder.indexOf(current);
     return currentIndex > bestIndex ? current : best;
   }, stages[0] || 'new');
-  
-  merged.stage = advancedStage;
 
-  return merged;
+  if (advancedStage !== primary.stage) patch.stage = advancedStage;
+
+  return patch;
 };

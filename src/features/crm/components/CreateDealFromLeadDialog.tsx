@@ -51,12 +51,18 @@ const CreateDealFromLeadDialog = ({ open, onClose, lead, onSuccess }: CreateDeal
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!lead) return;
-    
+
+    const title = formData.title.trim();
+    if (!title) {
+      toast.error(t('deals.titleRequired', 'Введите название сделки'));
+      return;
+    }
+
     setLoading(true);
 
     try {
       const dealData = {
-        title: formData.title,
+        title,
         lead_id: lead.id,
         amount: formData.amount ? parseFloat(formData.amount) : undefined,
         stage: formData.stage,

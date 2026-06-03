@@ -43,8 +43,10 @@ import {
   MoreHorizontal,
   ChevronDown,
   ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
-import { format } from "date-fns";
+import { format, endOfDay, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -76,6 +78,17 @@ const Leads = () => {
     "lead_created_date",
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
+  // Производные флаги доступа. Объявлены до эффектов/JSX, чтобы быть
+  // стабильными значениями в зависимостях (раньше эффект fetchEmployees
+  // перевыполнялся на каждый рендер из-за нестабильной ссылки hasPermission).
+  const isDirector = role === "director";
+  const canAssignLeads = hasPermission("assign_leads");
+  // Право на запись (смена статуса, редактирование, архив, создание сделки,
+  // массовые действия). Роли только-для-просмотра (например, бухгалтер) его не
+  // имеют — иначе им показывались действия, которые всё равно режет RLS.
+  const canManageLeads = hasPermission("manage_all_leads");
+  const canBulkActions = canManageLeads;
 
   // Helper functions for lead stages
   const getStageLabel = (stage: string) => {
@@ -115,7 +128,8 @@ const Leads = () => {
         .from("leads")
         .update({
           assigned_to: assigneeId,
-          assigned_by: user?.id,
+          // при снятии назначения обнуляем и assigned_by, иначе остаётся «кто назначил» без назначенного
+          assigned_by: assigneeId ? user?.id : null,
         })
         .eq("id", leadId);
 
@@ -184,10 +198,10 @@ const Leads = () => {
   ];
 
   useEffect(() => {
-    if (hasPermission("assign_leads")) {
+    if (canAssignLeads) {
       fetchEmployees();
     }
-  }, [hasPermission]);
+  }, [canAssignLeads]);
 
   const fetchEmployees = async () => {
     try {
@@ -236,16 +250,27 @@ const Leads = () => {
     }
   };
 
+  // Иконка сортировки: для активной колонки показывает направление (▲/▼),
+  // для остальных — нейтральную двунаправленную стрелку.
+  const renderSortIcon = (field: "name" | "company" | "city" | "created_at" | "lead_created_date") => {
+    if (sortField !== field) return <ArrowUpDown className="h-4 w-4 opacity-30" />;
+    return sortOrder === "asc" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />;
+  };
+
   const filteredAndSortedLeads = leads
     .filter((lead) => {
       // Filter out archived leads
       if (lead.archived) return false;
 
+      const q = searchTerm.trim().toLowerCase();
       const matchesSearch =
-        lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.phone?.includes(searchTerm) ||
-        lead.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        lead.company?.toLowerCase().includes(searchTerm.toLowerCase());
+        !q ||
+        lead.name.toLowerCase().includes(q) ||
+        // телефон ищем по цифрам, игнорируя пробелы/скобки/дефисы/плюс
+        (lead.phone || "").replace(/[\s\-()+]/g, "").includes(q.replace(/[\s\-()+]/g, "")) ||
+        lead.city?.toLowerCase().includes(q) ||
+        lead.company?.toLowerCase().includes(q) ||
+        lead.email?.toLowerCase().includes(q);
 
       const matchesStage = stageFilter === "all" || lead.stage === stageFilter;
 
@@ -257,7 +282,10 @@ const Leads = () => {
       const matchesQuality = qualityFilter === "all" || lead.lead_quality === qualityFilter;
 
       const leadDate = new Date(lead.created_at);
-      const matchesDateRange = (!startDate || leadDate >= startDate) && (!endDate || leadDate <= endDate);
+      // Календарь возвращает дату на 00:00 — конец диапазона делаем включительным
+      // (до конца выбранного дня), иначе лиды, созданные в день «До», выпадают.
+      const matchesDateRange =
+        (!startDate || leadDate >= startOfDay(startDate)) && (!endDate || leadDate <= endOfDay(endDate));
 
       return matchesSearch && matchesStage && matchesAssigned && matchesQuality && matchesDateRange;
     })
@@ -394,6 +422,7 @@ const Leads = () => {
   };
 
   const handleBulkAssign = async (assignToId: string) => {
+    const total = selectedLeadIds.length;
     try {
       const {
         data: { user: currentUser },
@@ -403,26 +432,46 @@ const Leads = () => {
       // If "unassign" is selected, remove assignment
       const assignValue = assignToId === "unassign" ? null : assignToId;
 
-      const updates = selectedLeadIds.map((leadId) =>
-        supabase
-          .from("leads")
-          .update({
-            assigned_to: assignValue,
-            assigned_by: assignValue ? currentUser.id : null,
-          })
-          .eq("id", leadId),
+      const results = await Promise.all(
+        selectedLeadIds.map((leadId) =>
+          supabase
+            .from("leads")
+            .update({
+              assigned_to: assignValue,
+              assigned_by: assignValue ? currentUser.id : null,
+            })
+            .eq("id", leadId),
+        ),
       );
 
-      await Promise.all(updates);
+      // Supabase не бросает исключение при отказе RLS — ошибка приходит в .error.
+      // Раньше ошибки молча игнорировались и всегда показывался «успех».
+      const failed = results.filter((r) => r.error).length;
+      const succeeded = total - failed;
 
-      toast({
-        title: t("common.success", "Успешно"),
-        description: assignValue
-          ? t("leads.bulkAssignSuccess", "{{count}} лидов назначено", {
-              count: selectedLeadIds.length,
-            })
-          : t("leads.bulkUnassignSuccess", "Назначение снято у {{count}} лидов", { count: selectedLeadIds.length }),
-      });
+      if (failed === 0) {
+        toast({
+          title: t("common.success", "Успешно"),
+          description: assignValue
+            ? t("leads.bulkAssignSuccess", "{{count}} лидов назначено", { count: succeeded })
+            : t("leads.bulkUnassignSuccess", "Назначение снято у {{count}} лидов", { count: succeeded }),
+        });
+      } else if (succeeded === 0) {
+        toast({
+          title: t("common.error", "Ошибка"),
+          description: t("leads.bulkAssignError", "Не удалось назначить лидов"),
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: t("common.warning", "Внимание"),
+          description: t("leads.bulkAssignPartial", "Готово: {{ok}}, не удалось: {{fail}}", {
+            ok: succeeded,
+            fail: failed,
+          }),
+          variant: "destructive",
+        });
+      }
 
       setSelectedLeadIds([]);
       refetch();
@@ -436,27 +485,48 @@ const Leads = () => {
   };
 
   const handleBulkArchive = async () => {
+    const total = selectedLeadIds.length;
     try {
       const {
         data: { user: currentUser },
       } = await supabase.auth.getUser();
       if (!currentUser) throw new Error(t("leads.authError", "Пользователь не авторизован"));
 
-      const updates = selectedLeadIds.map((leadId) =>
-        supabase.rpc("archive_lead", {
-          lead_id: leadId,
-          user_id: currentUser.id,
-        }),
+      const results = await Promise.all(
+        selectedLeadIds.map((leadId) =>
+          supabase.rpc("archive_lead", {
+            lead_id: leadId,
+            user_id: currentUser.id,
+          }),
+        ),
       );
 
-      await Promise.all(updates);
+      // RPC возвращает ошибку в .error (не бросает) — раньше отказы RLS молча
+      // проглатывались и всегда показывался «успех».
+      const failed = results.filter((r) => r.error).length;
+      const succeeded = total - failed;
 
-      toast({
-        title: t("common.success", "Успешно"),
-        description: t("leads.bulkArchiveSuccess", "{{count}} лидов архивировано", {
-          count: selectedLeadIds.length,
-        }),
-      });
+      if (failed === 0) {
+        toast({
+          title: t("common.success", "Успешно"),
+          description: t("leads.bulkArchiveSuccess", "{{count}} лидов архивировано", { count: succeeded }),
+        });
+      } else if (succeeded === 0) {
+        toast({
+          title: t("common.error", "Ошибка"),
+          description: t("leads.bulkArchiveError", "Не удалось архивировать лидов"),
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: t("common.warning", "Внимание"),
+          description: t("leads.bulkArchivePartial", "Архивировано: {{ok}}, не удалось: {{fail}}", {
+            ok: succeeded,
+            fail: failed,
+          }),
+          variant: "destructive",
+        });
+      }
 
       setSelectedLeadIds([]);
       refetch();
@@ -469,9 +539,12 @@ const Leads = () => {
     }
   };
 
-  const isDirector = role === "director";
-  const canBulkActions = ["director", "admin", "sales_manager", "salesperson"].includes(role || "");
-  const canAssignLeads = hasPermission("assign_leads");
+  // Модалка просмотра/редактирования должна показывать СВЕЖИЕ данные лида:
+  // после refetch (смена статуса, редактирование) берём актуальную версию из
+  // списка, иначе остаётся устаревший снимок selectedLead (старый статус/поля).
+  const selectedLeadLive = selectedLead
+    ? leads.find((l) => l.id === selectedLead.id) ?? selectedLead
+    : null;
 
   if (loading) {
     return (
@@ -500,7 +573,7 @@ const Leads = () => {
             {selectedLeadIds.length > 0 && ` | ${t("leads.selected", "Выбрано")}: ${selectedLeadIds.length}`}
           </p>
         </div>
-        <RoleBasedAccess roles={["director", "admin", "sales_manager", "salesperson"]}>
+        <RoleBasedAccess permissions={["manage_all_leads"]}>
           <Button onClick={() => setAddLeadModalOpen(true)} className="flex items-center gap-2">
             <Plus className="h-4 w-4" />
             {t("leads.addLead", "Добавить лида")}
@@ -742,19 +815,19 @@ const Leads = () => {
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("name")}>
                     <div className="flex items-center gap-2">
                       {t("leads.name", "Имя")}
-                      {sortField === "name" && <ArrowUpDown className="h-4 w-4" />}
+                      {renderSortIcon("name")}
                     </div>
                   </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("company")}>
                     <div className="flex items-center gap-2">
                       {t("leads.company", "Компания")}
-                      {sortField === "company" && <ArrowUpDown className="h-4 w-4" />}
+                      {renderSortIcon("company")}
                     </div>
                   </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("city")}>
                     <div className="flex items-center gap-2">
                       {t("leads.city", "Город")}
-                      {sortField === "city" && <ArrowUpDown className="h-4 w-4" />}
+                      {renderSortIcon("city")}
                     </div>
                   </TableHead>
                   <TableHead>{t("leads.phone", "Телефон")}</TableHead>
@@ -766,13 +839,13 @@ const Leads = () => {
                   >
                     <div className="flex items-center gap-2">
                       {t("leads.leadCreatedDate", "Дата создания лида")}
-                      {sortField === "lead_created_date" && <ArrowUpDown className="h-4 w-4" />}
+                      {renderSortIcon("lead_created_date")}
                     </div>
                   </TableHead>
                   <TableHead className="cursor-pointer hover:bg-muted/50" onClick={() => handleSort("created_at")}>
                     <div className="flex items-center gap-2">
                       {t("leads.createdInCRM", "Создан в CRM")}
-                      {sortField === "created_at" && <ArrowUpDown className="h-4 w-4" />}
+                      {renderSortIcon("created_at")}
                     </div>
                   </TableHead>
                   {canAssignLeads && <TableHead>{t("leads.assigned", "Назначен")}</TableHead>}
@@ -812,32 +885,39 @@ const Leads = () => {
                     <TableCell>{lead.city || "-"}</TableCell>
                     <TableCell>{lead.phone || "-"}</TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            className={`h-8 px-3 text-xs font-medium border ${getStageColor(
-                              lead.stage,
-                            )} hover:opacity-80`}
-                          >
-                            {getStageLabel(lead.stage)}
-                            <ChevronDown className="ml-1 h-3 w-3" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
-                          {leadStages.map((stage) => (
-                            <DropdownMenuItem
-                              key={stage.value}
-                              onClick={() => handleStageChange(lead.id, stage.value)}
-                              className="hover:bg-accent"
+                      {canManageLeads ? (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              className={`h-8 px-3 text-xs font-medium border ${getStageColor(
+                                lead.stage,
+                              )} hover:opacity-80`}
                             >
-                              <Badge variant="outline" className={`mr-2 ${getStageColor(stage.value)}`}>
-                                {stage.label}
-                              </Badge>
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                              {getStageLabel(lead.stage)}
+                              <ChevronDown className="ml-1 h-3 w-3" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="start" className="bg-background border shadow-md z-50">
+                            {leadStages.map((stage) => (
+                              <DropdownMenuItem
+                                key={stage.value}
+                                onClick={() => handleStageChange(lead.id, stage.value)}
+                                className="hover:bg-accent"
+                              >
+                                <Badge variant="outline" className={`mr-2 ${getStageColor(stage.value)}`}>
+                                  {stage.label}
+                                </Badge>
+                              </DropdownMenuItem>
+                            ))}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      ) : (
+                        // Роль только-для-просмотра — статус показываем бейджем, без смены
+                        <Badge variant="outline" className={`h-8 px-3 text-xs font-medium ${getStageColor(lead.stage)}`}>
+                          {getStageLabel(lead.stage)}
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell>
                       {lead.lead_quality ? (
@@ -915,18 +995,25 @@ const Leads = () => {
                             <Eye className="mr-2 h-4 w-4" />
                             {t("leads.view", "Посмотреть")}
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleEditLead(lead)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            {t("leads.edit", "Редактировать")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleCreateDeal(lead)}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            {t("leads.createDeal", "Создать сделку")}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleArchiveLead(lead.id)} className="text-destructive">
-                            <Archive className="mr-2 h-4 w-4" />
-                            {t("leads.archive", "Архивировать")}
-                          </DropdownMenuItem>
+                          {canManageLeads && (
+                            <>
+                              <DropdownMenuItem onClick={() => handleEditLead(lead)}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                {t("leads.edit", "Редактировать")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleCreateDeal(lead)}>
+                                <Plus className="mr-2 h-4 w-4" />
+                                {t("leads.createDeal", "Создать сделку")}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleArchiveLead(lead.id)}
+                                className="text-destructive"
+                              >
+                                <Archive className="mr-2 h-4 w-4" />
+                                {t("leads.archive", "Архивировать")}
+                              </DropdownMenuItem>
+                            </>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -940,7 +1027,7 @@ const Leads = () => {
 
       {/* Modals */}
       <UnifiedLeadModal
-        lead={selectedLead}
+        lead={selectedLeadLive}
         isOpen={leadModalOpen}
         onClose={handleCloseLeadModal}
         onLeadUpdate={handleLeadUpdate}

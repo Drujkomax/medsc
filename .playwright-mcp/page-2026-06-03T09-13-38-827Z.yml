@@ -1,0 +1,447 @@
+- generic:
+  - generic:
+    - list
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic: MSC
+                    - generic: Админ-панель
+                  - generic: murod@medsc.uz
+              - generic:
+                - generic:
+                  - generic: Навигация
+                  - generic:
+                    - list:
+                      - listitem:
+                        - link:
+                          - /url: /admin/leads
+                          - img
+                          - generic: Лиды
+                      - listitem:
+                        - link:
+                          - /url: /admin/deals
+                          - img
+                          - generic: Сделки
+                      - listitem:
+                        - link:
+                          - /url: /admin/tasks
+                          - img
+                          - generic: Задачи
+                      - listitem:
+                        - link:
+                          - /url: /admin/kanban
+                          - img
+                          - generic: Канбан
+                      - listitem:
+                        - link:
+                          - /url: /admin/archived
+                          - img
+                          - generic: Архив
+                      - listitem:
+                        - link:
+                          - /url: /admin/visits
+                          - img
+                          - generic: Обход
+              - generic:
+                - generic:
+                  - generic:
+                    - button:
+                      - img
+                      - text: Русский
+                  - link:
+                    - /url: /
+                    - button:
+                      - img
+                      - text: На сайт
+                  - button:
+                    - img
+                    - text: Выйти
+        - generic:
+          - banner:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=1]: Лиды
+              - generic:
+                - button:
+                  - img
+                  - text: Русский
+                - generic: Специалист по продажам
+          - main:
+            - generic:
+              - generic:
+                - generic:
+                  - heading [level=2]: Лиды
+                  - paragraph: Управление лидами и клиентскими запросами
+                - button:
+                  - img
+                  - text: Добавить лид
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Всего лидов
+                        - paragraph: "4"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Новый
+                        - paragraph: "1"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Связались
+                        - paragraph: "1"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Квалифицирован
+                        - paragraph: "1"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Отправил КП
+                        - paragraph: "1"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Переговоры
+                        - paragraph: "0"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Успешно
+                        - paragraph: "0"
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - paragraph: Отказ
+                        - paragraph: "0"
+              - generic:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                        - textbox:
+                          - /placeholder: Поиск
+                    - generic:
+                      - combobox:
+                        - img
+                        - generic: Все статусы
+                        - img
+                    - generic:
+                      - combobox:
+                        - img
+                        - generic: Все качества
+                        - img
+                    - generic:
+                      - button:
+                        - img
+                        - text: От
+                      - button:
+                        - img
+                        - text: До
+              - generic:
+                - generic:
+                  - generic:
+                    - table:
+                      - rowgroup:
+                        - row:
+                          - columnheader:
+                            - checkbox
+                          - columnheader:
+                            - generic:
+                              - text: Имя
+                              - img
+                          - columnheader:
+                            - generic:
+                              - text: Компания
+                              - img
+                          - columnheader:
+                            - generic:
+                              - text: Город
+                              - img
+                          - columnheader: Телефон
+                          - columnheader: Статус
+                          - columnheader: Качество
+                          - columnheader:
+                            - generic:
+                              - text: Дата создания лида
+                              - img
+                          - columnheader:
+                            - generic:
+                              - text: Создан в CRM
+                              - img
+                          - columnheader: Действия
+                      - rowgroup:
+                        - row:
+                          - cell:
+                            - checkbox
+                          - cell: test
+                          - cell: JPMORGAN
+                          - cell: Ташкент
+                          - cell: "777777"
+                          - cell:
+                            - button:
+                              - text: Новый
+                              - img
+                          - cell:
+                            - generic: B
+                          - cell: 03.06.2026 13:15
+                          - cell: 03.06.2026
+                          - cell:
+                            - button:
+                              - img
+                        - row:
+                          - cell:
+                            - checkbox
+                          - cell: Шерзод
+                          - cell: "-"
+                          - cell: "-"
+                          - cell: "+998993038056"
+                          - cell:
+                            - button:
+                              - text: Связались
+                              - img
+                          - cell: "-"
+                          - cell: 01.06.2026 21:32
+                          - cell: 02.06.2026
+                          - cell:
+                            - button:
+                              - img
+                        - row:
+                          - cell:
+                            - checkbox
+                          - cell: Камалова Дилфуза
+                          - cell: "-"
+                          - cell: "-"
+                          - cell: "+998936642942"
+                          - cell:
+                            - button:
+                              - text: Отправил КП
+                              - img
+                          - cell:
+                            - generic: B
+                          - cell: 01.06.2026 19:23
+                          - cell: 02.06.2026
+                          - cell:
+                            - button:
+                              - img
+                        - row:
+                          - cell:
+                            - checkbox
+                          - cell: Рахматилло
+                          - cell: Продавец
+                          - cell: "-"
+                          - cell: "+998917887797"
+                          - cell:
+                            - button:
+                              - text: Квалифицирован
+                              - img
+                          - cell:
+                            - generic: B
+                          - cell: 01.06.2026 16:55
+                          - cell: 02.06.2026
+                          - cell:
+                            - button:
+                              - img
+  - 'dialog "test ID: b0eb94ca... Редактировать" [ref=e263]':
+    - 'heading "test ID: b0eb94ca... Редактировать" [level=2] [ref=e265]':
+      - generic [ref=e266]:
+        - img [ref=e267]
+        - generic [ref=e270]:
+          - generic [ref=e271]: test
+          - generic [ref=e272]: "ID: b0eb94ca..."
+      - generic [ref=e273]:
+        - combobox [active] [ref=e274] [cursor=pointer]:
+          - generic: Новый
+          - img [ref=e275]
+          - img [ref=e277]
+        - button "Редактировать" [ref=e279] [cursor=pointer]:
+          - img
+          - text: Редактировать
+    - generic [ref=e280]:
+      - generic [ref=e281]:
+        - generic [ref=e283]:
+          - heading "Контактная информация" [level=3] [ref=e284]:
+            - img [ref=e285]
+            - text: Контактная информация
+          - generic [ref=e287]:
+            - generic [ref=e288]:
+              - img [ref=e289]
+              - generic [ref=e292]:
+                - generic [ref=e293]: Email
+                - generic [ref=e294]: test@gmail.com
+            - generic [ref=e295]:
+              - img [ref=e296]
+              - generic [ref=e298]:
+                - generic [ref=e299]: Телефон
+                - generic [ref=e300]: "777777"
+            - generic [ref=e301]:
+              - img [ref=e302]
+              - generic [ref=e305]:
+                - generic [ref=e306]: Компания
+                - generic [ref=e307]: JPMORGAN
+            - generic [ref=e308]:
+              - img [ref=e309]
+              - generic [ref=e313]:
+                - generic [ref=e314]: Должность
+                - generic [ref=e315]: ceo
+            - generic [ref=e316]:
+              - img [ref=e317]
+              - generic [ref=e320]:
+                - generic [ref=e321]: Город
+                - generic [ref=e322]: Ташкент
+        - generic [ref=e324]:
+          - heading "Системная информация" [level=3] [ref=e325]:
+            - img [ref=e326]
+            - text: Системная информация
+          - generic [ref=e328]:
+            - generic [ref=e329]:
+              - img [ref=e330]
+              - generic [ref=e332]:
+                - generic [ref=e333]: Дата создания лида
+                - generic [ref=e334]: 03.06.2026 13:15
+            - generic [ref=e335]:
+              - img [ref=e336]
+              - generic [ref=e338]:
+                - generic [ref=e339]: Создан в CRM
+                - generic [ref=e340]: 03.06.2026 13:16
+            - generic [ref=e341]:
+              - img [ref=e342]
+              - generic [ref=e345]:
+                - generic [ref=e346]: Обновлен
+                - generic [ref=e347]: 03.06.2026 13:16
+            - generic [ref=e348]:
+              - img [ref=e349]
+              - generic [ref=e352]:
+                - generic [ref=e353]: Источник
+                - generic [ref=e354]: phone_call
+            - generic [ref=e355]:
+              - img [ref=e356]
+              - generic [ref=e360]:
+                - generic [ref=e361]: Назначен на
+                - generic [ref=e362]: murod@medsc.uz
+        - generic [ref=e364]:
+          - heading "Квалификационные данные" [level=3] [ref=e365]:
+            - img [ref=e366]
+            - text: Квалификационные данные
+          - generic [ref=e369]:
+            - generic [ref=e370]:
+              - img [ref=e371]
+              - generic [ref=e373]:
+                - generic [ref=e374]: Бюджет
+                - generic [ref=e375]: $10,000 - $50,000
+            - generic [ref=e376]:
+              - img [ref=e377]
+              - generic [ref=e381]:
+                - generic [ref=e382]: Интерес к оборудованию
+                - generic [ref=e383]: Рентген оборудование
+            - generic [ref=e384]:
+              - img [ref=e385]
+              - generic [ref=e388]:
+                - generic [ref=e389]: Сроки
+                - generic [ref=e390]: В течение месяца
+        - generic [ref=e392]:
+          - heading "Заметки" [level=3] [ref=e393]:
+            - img [ref=e394]
+            - text: Заметки
+          - paragraph [ref=e397]: diuwqnd
+      - generic [ref=e398]:
+        - heading "История активности" [level=3] [ref=e399]:
+          - img [ref=e400]
+          - text: История активности
+        - generic [ref=e404]:
+          - generic [ref=e405]:
+            - generic [ref=e406]:
+              - button "Заметка" [ref=e407] [cursor=pointer]:
+                - img
+                - text: Заметка
+              - button "Контакт" [ref=e408] [cursor=pointer]:
+                - img
+                - text: Контакт
+            - generic [ref=e409]:
+              - textbox "Добавить заметку... (Ctrl+Enter для отправки)" [ref=e410]
+              - generic [ref=e411]:
+                - button "Добавить заметку" [disabled]:
+                  - img
+                  - text: Добавить заметку
+          - generic [ref=e415]:
+            - generic [ref=e417]:
+              - img [ref=e419]
+              - generic [ref=e422]:
+                - generic [ref=e423]:
+                  - generic [ref=e424]: Изменение статуса
+                  - generic [ref=e425]:
+                    - img [ref=e426]
+                    - text: 03 июн., 13:48
+                  - generic [ref=e429]:
+                    - img [ref=e430]
+                    - text: Вы
+                - generic [ref=e433]: Статус изменен с "Связались" на "Новый"
+            - generic [ref=e435]:
+              - img [ref=e437]
+              - generic [ref=e440]:
+                - generic [ref=e441]:
+                  - generic [ref=e442]: Изменение статуса
+                  - generic [ref=e443]:
+                    - img [ref=e444]
+                    - text: 03 июн., 13:47
+                  - generic [ref=e447]:
+                    - img [ref=e448]
+                    - text: Вы
+                - generic [ref=e451]: Статус изменен с "Новый" на "Связались"
+            - generic [ref=e453]:
+              - img [ref=e455]
+              - generic [ref=e458]:
+                - generic [ref=e459]:
+                  - generic [ref=e460]: Изменение статуса
+                  - generic [ref=e461]:
+                    - img [ref=e462]
+                    - text: 03 июн., 13:16
+                  - generic [ref=e465]:
+                    - img [ref=e466]
+                    - text: Вы
+                - generic [ref=e469]: Статус изменен с "Предложение" на "Новый"
+            - generic [ref=e471]:
+              - img [ref=e473]
+              - generic [ref=e476]:
+                - generic [ref=e477]:
+                  - generic [ref=e478]: Изменение статуса
+                  - generic [ref=e479]:
+                    - img [ref=e480]
+                    - text: 03 июн., 13:16
+                  - generic [ref=e483]:
+                    - img [ref=e484]
+                    - text: Вы
+                - generic [ref=e487]: Статус изменен с "Новый" на "Предложение"
+            - generic [ref=e489]:
+              - img [ref=e491]
+              - generic [ref=e494]:
+                - generic [ref=e495]:
+                  - generic [ref=e496]: Изменение статуса
+                  - generic [ref=e497]:
+                    - img [ref=e498]
+                    - text: 03 июн., 13:16
+                  - generic [ref=e501]:
+                    - img [ref=e502]
+                    - text: Вы
+                - generic [ref=e505]: Статус изменен с "Связались" на "Новый"
+    - button "Close" [ref=e506] [cursor=pointer]:
+      - img [ref=e507]
+      - generic [ref=e510]: Close
