@@ -17,7 +17,7 @@ const Contacts = () => {
   
   // Contact data state
   const [contactData, setContactData] = useState({
-    phone: '+998 (71) 237-33-08',
+    phone: '',
     email: 'info@medsc.uz',
     address: '',
     telegram: '@medservice_centre',
@@ -55,7 +55,7 @@ const Contacts = () => {
 
         if (data) {
           setContactData({
-            phone: data.phone || '+998 (71) 237-33-08',
+            phone: data.phone || '',
             email: data.email || 'info@medsc.uz',
             address: data.address || '',
             telegram: data.telegram || '@medservice_centre',
