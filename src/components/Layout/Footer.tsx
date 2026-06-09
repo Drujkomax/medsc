@@ -33,17 +33,6 @@ const Footer = ({ language }: FooterProps) => {
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center justify-center md:justify-start space-x-3">
-                <Phone className="w-5 h-5 text-msc-accent" />
-                <div className="flex flex-col">
-                  <a
-                    href="tel:+998712373308"
-                    className="hover:text-msc-accent transition-colors"
-                  >
-                    +998 (71) 237-33-08
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-center justify-center md:justify-start space-x-3">
                 <Mail className="w-5 h-5 text-msc-accent" />
                 <a
                   href="mailto:info@medsc.uz"
