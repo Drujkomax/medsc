@@ -199,11 +199,6 @@ const Contacts = () => {
     },
   };
 
-  const handlePhoneClick = () => {
-    const phoneNumber = contactData.phone.replace(/[^\d+]/g, '');
-    window.open(`tel:${phoneNumber}`, '_self');
-  };
-
   const handleEmailClick = () => {
     window.open(`mailto:${contactData.email}`, '_self');
   };
