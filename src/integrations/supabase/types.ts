@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      _log_rate_limit: {
+        Row: {
+          bucket: string
+          expires_at: string
+        }
+        Insert: {
+          bucket: string
+          expires_at: string
+        }
+        Update: {
+          bucket?: string
+          expires_at?: string
+        }
+        Relationships: []
+      }
       bot_sessions: {
         Row: {
           context: Json
@@ -2244,7 +2259,7 @@ export type Database = {
         Returns: undefined
       }
       archive_lead: {
-        Args: { lead_id: string; user_id: string }
+        Args: { lead_id: string; user_id?: string }
         Returns: undefined
       }
       archive_product: {
@@ -2265,6 +2280,10 @@ export type Database = {
         Returns: {
           deleted_count: number
         }[]
+      }
+      cleanup_old_system_data: {
+        Args: { days_to_keep?: number }
+        Returns: Json
       }
       confirm_user_registration: { Args: { user_id: string }; Returns: Json }
       create_first_director: { Args: { director_email: string }; Returns: Json }
@@ -2370,6 +2389,7 @@ export type Database = {
         Args: { _required_level?: string; _section: string; _user_id: string }
         Returns: boolean
       }
+      has_full_leads_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

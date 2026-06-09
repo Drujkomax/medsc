@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, MessageCircle, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Mail, MapPin, MessageCircle, Facebook, Instagram, Youtube } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,7 @@ const Contacts = () => {
   
   // Contact data state
   const [contactData, setContactData] = useState({
-    phone: '+998 (71) 237-33-08',
+    phone: '',
     email: 'info@medsc.uz',
     address: '',
     telegram: '@medservice_centre',
@@ -55,7 +55,7 @@ const Contacts = () => {
 
         if (data) {
           setContactData({
-            phone: data.phone || '+998 (71) 237-33-08',
+            phone: data.phone || '',
             email: data.email || 'info@medsc.uz',
             address: data.address || '',
             telegram: data.telegram || '@medservice_centre',
@@ -199,11 +199,6 @@ const Contacts = () => {
     },
   };
 
-  const handlePhoneClick = () => {
-    const phoneNumber = contactData.phone.replace(/[^\d+]/g, '');
-    window.open(`tel:${phoneNumber}`, '_self');
-  };
-
   const handleEmailClick = () => {
     window.open(`mailto:${contactData.email}`, '_self');
   };
@@ -330,19 +325,6 @@ const Contacts = () => {
 
         {/* Contact Methods Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {/* Phone */}
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handlePhoneClick}>
-            <CardContent className="p-8 text-center">
-              <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="font-semibold text-xl text-foreground mb-2">{currentContent.phone}</h3>
-              <div className="space-y-1">
-                <p className="text-msc-primary text-lg font-medium">{contactData.phone}</p>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Email */}
           <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleEmailClick}>
             <CardContent className="p-8 text-center">
