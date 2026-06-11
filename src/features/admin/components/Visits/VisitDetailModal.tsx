@@ -7,10 +7,6 @@ import { Label } from '@/components/ui/label';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
 import { Loader2, User, Building2, Clock, Pencil, Trash2, Save, X } from 'lucide-react';
 import VisitStageCard from './VisitStageCard';
 import {
@@ -97,6 +93,7 @@ export default function VisitDetailModal({ visitId, onClose, onChanged }: Props)
 
   useEffect(() => {
     setEditing(false);
+    setConfirmDelete(false);
     if (!visitId) { setData(null); return; }
     reload(visitId);
   }, [visitId, reload]);
@@ -169,17 +166,30 @@ export default function VisitDetailModal({ visitId, onClose, onChanged }: Props)
     <Dialog open={!!visitId} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-2 pr-10">
             <DialogTitle>Карточка визита</DialogTitle>
             {!loading && data && canManage && !editing && (
-              <div className="flex items-center gap-2">
-                <Button size="sm" variant="outline" onClick={startEdit}>
-                  <Pencil className="w-4 h-4 mr-1" /> Редактировать
-                </Button>
-                <Button size="sm" variant="destructive" onClick={() => setConfirmDelete(true)}>
-                  <Trash2 className="w-4 h-4 mr-1" /> Удалить
-                </Button>
-              </div>
+              confirmDelete ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground hidden sm:inline">Удалить визит?</span>
+                  <Button size="sm" variant="outline" onClick={() => setConfirmDelete(false)} disabled={saving}>
+                    Отмена
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={handleDelete} disabled={saving}>
+                    {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Trash2 className="w-4 h-4 mr-1" />}
+                    Удалить
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button size="sm" variant="outline" onClick={startEdit}>
+                    <Pencil className="w-4 h-4 mr-1" /> Редактировать
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => setConfirmDelete(true)}>
+                    <Trash2 className="w-4 h-4 mr-1" /> Удалить
+                  </Button>
+                </div>
+              )
             )}
           </div>
         </DialogHeader>
@@ -337,28 +347,6 @@ export default function VisitDetailModal({ visitId, onClose, onChanged }: Props)
           </div>
         )}
       </DialogContent>
-
-      <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Удалить визит?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Визит и все его этапы (включая фото) будут удалены безвозвратно.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={saving}>Отмена</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={(e) => { e.preventDefault(); handleDelete(); }}
-              disabled={saving}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Trash2 className="w-4 h-4 mr-1" />}
-              Удалить
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </Dialog>
   );
 }

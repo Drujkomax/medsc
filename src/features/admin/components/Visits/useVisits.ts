@@ -147,9 +147,13 @@ export async function updateVisitStage(
 }
 
 export async function deleteVisit(visitId: string): Promise<void> {
-  // visit_stages cascade-delete via FK ON DELETE CASCADE
-  const { error } = await sb.from('visits').delete().eq('id', visitId);
+  // visit_stages cascade-delete via FK ON DELETE CASCADE.
+  // .select() lets us detect RLS-blocked / no-op deletes (which return no error).
+  const { data, error } = await sb.from('visits').delete().eq('id', visitId).select('id');
   if (error) throw error;
+  if (!data || data.length === 0) {
+    throw new Error('Удаление не выполнено: недостаточно прав или визит уже удалён.');
+  }
 }
 
 export async function getClientsLite(): Promise<ClientLite[]> {
