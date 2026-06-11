@@ -123,3 +123,37 @@ export async function getSignedPhotoUrl(path: string): Promise<string | null> {
   if (error || !data) return null;
   return data.signedUrl;
 }
+
+// ---------- Mutations (web-app management of visits) ----------
+
+export interface VisitPatch {
+  status?: Visit['status'];
+  outcome?: Visit['outcome'];
+  outcome_comment?: string | null;
+  client_id?: string | null;
+}
+
+export async function updateVisit(visitId: string, patch: VisitPatch): Promise<void> {
+  const { error } = await sb.from('visits').update(patch).eq('id', visitId);
+  if (error) throw error;
+}
+
+export async function updateVisitStage(
+  stageId: string,
+  patch: { text_note?: string | null },
+): Promise<void> {
+  const { error } = await sb.from('visit_stages').update(patch).eq('id', stageId);
+  if (error) throw error;
+}
+
+export async function deleteVisit(visitId: string): Promise<void> {
+  // visit_stages cascade-delete via FK ON DELETE CASCADE
+  const { error } = await sb.from('visits').delete().eq('id', visitId);
+  if (error) throw error;
+}
+
+export async function getClientsLite(): Promise<ClientLite[]> {
+  const { data, error } = await sb.from('clients').select('id, name').order('name');
+  if (error) throw error;
+  return (data ?? []) as ClientLite[];
+}

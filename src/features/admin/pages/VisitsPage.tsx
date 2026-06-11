@@ -37,7 +37,7 @@ function StagesDots({ done }: { done: number }) {
 
 export default function VisitsPage() {
   const [filters, setFilters] = useState<Filters>({});
-  const { rows, loading } = useVisits(filters);
+  const { rows, loading, refetch } = useVisits(filters);
   const [openId, setOpenId] = useState<string | null>(null);
 
   const counts = useMemo(() => ({
@@ -92,7 +92,7 @@ export default function VisitsPage() {
         </div>
       )}
 
-      <VisitDetailModal visitId={openId} onClose={() => setOpenId(null)} />
+      <VisitDetailModal visitId={openId} onClose={() => setOpenId(null)} onChanged={refetch} />
     </div>
   );
 }
