@@ -171,13 +171,13 @@ export default function VisitDetailModal({ visitId, onClose, onChanged }: Props)
             {!loading && data && canManage && !editing && (
               confirmDelete ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground hidden sm:inline">Удалить визит?</span>
-                  <Button size="sm" variant="outline" onClick={() => setConfirmDelete(false)} disabled={saving}>
+                  <span className="text-sm font-medium text-destructive hidden sm:inline">Удалить визит?</span>
+                  <Button size="sm" variant="ghost" onClick={() => setConfirmDelete(false)} disabled={saving}>
                     Отмена
                   </Button>
                   <Button size="sm" variant="destructive" onClick={handleDelete} disabled={saving}>
                     {saving ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <Trash2 className="w-4 h-4 mr-1" />}
-                    Удалить
+                    Да, удалить
                   </Button>
                 </div>
               ) : (
