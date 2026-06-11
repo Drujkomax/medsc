@@ -79,10 +79,6 @@ const PrivacyPolicy = () => {
                 к Оператору по электронной почте:{' '}
                 <a href="mailto:info@medsc.uz" className="text-msc-accent hover:underline">
                   info@medsc.uz
-                </a>{' '}
-                или по телефону:{' '}
-                <a href="tel:+998712373308" className="text-msc-accent hover:underline">
-                  +998 (71) 237-33-08
                 </a>
               </p>
             </section>
