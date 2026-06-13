@@ -11,6 +11,8 @@ server/_storage/
 **/.env.local
 # DB dump contains client PII + password hashes — deploy to server, NOT to GitHub
 data-dump.sql
-*.local
 .DS_Store
 .playwright-mcp/
+
+# keep env templates
+!**/*.example
