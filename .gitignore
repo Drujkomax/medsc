@@ -1,24 +1,16 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
+node_modules/
+.next/
+dist/
+build/
+# local file storage — transfer to the server separately, never in git
+server/_storage/
+# secrets
+.env
+.env.local
+**/.env
+**/.env.local
+# DB dump contains client PII + password hashes — deploy to server, NOT to GitHub
+data-dump.sql
 *.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.playwright-mcp/
