@@ -40,6 +40,43 @@ export interface Product {
   updated_at: string;
 }
 
+// Resolve a collision-free product slug by appending -2, -3, ... when the desired
+// slug is already taken. Mirrors the numeric-suffix convention from migration
+// 20251219122856 and prevents the 409 (Postgres 23505 unique_violation) that the
+// products.slug UNIQUE constraint raises on duplicate slugs. The constraint — and
+// the BEFORE INSERT/UPDATE trigger added in 20260613120000 — remain the final guard
+// against races; this just resolves the common collision up front.
+const ensureUniqueSlug = async (base: string, excludeId?: string): Promise<string> => {
+  const safeBase = base && base.trim() ? base.trim() : 'product';
+  // Pull every slug sharing this prefix (drafts/archived included — the UNIQUE
+  // constraint spans all rows regardless of status) and resolve the suffix in JS.
+  const { data, error } = await supabase
+    .from('products')
+    .select('id, slug')
+    .like('slug', `${safeBase}%`);
+  if (error || !data) return safeBase; // DB constraint/trigger is the final guard
+  const taken = new Set(
+    data.filter((r) => r.id !== excludeId && r.slug).map((r) => r.slug as string)
+  );
+  if (!taken.has(safeBase)) return safeBase;
+  let n = 2;
+  while (taken.has(`${safeBase}-${n}`)) n += 1;
+  return `${safeBase}-${n}`;
+};
+
+// Surface the slug UNIQUE violation (Postgres 23505) as a clear, actionable message
+// instead of a raw "duplicate key" error, in case a concurrent insert still collides.
+const describeProductWriteError = (err: unknown, fallback: string): string => {
+  const e = err as { code?: string; message?: string } | null;
+  const isSlugConflict =
+    e?.code === '23505' ||
+    (typeof e?.message === 'string' && /duplicate key|products_slug_key/i.test(e.message));
+  if (isSlugConflict) {
+    return 'Товар с таким URL (slug) уже существует. Измените английское название товара.';
+  }
+  return (e && typeof e.message === 'string' && e.message) || fallback;
+};
+
 export const useProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,8 +114,8 @@ export const useProducts = () => {
         uz: productData.features?.uz?.filter(f => f.trim()) || []
       };
 
-      // Generate slug from English name if not provided
-      const slug = productData.slug || generateSlug(productData.name.en);
+      // Generate a collision-free slug from the English name (append -2/-3 if taken)
+      const slug = await ensureUniqueSlug(productData.slug || generateSlug(productData.name.en));
 
       const cleanedData = {
         ...productData,
@@ -97,16 +134,16 @@ export const useProducts = () => {
       return data;
     } catch (err) {
       console.error('Error adding product:', err);
-      throw new Error(err instanceof Error ? err.message : 'Ошибка при добавлении товара');
+      throw new Error(describeProductWriteError(err, 'Ошибка при добавлении товара'));
     }
   };
 
   const updateProduct = async (id: string, productData: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>) => {
     try {
-      // If name.en is being updated, regenerate slug
+      // If name.en is being updated, regenerate a collision-free slug
       const dataToUpdate = { ...productData };
       if (productData.name?.en && !productData.slug) {
-        dataToUpdate.slug = generateSlug(productData.name.en);
+        dataToUpdate.slug = await ensureUniqueSlug(generateSlug(productData.name.en), id);
       }
       
       const { data, error } = await supabase
@@ -120,7 +157,7 @@ export const useProducts = () => {
       await fetchProducts(); // Refresh the list
       return data;
     } catch (err) {
-      throw new Error(err instanceof Error ? err.message : 'Ошибка при обновлении товара');
+      throw new Error(describeProductWriteError(err, 'Ошибка при обновлении товара'));
     }
   };
 
@@ -272,10 +309,10 @@ export const useAdminProducts = () => {
 
   const updateProduct = async (id: string, productData: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>) => {
     try {
-      // If name.en is being updated, regenerate slug
+      // If name.en is being updated, regenerate a collision-free slug
       const dataToUpdate = { ...productData };
       if (productData.name?.en && !productData.slug) {
-        dataToUpdate.slug = generateSlug(productData.name.en);
+        dataToUpdate.slug = await ensureUniqueSlug(generateSlug(productData.name.en), id);
       }
       
       const { data, error } = await supabase
@@ -289,7 +326,7 @@ export const useAdminProducts = () => {
       await fetchProducts(); // Refresh the list
       return data;
     } catch (err) {
-      throw new Error(err instanceof Error ? err.message : 'Ошибка при обновлении товара');
+      throw new Error(describeProductWriteError(err, 'Ошибка при обновлении товара'));
     }
   };
 
@@ -316,8 +353,8 @@ export const useAdminProducts = () => {
       };
       console.log('Cleaned features:', cleanedFeatures);
 
-      // Generate slug from English name if not provided
-      const slug = productData.slug || generateSlug(productData.name.en);
+      // Generate a collision-free slug from the English name (append -2/-3 if taken)
+      const slug = await ensureUniqueSlug(productData.slug || generateSlug(productData.name.en));
 
       const cleanedData = {
         ...safeData,
@@ -343,9 +380,8 @@ export const useAdminProducts = () => {
       return data;
     } catch (err) {
       console.error('Error adding product:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Ошибка при добавлении товара';
       console.error('Full error details:', err);
-      throw new Error(errorMessage);
+      throw new Error(describeProductWriteError(err, 'Ошибка при добавлении товара'));
     }
   };
 
