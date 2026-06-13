@@ -1,0 +1,67 @@
+# Production stack for the API server on Contabo (the client deploys to Vercel separately).
+#   - db:     Postgres, seeded once from ./data-dump.sql (place it on the server, gitignored)
+#   - server: the Express API (Supabase-compat layer included, so the bot just repoints to it)
+#   - caddy:  automatic HTTPS reverse proxy for api.<your-domain>
+#
+# First deploy:
+#   1) copy this repo to the server
+#   2) put data-dump.sql in the repo root and the photos in ./server/_storage  (rsync, see DEPLOY.md)
+#   3) create a .env next to this file (see DEPLOY.md) with JWT_SECRET, BOT_SERVICE_KEY, CLIENT_ORIGIN, API_DOMAIN, DB_PASSWORD
+#   4) docker compose -f docker-compose.prod.yml up -d --build
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: msc
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Loaded ONLY on first init (empty volume). Schema + all data + bcrypt password hashes.
+      - ./data-dump.sql:/docker-entrypoint-initdb.d/01-data.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d msc"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build: ./server
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 6001
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-postgres}@db:5432/msc
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      JWT_EXPIRES_IN: 7d
+      STORAGE_DIR: /app/_storage
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN:?set CLIENT_ORIGIN (the Vercel domain) in .env}
+      BOT_SERVICE_KEY: ${BOT_SERVICE_KEY:?set BOT_SERVICE_KEY in .env}
+    volumes:
+      # Photos / uploaded files persist on the host and are served by the API.
+      - ./server/_storage:/app/_storage
+    expose:
+      - "6001"
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [server]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?set API_DOMAIN (e.g. api.medsc.uz) in .env}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

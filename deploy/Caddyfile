@@ -1,0 +1,6 @@
+# Auto-HTTPS reverse proxy for the API. Caddy fetches a Let's Encrypt cert for
+# {$API_DOMAIN} automatically (point the DNS A record at the Contabo server first).
+{$API_DOMAIN} {
+	encode gzip
+	reverse_proxy server:6001
+}
