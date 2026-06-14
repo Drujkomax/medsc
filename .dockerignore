@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.vercel
+.playwright-mcp
+*.log
+.DS_Store
+.env*.local
+data-dump.sql
+_storage

@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:6001";
 
 const nextConfig: NextConfig = {
+  // Self-host (Docker) build emits a standalone server (`node server.js`); the flag
+  // is only set in the Dockerfile, so other builds are unaffected.
+  ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
   // The ported app is large and was strict-typed for Vite; don't block dev/build on it.
   typescript: { ignoreBuildErrors: true },
   // Allow next/image to optimize the stored product photos (≈500KB originals) into
