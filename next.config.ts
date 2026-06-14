@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
   // small WebP thumbnails so the catalog isn't shipping full-size images as cards.
   images: {
     remotePatterns: [
+      { protocol: "https", hostname: "api.medsc.uz" },
       { protocol: "https", hostname: "medsc.api.jaragency.uz" },
       { protocol: "https", hostname: "medsc.uz" },
     ],
