@@ -3,7 +3,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
-const isDevelopment = import.meta.env.DEV;
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
 interface LogOptions {
   category?: string;

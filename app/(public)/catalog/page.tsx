@@ -277,7 +277,15 @@ export default async function CatalogPage({
         }),
       }
     : null;
-  const schemas = itemListSchema ? [catalogSchema, itemListSchema] : [catalogSchema];
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
+    ],
+  };
+  const schemas = [catalogSchema, breadcrumbSchema, ...(itemListSchema ? [itemListSchema] : [])];
 
   return (
     <>

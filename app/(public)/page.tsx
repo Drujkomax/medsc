@@ -40,8 +40,10 @@ export default async function HomePage() {
     getManufacturers(),
   ]);
 
-  // Faithful to the original Home: WebSite + ItemList structured data.
-  const { lang } = await getDict();
+  // Faithful to the original Home: WebSite + ItemList structured data + FAQPage.
+  const { lang, dict } = await getDict();
+  const t = createT(dict);
+  const faqItems = (t("home.faq.items", { returnObjects: true }) as Array<{ question: string; answer: string }>) || [];
   const featured = products.slice(0, 3);
   const slugOf = (mid: string | null) => manufacturers.find((m) => m.id === mid)?.slug || "";
   const pathOf = (p: (typeof products)[number]) => {
@@ -79,6 +81,19 @@ export default async function HomePage() {
                 },
               };
             }),
+          },
+        ]
+      : []),
+    ...(Array.isArray(faqItems) && faqItems.length
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqItems.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
           },
         ]
       : []),

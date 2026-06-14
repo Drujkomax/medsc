@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getProductBySlug, getActiveProducts } from "~/entities/product/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { getLang } from "~/shared/i18n/lang";
-import { SITE_URL, type Lang } from "~/shared/config/site";
+import { SITE_URL, SITE_NAME, type Lang } from "~/shared/config/site";
 import { ProductDetailView } from "~/widgets/product-detail/product-detail-view";
 
 const FALLBACK_IMAGE =
@@ -144,6 +144,7 @@ export default async function ProductDetailPage({
     return notFound();
   }
 
+  const lang = (await getLang()) as Lang;
   const [manufacturers, allProducts] = await Promise.all([
     getManufacturers(),
     getActiveProducts(),
@@ -153,11 +154,65 @@ export default async function ProductDetailPage({
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
+  // ── Structured data: Product (+ offers when priced) and BreadcrumbList ──
+  const productName = localized(product.name, lang, "Медицинское оборудование");
+  const description = localized(product.description, lang, productName);
+  const manufacturer = manufacturers.find((m) => m.id === product.manufacturer_id);
+  const brandName = localized(manufacturer?.name, lang) || SITE_NAME;
+  const canonicalUrl = `${SITE_URL}/catalog/${encodeURIComponent(product.slug || product.id)}`;
+  const images = [product.images?.cover, ...(product.images?.gallery || [])]
+    .filter(Boolean)
+    .map((c) => ogImage(c));
+  const priceNum = product.price ? Number(String(product.price).replace(/[^\d.]/g, "")) : NaN;
+
+  const productSchema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: productName,
+    description,
+    image: images.length ? images : [FALLBACK_IMAGE],
+    sku: product.id,
+    category: getCategoryLabel(product.category, lang),
+    brand: { "@type": "Brand", name: brandName },
+    url: canonicalUrl,
+    ...(Number.isFinite(priceNum) && priceNum > 0
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: priceNum,
+            priceCurrency: product.currency || "USD",
+            availability: "https://schema.org/InStock",
+            url: canonicalUrl,
+            seller: { "@type": "Organization", name: SITE_NAME },
+          },
+        }
+      : {
+          offers: {
+            "@type": "Offer",
+            availability: "https://schema.org/InStock",
+            url: canonicalUrl,
+            seller: { "@type": "Organization", name: SITE_NAME },
+          },
+        }),
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
+      { "@type": "ListItem", position: 3, name: productName, item: canonicalUrl },
+    ],
+  };
+
   return (
-    <ProductDetailView
-      product={product}
-      manufacturers={manufacturers}
-      related={related}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([productSchema, breadcrumbSchema]) }}
+      />
+      <ProductDetailView product={product} manufacturers={manufacturers} related={related} />
+    </>
   );
 }
