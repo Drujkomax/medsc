@@ -80,7 +80,7 @@ export function HomeView({ products, categories, manufacturers }: { products: an
       <section
         className="relative text-white py-20 lg:py-32 overflow-hidden"
         style={{
-          backgroundImage: 'url(/lovable-uploads/41f0d478-2266-4aba-bc99-7b40bd7b049e.png)',
+          backgroundImage: 'url(/lovable-uploads/41f0d478-2266-4aba-bc99-7b40bd7b049e.webp)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
@@ -144,9 +144,12 @@ export function HomeView({ products, categories, manufacturers }: { products: an
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]">
                 {/* Central Logo */}
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10 pointer-events-none">
-                  <img
+                  <Image
                     src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png"
                     alt={t('home.hero.logoAlt')}
+                    width={208}
+                    height={208}
+                    priority
                     className="w-44 h-44 lg:w-52 lg:h-52 object-contain select-none"
                   />
                 </div>

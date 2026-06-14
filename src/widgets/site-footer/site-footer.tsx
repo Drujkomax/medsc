@@ -17,7 +17,7 @@ export function SiteFooter() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
               <img
-                src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png"
+                src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.webp"
                 alt="MSC Logo"
                 className="w-16 h-16 object-contain"
               />

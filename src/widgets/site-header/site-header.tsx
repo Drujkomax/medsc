@@ -48,7 +48,7 @@ export function SiteHeader() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <img
-              src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png"
+              src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.webp"
               alt="Med Service Centre"
               className="h-12 w-auto object-contain"
             />

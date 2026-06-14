@@ -296,7 +296,7 @@ export function CatalogView({
       <div
         className="relative py-16 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/lovable-uploads/4c70d2a2-2735-43a5-904b-62be351fa867.png')`,
+          backgroundImage: `url('/lovable-uploads/4c70d2a2-2735-43a5-904b-62be351fa867.webp')`,
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>
