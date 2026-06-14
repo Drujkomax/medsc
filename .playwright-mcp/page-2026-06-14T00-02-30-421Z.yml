@@ -1,0 +1,297 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - link "Med Service Centre":
+          - /url: /
+          - img "Med Service Centre"
+        - navigation [ref=e7]:
+          - link "Главная" [ref=e8] [cursor=pointer]:
+            - /url: /
+          - link "Каталог" [ref=e9] [cursor=pointer]:
+            - /url: /catalog
+          - link "Услуги" [ref=e10] [cursor=pointer]:
+            - /url: /services
+          - link "Контакты" [ref=e11] [cursor=pointer]:
+            - /url: /contacts
+        - button "🇷🇺 RU" [ref=e13] [cursor=pointer]:
+          - text: 🇷🇺
+          - generic [ref=e14]: RU
+          - img
+    - main [ref=e15]:
+      - generic [ref=e16]:
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - generic [ref=e21]:
+              - heading "Med Service Centre — Медицинское оборудование в Узбекистане" [level=1] [ref=e22]
+              - paragraph [ref=e23]: Ведущий интегратор медицинского оборудования в Узбекистане
+              - paragraph [ref=e24]: "- Поставка - Инсталляция - Обучение персонала - Техническое обслуживание"
+            - generic [ref=e25]:
+              - generic [ref=e26]:
+                - generic [ref=e27]: 8+
+                - generic [ref=e28]: лет опыта
+              - generic [ref=e29]:
+                - generic [ref=e30]: 300+
+                - generic [ref=e31]: проектов
+              - generic [ref=e32]:
+                - generic [ref=e33]: 100%
+                - generic [ref=e34]: Довольных клиентов
+            - generic [ref=e35]:
+              - button "Рассчитать ROI" [ref=e36] [cursor=pointer]:
+                - text: Рассчитать ROI
+                - img
+              - button "Получить консультацию" [ref=e37] [cursor=pointer]:
+                - text: Получить консультацию
+                - img
+          - generic [ref=e39]:
+            - generic:
+              - img "Med Service Centre — Медицинское оборудование в Узбекистане"
+            - generic [ref=e40]:
+              - generic [ref=e43]:
+                - img [ref=e47] [cursor=pointer]
+                - generic: КП
+              - generic [ref=e52]:
+                - img [ref=e56] [cursor=pointer]
+                - generic: Поставка
+              - generic [ref=e63]:
+                - img [ref=e67] [cursor=pointer]
+                - generic: Установка
+              - generic [ref=e72]:
+                - img [ref=e76] [cursor=pointer]
+                - generic: Обучение
+              - generic [ref=e81]:
+                - img [ref=e85] [cursor=pointer]
+                - generic: Сервис
+              - generic [ref=e89]:
+                - img [ref=e93] [cursor=pointer]
+                - generic: Окупаемость
+        - generic [ref=e98]:
+          - heading "Оборудование, которое мы поставляем и обслуживаем" [level=2] [ref=e99]
+          - generic [ref=e100]:
+            - img [ref=e101]
+            - generic [ref=e103]: Загрузка...
+          - link "Посмотреть каталог" [ref=e105] [cursor=pointer]:
+            - /url: /catalog
+            - text: Посмотреть каталог
+            - img [ref=e106]
+        - generic [ref=e110]:
+          - heading "Почему выбирают Med Service Centre" [level=2] [ref=e111]
+          - generic [ref=e112]:
+            - paragraph [ref=e113]: Med Service Centre более 8 лет реализует комплексные проекты по медоборудованию. Мы подбираем решения, поставляем, устанавливаем, обучаем персонал и обеспечиваем сервис.
+            - paragraph [ref=e114]: Мы строим долгосрочные партнёрства, работаем 24/7 и реализовали более 300 проектов по всему Узбекистану.
+        - generic [ref=e117]:
+          - heading "Сервис, который поддерживает работу оборудования" [level=2] [ref=e118]
+          - paragraph [ref=e119]: От установки и обучения до профилактики и быстрого реагирования — мы обеспечиваем безопасную и эффективную работу оборудования.
+          - generic [ref=e120]:
+            - link "Смотреть услуги" [ref=e121] [cursor=pointer]:
+              - /url: /services
+              - text: Смотреть услуги
+              - img [ref=e122]
+            - link "Связаться с нами" [ref=e124] [cursor=pointer]:
+              - /url: /contacts
+              - text: Связаться с нами
+              - img [ref=e125]
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - heading "Рассчитайте окупаемость" [level=2] [ref=e130]
+            - paragraph [ref=e131]: Узнайте, за какой период окупится ваше медицинское оборудование
+          - generic [ref=e133]:
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - img [ref=e136]
+                - heading "ROI Калькулятор" [level=3] [ref=e138]
+              - paragraph [ref=e139]: ROI (Return on Investment) — показатель возврата инвестиций, который помогает оценить прибыльность и сроки окупаемости медицинского оборудования
+            - generic [ref=e140]:
+              - generic [ref=e141]:
+                - generic [ref=e142]:
+                  - text: Стоимость оборудования
+                  - generic [ref=e143]:
+                    - slider [ref=e148]
+                    - generic [ref=e149]:
+                      - generic [ref=e150]: $
+                      - spinbutton [ref=e151]: "100000"
+                - generic [ref=e152]:
+                  - text: Процедур в месяц
+                  - generic [ref=e153]:
+                    - slider [ref=e158]
+                    - spinbutton [ref=e159]: "50"
+                - generic [ref=e160]:
+                  - text: Прибыль с процедуры
+                  - generic [ref=e161]:
+                    - slider [ref=e166]
+                    - generic [ref=e167]:
+                      - generic [ref=e168]: $
+                      - spinbutton [ref=e169]: "200"
+              - generic [ref=e170]:
+                - generic [ref=e171]:
+                  - img [ref=e172]
+                  - heading "Срок окупаемости" [level=3] [ref=e175]
+                  - paragraph [ref=e176]: 10 мес.
+                  - paragraph [ref=e177]: Хорошая окупаемость
+                - generic [ref=e178]:
+                  - img [ref=e179]
+                  - heading "Месячная прибыль" [level=3] [ref=e181]
+                  - paragraph [ref=e182]: $10 000
+                - generic [ref=e183]:
+                  - img [ref=e184]
+                  - heading "Годовая прибыль" [level=3] [ref=e187]
+                  - paragraph [ref=e188]: $120 000
+          - generic [ref=e189]:
+            - button "Свяжитесь с нами" [ref=e190] [cursor=pointer]:
+              - text: Свяжитесь с нами
+              - img
+            - paragraph [ref=e191]: Получите консультацию "Как быстро окупить оборудование в 2025" за 24 часа!
+        - generic [ref=e193]:
+          - generic [ref=e194]:
+            - heading "Категории оборудования" [level=2] [ref=e195]
+            - paragraph [ref=e196]: Широкий спектр медицинского оборудования для всех направлений
+          - generic [ref=e197]:
+            - generic [ref=e199] [cursor=pointer]:
+              - img [ref=e201]
+              - heading "Диагностическое оборудование" [level=3] [ref=e205]
+            - generic [ref=e207] [cursor=pointer]:
+              - img [ref=e209]
+              - heading "Хирургическое оборудование" [level=3] [ref=e215]
+            - generic [ref=e217] [cursor=pointer]:
+              - img [ref=e219]
+              - heading "Реабилитационное оборудование" [level=3] [ref=e221]
+            - generic [ref=e223] [cursor=pointer]:
+              - img [ref=e225]
+              - heading "Лабораторное оборудование" [level=3] [ref=e227]
+            - generic [ref=e229] [cursor=pointer]:
+              - img [ref=e231]
+              - heading "Стоматологическое оборудование" [level=3] [ref=e234]
+            - generic [ref=e236] [cursor=pointer]:
+              - img [ref=e238]
+              - heading "Офтальмологическое оборудование" [level=3] [ref=e241]
+          - link "Смотреть всё оборудование" [ref=e243] [cursor=pointer]:
+            - /url: /catalog
+            - text: Смотреть всё оборудование
+            - img [ref=e244]
+        - generic [ref=e247]:
+          - generic [ref=e248]:
+            - heading "Почему выбирают нас" [level=2] [ref=e249]
+            - paragraph [ref=e250]: Комплексный подход к решению медицинских задач
+          - generic [ref=e251]:
+            - generic [ref=e252]:
+              - img [ref=e254]
+              - heading "Гарантия качества" [level=3] [ref=e256]
+              - paragraph [ref=e257]: Работаем только с сертифицированным оборудованием ведущих мировых производителей
+            - generic [ref=e258]:
+              - img [ref=e260]
+              - heading "Сервис 24/7" [level=3] [ref=e262]
+              - paragraph [ref=e263]: Круглосуточная техническая поддержка и оперативное решение любых вопросов
+            - generic [ref=e264]:
+              - img [ref=e266]
+              - heading "Быстрая установка" [level=3] [ref=e268]
+              - paragraph [ref=e269]: Профессиональная команда инженеров обеспечивает быструю инсталляцию и настройку
+            - generic [ref=e270]:
+              - img [ref=e272]
+              - heading "Логистика по всему Узбекистану" [level=3] [ref=e275]
+              - paragraph [ref=e276]: Доставка и установка оборудования в любой регион страны
+        - generic [ref=e278]:
+          - generic [ref=e279]:
+            - heading "Часто задаваемые вопросы" [level=2] [ref=e280]
+            - paragraph [ref=e281]: Ответы на популярные вопросы о наших услугах и оборудовании.
+          - generic [ref=e282]:
+            - generic [ref=e283]:
+              - button "Какое медицинское оборудование вы поставляете?" [ref=e284] [cursor=pointer]:
+                - heading "Какое медицинское оборудование вы поставляете?" [level=3] [ref=e285]
+                - img [ref=e286]
+              - paragraph [ref=e289]: Поставляем диагностическое, лабораторное, хирургическое, реабилитационное, стоматологическое и офтальмологическое оборудование от ведущих производителей.
+            - generic [ref=e290]:
+              - button "Вы устанавливаете оборудование и обучаете персонал?" [ref=e291] [cursor=pointer]:
+                - heading "Вы устанавливаете оборудование и обучаете персонал?" [level=3] [ref=e292]
+                - img [ref=e293]
+              - paragraph [ref=e296]: Да. Наши инженеры выполняют установку и проводят обучение с документацией и практикой.
+            - generic [ref=e297]:
+              - button "Какая гарантия и сервис?" [ref=e298] [cursor=pointer]:
+                - heading "Какая гарантия и сервис?" [level=3] [ref=e299]
+                - img [ref=e300]
+              - paragraph [ref=e303]: Предоставляем гарантию, профилактическое обслуживание и техподдержку 24/7.
+            - generic [ref=e304]:
+              - button "Сколько занимает доставка?" [ref=e305] [cursor=pointer]:
+                - heading "Сколько занимает доставка?" [level=3] [ref=e306]
+                - img [ref=e307]
+              - paragraph [ref=e310]: В среднем 2–6 недель в зависимости от производителя и комплектации.
+            - generic [ref=e311]:
+              - button "Как получить коммерческое предложение?" [ref=e312] [cursor=pointer]:
+                - heading "Как получить коммерческое предложение?" [level=3] [ref=e313]
+                - img [ref=e314]
+              - paragraph [ref=e317]: Оставьте заявку на сайте или свяжитесь с нами — подготовим предложение под ваш запрос.
+        - generic [ref=e319]:
+          - heading "Готовы модернизировать ваше медицинское учреждение?" [level=2] [ref=e320]
+          - paragraph [ref=e321]: Наши эксперты помогут подобрать оптимальное решение под ваши задачи и бюджет
+          - generic [ref=e322]:
+            - button "Оставить заявку" [ref=e323] [cursor=pointer]:
+              - text: Оставить заявку
+              - img
+            - button "Менеджер перезвонит в течение 15 минут" [ref=e324] [cursor=pointer]:
+              - text: Менеджер перезвонит в течение 15 минут
+              - img
+    - contentinfo [ref=e325]:
+      - generic [ref=e326]:
+        - generic [ref=e327]:
+          - generic [ref=e328]:
+            - generic [ref=e329]:
+              - img "MSC Logo" [ref=e330]
+              - generic [ref=e331]:
+                - heading "Med Service Centre" [level=3] [ref=e332]
+                - paragraph [ref=e333]: 8 лет опыта • 300+ проектов
+            - paragraph [ref=e334]: Ведущий интегратор медицинского оборудования и сервис-услуг в Узбекистане
+            - generic [ref=e335]:
+              - generic [ref=e336]:
+                - img [ref=e337]
+                - link "info@medsc.uz" [ref=e340] [cursor=pointer]:
+                  - /url: mailto:info@medsc.uz
+              - generic [ref=e341]:
+                - img [ref=e342]
+                - link "Узбекистан, Ташкент, ул. Асака, 32" [ref=e345] [cursor=pointer]:
+                  - /url: https://yandex.uz/maps/?ll=69.301548,41.316163&z=17&pt=69.301548,41.316163
+              - generic [ref=e346]:
+                - img [ref=e347]
+                - link "@medservice_centre" [ref=e350] [cursor=pointer]:
+                  - /url: https://t.me/medservice_centre
+          - generic [ref=e351]:
+            - heading "Быстрые ссылки" [level=4] [ref=e352]
+            - list [ref=e353]:
+              - listitem [ref=e354]:
+                - link "Каталог" [ref=e355] [cursor=pointer]:
+                  - /url: /catalog
+              - listitem [ref=e356]:
+                - link "Услуги" [ref=e357] [cursor=pointer]:
+                  - /url: /services
+              - listitem [ref=e358]:
+                - link "Контакты" [ref=e359] [cursor=pointer]:
+                  - /url: /contacts
+              - listitem [ref=e360]:
+                - link "О компании" [ref=e361] [cursor=pointer]:
+                  - /url: /about
+          - generic [ref=e362]:
+            - heading "Услуги" [level=4] [ref=e363]
+            - list [ref=e364]:
+              - listitem [ref=e365]:
+                - link "Поставка оборудования" [ref=e366] [cursor=pointer]:
+                  - /url: /services
+              - listitem [ref=e367]:
+                - link "Инсталляция и настройка" [ref=e368] [cursor=pointer]:
+                  - /url: /services
+              - listitem [ref=e369]:
+                - link "Обучение персонала" [ref=e370] [cursor=pointer]:
+                  - /url: /services
+              - listitem [ref=e371]:
+                - link "Техническое обслуживание" [ref=e372] [cursor=pointer]:
+                  - /url: /services
+        - generic [ref=e374]:
+          - paragraph [ref=e375]: © 2026 Med Service Centre. Все права защищены
+          - generic [ref=e376]:
+            - link "Политика конфиденциальности" [ref=e377] [cursor=pointer]:
+              - /url: /privacy-policy
+            - link "Условия использования" [ref=e378] [cursor=pointer]:
+              - /url: /Условия использования и дисклеймер Med Service Centre.docx
+            - link "Каталог MSC" [ref=e379] [cursor=pointer]:
+              - /url: /Каталог (1).pdf

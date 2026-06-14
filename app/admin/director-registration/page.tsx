@@ -1,5 +1,5 @@
 "use client";
-import DirectorRegistration from "@/pages/DirectorRegistration";
+import DirectorRegistration from "@/views/DirectorRegistration";
 
 export default function AdminDirectorRegistrationPage() {
   return <DirectorRegistration />;

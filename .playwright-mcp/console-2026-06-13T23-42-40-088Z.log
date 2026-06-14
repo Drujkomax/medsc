@@ -1,0 +1,6 @@
+[    2556ms] [ERROR] Access to fetch at 'https://medsc.api.jaragency.uz/db/product_categories' from origin 'https://medsc.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://medsc.vercel.app/catalog:0
+[    2556ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://medsc.api.jaragency.uz/db/product_categories:0
+[    2557ms] [ERROR] Access to fetch at 'https://medsc.api.jaragency.uz/db/products' from origin 'https://medsc.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://medsc.vercel.app/catalog:0
+[    2557ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://medsc.api.jaragency.uz/db/products:0
+[    2557ms] [ERROR] Access to fetch at 'https://medsc.api.jaragency.uz/db/manufacturers' from origin 'https://medsc.vercel.app' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ https://medsc.vercel.app/catalog:0
+[    2557ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://medsc.api.jaragency.uz/db/manufacturers:0

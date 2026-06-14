@@ -1,0 +1,13 @@
+- generic [active] [ref=e1]:
+  - region "Notifications (F8)":
+    - list
+  - region "Notifications alt+T"
+  - alert [ref=e2]
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - heading "Вход в админку" [level=3] [ref=e6]
+      - paragraph [ref=e7]: Введите данные для входа в админскую панель
+    - generic [ref=e9]:
+      - textbox "Email" [ref=e11]
+      - textbox "Пароль" [ref=e13]
+      - button "Войти" [ref=e14] [cursor=pointer]
