@@ -1,96 +1,144 @@
 "use client";
-// Public site header (FSD: widgets/site-header).
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { LANGS, PUBLIC_NAV, SITE_NAME, type Lang } from "~/shared/config/site";
 
-export function SiteHeader({ lang }: { lang: Lang }) {
-  const [open, setOpen] = useState(false);
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Menu, X, ChevronDown } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useT, useLang } from "~/shared/i18n/i18n-provider";
+
+export function SiteHeader() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-  const active = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  const t = useT();
+  const currentLang = useLang();
 
-  const setLang = (code: Lang) => {
-    document.cookie = `lang=${code}; path=/; max-age=31536000`;
-    router.refresh();
+  const navigation = [
+    { name: t('navigation.home'), href: '/' },
+    { name: t('navigation.catalog'), href: '/catalog' },
+    { name: t('navigation.services'), href: '/services' },
+    { name: t('navigation.contacts'), href: '/contacts' },
+  ];
+
+  const languages = [
+    { code: 'ru' as const, name: 'Русский', flag: '🇷🇺' },
+    { code: 'en' as const, name: 'English', flag: '🇬🇧' },
+    { code: 'uz' as const, name: "O'zbekcha", flag: '🇺🇿' },
+  ];
+
+  const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0];
+
+  const handleLanguageChange = (langCode: 'ru' | 'en' | 'uz') => {
+    document.cookie = 'lang=' + langCode + ';path=/;max-age=31536000';
+    location.reload();
   };
-  const current = LANGS.find((l) => l.code === lang) ?? LANGS[0];
+
+  const isActive = (href: string) => pathname === href;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">MSC</span>
-          <span className="hidden sm:inline">{SITE_NAME}</span>
-        </Link>
+    <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center">
+            <img
+              src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png"
+              alt="Med Service Centre"
+              className="h-12 w-auto object-contain"
+            />
+          </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {PUBLIC_NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                active(item.href) ? "text-primary" : "text-foreground/70 hover:text-primary"
-              }`}
-            >
-              {item.label[lang]}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-1 sm:flex">
-            {LANGS.map((l) => (
-              <button
-                key={l.code}
-                onClick={() => setLang(l.code)}
-                aria-label={l.label}
-                className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
-                  l.code === current.code ? "bg-primary/10 text-primary" : "text-foreground/60 hover:text-primary"
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`font-medium transition-colors ${
+                  isActive(item.href)
+                    ? 'text-msc-accent border-b-2 border-msc-accent'
+                    : 'text-msc-text hover:text-msc-accent'
                 }`}
               >
-                {l.code.toUpperCase()}
-              </button>
+                {item.name}
+              </Link>
             ))}
-          </div>
-          <Link
-            href="/admin"
-            className="rounded-md border border-border px-3 py-1.5 text-sm font-medium hover:bg-muted"
-          >
-            {lang === "ru" ? "Кабинет" : lang === "uz" ? "Kabinet" : "Admin"}
-          </Link>
-          <button className="md:hidden rounded-md p-2 hover:bg-muted" onClick={() => setOpen((v) => !v)} aria-label="menu">
-            <span className="block h-0.5 w-5 bg-foreground" />
-            <span className="mt-1 block h-0.5 w-5 bg-foreground" />
-            <span className="mt-1 block h-0.5 w-5 bg-foreground" />
-          </button>
-        </div>
-      </div>
+          </nav>
 
-      {open && (
-        <nav className="border-t border-border px-4 py-3 md:hidden">
-          {PUBLIC_NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className={`block rounded-md px-3 py-2 text-sm font-medium ${
-                active(item.href) ? "bg-primary/10 text-primary" : "hover:bg-muted"
-              }`}
-            >
-              {item.label[lang]}
+          {/* Language Toggle & Auth */}
+          <div className="flex items-center space-x-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-msc-text hover:text-msc-accent hover:bg-msc-accent/10 data-[state=open]:text-msc-accent data-[state=open]:bg-msc-accent/10"
+                >
+                  {currentLanguage.flag}
+                  <span className="ml-1">{currentLanguage.code.toUpperCase()}</span>
+                  <ChevronDown className="w-3 h-3 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {languages.map((lang) => (
+                  <DropdownMenuItem
+                    key={lang.code}
+                    onClick={() => handleLanguageChange(lang.code)}
+                    className="cursor-pointer"
+                  >
+                    <span className="mr-2">{lang.flag}</span>
+                    {lang.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Link href="/admin">
+              <Button variant="outline" size="sm">
+                {t('navigation.admin')}
+              </Button>
             </Link>
-          ))}
-          <div className="mt-2 flex gap-1 px-3">
-            {LANGS.map((l) => (
-              <button key={l.code} onClick={() => setLang(l.code)} className="rounded px-2 py-1 text-xs hover:bg-muted">
-                {l.code.toUpperCase()}
-              </button>
-            ))}
+
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
           </div>
-        </nav>
-      )}
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border">
+            <nav className="flex flex-col space-y-2">
+              {navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`px-4 py-2 rounded-md transition-colors ${
+                    isActive(item.href)
+                      ? 'bg-msc-accent/10 text-msc-accent font-medium'
+                      : 'text-msc-text hover:bg-msc-accent/5 hover:text-msc-accent'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+      </div>
     </header>
   );
 }

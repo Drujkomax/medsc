@@ -1,50 +1,134 @@
-// Public site footer (FSD: widgets/site-footer). Server component.
-import Link from "next/link";
-import { PUBLIC_NAV, SITE_NAME, type Lang } from "~/shared/config/site";
+"use client";
 
-const T = {
-  tagline: {
-    ru: "Поставка, сервис и аренда медицинского оборудования в Узбекистане.",
-    en: "Supply, service and rental of medical equipment in Uzbekistan.",
-    uz: "O‘zbekistonda tibbiy uskunalarni yetkazib berish, servis va ijara.",
-  },
-  nav: { ru: "Навигация", en: "Navigation", uz: "Navigatsiya" },
-  contacts: { ru: "Контакты", en: "Contacts", uz: "Kontaktlar" },
-  rights: { ru: "Все права защищены", en: "All rights reserved", uz: "Barcha huquqlar himoyalangan" },
-} as const;
+import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import { useT } from "~/shared/i18n/i18n-provider";
 
-export function SiteFooter({ lang }: { lang: Lang }) {
+export function SiteFooter() {
+  const t = useT();
+  const links = t('footer.links', { returnObjects: true }) as { name: string; href: string }[];
+  const servicesList = t('footer.servicesList', { returnObjects: true }) as string[];
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="mt-16 border-t border-border bg-muted/30">
-      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
-        <div>
-          <div className="flex items-center gap-2 font-semibold">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">MSC</span>
-            {SITE_NAME}
+    <footer className="bg-msc-primary text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
+          {/* Company Info */}
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
+              <img
+                src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.png"
+                alt="MSC Logo"
+                className="w-16 h-16 object-contain"
+              />
+              <div>
+                <h3 className="font-heading text-xl font-bold">{t('footer.company')}</h3>
+                <p className="text-sm text-white/80">{t('footer.stats')}</p>
+              </div>
+            </div>
+            <p className="text-white/80 mb-6 max-w-md">{t('footer.description')}</p>
+
+            {/* Contact Info */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-center md:justify-start space-x-3">
+                <Mail className="w-5 h-5 text-msc-accent" />
+                <a
+                  href="mailto:info@medsc.uz"
+                  className="hover:text-msc-accent transition-colors"
+                >
+                  info@medsc.uz
+                </a>
+              </div>
+              <div className="flex items-center justify-center md:justify-start space-x-3">
+                <MapPin className="w-5 h-5 text-msc-accent" />
+                <a
+                  href="https://yandex.uz/maps/?ll=69.301548,41.316163&z=17&pt=69.301548,41.316163"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-msc-accent transition-colors"
+                >
+                  {t('footer.address')}
+                </a>
+              </div>
+              <div className="flex items-center justify-center md:justify-start space-x-3">
+                <Send className="w-5 h-5 text-msc-accent" />
+                <a
+                  href="https://t.me/medservice_centre"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-msc-accent transition-colors"
+                >
+                  @medservice_centre
+                </a>
+              </div>
+            </div>
           </div>
-          <p className="mt-3 max-w-xs text-sm text-muted-foreground">{T.tagline[lang]}</p>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="font-semibold text-lg mb-4">{t('footer.quickLinks')}</h4>
+            <ul className="space-y-2">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-white/80 hover:text-msc-accent transition-colors block"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h4 className="font-semibold text-lg mb-4">{t('footer.services')}</h4>
+            <ul className="space-y-2">
+              {servicesList.map((service, index) => (
+                <li key={index}>
+                  <a
+                    href="/services"
+                    className="text-white/80 text-sm hover:text-msc-accent transition-colors block"
+                  >
+                    {service}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-        <div>
-          <h4 className="text-sm font-semibold">{T.nav[lang]}</h4>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            {PUBLIC_NAV.map((i) => (
-              <li key={i.href}>
-                <Link href={i.href} className="hover:text-primary">{i.label[lang]}</Link>
-              </li>
-            ))}
-          </ul>
+
+        {/* Bottom Bar */}
+        <div className="border-t border-white/20 mt-8 pt-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+            <p className="text-white/60 text-sm">
+              © {currentYear} {t('footer.company')}. {t('footer.rights')}
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-3 text-sm">
+              <a
+                href="/privacy-policy"
+                className="text-white/60 hover:text-msc-accent transition-colors"
+              >
+                {t('footer.privacyPolicy', 'Политика конфиденциальности')}
+              </a>
+              <a
+                href="/Условия использования и дисклеймер Med Service Centre.docx"
+                download
+                className="text-white/60 hover:text-msc-accent transition-colors"
+              >
+                {t('footer.downloads.terms')}
+              </a>
+              <a
+                href="/Каталог (1).pdf"
+                download
+                className="text-white/60 hover:text-msc-accent transition-colors"
+              >
+                {t('footer.downloads.catalog')}
+              </a>
+            </div>
+          </div>
         </div>
-        <div>
-          <h4 className="text-sm font-semibold">{T.contacts[lang]}</h4>
-          <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li><a href="mailto:info@medsc.uz" className="hover:text-primary">info@medsc.uz</a></li>
-            <li><a href="https://t.me/medservice_centre" className="hover:text-primary">@medservice_centre</a></li>
-            <li>Узбекистан, Ташкент</li>
-          </ul>
-        </div>
-      </div>
-      <div className="border-t border-border py-4 text-center text-xs text-muted-foreground">
-        © {SITE_NAME}. {T.rights[lang]}.
       </div>
     </footer>
   );
