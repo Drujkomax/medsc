@@ -40,7 +40,9 @@ import {
   Eye,
   User,
   CalendarIcon,
-  Trash2
+  Trash2,
+  RotateCcw,
+  Ban
 } from 'lucide-react';
 
 interface Employee {
@@ -50,6 +52,7 @@ interface Employee {
   created_at: string;
   role?: string;
   last_sign_in_at?: string;
+  is_active?: boolean;
 }
 
 const EmployeeManagement = () => {
@@ -119,10 +122,11 @@ const EmployeeManagement = () => {
           email: profile?.email || 'Не указан',
           full_name: profile?.full_name || profile?.email || 'Имя не указано',
           created_at: userRole.created_at,
-          role: userRole.role
+          role: userRole.role,
+          is_active: profile?.is_active ?? true
         };
       }) || [];
-      
+
       // Также получаем пользователей без ролей (зависшие регистрации)
       const userIdsWithRoles = userRoles?.map(ur => ur.user_id) || [];
       const usersWithoutRoles = profilesData?.filter(p => !userIdsWithRoles.includes(p.id)).map(profile => ({
@@ -130,7 +134,8 @@ const EmployeeManagement = () => {
         email: profile.email || 'Не указан',
         full_name: profile.full_name || profile.email || 'Имя не указано',
         created_at: new Date().toISOString(),
-        role: undefined // Нет роли
+        role: undefined, // Нет роли
+        is_active: profile.is_active ?? true
       })) || [];
       
       setEmployees([...employeesList, ...usersWithoutRoles]);
@@ -262,22 +267,41 @@ const EmployeeManagement = () => {
       if (error) throw error;
 
       toast({
-        title: 'Сотрудник удалён',
-        description: `Сотрудник ${employeeToDelete.email} был успешно удалён из системы`,
+        title: 'Сотрудник деактивирован',
+        description: `${employeeToDelete.email} больше не может войти. Данные и история сохранены, доступ можно восстановить.`,
       });
 
       fetchEmployees();
       setIsDeleteDialogOpen(false);
       setEmployeeToDelete(null);
     } catch (error: any) {
-      console.error('Error deleting employee:', error);
+      console.error('Error deactivating employee:', error);
       toast({
         title: 'Ошибка',
-        description: error.message || 'Ошибка при удалении сотрудника',
+        description: error.message || 'Ошибка при деактивации сотрудника',
         variant: 'destructive',
       });
     } finally {
       setDeletingEmployee(false);
+    }
+  };
+
+  const handleReactivateEmployee = async (employee: Employee) => {
+    try {
+      const { error } = await supabase.rpc('reactivate_employee', { user_id: employee.id });
+      if (error) throw error;
+      toast({
+        title: 'Доступ восстановлен',
+        description: `${employee.email} снова может входить в систему.`,
+      });
+      fetchEmployees();
+    } catch (error: any) {
+      console.error('Error reactivating employee:', error);
+      toast({
+        title: 'Ошибка',
+        description: error.message || 'Ошибка при восстановлении сотрудника',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -629,9 +653,10 @@ const EmployeeManagement = () => {
         ) : (
           filteredEmployees.map((employee) => {
             const roleInfo = getRoleInfo(employee.role);
-            
+            const inactive = employee.is_active === false;
+
             return (
-              <Card key={employee.id} className="hover:shadow-md transition-shadow">
+              <Card key={employee.id} className={cn('hover:shadow-md transition-shadow', inactive && 'opacity-60')}>
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -645,12 +670,17 @@ const EmployeeManagement = () => {
                         </p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-3">
+                      {inactive && (
+                        <Badge variant="outline" className="border-orange-300 bg-orange-50 text-orange-700">
+                          Деактивирован
+                        </Badge>
+                      )}
                       <Badge className={roleInfo.color}>
                         {roleInfo.label}
                       </Badge>
-                      
+
                       <div className="flex gap-2">
                         {employee.role ? (
                           <>
@@ -678,15 +708,27 @@ const EmployeeManagement = () => {
                             ⚠️ Незавершённая регистрация
                           </div>
                         )}
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDeleteEmployee(employee)}
-                          className="flex items-center gap-1"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          {t('common.delete')}
-                        </Button>
+                        {inactive ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleReactivateEmployee(employee)}
+                            className="flex items-center gap-1 border-green-300 text-green-700 hover:bg-green-50"
+                          >
+                            <RotateCcw className="w-4 h-4" />
+                            Восстановить
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteEmployee(employee)}
+                            className="flex items-center gap-1 border-orange-300 text-orange-700 hover:bg-orange-50"
+                          >
+                            <Ban className="w-4 h-4" />
+                            Деактивировать
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -721,10 +763,10 @@ const EmployeeManagement = () => {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent className="bg-background">
           <AlertDialogHeader>
-            <AlertDialogTitle>Удалить сотрудника?</AlertDialogTitle>
+            <AlertDialogTitle>Деактивировать сотрудника?</AlertDialogTitle>
             <AlertDialogDescription>
-              Вы уверены, что хотите удалить сотрудника {employeeToDelete?.email}?
-              Это действие нельзя отменить. Все данные сотрудника, включая права доступа и профиль, будут удалены.
+              {employeeToDelete?.email} больше не сможет войти в систему. Все его данные и
+              история (клиники, сделки, обходы) сохранятся. Доступ можно восстановить в любой момент.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -734,10 +776,10 @@ const EmployeeManagement = () => {
             <AlertDialogAction
               onClick={confirmDeleteEmployee}
               disabled={deletingEmployee}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-orange-600 text-white hover:bg-orange-600/90"
             >
               {deletingEmployee && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {deletingEmployee ? 'Удаление...' : 'Удалить'}
+              {deletingEmployee ? 'Деактивация...' : 'Деактивировать'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
