@@ -1,33 +1,36 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
-import RegisterWithInvite from '@/pages/RegisterWithInvite';
-import DirectorRegistration from '@/pages/DirectorRegistration';
 import AdminAuth from './AdminAuth';
 import AdminLayout from './AdminLayout';
-import Dashboard from '../pages/Dashboard';
-import Leads from '../../crm/pages/Leads';
-import CreateDeal from '../../crm/pages/CreateDeal';
-import DealsPage from '../../crm/pages/DealsPage';
-import TasksPage from '../../crm/pages/TasksPage';
-import AdminKanban from '../pages/AdminKanban';
-import AdminProducts from '../../products/pages/AdminProducts';
-import AddProduct from '../../products/pages/AddProduct';
-import EditProduct from '../../products/pages/EditProduct';
-import AdminProductPreview from '../../products/pages/AdminProductPreview';
-import ArchivedData from '../pages/ArchivedData';
-import AdminServices from '../pages/AdminServices';
-import AdminContacts from '../pages/AdminContacts';
-import UserManagement from '../pages/UserManagement';
-import EmployeeManagement from '../pages/EmployeeManagement';
-import ActivityLogs from '../pages/ActivityLogs';
-
-import Categories from '../pages/Categories';
-import { Warehouse } from '../pages/Warehouse';
-import Clinics from '../pages/Clinics';
-import VisitsPage from '../pages/VisitsPage';
 import { useResolveInviteRole } from '@/hooks/useResolveInviteRole';
 import { ProtectedRoute } from '@/components/auth/ProtectedRouteAdmin';
+
+// Admin pages are code-split: opening the panel loads only the current section's
+// chunk, not all ~20 pages (kanban/dnd, charts, maps, …) on every refresh.
+const RegisterWithInvite = lazy(() => import('@/pages/RegisterWithInvite'));
+const DirectorRegistration = lazy(() => import('@/pages/DirectorRegistration'));
+const Dashboard = lazy(() => import('../pages/Dashboard'));
+const Leads = lazy(() => import('../../crm/pages/Leads'));
+const CreateDeal = lazy(() => import('../../crm/pages/CreateDeal'));
+const DealsPage = lazy(() => import('../../crm/pages/DealsPage'));
+const TasksPage = lazy(() => import('../../crm/pages/TasksPage'));
+const AdminKanban = lazy(() => import('../pages/AdminKanban'));
+const AdminProducts = lazy(() => import('../../products/pages/AdminProducts'));
+const AddProduct = lazy(() => import('../../products/pages/AddProduct'));
+const EditProduct = lazy(() => import('../../products/pages/EditProduct'));
+const AdminProductPreview = lazy(() => import('../../products/pages/AdminProductPreview'));
+const ArchivedData = lazy(() => import('../pages/ArchivedData'));
+const AdminServices = lazy(() => import('../pages/AdminServices'));
+const AdminContacts = lazy(() => import('../pages/AdminContacts'));
+const UserManagement = lazy(() => import('../pages/UserManagement'));
+const EmployeeManagement = lazy(() => import('../pages/EmployeeManagement'));
+const ActivityLogs = lazy(() => import('../pages/ActivityLogs'));
+const Categories = lazy(() => import('../pages/Categories'));
+const Warehouse = lazy(() => import('../pages/Warehouse').then((m) => ({ default: m.Warehouse })));
+const Clinics = lazy(() => import('../pages/Clinics'));
+const VisitsPage = lazy(() => import('../pages/VisitsPage'));
 
 const AdminWrapper = () => {
   const { user, loading: authLoading } = useAuth();
@@ -47,10 +50,18 @@ const AdminWrapper = () => {
   const currentPath = window.location.pathname;
   if (currentPath.includes('/admin/register/') || currentPath === '/admin/director-registration') {
     return (
-      <Routes>
-        <Route path="register/:inviteId" element={<RegisterWithInvite />} />
-        <Route path="director-registration" element={<DirectorRegistration />} />
-      </Routes>
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="register/:inviteId" element={<RegisterWithInvite />} />
+          <Route path="director-registration" element={<DirectorRegistration />} />
+        </Routes>
+      </Suspense>
     );
   }
 

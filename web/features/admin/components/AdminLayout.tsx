@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
@@ -67,7 +68,15 @@ const AdminLayout = () => {
 
           {/* Main Content */}
           <main className="flex-1 p-4 md:p-6">
-            <Outlet />
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center py-20">
+                  <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+                </div>
+              }
+            >
+              <Outlet />
+            </Suspense>
           </main>
         </div>
       </div>
