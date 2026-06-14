@@ -584,6 +584,8 @@ const Catalog = () => {
                             <img
                               src={product.images.cover}
                               alt={product.name[language]}
+                              loading="lazy"
+                              decoding="async"
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               onError={(e) => {
                                 e.currentTarget.src = "/placeholder.svg";
