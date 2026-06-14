@@ -1,6 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import type { Filters, Visit, VisitListRow, VisitStage } from './types';
+
+// Roles that see ALL visits; everyone else (salesperson, etc.) sees only their own.
+const VISITS_FULL_ACCESS = ['sales_manager', 'director', 'admin'];
 
 // Until Supabase types are regenerated after the migration, cast to `any` for the new tables.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -10,6 +15,9 @@ interface ProfileLite { id: string; full_name: string | null; email: string | nu
 interface ClientLite  { id: string; name: string }
 
 export function useVisits(filters: Filters) {
+  const { user } = useAuth();
+  const { role } = useUserRole();
+  const isFullAccess = VISITS_FULL_ACCESS.includes(role || '');
   const [rows, setRows] = useState<VisitListRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,6 +29,9 @@ export function useVisits(filters: Filters) {
         .select('*')
         .order('started_at', { ascending: false })
         .limit(200);
+
+      // Salespeople see only their own visits; managers/director/admin see all.
+      if (!isFullAccess && user) q = q.eq('rep_id', user.id);
 
       if (filters.rep_id)    q = q.eq('rep_id', filters.rep_id);
       if (filters.client_id) q = q.eq('client_id', filters.client_id);
@@ -86,7 +97,7 @@ export function useVisits(filters: Filters) {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, user, isFullAccess]);
 
   useEffect(() => { load(); }, [load]);
 
