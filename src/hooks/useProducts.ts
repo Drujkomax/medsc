@@ -3,6 +3,24 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { generateSlug } from '@/lib/slugify';
 
+// The products.slug column has a UNIQUE constraint (products_slug_key). Adding a
+// product whose name yields an existing slug raised 23505 ("duplicate key").
+// Resolve collisions by appending -2, -3, … so saving never fails on the slug.
+async function makeUniqueSlug(base: string, excludeId?: string): Promise<string> {
+  const safe = base && base.trim() ? base.trim() : 'product';
+  const { data } = await supabase.from('products').select('slug');
+  const taken = new Set(
+    (data || [])
+      .filter((r: any) => !excludeId || r.id !== excludeId)
+      .map((r: any) => r.slug)
+      .filter(Boolean),
+  );
+  if (!taken.has(safe)) return safe;
+  let n = 2;
+  while (taken.has(`${safe}-${n}`)) n++;
+  return `${safe}-${n}`;
+}
+
 export interface Product {
   id: string;
   slug?: string | null;
@@ -81,8 +99,9 @@ export const useProducts = () => {
         uz: productData.features?.uz?.filter(f => f.trim()) || []
       };
 
-      // Generate slug from English name if not provided
-      const slug = productData.slug || generateSlug(productData.name.en);
+      // Generate a UNIQUE slug (avoids the products_slug_key 23505 collision).
+      const baseSlug = productData.slug || generateSlug(productData.name.en || productData.name.ru || '');
+      const slug = await makeUniqueSlug(baseSlug);
 
       const cleanedData = {
         ...productData,
@@ -110,7 +129,7 @@ export const useProducts = () => {
       // If name.en is being updated, regenerate slug
       const dataToUpdate = { ...productData };
       if (productData.name?.en && !productData.slug) {
-        dataToUpdate.slug = generateSlug(productData.name.en);
+        dataToUpdate.slug = await makeUniqueSlug(generateSlug(productData.name.en), id);
       }
       
       const { data, error } = await supabase
@@ -282,7 +301,7 @@ export const useAdminProducts = () => {
       // If name.en is being updated, regenerate slug
       const dataToUpdate = { ...productData };
       if (productData.name?.en && !productData.slug) {
-        dataToUpdate.slug = generateSlug(productData.name.en);
+        dataToUpdate.slug = await makeUniqueSlug(generateSlug(productData.name.en), id);
       }
       
       const { data, error } = await supabase
@@ -323,8 +342,9 @@ export const useAdminProducts = () => {
       };
       console.log('Cleaned features:', cleanedFeatures);
 
-      // Generate slug from English name if not provided
-      const slug = productData.slug || generateSlug(productData.name.en);
+      // Generate a UNIQUE slug (avoids the products_slug_key 23505 collision).
+      const baseSlug = productData.slug || generateSlug(productData.name.en || productData.name.ru || '');
+      const slug = await makeUniqueSlug(baseSlug);
 
       const cleanedData = {
         ...safeData,
