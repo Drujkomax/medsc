@@ -1,5 +1,10 @@
 // Shared site configuration (FSD: shared/config).
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:6001").replace(/\/+$/, "");
+
+// Server-side data fetches use the API's internal Docker address when set
+// (e.g. http://msc-api:6001) to skip the public hairpin (DNS → Caddy → back).
+// Not NEXT_PUBLIC → undefined in the browser, so client code falls back to API_URL.
+export const API_INTERNAL_URL = (process.env.API_INTERNAL_URL || API_URL).replace(/\/+$/, "");
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://medsc.uz").replace(/\/+$/, "");
 
 export const SITE_NAME = "Med Service Centre";
