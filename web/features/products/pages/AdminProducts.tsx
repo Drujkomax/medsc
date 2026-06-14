@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,7 +31,7 @@ import { getCountryName } from '@/utils/countries';
 
 const AdminProducts = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { toast } = useToast();
   const { hasPermission } = useUserPermissions();
   const [searchTerm, setSearchTerm] = useState('');
@@ -312,7 +314,7 @@ const AdminProducts = () => {
                                 <Button 
                                   variant="outline" 
                                   size="sm" 
-                                  onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+                                  onClick={() => router.push(`/admin/products/edit/${product.id}`)}
                                   className="flex-1"
                                 >
                                   <Edit2 className="w-4 h-4 mr-1" />
@@ -322,7 +324,7 @@ const AdminProducts = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                onClick={() => navigate(`/admin/products/preview/${product.id}`)}
+                                onClick={() => router.push(`/admin/products/preview/${product.id}`)}
                                 className="flex-1"
                               >
                                 <Eye className="w-4 h-4 mr-1" />
@@ -375,7 +377,7 @@ const AdminProducts = () => {
                     <p className="text-muted-foreground mb-4">
                       Для просмотра архивированных товаров перейдите в раздел "Архив"
                     </p>
-                    <Button onClick={() => navigate('/admin/archived')}>
+                    <Button onClick={() => router.push('/admin/archived')}>
                       Перейти к архиву
                     </Button>
                   </div>

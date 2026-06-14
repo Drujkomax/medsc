@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -30,7 +32,7 @@ import {
 
 const DealsPage = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { deals } = useDeals();
   const { hasPermission, role } = useUserPermissions();
   const [activeTab, setActiveTab] = useState('overview');
@@ -58,7 +60,7 @@ const DealsPage = () => {
   const debtorsCount = debtDeals.length;
 
   const handleCreateDeal = () => {
-    navigate('/admin/deals/create');
+    router.push('/admin/deals/create');
   };
 
   const handleEditDeal = (deal: Deal) => {

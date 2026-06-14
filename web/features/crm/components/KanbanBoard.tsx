@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +16,7 @@ import { AddLeadDialog } from "./AddLeadDialog";
 import { UnifiedLeadModal } from "./UnifiedLeadModal";
 import { DuplicateAlert } from "./DuplicateAlert";
 import { CongratulationsDialog } from "./CongratulationsDialog";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
 interface KanbanBoardProps {
@@ -34,7 +36,7 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
   const { user } = useAuth();
   const { duplicateGroups } = useDuplicateDetection(leads);
   const { toast } = useToast();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Unified lead stages with i18n
   const stages = [
@@ -311,7 +313,12 @@ const KanbanBoard = ({ showNavigation = false }: KanbanBoardProps) => {
         lead={congratsLead}
         onCreateDeal={() => {
           setIsCongratulationsOpen(false);
-          navigate("/admin/deals/create", { state: { leadId: congratsLead?.id } });
+          // Next has no location.state; pass leadId via query param so CreateDeal can prefill it.
+          router.push(
+            congratsLead?.id
+              ? `/admin/deals/create?leadId=${encodeURIComponent(congratsLead.id)}`
+              : "/admin/deals/create",
+          );
         }}
       />
     </div>

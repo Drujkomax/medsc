@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useClients, type ClientWithStockInfo, type Client } from '@/hooks/useClients';
 import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
@@ -130,11 +132,11 @@ export default function Clinics() {
 
       {/* Internal Navigation Links */}
       <nav className="flex flex-wrap gap-2" aria-label={t('clinics.relatedSections', 'Связанные разделы')}>
-        <Link to="/admin/warehouse" className="text-sm text-primary hover:underline flex items-center gap-1">
+        <Link href="/admin/warehouse" className="text-sm text-primary hover:underline flex items-center gap-1">
           <Package className="h-4 w-4" />
           {t('admin.warehouse', 'Склад')}
         </Link>
-        <Link to="/admin/leads" className="text-sm text-primary hover:underline flex items-center gap-1">
+        <Link href="/admin/leads" className="text-sm text-primary hover:underline flex items-center gap-1">
           <FileText className="h-4 w-4" />
           {t('admin.leads', 'Лиды')}
         </Link>

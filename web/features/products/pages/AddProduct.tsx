@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,7 +34,7 @@ const statusOptions = [
 
 const AddProduct = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { addProduct } = useAdminProducts();
   const { categories } = useCategories();
   const { manufacturers } = useManufacturers();
@@ -150,7 +152,7 @@ const AddProduct = () => {
         description: 'Товар добавлен успешно'
       });
       
-      navigate('/admin/products');
+      router.push('/admin/products');
     } catch (error) {
       console.error('Error adding product:', error);
       console.error('Error details:', {
@@ -211,7 +213,7 @@ const AddProduct = () => {
         <div className="flex items-center space-x-4">
           <Button 
             variant="outline" 
-            onClick={() => navigate('/admin/products')}
+            onClick={() => router.push('/admin/products')}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Назад к товарам

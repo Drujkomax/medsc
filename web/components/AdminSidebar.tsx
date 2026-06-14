@@ -1,4 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 
@@ -43,7 +45,7 @@ import {
 
 export function AdminSidebar() {
   const { t, i18n } = useTranslation();
-  const location = useLocation();
+  const pathname = usePathname() ?? '';
   const { role } = useUserRole();
   const { hasPermission } = useUserPermissions();
   const { user } = useAuth();
@@ -133,9 +135,9 @@ export function AdminSidebar() {
 
   const isActive = (href: string) => {
     if (href === '/admin') {
-      return location.pathname === '/admin';
+      return pathname === '/admin';
     }
-    return location.pathname.startsWith(href);
+    return pathname.startsWith(href);
   };
 
   return (
@@ -170,7 +172,7 @@ export function AdminSidebar() {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton asChild>
                       <Link
-                        to={item.href}
+                        href={item.href}
                         className={`flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-colors ${
                           active
                             ? 'bg-primary text-primary-foreground'
@@ -194,7 +196,7 @@ export function AdminSidebar() {
           <div className="flex items-center justify-center">
             <LanguageSwitcher />
           </div>
-          <Link to="/">
+          <Link href="/">
             <Button variant="outline" className="w-full justify-start" size="sm">
               <Home className="w-4 h-4 mr-2" />
               {t('admin.toWebsite')}

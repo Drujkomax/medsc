@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useRouter, useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,8 +27,8 @@ const statusOptions = [
 
 const EditProduct = () => {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const router = useRouter();
+  const { id } = useParams<{ id: string }>();
   const { updateProduct } = useAdminProducts();
   const { product, loading: productLoading, error } = useAdminProduct(id || '');
   const { categories, loading: categoriesLoading } = useCategories();
@@ -83,7 +85,7 @@ const EditProduct = () => {
       <div className="text-center py-16">
         <h2 className="text-2xl font-bold text-destructive mb-2">Ошибка загрузки</h2>
         <p className="text-muted-foreground">{error || 'Товар не найден'}</p>
-        <Button onClick={() => navigate('/admin/products')} className="mt-4">
+        <Button onClick={() => router.push('/admin/products')} className="mt-4">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Назад к товарам
         </Button>
@@ -166,7 +168,7 @@ const EditProduct = () => {
         description: 'Товар обновлен успешно'
       });
       
-      navigate('/admin/products');
+      router.push('/admin/products');
     } catch (error) {
       toast({
         variant: 'destructive',
@@ -216,7 +218,7 @@ const EditProduct = () => {
           <Button 
             type="button"
             variant="outline" 
-            onClick={() => navigate('/admin/products')}
+            onClick={() => router.push('/admin/products')}
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Назад к товарам

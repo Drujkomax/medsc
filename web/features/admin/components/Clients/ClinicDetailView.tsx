@@ -1,5 +1,6 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Client, useClients } from '@/hooks/useClients';
 import { useEmployeesByRole } from '@/hooks/useEmployeesByRole';
 import { Button } from '@/components/ui/button';

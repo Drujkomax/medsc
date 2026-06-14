@@ -1,5 +1,7 @@
-import { ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+"use client";
+
+import { ReactNode, useEffect } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 
@@ -16,7 +18,21 @@ export const ProtectedRoute = ({
 }: ProtectedRouteProps) => {
   const { user, loading: authLoading } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Если пользователь не авторизован - перенаправляем на страницу входа.
+  // location.state не существует в Next: исходный путь (location.pathname + search)
+  // передаём через query-параметр ?from=... вместо navigate(..., { state: { from } }).
+  const isUnauthorized = !authLoading && !roleLoading && !user;
+  useEffect(() => {
+    if (isUnauthorized) {
+      const search = searchParams.toString();
+      const from = `${pathname}${search ? `?${search}` : ''}`;
+      router.replace(`${redirectTo}?from=${encodeURIComponent(from)}`);
+    }
+  }, [isUnauthorized, redirectTo, pathname, searchParams, router]);
 
   // Показываем загрузку пока проверяем аутентификацию
   if (authLoading || roleLoading) {
@@ -27,9 +43,9 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Если пользователь не авторизован - перенаправляем на страницу входа
+  // Если пользователь не авторизован - редирект выполняется в useEffect выше
   if (!user) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
+    return null;
   }
 
   // Если указаны требуемые роли и у пользователя их нет - показываем ошибку доступа

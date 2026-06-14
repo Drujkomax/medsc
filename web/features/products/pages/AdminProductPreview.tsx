@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +17,8 @@ import { getCountryName, getCountryFlag } from '@/utils/countries';
 const AdminProductPreview = () => {
   const { i18n } = useTranslation();
   const language = i18n.language as 'ru' | 'en' | 'uz' || 'ru';
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const { product, loading, error } = useAdminProduct(id || '');
@@ -61,7 +63,7 @@ const AdminProductPreview = () => {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-destructive mb-2">Ошибка загрузки</h2>
           <p className="text-muted-foreground">{error || 'Товар не найден'}</p>
-          <Button onClick={() => navigate('/admin/products')} className="mt-4">
+          <Button onClick={() => router.push('/admin/products')} className="mt-4">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Назад к товарам
           </Button>
@@ -131,7 +133,7 @@ const AdminProductPreview = () => {
         <div className="flex justify-between items-center mb-6">
           <Button 
             variant="outline" 
-            onClick={() => navigate('/admin/products')}
+            onClick={() => router.push('/admin/products')}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Назад к товарам
@@ -140,7 +142,7 @@ const AdminProductPreview = () => {
           <div className="flex gap-2">
             <Button 
               variant="outline"
-              onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+              onClick={() => router.push(`/admin/products/edit/${product.id}`)}
             >
               <Edit2 className="h-4 w-4 mr-2" />
               Редактировать

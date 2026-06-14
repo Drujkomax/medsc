@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +12,7 @@ import {
   Clock,
   FileText
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Product } from '@/hooks/useProducts';
 import { useCategories } from '@/hooks/useCategories';
 import { useManufacturers } from '@/hooks/useManufacturers';
@@ -24,7 +26,7 @@ interface DraftProductCardProps {
 
 
 const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardProps) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { categories } = useCategories();
   const { manufacturers } = useManufacturers();
 
@@ -163,7 +165,7 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+              onClick={() => router.push(`/admin/products/edit/${product.id}`)}
               className="flex-1"
             >
               <Edit2 className="w-4 h-4" />
@@ -172,7 +174,7 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => navigate(`/admin/products/preview/${product.id}`)}
+              onClick={() => router.push(`/admin/products/preview/${product.id}`)}
               className="flex-1"
             >
               <Eye className="w-4 h-4" />

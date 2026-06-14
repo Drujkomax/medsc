@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,13 +23,13 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ru, enUS, uz } from 'date-fns/locale';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 const ArchivedData = () => {
   const { t, i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [leadSearchTerm, setLeadSearchTerm] = useState('');
-  const navigate = useNavigate();
+  const router = useRouter();
   const { categories } = useCategories();
 
   const { 
@@ -199,7 +201,7 @@ const ArchivedData = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                onClick={() => navigate(`/admin/products/preview/${product.id}`)}
+                                onClick={() => router.push(`/admin/products/preview/${product.id}`)}
                                 className="flex-1"
                               >
                                 <Eye className="w-3 h-3" />
@@ -208,7 +210,7 @@ const ArchivedData = () => {
                               <Button 
                                 variant="outline" 
                                 size="sm" 
-                                onClick={() => navigate(`/admin/products/edit/${product.id}`)}
+                                onClick={() => router.push(`/admin/products/edit/${product.id}`)}
                                 className="flex-1"
                               >
                                 <Edit className="w-3 h-3" />

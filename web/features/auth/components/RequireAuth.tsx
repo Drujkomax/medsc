@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 
@@ -11,27 +13,27 @@ interface RequireAuthProps {
 const RequireAuth = ({ children, requiredRole = 'user' }: RequireAuthProps) => {
   const { user, loading: authLoading } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!authLoading && !roleLoading) {
       // Избегаем бесконечного редиректа - не перенаправляем если уже на админской странице
-      if (location.pathname.startsWith('/admin')) {
+      if (pathname.startsWith('/admin')) {
         return;
       }
 
       if (!user) {
-        navigate('/admin', { replace: true });
+        router.replace('/admin');
         return;
       }
 
       if (requiredRole === 'admin' && role !== 'admin') {
-        navigate('/admin', { replace: true });
+        router.replace('/admin');
         return;
       }
     }
-  }, [user, role, authLoading, roleLoading, navigate, requiredRole, location.pathname]);
+  }, [user, role, authLoading, roleLoading, router, requiredRole, pathname]);
 
   if (authLoading || roleLoading) {
     return (

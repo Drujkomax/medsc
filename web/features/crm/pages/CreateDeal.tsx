@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,8 +60,8 @@ interface DealService {
 }
 
 const CreateDeal = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const { user } = useAuth();
   const { role } = useUserRole();
@@ -401,7 +403,7 @@ const CreateDeal = () => {
           : 'Сделка успешно создана с товарами и услугами'
       });
       
-      navigate('/admin/deals');
+      router.push('/admin/deals');
     } catch (error) {
       toast({
         title: 'Ошибка',
@@ -449,20 +451,21 @@ const CreateDeal = () => {
     }
   }, [role, user, formData.assigned_salesperson]);
 
-  // Автоматическое заполнение лида из поздравительного окна
+  // Автоматическое заполнение лида из поздравительного окна.
+  // В Next нет location.state, поэтому leadId передаётся через query-параметр (?leadId=...).
   useEffect(() => {
-    const state = location.state as { leadId?: string };
-    if (state?.leadId && !formData.lead_id) {
-      const lead = leads.find(l => l.id === state.leadId);
+    const leadId = searchParams.get('leadId');
+    if (leadId && !formData.lead_id) {
+      const lead = leads.find(l => l.id === leadId);
       if (lead) {
-        setFormData(prev => ({ 
-          ...prev, 
-          lead_id: state.leadId,
+        setFormData(prev => ({
+          ...prev,
+          lead_id: leadId,
           title: prev.title || `Сделка с ${lead.name}`
         }));
       }
     }
-  }, [location.state, leads, formData.lead_id]);
+  }, [searchParams, leads, formData.lead_id]);
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -472,7 +475,7 @@ const CreateDeal = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/admin/deals')}
+            onClick={() => router.push('/admin/deals')}
             className="flex items-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -1147,7 +1150,7 @@ const CreateDeal = () => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => navigate('/admin/deals')}
+              onClick={() => router.push('/admin/deals')}
             >
               Отмена
             </Button>
