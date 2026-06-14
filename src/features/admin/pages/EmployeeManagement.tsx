@@ -100,11 +100,12 @@ const EmployeeManagement = () => {
     try {
       setLoading(true);
       
-      // Получаем роли пользователей (исключаем директоров)
+      // Загружаем ВСЕ роли, включая директоров. Раньше директоров исключали,
+      // из-за чего директорский аккаунт «проваливался» в список без роли
+      // («Незавершённая регистрация») и его пароль нельзя было сменить.
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
-        .select('user_id, role, created_at')
-        .neq('role', 'director'); // Исключаем директоров
+        .select('user_id, role, created_at');
           
       if (rolesError) throw rolesError;
 
@@ -313,7 +314,7 @@ const EmployeeManagement = () => {
 
   const getRoleInfo = (role?: string) => {
     if (!role) {
-      return { label: 'Не назначена (требуется удаление)', color: 'bg-gray-100 text-gray-800 border border-red-500' };
+      return { label: 'Роль не назначена', color: 'bg-gray-100 text-gray-800 border border-amber-400' };
     }
     const roles = getRoles();
     return roles.find(r => r.value === role) || { label: t('roles.notAssigned'), color: 'bg-gray-100 text-gray-800' };
@@ -682,32 +683,27 @@ const EmployeeManagement = () => {
                       </Badge>
 
                       <div className="flex gap-2">
-                        {employee.role ? (
-                          <>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleViewEmployee(employee)}
-                              className="flex items-center gap-1"
-                            >
-                              <Eye className="w-4 h-4" />
-                              {t('common.view')}
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleEditEmployee(employee)}
-                              className="flex items-center gap-1"
-                            >
-                              <Edit className="w-4 h-4" />
-                              {t('common.edit')}
-                            </Button>
-                          </>
-                        ) : (
-                          <div className="text-xs text-muted-foreground px-2 py-1 bg-yellow-50 rounded border border-yellow-200">
-                            ⚠️ Незавершённая регистрация
-                          </div>
-                        )}
+                        {/* Просмотр + Изменить доступны для ЛЮБОГО аккаунта,
+                            в т.ч. без роли — иначе нельзя сменить ему пароль
+                            или назначить роль. */}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewEmployee(employee)}
+                          className="flex items-center gap-1"
+                        >
+                          <Eye className="w-4 h-4" />
+                          {t('common.view')}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditEmployee(employee)}
+                          className="flex items-center gap-1"
+                        >
+                          <Edit className="w-4 h-4" />
+                          {t('common.edit')}
+                        </Button>
                         {inactive ? (
                           <Button
                             variant="outline"
