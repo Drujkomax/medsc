@@ -9,69 +9,72 @@ export interface DuplicateGroup {
 
 export const useDuplicateDetection = (leads: Lead[]) => {
   const duplicateGroups = useMemo(() => {
+    // Same grouping semantics as before (a group = a seed lead + every lead that
+    // matches it by normalized name OR phone), but O(n) via key buckets instead
+    // of the old O(n^2) lead-by-lead scan that re-normalized phones on every pair.
+    const normPhone = (phone?: string) => (phone ? phone.replace(/[\s\-\(\)\+]/g, '') : '');
+    const normName = (name?: string) => (name ? name.trim().toLowerCase() : '');
+
+    const active = leads.filter((l) => !l.archived);
+    const keyOf = new Map<string, { nk: string; pk: string }>();
+    const byName = new Map<string, Lead[]>();
+    const byPhone = new Map<string, Lead[]>();
+    for (const l of active) {
+      const nk = normName(l.name);
+      const rawPk = normPhone(l.phone);
+      const pk = rawPk.length > 5 ? rawPk : ''; // only meaningful phones
+      keyOf.set(l.id, { nk, pk });
+      if (nk) {
+        let a = byName.get(nk);
+        if (!a) byName.set(nk, (a = []));
+        a.push(l);
+      }
+      if (pk) {
+        let a = byPhone.get(pk);
+        if (!a) byPhone.set(pk, (a = []));
+        a.push(l);
+      }
+    }
+
     const groups: DuplicateGroup[] = [];
     const processed = new Set<string>();
 
-    leads.forEach((lead) => {
-      if (processed.has(lead.id) || lead.archived) return;
+    for (const lead of active) {
+      if (processed.has(lead.id)) continue;
+      const { nk, pk } = keyOf.get(lead.id)!;
 
-      const duplicates = leads.filter((otherLead) => {
-        if (otherLead.id === lead.id || processed.has(otherLead.id) || otherLead.archived) {
-          return false;
+      const matches = new Map<string, Lead>();
+      const addAll = (cands?: Lead[]) => {
+        if (!cands) return;
+        for (const o of cands) {
+          if (o.id === lead.id || processed.has(o.id)) continue;
+          matches.set(o.id, o);
         }
+      };
+      if (nk) addAll(byName.get(nk));
+      if (pk) addAll(byPhone.get(pk));
+      if (matches.size === 0) continue;
 
-        // Check for name match (case insensitive, trimmed)
-        const nameMatch = lead.name && otherLead.name && 
-          lead.name.trim().toLowerCase() === otherLead.name.trim().toLowerCase();
+      const allLeads = [lead, ...matches.values()];
 
-        // Check for phone match (normalized - remove spaces, dashes, etc.)
-        const normalizePhone = (phone?: string) => 
-          phone?.replace(/[\s\-\(\)\+]/g, '') || '';
-        
-        const phoneMatch = lead.phone && otherLead.phone && 
-          normalizePhone(lead.phone) === normalizePhone(otherLead.phone) &&
-          normalizePhone(lead.phone).length > 5; // Only if meaningful phone
-
-        return nameMatch || phoneMatch;
-      });
-
-      if (duplicates.length > 0) {
-        const allLeads = [lead, ...duplicates];
-        
-        // Determine duplicate type and score
-        const hasNameDuplicates = allLeads.some(l1 => 
-          allLeads.some(l2 => 
-            l1.id !== l2.id && l1.name && l2.name && 
-            l1.name.trim().toLowerCase() === l2.name.trim().toLowerCase()
-          )
-        );
-        
-        const hasPhoneDuplicates = allLeads.some(l1 => 
-          allLeads.some(l2 => {
-            if (l1.id === l2.id || !l1.phone || !l2.phone) return false;
-            const normalizePhone = (phone: string) => phone.replace(/[\s\-\(\)\+]/g, '');
-            return normalizePhone(l1.phone) === normalizePhone(l2.phone) && 
-                   normalizePhone(l1.phone).length > 5;
-          })
-        );
-
-        const duplicateType: 'name' | 'phone' | 'both' = 
-          hasNameDuplicates && hasPhoneDuplicates ? 'both' :
-          hasNameDuplicates ? 'name' : 'phone';
-
-        const score = duplicateType === 'both' ? 100 : 
-                     duplicateType === 'phone' ? 85 : 70;
-
-        groups.push({
-          leads: allLeads,
-          duplicateType,
-          score
-        });
-
-        // Mark all as processed
-        allLeads.forEach(l => processed.add(l.id));
+      // Determine duplicate type from how the group members share keys.
+      const nameCounts = new Map<string, number>();
+      const phoneCounts = new Map<string, number>();
+      for (const l of allLeads) {
+        const k = keyOf.get(l.id)!;
+        if (k.nk) nameCounts.set(k.nk, (nameCounts.get(k.nk) || 0) + 1);
+        if (k.pk) phoneCounts.set(k.pk, (phoneCounts.get(k.pk) || 0) + 1);
       }
-    });
+      const hasNameDuplicates = [...nameCounts.values()].some((c) => c > 1);
+      const hasPhoneDuplicates = [...phoneCounts.values()].some((c) => c > 1);
+
+      const duplicateType: 'name' | 'phone' | 'both' =
+        hasNameDuplicates && hasPhoneDuplicates ? 'both' : hasNameDuplicates ? 'name' : 'phone';
+      const score = duplicateType === 'both' ? 100 : duplicateType === 'phone' ? 85 : 70;
+
+      groups.push({ leads: allLeads, duplicateType, score });
+      for (const l of allLeads) processed.add(l.id);
+    }
 
     return groups.sort((a, b) => b.score - a.score);
   }, [leads]);

@@ -17,7 +17,6 @@ import AddClientDialog from '@/features/admin/components/Clients/AddClientDialog
 import EditClientDialog from '@/features/admin/components/Clients/EditClientDialog';
 import ClinicDetailView from '@/features/admin/components/Clients/ClinicDetailView';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Helmet } from 'react-helmet-async';
 
 export default function Clinics() {
   const { t } = useTranslation();
@@ -106,13 +105,6 @@ export default function Clinics() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <Helmet>
-        <title>{t('clinics.pageTitle', 'Клиники — Панель управления | Med Service Centre')}</title>
-        <meta name="robots" content="noindex, nofollow" />
-        <meta name="description" content={t('clinics.pageDescription', 'Управление клиниками и их инвентарем медицинского оборудования')} />
-        <link rel="canonical" href="https://medsc.uz/admin/clinics" />
-      </Helmet>
-      
       {/* Header */}
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
