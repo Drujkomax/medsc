@@ -224,6 +224,7 @@ export default async function CatalogPage({
 }) {
   const sp = await searchParams;
   const {
+    language,
     products,
     categories,
     manufacturers,
@@ -246,11 +247,43 @@ export default async function CatalogPage({
     },
   };
 
+  // ItemList of the listed products (parity with the original second JSON-LD blob).
+  const slugOf = (mid: string | null) => manufacturers.find((m) => m.id === mid)?.slug;
+  const pathOf = (p: (typeof products)[number]) => {
+    const ms = toUrlSlug(slugOf(p.manufacturer_id));
+    const ps = p.slug || p.id;
+    return ms && ms !== "unknown" ? `/catalog/${ms}/${ps}` : `/catalog/${ps}`;
+  };
+  const listed =
+    sp.category && sp.category !== "all"
+      ? products.filter((p) => p.category === sp.category)
+      : products;
+  const itemListSchema = listed.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: listed.slice(0, 24).map((p, i) => {
+          const cover = p.images?.cover || "";
+          return {
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "WebPage",
+              name: p.name[language],
+              url: `https://medsc.uz${pathOf(p)}`,
+              image: cover ? (cover.startsWith("http") ? cover : `https://medsc.uz${cover}`) : undefined,
+            },
+          };
+        }),
+      }
+    : null;
+  const schemas = itemListSchema ? [catalogSchema, itemListSchema] : [catalogSchema];
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(catalogSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }}
       />
       <Suspense fallback={null}>
         <CatalogView
