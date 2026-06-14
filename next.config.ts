@@ -5,6 +5,14 @@ const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:6001";
 const nextConfig: NextConfig = {
   // The ported app is large and was strict-typed for Vite; don't block dev/build on it.
   typescript: { ignoreBuildErrors: true },
+  // Allow next/image to optimize the stored product photos (≈500KB originals) into
+  // small WebP thumbnails so the catalog isn't shipping full-size images as cards.
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "medsc.api.jaragency.uz" },
+      { protocol: "https", hostname: "medsc.uz" },
+    ],
+  },
   // Serve stored media via the client origin → proxied to the backend (port-independent).
   async rewrites() {
     return [{ source: "/storage/:path*", destination: `${API}/storage/:path*` }];

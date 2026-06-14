@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import { API_URL } from "~/shared/config/site";
 import {
   Card,
   CardContent,
@@ -438,15 +440,16 @@ export function CatalogView({
                           aria-label={`${translations.details[language]}: ${product.name[language]}`}
                         >
                           {product.images?.cover ? (
-                            <img
-                              src={product.images.cover}
+                            <Image
+                              src={
+                                product.images.cover.startsWith("http")
+                                  ? product.images.cover
+                                  : `${API_URL}${product.images.cover}`
+                              }
                               alt={product.name[language]}
-                              loading="lazy"
-                              decoding="async"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              onError={(e) => {
-                                e.currentTarget.src = "/placeholder.svg";
-                              }}
+                              fill
+                              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (
                             <div className="w-full h-full bg-muted flex items-center justify-center">
