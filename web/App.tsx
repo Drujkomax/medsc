@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import ErrorBoundary from "@/components/providers/ErrorBoundary";
 import PointerEventsGuard from "@/components/providers/PointerEventsGuard";
+import { AuthProvider } from "@/providers/AuthProvider";
 import { setupGlobalErrorHandling } from "@/utils/globalErrorHandler";
 import Header from "./components/Layout/Header";
 import Footer from "./components/Layout/Footer";
@@ -78,6 +79,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
         <TooltipProvider>
+          <AuthProvider>
           <PointerEventsGuard />
           <Toaster />
           <Sonner />
@@ -159,6 +161,7 @@ const App = () => {
               />
             </Routes>
           </BrowserRouter>
+          </AuthProvider>
         </TooltipProvider>
       </ErrorBoundary>
     </QueryClientProvider>
