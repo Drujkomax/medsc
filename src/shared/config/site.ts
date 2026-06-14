@@ -4,6 +4,14 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://medsc.uz")
 
 export const SITE_NAME = "Med Service Centre";
 
+// Resolve a stored image path to a direct, absolute API URL. Going straight to the
+// backend (instead of the relative /storage rewrite that hops through Vercel) is
+// faster and avoids intermittent proxy failures that showed images as broken.
+export function imageUrl(path?: string | null): string | undefined {
+  if (!path) return undefined;
+  return path.startsWith("http") ? path : `${API_URL}${path}`;
+}
+
 export type Lang = "ru" | "en" | "uz";
 export const LANGS: { code: Lang; label: string; flag: string }[] = [
   { code: "ru", label: "Русский", flag: "🇷🇺" },

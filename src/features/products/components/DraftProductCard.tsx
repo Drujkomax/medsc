@@ -1,6 +1,7 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { imageUrl } from "@/shared/config/site";
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -66,7 +67,7 @@ const DraftProductCard = ({ product, onArchive, onPublish }: DraftProductCardPro
         <div className="aspect-[4/5] w-full bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
           {product.images?.cover ? (
             <img 
-              src={product.images.cover} 
+              src={imageUrl(product.images.cover)} 
               alt={product.name.ru || 'Черновик товара'}
               className="w-full h-full object-contain"
             />

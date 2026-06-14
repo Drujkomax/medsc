@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { imageUrl } from "@/shared/config/site";
 import { useTranslation } from 'react-i18next';
 import { useWarehouse, LowStockItem, WarehouseItem } from '@/hooks/useWarehouse';
 import { AddWarehouseItemDialog } from '../components/Warehouse/AddWarehouseItemDialog';
@@ -310,7 +311,7 @@ export const Warehouse = () => {
             <div className="aspect-video bg-muted relative">
               {item.images.cover ? (
                 <img
-                  src={item.images.cover}
+                  src={imageUrl(item.images.cover)}
                   alt={item.name.ru}
                   className="w-full h-full object-cover"
                 />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { imageUrl } from "~/shared/config/site";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench, TrendingUp, ChevronDown, ChevronUp, Loader2, Package } from 'lucide-react';
@@ -227,7 +228,7 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                       >
                         {product.images?.cover ? (
                           <img
-                            src={product.images.cover}
+                            src={imageUrl(product.images.cover)}
                             alt={product.name[currentLanguage]}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {

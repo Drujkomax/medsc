@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { imageUrl } from "@/shared/config/site";
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -223,7 +224,7 @@ const AdminProductPreview = () => {
             <div className="relative aspect-square max-w-sm mx-auto rounded-lg overflow-hidden bg-muted">
               {product.images?.cover || selectedImage ? (
                 <img
-                  src={selectedImage || product.images.cover}
+                  src={imageUrl(selectedImage || product.images.cover)}
                   alt={product.name[language] || 'Изображение товара'}
                   className="w-full h-full object-contain"
                   onError={(e) => {
@@ -250,7 +251,7 @@ const AdminProductPreview = () => {
                     onClick={() => setSelectedImage(null)}
                   >
                     <img
-                      src={product.images.cover}
+                      src={imageUrl(product.images.cover)}
                       alt="Основное изображение"
                       className="w-full h-full object-contain"
                       onError={(e) => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { imageUrl } from "@/shared/config/site";
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -159,7 +160,7 @@ const ArchivedData = () => {
                         <div className="aspect-[4/5] w-full bg-gray-100 rounded-md mb-3 flex items-center justify-center overflow-hidden">
                           {product.images?.cover ? (
                             <img 
-                              src={product.images.cover} 
+                              src={imageUrl(product.images.cover)} 
                               alt={product.name?.ru || t('archive.product', 'Товар')}
                               className="w-full h-full object-contain"
                             />
