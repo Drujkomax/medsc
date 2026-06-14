@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Category {
@@ -17,10 +17,12 @@ export const useCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasLoadedRef = useRef(false);
 
   const fetchCategories = async () => {
     try {
-      setLoading(true);
+      // Spinner only on first load; refetches after a mutation keep the list shown.
+      if (!hasLoadedRef.current) setLoading(true);
       const { data, error } = await supabase
         .from('product_categories')
         .select('*')
@@ -28,6 +30,7 @@ export const useCategories = () => {
 
       if (error) throw error;
       setCategories((data || []) as unknown as Category[]);
+      hasLoadedRef.current = true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {

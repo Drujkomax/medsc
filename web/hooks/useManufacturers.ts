@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface Manufacturer {
@@ -16,10 +16,12 @@ export const useManufacturers = () => {
   const [manufacturers, setManufacturers] = useState<Manufacturer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const hasLoadedRef = useRef(false);
 
   const fetchManufacturers = async () => {
     try {
-      setLoading(true);
+      // Spinner only on first load; refetches after a mutation keep the list shown.
+      if (!hasLoadedRef.current) setLoading(true);
       const { data, error } = await supabase
         .from('manufacturers')
         .select('*')
@@ -27,6 +29,7 @@ export const useManufacturers = () => {
 
       if (error) throw error;
       setManufacturers((data || []) as unknown as Manufacturer[]);
+      hasLoadedRef.current = true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {

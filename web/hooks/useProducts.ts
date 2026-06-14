@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { generateSlug } from '@/lib/slugify';
@@ -45,10 +45,13 @@ export const useProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const hasLoadedRef = useRef(false);
 
   const fetchProducts = useCallback(async () => {
     try {
-      setLoading(true);
+      // Only flip the full-screen spinner on the first load; refetches after a
+      // mutation keep the rendered list in place instead of blanking it.
+      if (!hasLoadedRef.current) setLoading(true);
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -61,6 +64,7 @@ export const useProducts = () => {
 
       if (error) throw error;
       setProducts((data || []) as unknown as Product[]);
+      hasLoadedRef.current = true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {
@@ -196,10 +200,12 @@ export const useAdminProducts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const hasLoadedRef = useRef(false);
 
   const fetchProducts = useCallback(async () => {
     try {
-      setLoading(true);
+      // Keep the list visible on post-mutation refetches; spinner only on first load.
+      if (!hasLoadedRef.current) setLoading(true);
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -208,6 +214,7 @@ export const useAdminProducts = () => {
 
       if (error) throw error;
       setProducts((data || []) as unknown as Product[]);
+      hasLoadedRef.current = true;
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
     } finally {
