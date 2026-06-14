@@ -248,7 +248,7 @@ export function RoiCalculator({ lang }: { lang: import("~/shared/config/site").L
             <DollarSign className="w-8 h-8 mx-auto mb-2 text-msc-accent transition-all duration-300 group-hover:scale-110 group-hover:text-msc-primary" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.monthlyProfit}</h3>
              <p className="text-2xl font-bold text-msc-primary transition-colors group-hover:text-msc-accent">
-              {t.currency}{monthlyProfit.toLocaleString()}
+              {t.currency}{monthlyProfit.toLocaleString('ru-RU')}
             </p>
           </div>
 
@@ -257,7 +257,7 @@ export function RoiCalculator({ lang }: { lang: import("~/shared/config/site").L
             <TrendingUp className="w-8 h-8 mx-auto mb-2 text-msc-accent transition-all duration-300 group-hover:scale-110 group-hover:text-msc-primary" />
             <h3 className="font-semibold text-msc-text mb-1 transition-colors group-hover:text-msc-primary">{t.yearlyProfit}</h3>
             <p className="text-2xl font-bold text-msc-primary transition-colors group-hover:text-msc-accent">
-              {t.currency}{yearlyProfit.toLocaleString()}
+              {t.currency}{yearlyProfit.toLocaleString('ru-RU')}
             </p>
           </div>
         </div>
