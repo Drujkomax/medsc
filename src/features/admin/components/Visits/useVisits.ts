@@ -4,8 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUserRole } from '@/hooks/useUserRole';
 import type { Filters, Visit, VisitListRow, VisitStage } from './types';
 
-// Roles that see ALL visits; everyone else (salesperson, etc.) sees only their own.
-const VISITS_FULL_ACCESS = ['sales_manager', 'director', 'admin'];
+// Roles that see ALL visits; everyone else sees only their own.
+const VISITS_FULL_ACCESS = ['director', 'admin'];
 
 // Until Supabase types are regenerated after the migration, cast to `any` for the new tables.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

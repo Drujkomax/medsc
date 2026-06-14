@@ -14,6 +14,7 @@ import {
 } from './useVisits';
 import type { Visit, VisitStage } from './types';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
 interface Props {
@@ -22,7 +23,8 @@ interface Props {
   onChanged?: () => void;
 }
 
-const MANAGER_ROLES = ['director', 'admin', 'sales_manager'];
+// director/admin can manage ANY visit; everyone else only their own.
+const EDIT_ALL_ROLES = ['director', 'admin'];
 const NONE = '__none__';
 
 const STATUS_LABEL: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -57,9 +59,12 @@ type DetailData = {
 export default function VisitDetailModal({ visitId, onClose, onChanged }: Props) {
   const { toast } = useToast();
   const { role } = useUserRole();
-  const canManage = MANAGER_ROLES.includes(role ?? '');
+  const { user } = useAuth();
 
   const [data, setData] = useState<DetailData | null>(null);
+  // director/admin manage any visit; everyone else only their own.
+  const canManage =
+    EDIT_ALL_ROLES.includes(role ?? '') || (!!user && !!data && data.visit.rep_id === user.id);
   const [loading, setLoading] = useState(false);
 
   const [editing, setEditing] = useState(false);
