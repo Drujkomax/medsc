@@ -70,9 +70,9 @@ const DealAnalytics = ({ detailed = false }: DealAnalyticsProps) => {
   ];
 
   // Key metrics
-  const totalValue = deals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+  const totalValue = deals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
   const closedDeals = deals.filter(deal => deal.stage === 'closed');
-  const wonValue = closedDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+  const wonValue = closedDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
   const lostDeals = deals.filter(deal => deal.stage === 'lost');
   const avgDealSize = deals.length > 0 ? totalValue / deals.length : 0;
   const winRate = deals.length > 0 ? (closedDeals.length / deals.length * 100) : 0;

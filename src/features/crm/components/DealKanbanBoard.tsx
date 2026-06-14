@@ -50,7 +50,7 @@ const DealKanbanBoard = ({ onAddDeal, onEditDeal, onViewDeal }: DealKanbanBoardP
 
   const getStageValue = (stage: string) => {
     const stageDeals = getDealsByStage(stage);
-    return stageDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+    return stageDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
   };
 
   const onDragEnd = async (result: DropResult) => {

@@ -50,9 +50,9 @@ const DealList = ({ onAddDeal, onEditDeal, onViewDeal }: DealListProps) => {
     return colors[stage as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
 
-  const totalValue = deals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+  const totalValue = deals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
   const closedDeals = deals.filter(deal => deal.stage === 'closed');
-  const closedValue = closedDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+  const closedValue = closedDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
 
   const handleDeleteDeal = async (id: string, title: string) => {
     if (confirm(t('common.confirmDelete', { name: title }))) {

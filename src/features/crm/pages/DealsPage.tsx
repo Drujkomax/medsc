@@ -41,11 +41,13 @@ const DealsPage = () => {
   
   const isAccountant = role === 'accountant';
 
-  // Calculate quick stats
+  // Calculate quick stats.
+  // amount/debt_amount are Postgres numeric → returned as STRINGS, so they must be
+  // coerced with Number() or `sum + deal.amount` concatenates strings instead of adding.
   const totalDeals = deals.length;
-  const totalValue = deals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+  const totalValue = deals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
   const closedDeals = deals.filter(deal => deal.stage === 'closed');
-  const wonValue = closedDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+  const wonValue = closedDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
   const avgDealValue = totalDeals > 0 ? totalValue / totalDeals : 0;
   const conversionRate = totalDeals > 0 ? (closedDeals.length / totalDeals * 100) : 0;
   
@@ -56,7 +58,7 @@ const DealsPage = () => {
   const debtDeals = deals.filter(deal => deal.payment_status === 'debt');
   
   // Calculate total debt amount and count of debtors
-  const totalDebtAmount = debtDeals.reduce((sum, deal) => sum + (deal.debt_amount || 0), 0);
+  const totalDebtAmount = debtDeals.reduce((sum, deal) => sum + Number(deal.debt_amount || 0), 0);
   const debtorsCount = debtDeals.length;
 
   const handleCreateDeal = () => {

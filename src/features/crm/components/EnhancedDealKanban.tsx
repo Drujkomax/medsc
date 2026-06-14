@@ -120,7 +120,7 @@ const EnhancedDealKanban = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealK
 
   const getStageValue = (stage: string) => {
     const stageDeals = getDealsByStage(stage);
-    return stageDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+    return stageDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0);
   };
 
   const getStageAvgValue = (stage: string) => {
@@ -183,7 +183,7 @@ const EnhancedDealKanban = ({ onAddDeal, onEditDeal, onViewDeal }: EnhancedDealK
         <div>
           <h2 className="text-2xl font-bold">{t('deals.kanbanView')}</h2>
           <p className="text-muted-foreground">
-            {filteredDeals.length} сделок на общую сумму ${filteredDeals.reduce((sum, deal) => sum + (deal.amount || 0), 0).toLocaleString()}
+            {filteredDeals.length} сделок на общую сумму ${filteredDeals.reduce((sum, deal) => sum + Number(deal.amount || 0), 0).toLocaleString()}
           </p>
         </div>
         <div className="flex items-center gap-3">
