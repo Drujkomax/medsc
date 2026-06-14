@@ -1,123 +1,120 @@
 import type { Metadata } from "next";
-import { getLang } from "~/shared/i18n/lang";
-import { SITE_URL, SITE_NAME, type Lang } from "~/shared/config/site";
+import { getDict } from "~/shared/i18n/dict";
+import { SITE_URL } from "~/shared/config/site";
 import { getSiteContacts } from "~/entities/site-contacts/api";
-import { ContactForm } from "~/features/contact-form/contact-form";
+import { ContactsView } from "~/widgets/contacts/contacts-view";
 
-export const metadata: Metadata = {
-  title: "Контакты — Med Service Centre",
+const baseUrl = SITE_URL;
+const canonicalUrl = `${baseUrl}/contacts`;
+
+// SEO source strings copied verbatim from the original Contacts page's <SEOHead>.
+const SEO = {
+  title: "Контакты Med Service Centre",
   description:
-    "Свяжитесь с Med Service Centre: email info@medsc.uz, Telegram @medservice_centre, Ташкент, Узбекистан. Поставка, сервис и аренда медицинского оборудования.",
-  alternates: { canonical: `${SITE_URL}/contacts` },
+    "Контакты Med Service Centre™: офис в Ташкенте, телефон, e-mail, карта и онлайн-форма для закупки и аренды медтехники, сервисных заявок и консультаций.",
+  keywords:
+    "контакты Med Service Centre, медицинское оборудование Ташкент, телефон медтехника, e-mail медоборудование, карта офиса Ташкент, онлайн форма заявки",
 };
 
-const T = {
-  title: { ru: "Контакты", en: "Contacts", uz: "Kontaktlar" },
-  intro: {
-    ru: "Подберём оборудование под вашу клинику, ответим по срокам поставки, инсталляции, обучению и сервису.",
-    en: "We'll help you choose equipment for your clinic and answer questions on supply, installation, training and service.",
-    uz: "Klinikangiz uchun uskuna tanlashda yordam beramiz, yetkazib berish, o‘rnatish, o‘qitish va servis bo‘yicha javob beramiz.",
-  },
-  reach: { ru: "Как с нами связаться", en: "How to reach us", uz: "Biz bilan bog‘lanish" },
-  email: { ru: "Email", en: "Email", uz: "Email" },
-  telegram: { ru: "Telegram", en: "Telegram", uz: "Telegram" },
-  phone: { ru: "Телефон", en: "Phone", uz: "Telefon" },
-  location: { ru: "Адрес", en: "Location", uz: "Manzil" },
-  formTitle: { ru: "Оставьте заявку", en: "Send a request", uz: "So‘rov qoldiring" },
-  formSub: {
-    ru: "Заполните форму — менеджер свяжется с вами в рабочее время.",
-    en: "Fill in the form — a manager will contact you during business hours.",
-    uz: "Formani to‘ldiring — menejer ish vaqtida siz bilan bog‘lanadi.",
-  },
-  about: {
-    ru: "Med Service Centre — 8 лет опыта и 300+ реализованных проектов: УЗИ, анализаторы, электрохирургия и лабораторные системы для клиник Узбекистана.",
-    en: "Med Service Centre — 8 years of experience and 300+ delivered projects: ultrasound, analyzers, electrosurgery and lab systems for clinics in Uzbekistan.",
-    uz: "Med Service Centre — 8 yillik tajriba va 300+ amalga oshirilgan loyiha: UZI, analizatorlar, elektroxirurgiya va laboratoriya tizimlari.",
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: SEO.title,
+    description: SEO.description,
+    keywords: SEO.keywords,
+    alternates: { canonical: canonicalUrl },
+  };
+}
+
+const addressTranslations = {
+  ru: "Узбекистан, Ташкент, ул. Асака, 32",
+  en: "Uzbekistan, Tashkent, Asaka St., 32",
+  uz: "O'zbekiston, Toshkent, Asaka ko'chasi, 32",
+} as const;
+
+// Localized title/subtitle used for the ContactPage schema (copied 1:1 from the original).
+const content = {
+  ru: { title: "Контакты", subtitle: "Свяжитесь с нами любым удобным способом" },
+  en: { title: "Contacts", subtitle: "Contact us in any convenient way" },
+  uz: { title: "Aloqa", subtitle: "Biz bilan qulay usulda bog'laning" },
 } as const;
 
 export default async function ContactsPage() {
-  const lang = (await getLang()) as Lang;
-  const c = await getSiteContacts();
+  const { lang } = await getDict();
 
-  const location = [c.city, c.country].filter(Boolean).join(", ");
-  const tgUrl = c.telegram_url || (c.telegram ? `https://t.me/${c.telegram.replace(/^@/, "")}` : null);
+  let siteContacts: any = null;
+  try {
+    siteContacts = await getSiteContacts();
+  } catch {
+    siteContacts = null;
+  }
 
-  const items: { key: string; label: string; value: string; href?: string }[] = [];
-  if (c.email) items.push({ key: "email", label: T.email[lang], value: c.email, href: `mailto:${c.email}` });
-  if (c.telegram) items.push({ key: "tg", label: T.telegram[lang], value: c.telegram, href: tgUrl ?? undefined });
-  if (c.phone) items.push({ key: "phone", label: T.phone[lang], value: c.phone, href: `tel:${c.phone.replace(/\s+/g, "")}` });
-  if (location) items.push({ key: "loc", label: T.location[lang], value: location });
+  // Mirror the original contactData defaults so the structured data is identical.
+  const contactData = {
+    phone: siteContacts?.phone || "",
+    email: siteContacts?.email || "info@medsc.uz",
+    address: siteContacts?.address || "",
+    telegram: siteContacts?.telegram || "@medservice_centre",
+    whatsapp: siteContacts?.whatsapp || "+998 90 944 34 82",
+    facebook: siteContacts?.facebook || "https://www.facebook.com/profile.php?id=61576982724139",
+    instagram: siteContacts?.instagram || "https://www.instagram.com/medservicecentreuz/",
+    youtube: siteContacts?.youtube || "https://www.youtube.com/@MedService_centre/shorts",
+  };
 
-  const icon: Record<string, string> = { email: "✉", tg: "✈", phone: "☎", loc: "📍" };
+  const currentContent = content[lang] || content.ru;
+
+  const phoneValue = contactData.phone.replace(/[^\d+]/g, "");
+  const whatsappValue = contactData.whatsapp.replace(/[^\d]/g, "");
+  const telegramUrl = contactData.telegram.startsWith("http")
+    ? contactData.telegram
+    : `https://t.me/${contactData.telegram.replace("@", "")}`;
+  const addressValue = contactData.address || addressTranslations[lang];
+
+  // Structured data preserved 1:1 from the original Contacts page's <SEOHead>.
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: currentContent.title,
+    description: currentContent.subtitle,
+    url: canonicalUrl,
+    inLanguage: lang,
+    mainEntity: {
+      "@type": "Organization",
+      name: "Med Service Centre",
+      url: baseUrl,
+      email: contactData.email,
+      telephone: phoneValue || contactData.phone,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: addressValue,
+        addressLocality: "Tashkent",
+        addressCountry: "UZ",
+      },
+      contactPoint: [
+        {
+          "@type": "ContactPoint",
+          telephone: phoneValue || contactData.phone,
+          contactType: "sales",
+          areaServed: "UZ",
+          availableLanguage: ["ru", "en", "uz"],
+        },
+      ],
+      sameAs: [
+        contactData.facebook,
+        contactData.instagram,
+        contactData.youtube,
+        telegramUrl,
+        whatsappValue ? `https://wa.me/${whatsappValue}` : "",
+      ].filter(Boolean),
+    },
+  };
 
   return (
     <>
-      {/* Header */}
-      <section className="border-b border-border bg-gradient-to-b from-muted/40 to-background">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{T.title[lang]}</h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">{T.intro[lang]}</p>
-        </div>
-      </section>
-
-      {/* Body: info + form */}
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          {/* Left: contact info */}
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">{T.reach[lang]}</h2>
-
-            <ul className="mt-6 space-y-3">
-              {items.map((it) => {
-                const inner = (
-                  <span className="flex items-center gap-4">
-                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-lg text-primary">
-                      {icon[it.key]}
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                        {it.label}
-                      </span>
-                      <span className="block truncate text-base font-semibold">{it.value}</span>
-                    </span>
-                  </span>
-                );
-                return (
-                  <li key={it.key}>
-                    {it.href ? (
-                      <a
-                        href={it.href}
-                        target={it.href.startsWith("http") ? "_blank" : undefined}
-                        rel={it.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="block rounded-2xl border border-border bg-card p-4 transition hover:border-primary hover:shadow-sm"
-                      >
-                        {inner}
-                      </a>
-                    ) : (
-                      <div className="rounded-2xl border border-border bg-card p-4">{inner}</div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className="mt-8 rounded-2xl border border-border bg-muted/40 p-6">
-              <p className="text-sm font-semibold">{SITE_NAME}</p>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{T.about[lang]}</p>
-            </div>
-          </div>
-
-          {/* Right: form */}
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">{T.formTitle[lang]}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{T.formSub[lang]}</p>
-            <div className="mt-6">
-              <ContactForm lang={lang} />
-            </div>
-          </div>
-        </div>
-      </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
+      <ContactsView siteContacts={siteContacts} />
     </>
   );
 }
