@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useClientStock } from '@/hooks/useClientStock';
 import { useProducts } from '@/hooks/useProducts';
 import { useWarehouse } from '@/hooks/useWarehouse';
@@ -42,6 +43,18 @@ export default function AddClientStockDialog({ open, onOpenChange, clientId, onA
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // An empty product/warehouse selection is not a valid UUID and breaks the FK
+    // (23503). Require a real choice for the active tab before submitting.
+    if (sourceType === 'product' && !formData.product_id) {
+      toast.error('Выберите товар из каталога');
+      return;
+    }
+    if (sourceType === 'warehouse' && !formData.warehouse_item_id) {
+      toast.error('Выберите позицию со склада');
+      return;
+    }
+
     setLoading(true);
     try {
       const data: any = {

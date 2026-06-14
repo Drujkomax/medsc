@@ -125,8 +125,10 @@ const UserManagement = () => {
 
       if (error) throw error;
 
-      // Добавляем роль
+      // signUp already creates a base 'user' role row, and user_roles.user_id is
+      // UNIQUE — a second insert 23505'd. Replace that row with the chosen role.
       if (data.user) {
+        await supabase.from('user_roles').delete().eq('user_id', data.user.id);
         const { error: roleError } = await supabase
           .from('user_roles')
           .insert({
@@ -156,13 +158,15 @@ const UserManagement = () => {
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
     try {
+      // user_roles.user_id is UNIQUE and the compat layer can't honor onConflict,
+      // so upsert ran a bare insert and 23505'd for every already-roled user.
+      // Delete-then-insert guarantees exactly one role row (same as update_employee).
+      await supabase.from('user_roles').delete().eq('user_id', userId);
       const { error } = await supabase
         .from('user_roles')
-        .upsert({
+        .insert({
           user_id: userId,
           role: newRole as 'admin' | 'salesperson' | 'sales_manager' | 'director' | 'accountant' | 'engineer'
-        }, {
-          onConflict: 'user_id'
         });
 
       if (error) throw error;

@@ -1,6 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// product_categories.value is UNIQUE — adding/editing a category whose value
+// already exists raised 23505. Resolve collisions by appending -2/-3.
+async function makeUniqueValue(base: string, excludeId?: string): Promise<string> {
+  const safe = base && base.trim() ? base.trim() : 'category';
+  const { data } = await supabase.from('product_categories').select('value');
+  const taken = new Set(
+    (data || [])
+      .filter((r: any) => !excludeId || r.id !== excludeId)
+      .map((r: any) => r.value)
+      .filter(Boolean),
+  );
+  if (!taken.has(safe)) return safe;
+  let n = 2;
+  while (taken.has(`${safe}-${n}`)) n++;
+  return `${safe}-${n}`;
+}
+
 export interface Category {
   id: string;
   value: string;
@@ -43,9 +60,10 @@ export const useCategories = () => {
     name: { ru: string; en: string; uz: string } 
   }) => {
     try {
+      const value = await makeUniqueValue(categoryData.value);
       const { data, error } = await supabase
         .from('product_categories')
-        .insert([categoryData])
+        .insert([{ ...categoryData, value }])
         .select()
         .single();
 
@@ -89,9 +107,10 @@ export const useCategories = () => {
     name: { ru: string; en: string; uz: string } 
   }) => {
     try {
+      const value = await makeUniqueValue(categoryData.value, id);
       const { data, error } = await supabase
         .from('product_categories')
-        .update(categoryData)
+        .update({ ...categoryData, value })
         .eq('id', id)
         .select()
         .single();

@@ -1,6 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
+// manufacturers.slug is UNIQUE — adding/editing a manufacturer whose slug already
+// exists raised 23505. Resolve collisions by appending -2/-3.
+async function makeUniqueSlug(base: string, excludeId?: string): Promise<string> {
+  const safe = base && base.trim() ? base.trim() : 'manufacturer';
+  const { data } = await supabase.from('manufacturers').select('slug');
+  const taken = new Set(
+    (data || [])
+      .filter((r: any) => !excludeId || r.id !== excludeId)
+      .map((r: any) => r.slug)
+      .filter(Boolean),
+  );
+  if (!taken.has(safe)) return safe;
+  let n = 2;
+  while (taken.has(`${safe}-${n}`)) n++;
+  return `${safe}-${n}`;
+}
+
 export interface Manufacturer {
   id: string;
   name: string;
@@ -45,9 +62,10 @@ export const useManufacturers = () => {
     slug: string;
   }) => {
     try {
+      const slug = await makeUniqueSlug(manufacturerData.slug);
       const { data, error } = await supabase
         .from('manufacturers')
-        .insert([manufacturerData])
+        .insert([{ ...manufacturerData, slug }])
         .select()
         .single();
 
@@ -67,9 +85,10 @@ export const useManufacturers = () => {
     slug: string;
   }) => {
     try {
+      const slug = await makeUniqueSlug(manufacturerData.slug, id);
       const { data, error } = await supabase
         .from('manufacturers')
-        .update(manufacturerData)
+        .update({ ...manufacturerData, slug })
         .eq('id', id)
         .select()
         .single();

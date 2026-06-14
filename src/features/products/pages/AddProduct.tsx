@@ -87,7 +87,18 @@ const AddProduct = () => {
       });
       return;
     }
-    
+
+    // products.category is NOT NULL and FK→product_categories(value): an empty
+    // category fails even for drafts (23503/23502), so require it for any save.
+    if (!formData.category) {
+      toast({
+        variant: 'destructive',
+        title: 'Ошибка валидации',
+        description: 'Необходимо выбрать категорию'
+      });
+      return;
+    }
+
     // Полная валидация для публикации
     if (formData.status === 'active') {
       console.log('Validating for active status');

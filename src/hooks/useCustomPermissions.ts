@@ -141,18 +141,22 @@ export const useCustomPermissions = (userId?: string) => {
         }
       }
 
-      // Управление временным доступом
+      // Управление временным доступом.
+      // temporary_employees.user_id is UNIQUE and the compat layer can't honor
+      // onConflict, so do delete-then-insert instead of upsert (a bare insert
+      // would 23505 on the second save).
       if (isTemporary && expiresAt) {
+        await supabase.from('temporary_employees').delete().eq('user_id', userId);
         const { error: tempError } = await supabase
           .from('temporary_employees')
-          .upsert({
+          .insert({
             user_id: userId,
             expires_at: expiresAt.toISOString(),
             is_active: true,
-          }, { onConflict: 'user_id' });
+          });
 
         if (tempError) {
-          console.error('Error upserting temporary employee:', tempError);
+          console.error('Error inserting temporary employee:', tempError);
           throw tempError;
         }
       } else {
