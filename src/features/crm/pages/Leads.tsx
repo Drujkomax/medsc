@@ -75,7 +75,9 @@ const Leads = () => {
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [selectedLeadIds, setSelectedLeadIds] = useState<string[]>([]);
   const [sortField, setSortField] = useState<"name" | "company" | "city" | "created_at" | "lead_created_date">(
-    "lead_created_date",
+    // Sort by created_at (always set) so the newest leads are on top. lead_created_date
+    // is null for web/bot leads and was sinking the newest ones to the bottom page.
+    "created_at",
   );
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
@@ -311,8 +313,10 @@ const Leads = () => {
           bValue = new Date(b.created_at).getTime();
           break;
         case "lead_created_date":
-          aValue = a.lead_created_date ? new Date(a.lead_created_date).getTime() : 0;
-          bValue = b.lead_created_date ? new Date(b.lead_created_date).getTime() : 0;
+          // Fall back to created_at when lead_created_date is missing, so leads
+          // without it don't all collapse to 0 (epoch) at the bottom.
+          aValue = new Date(a.lead_created_date || a.created_at).getTime();
+          bValue = new Date(b.lead_created_date || b.created_at).getTime();
           break;
         default:
           return 0;
@@ -939,8 +943,7 @@ const Leads = () => {
                     </TableCell>
                     <TableCell>
                       {(() => {
-                        if (!lead.lead_created_date) return "-";
-                        const date = new Date(lead.lead_created_date);
+                        const date = new Date(lead.lead_created_date || lead.created_at);
                         return isNaN(date.getTime()) ? "-" : format(date, "dd.MM.yyyy HH:mm", { locale: ru });
                       })()}
                     </TableCell>
