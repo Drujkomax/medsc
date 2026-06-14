@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { imageUrl } from "~/shared/config/site";
+import { imageUrl, BLUR_DATA_URL } from "~/shared/config/site";
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench, TrendingUp, ChevronDown, ChevronUp, Loader2, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -227,13 +228,14 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                         aria-label={`${t('common.view')}: ${product.name[currentLanguage]}`}
                       >
                         {product.images?.cover ? (
-                          <img
-                            src={imageUrl(product.images.cover)}
+                          <Image
+                            src={imageUrl(product.images.cover)!}
                             alt={product.name[currentLanguage]}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={(e) => {
-                              e.currentTarget.src = '/placeholder.svg';
-                            }}
+                            fill
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            placeholder="blur"
+                            blurDataURL={BLUR_DATA_URL}
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-full bg-muted flex items-center justify-center">

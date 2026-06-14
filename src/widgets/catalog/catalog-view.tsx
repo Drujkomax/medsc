@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { API_URL } from "~/shared/config/site";
+import { API_URL, BLUR_DATA_URL } from "~/shared/config/site";
 import {
   Card,
   CardContent,
@@ -449,6 +449,8 @@ export function CatalogView({
                               alt={product.name[language]}
                               fill
                               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                              placeholder="blur"
+                              blurDataURL={BLUR_DATA_URL}
                               className="object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           ) : (

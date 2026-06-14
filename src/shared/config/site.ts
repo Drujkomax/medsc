@@ -12,6 +12,11 @@ export function imageUrl(path?: string | null): string | undefined {
   return path.startsWith("http") ? path : `${API_URL}${path}`;
 }
 
+// Tiny neutral blur shown by next/image while a remote photo loads (replaces the
+// empty grey box). base64 of an 8×10 #eef0f3 rect SVG.
+export const BLUR_DATA_URL =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjEwIj48cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2VlZjBmMyIvPjwvc3ZnPg==";
+
 export type Lang = "ru" | "en" | "uz";
 export const LANGS: { code: Lang; label: string; flag: string }[] = [
   { code: "ru", label: "Русский", flag: "🇷🇺" },

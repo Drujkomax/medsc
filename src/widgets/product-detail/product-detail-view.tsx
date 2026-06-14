@@ -35,7 +35,8 @@ import {
   isCompleteUzbekPhone,
 } from "@/lib/phoneValidation";
 import { toUrlSlug } from "@/lib/slugify";
-import { API_URL } from "~/shared/config/site";
+import Image from "next/image";
+import { API_URL, BLUR_DATA_URL } from "~/shared/config/site";
 
 const getCategoryLabel = (category: string, language: "ru" | "en" | "uz") => {
   const categoryLabels = {
@@ -313,13 +314,14 @@ export function ProductDetailView({
             {/* Main Image */}
             <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
               {coverUrl || selectedImageUrl ? (
-                <img
-                  src={selectedImageUrl || coverUrl || undefined}
+                <Image
+                  src={(selectedImageUrl || coverUrl)!}
                   alt={productName}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = "/placeholder.svg";
-                  }}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  placeholder="blur"
+                  blurDataURL={BLUR_DATA_URL}
+                  className="object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
@@ -346,21 +348,22 @@ export function ProductDetailView({
                 {/* Cover as first thumbnail */}
                 {product.images.cover && (
                   <div
-                    className={`aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
+                    className={`relative aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
                       !selectedImage
                         ? "border-primary"
                         : "border-transparent hover:border-primary/50"
                     }`}
                     onClick={() => setSelectedImage(null)}
                   >
-                    <img
-                      src={coverUrl || undefined}
-                      alt={`${productName} - основное изображение`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "/placeholder.svg";
-                      }}
-                    />
+                    {coverUrl && (
+                      <Image
+                        src={coverUrl}
+                        alt={`${productName} - основное изображение`}
+                        fill
+                        sizes="120px"
+                        className="object-cover"
+                      />
+                    )}
                   </div>
                 )}
 
@@ -368,21 +371,22 @@ export function ProductDetailView({
                 {product.images.gallery.map((image: string, index: number) => (
                   <div
                     key={index}
-                    className={`aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
+                    className={`relative aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
                       selectedImage === image
                         ? "border-primary"
                         : "border-transparent hover:border-primary/50"
                     }`}
                     onClick={() => setSelectedImage(image)}
                   >
-                    <img
-                      src={toImageUrl(image) || undefined}
-                      alt={`${productName} - изображение ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "/placeholder.svg";
-                      }}
-                    />
+                    {toImageUrl(image) && (
+                      <Image
+                        src={toImageUrl(image)!}
+                        alt={`${productName} - изображение ${index + 1}`}
+                        fill
+                        sizes="120px"
+                        className="object-cover"
+                      />
+                    )}
                   </div>
                 ))}
               </div>
