@@ -9,6 +9,17 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [{ source: "/storage/:path*", destination: `${API}/storage/:path*` }];
   },
+  // Preserve the legacy SPA routes after the [...slug] fallback is removed.
+  async redirects() {
+    return [
+      { source: "/product/:id", destination: "/catalog/:id", permanent: true },
+      { source: "/products/:id", destination: "/catalog/:id", permanent: true },
+      { source: "/catalog/products/:slug", destination: "/catalog/:slug", permanent: true },
+      { source: "/auth", destination: "/admin", permanent: false },
+      { source: "/setup-director", destination: "/admin/director-registration", permanent: false },
+      { source: "/director-registration", destination: "/admin/director-registration", permanent: false },
+    ];
+  },
 };
 
 export default nextConfig;
