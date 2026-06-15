@@ -22,8 +22,12 @@ import { generateSlug } from '@/lib/slugify';
 
 const statusOptions = [
   { value: 'active', label: 'Активный' },
-  { value: 'draft', label: 'Черновик' }
+  { value: 'draft', label: 'Черновик' },
+  { value: 'archived', label: 'В архиве' }
 ];
+
+// DB enforces products_status_check: status IN ('active','draft','archived').
+const VALID_STATUSES = ['active', 'draft', 'archived'];
 
 const EditProduct = () => {
   const { t, i18n } = useTranslation();
@@ -147,6 +151,14 @@ const EditProduct = () => {
     setLoading(true);
     
     try {
+      // Guard the products_status_check DB constraint: status must be one of
+      // active/draft/archived. An empty/invalid value (which the form can hold)
+      // makes Postgres reject the whole UPDATE with a cryptic error, so the save
+      // silently fails. Fall back to the product's real status, then 'draft'.
+      const safeStatus = VALID_STATUSES.includes(formData.status)
+        ? formData.status
+        : (VALID_STATUSES.includes(product.status) ? product.status : 'draft');
+
       const updateData = {
         name: formData.name,
         description: formData.description,
@@ -156,7 +168,7 @@ const EditProduct = () => {
         manufacturer_id: formData.manufacturer_id || null,
         icon_url: formData.icon_url || null,
         price: formData.price || null,
-        status: formData.status as 'active' | 'draft',
+        status: safeStatus as 'active' | 'draft',
         features: formData.features,
         images: formData.images
       };
