@@ -3,10 +3,33 @@ import { getProductBySlug, getActiveProducts } from "~/entities/product/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { getLang } from "~/shared/i18n/lang";
 import { SITE_URL, SITE_NAME, type Lang } from "~/shared/config/site";
+import { toUrlSlug } from "@/lib/slugify";
 import { ProductDetailView } from "~/widgets/product-detail/product-detail-view";
 
 const FALLBACK_IMAGE =
   "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
+
+// Prerender every product page at build + revalidate (ISR) so they are CDN/browser
+// cacheable instead of fully re-rendered per visit. A catch-all route with no
+// generateStaticParams would otherwise default to per-request dynamic (no-store).
+// Products added later still render on-demand and get ISR-cached (dynamicParams).
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const [products, manufacturers] = await Promise.all([
+    getActiveProducts(),
+    getManufacturers(),
+  ]);
+  const slugOf = (mid: string | null) =>
+    manufacturers.find((m) => m.id === mid)?.slug ?? null;
+  return products
+    .filter((p) => p.slug)
+    .map((p) => {
+      const ms = toUrlSlug(slugOf(p.manufacturer_id));
+      const ps = p.slug as string;
+      return { rest: ms && ms !== "unknown" ? [ms, ps] : [ps] };
+    });
+}
 
 const getCategoryLabel = (category: string, language: Lang) => {
   const categoryLabels = {

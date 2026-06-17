@@ -1,6 +1,5 @@
 import "../src/index.css";
 import type { Metadata, Viewport } from "next";
-import { cookies } from "next/headers";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
 
 const OG_IMAGE = "/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
@@ -105,12 +104,12 @@ const orgJsonLd = {
   ],
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const lang = (await cookies()).get("lang")?.value;
-  const htmlLang = lang === "en" ? "en" : lang === "uz" ? "uz" : "ru";
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Static default language; the client <I18nProvider> updates <html lang> after
+  // hydration based on the `lang` cookie. Not reading cookies() here is what keeps
+  // every page statically prerenderable / CDN-cacheable.
   return (
-    <html lang={htmlLang}>
+    <html lang="ru">
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         {children}

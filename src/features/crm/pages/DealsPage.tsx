@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import EnhancedDealList from '../components/EnhancedDealList';
 import EnhancedViewDealModal from '../components/EnhancedViewDealModal';
 import UnifiedDealDialog from '../components/UnifiedDealDialog';
-import DealAnalytics from '../components/DealAnalytics';
+import dynamic from 'next/dynamic';
 import { Deal } from '@/types/crm';
 import { useDeals } from '@/hooks/useDeals';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +29,13 @@ import {
   AlertCircle,
   CreditCard
 } from 'lucide-react';
+
+// Code-split recharts (~120 KB gzip) out of the deals route's initial JS bundle —
+// the chart loads after hydration with a skeleton instead of blocking first paint.
+const DealAnalytics = dynamic(() => import('../components/DealAnalytics'), {
+  ssr: false,
+  loading: () => <div className="h-64 animate-pulse rounded-lg bg-muted" />,
+});
 
 const DealsPage = () => {
   const { t } = useTranslation();

@@ -19,11 +19,31 @@ export interface Product {
   created_at: string;
 }
 
+// Sensitive/internal columns the backend's SELECT * returns but the public site
+// never renders. Stripping them server-side keeps business metrics out of the
+// public HTML/flight payload (and trims its size). Safe: none are used by any
+// public component.
+const ADMIN_ONLY_COLS = [
+  "competitor_price",
+  "revenue_attributed",
+  "conversion_rate",
+  "performance_score",
+  "price_history",
+  "created_by",
+  "updated_by",
+];
+
+function stripAdminFields<T extends Record<string, unknown>>(p: T): T {
+  const out: Record<string, unknown> = { ...p };
+  for (const k of ADMIN_ONLY_COLS) delete out[k];
+  return out as T;
+}
+
 /** All active, non-archived products (public catalog). Cached for SSR/ISR. */
 export async function getActiveProducts(revalidate = 300): Promise<Product[]> {
   try {
     const { data } = await rpc<Product[]>("get_public_products", {}, { revalidate });
-    return data || [];
+    return (data || []).map((p) => stripAdminFields(p as Record<string, unknown>)) as Product[];
   } catch {
     return [];
   }
@@ -36,7 +56,7 @@ export async function getProductBySlug(slug: string, revalidate = 300): Promise<
       { filters: [{ col: "slug", op: "eq", val: slug }], single: true },
       { revalidate },
     );
-    return data ?? null;
+    return data ? (stripAdminFields(data as Record<string, unknown>) as Product) : null;
   } catch {
     return null;
   }

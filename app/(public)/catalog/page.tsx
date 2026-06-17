@@ -3,249 +3,50 @@ import { Suspense } from "react";
 import { getActiveProducts } from "~/entities/product/api";
 import { getCategories } from "~/entities/category/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
-import { getDict } from "~/shared/i18n/dict";
-import { SITE_URL, type Lang } from "~/shared/config/site";
+import { SITE_URL } from "~/shared/config/site";
 import { toUrlSlug } from "@/lib/slugify";
 import { CatalogView } from "~/widgets/catalog/catalog-view";
 
-type SP = { search?: string; category?: string; manufacturer?: string };
+// Public catalog: prerendered + revalidated (ISR) so it is CDN/browser cacheable.
+// Search, category/manufacturer filtering and pagination all run on the client
+// (CatalogView reads the URL query via useSearchParams), so the page itself does
+// NOT depend on searchParams and stays static. SEO copy is the default (Russian)
+// catalog text — the language a crawler sees, applied client-side for visitors.
+export const revalidate = 300;
 
-// Fallback categories for display (mirrors the original Catalog component).
-const fallbackCategories = {
-  all: {
-    ru: "Все категории",
-    en: "All categories",
-    uz: "Barcha kategoriyalar",
+const SEO_TITLE = "Каталог медицинского оборудования в Узбекистане";
+const SEO_DESCRIPTION =
+  "Продажа и аренда медицинского оборудования: УЗИ, анализаторы, хирургические системы. Поставка по Узбекистану и Ташкенту.";
+const SEO_KEYWORDS = [
+  "медицинское оборудование Узбекистан",
+  "медицинское оборудование Ташкент",
+  "купить медоборудование",
+  "аренда медицинского оборудования",
+  "medical equipment Uzbekistan",
+  "buy medical equipment Tashkent",
+  "Med Service Centre",
+];
+const CANONICAL = `${SITE_URL}/catalog`;
+
+export const metadata: Metadata = {
+  title: SEO_TITLE,
+  description: SEO_DESCRIPTION,
+  keywords: SEO_KEYWORDS.join(", "),
+  alternates: { canonical: CANONICAL },
+  openGraph: {
+    title: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+    url: CANONICAL,
+    type: "website",
   },
 };
 
-const getCategoryTag = (
-  category: string,
-  language: Lang,
-  allCategories: Record<string, { ru: string; en: string; uz: string }>,
-) => allCategories[category]?.[language] || category;
-
-/** Resolves the SAME SEO strings the original page passed to <SEOHead>. */
-async function resolveCatalog(sp: SP) {
-  const { lang } = await getDict();
-  const language = lang;
+export default async function CatalogPage() {
   const [products, categories, manufacturers] = await Promise.all([
     getActiveProducts(),
     getCategories(),
     getManufacturers(),
   ]);
-
-  const selectedCategory = sp.category || "all";
-  const selectedManufacturer = sp.manufacturer || "all";
-  const searchTerm = sp.search || "";
-
-  const allCategories = {
-    ...fallbackCategories,
-    ...categories.reduce(
-      (acc, cat) => {
-        acc[cat.value] = cat.name;
-        return acc;
-      },
-      {} as Record<string, { ru: string; en: string; uz: string }>,
-    ),
-  };
-
-  const selectedManufacturerEntity =
-    selectedManufacturer === "all"
-      ? null
-      : manufacturers.find(
-          (manufacturer) =>
-            toUrlSlug(manufacturer.slug) === toUrlSlug(selectedManufacturer),
-        ) || null;
-
-  const categoryName = getCategoryTag(selectedCategory, language, allCategories);
-
-  const manufacturerName = (() => {
-    if (!selectedManufacturerEntity?.name) return "";
-    const name = selectedManufacturerEntity.name;
-    if (typeof name === "object") {
-      const objName = name as Record<string, string>;
-      return objName[language] || objName.ru || objName.en || "";
-    }
-    return String(name);
-  })();
-
-  const catalogTitleByLanguage = {
-    ru: "Каталог медицинского оборудования в Узбекистане",
-    en: "Medical Equipment Catalog in Uzbekistan",
-    uz: "O‘zbekistonda tibbiy uskunalar katalogi",
-  }[language];
-
-  const locationByLanguage = {
-    ru: "в Узбекистане и Ташкенте",
-    en: "in Uzbekistan and Tashkent",
-    uz: "O‘zbekistonda va Toshkentda",
-  }[language];
-
-  const seoTitle = (() => {
-    if (selectedCategory !== "all" && manufacturerName) {
-      return language === "ru"
-        ? `${categoryName} ${manufacturerName} — купить в Узбекистане`
-        : language === "en"
-          ? `${categoryName} ${manufacturerName} — buy in Uzbekistan`
-          : `${categoryName} ${manufacturerName} — O‘zbekistonda sotib olish`;
-    }
-    if (selectedCategory !== "all") {
-      return language === "ru"
-        ? `${categoryName} — купить в Узбекистане`
-        : language === "en"
-          ? `${categoryName} — buy in Uzbekistan`
-          : `${categoryName} — O‘zbekistonda sotib olish`;
-    }
-    if (manufacturerName) {
-      return language === "ru"
-        ? `${manufacturerName} — купить медоборудование в Узбекистане`
-        : language === "en"
-          ? `${manufacturerName} — buy medical equipment in Uzbekistan`
-          : `${manufacturerName} — O‘zbekistonda tibbiy uskunalarni sotib olish`;
-    }
-    return catalogTitleByLanguage;
-  })();
-
-  const seoDescription = (() => {
-    if (selectedCategory !== "all" && manufacturerName) {
-      return language === "ru"
-        ? `${categoryName} ${manufacturerName} — продажа, сервис и аренда медицинского оборудования ${locationByLanguage}.`
-        : language === "en"
-          ? `${categoryName} ${manufacturerName} — sales, service, and rental of medical equipment ${locationByLanguage}.`
-          : `${categoryName} ${manufacturerName} — tibbiy uskunalarni sotish, servis va ijara ${locationByLanguage}.`;
-    }
-    if (selectedCategory !== "all") {
-      return language === "ru"
-        ? `${categoryName}. Продажа, сервис и аренда медицинского оборудования ${locationByLanguage}.`
-        : language === "en"
-          ? `${categoryName}. Medical equipment sales, service, and rental ${locationByLanguage}.`
-          : `${categoryName}. Tibbiy uskunalarni sotish, servis va ijara ${locationByLanguage}.`;
-    }
-    if (manufacturerName) {
-      return language === "ru"
-        ? `${manufacturerName} — медицинское оборудование: продажа, аренда и сервис ${locationByLanguage}.`
-        : language === "en"
-          ? `${manufacturerName} — medical equipment: sales, rental, and service ${locationByLanguage}.`
-          : `${manufacturerName} — tibbiy uskunalar: sotuv, ijara va servis ${locationByLanguage}.`;
-    }
-    return {
-      ru: "Продажа и аренда медицинского оборудования: УЗИ, анализаторы, хирургические системы. Поставка по Узбекистану и Ташкенту.",
-      en: "Medical equipment sales and rental in Uzbekistan and Tashkent.",
-      uz: "O‘zbekistonda va Toshkentda tibbiy uskunalarni sotish va ijaraga berish.",
-    }[language];
-  })();
-
-  const seoKeywords = [
-    "медицинское оборудование Узбекистан",
-    "медицинское оборудование Ташкент",
-    "купить медоборудование",
-    "аренда медицинского оборудования",
-    "medical equipment Uzbekistan",
-    "buy medical equipment Tashkent",
-    "Med Service Centre",
-    ...(selectedCategory !== "all"
-      ? [
-          `${categoryName} оборудование`,
-          `купить ${categoryName.toLowerCase()}`,
-          `купить ${categoryName.toLowerCase()} в Ташкенте`,
-        ]
-      : []),
-    ...(manufacturerName
-      ? [
-          `${manufacturerName} оборудование`,
-          `купить мед оборудование ${manufacturerName}`,
-          `купить медицинские аппараты ${manufacturerName}`,
-          `купить мед оборудование ${manufacturerName} в Ташкенте`,
-          `купить мед оборудование ${manufacturerName} в Узбекистане`,
-        ]
-      : []),
-  ];
-
-  const queryParams = new URLSearchParams();
-  const normalizedCategoryValue =
-    selectedCategory !== "all"
-      ? Object.keys(allCategories).find(
-          (key) => key.toLowerCase() === selectedCategory.toLowerCase(),
-        ) || selectedCategory
-      : null;
-  const normalizedManufacturerSlug = selectedManufacturerEntity
-    ? toUrlSlug(selectedManufacturerEntity.slug)
-    : null;
-  if (normalizedCategoryValue) {
-    queryParams.set("category", normalizedCategoryValue);
-  }
-  if (normalizedManufacturerSlug) {
-    queryParams.set("manufacturer", normalizedManufacturerSlug);
-  }
-  const canonicalUrl = `https://medsc.uz/catalog${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
-
-  return {
-    language,
-    products,
-    categories,
-    manufacturers,
-    seoTitle,
-    seoDescription,
-    seoKeywords,
-    canonicalUrl,
-    searchTerm,
-  };
-}
-
-export async function generateMetadata({
-  searchParams,
-}: {
-  searchParams: Promise<SP>;
-}): Promise<Metadata> {
-  const sp = await searchParams;
-  const { seoTitle, seoDescription, seoKeywords, canonicalUrl, searchTerm } =
-    await resolveCatalog(sp);
-
-  return {
-    title: seoTitle,
-    description: seoDescription,
-    keywords: seoKeywords.join(", "),
-    alternates: { canonical: canonicalUrl },
-    robots: searchTerm ? { index: false, follow: true } : undefined,
-    openGraph: {
-      title: seoTitle,
-      description: seoDescription,
-      url: canonicalUrl,
-      type: "website",
-    },
-  };
-}
-
-export default async function CatalogPage({
-  searchParams,
-}: {
-  searchParams: Promise<SP>;
-}) {
-  const sp = await searchParams;
-  const {
-    language,
-    products,
-    categories,
-    manufacturers,
-    seoTitle,
-    seoDescription,
-    canonicalUrl,
-  } = await resolveCatalog(sp);
-
-  // Structured data для каталога (mirrors the original <SEOHead> CollectionPage).
-  const catalogSchema = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: seoTitle,
-    description: seoDescription,
-    url: canonicalUrl,
-    isPartOf: {
-      "@type": "WebSite",
-      name: "Med Service Centre",
-      url: "https://medsc.uz",
-    },
-  };
 
   // ItemList of the listed products (parity with the original second JSON-LD blob).
   const slugOf = (mid: string | null) => manufacturers.find((m) => m.id === mid)?.slug;
@@ -254,38 +55,55 @@ export default async function CatalogPage({
     const ps = p.slug || p.id;
     return ms && ms !== "unknown" ? `/catalog/${ms}/${ps}` : `/catalog/${ps}`;
   };
-  const listed =
-    sp.category && sp.category !== "all"
-      ? products.filter((p) => p.category === sp.category)
-      : products;
-  const itemListSchema = listed.length
+
+  const catalogSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+    url: CANONICAL,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Med Service Centre",
+      url: SITE_URL,
+    },
+  };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Каталог", item: CANONICAL },
+    ],
+  };
+  const itemListSchema = products.length
     ? {
         "@context": "https://schema.org",
         "@type": "ItemList",
-        itemListElement: listed.slice(0, 24).map((p, i) => {
+        itemListElement: products.slice(0, 24).map((p, i) => {
           const cover = p.images?.cover || "";
           return {
             "@type": "ListItem",
             position: i + 1,
             item: {
               "@type": "WebPage",
-              name: p.name[language],
-              url: `https://medsc.uz${pathOf(p)}`,
-              image: cover ? (cover.startsWith("http") ? cover : `https://medsc.uz${cover}`) : undefined,
+              name: p.name.ru,
+              url: `${SITE_URL}${pathOf(p)}`,
+              image: cover
+                ? cover.startsWith("http")
+                  ? cover
+                  : `${SITE_URL}${cover}`
+                : undefined,
             },
           };
         }),
       }
     : null;
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: "Каталог", item: `${SITE_URL}/catalog` },
-    ],
-  };
-  const schemas = [catalogSchema, breadcrumbSchema, ...(itemListSchema ? [itemListSchema] : [])];
+  const schemas = [
+    catalogSchema,
+    breadcrumbSchema,
+    ...(itemListSchema ? [itemListSchema] : []),
+  ];
 
   return (
     <>

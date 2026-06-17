@@ -9,6 +9,10 @@ import { HomeView } from "~/widgets/home/home-view";
 
 const OG_IMAGE = "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
 
+// Prerender + revalidate (ISR) so the page is CDN/browser cacheable instead of
+// fully re-rendered per request.
+export const revalidate = 300;
+
 export async function generateMetadata(): Promise<Metadata> {
   const { dict } = await getDict();
   const t = createT(dict);
@@ -102,7 +106,9 @@ export default async function HomePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <HomeView products={products} categories={categories} manufacturers={manufacturers} />
+      {/* Pass only the 3 featured products the view renders — not the full catalog —
+          so the RSC flight payload stays tiny instead of serializing every product. */}
+      <HomeView products={featured} categories={categories} manufacturers={manufacturers} />
     </>
   );
 }

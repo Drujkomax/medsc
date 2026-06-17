@@ -11,13 +11,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useT, useLang } from "~/shared/i18n/i18n-provider";
+import { useT, useLang, useSetLang } from "~/shared/i18n/i18n-provider";
 
 export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
   const t = useT();
   const currentLang = useLang();
+  const setLang = useSetLang();
 
   const navigation = [
     { name: t('navigation.home'), href: '/' },
@@ -35,8 +36,9 @@ export function SiteHeader() {
   const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0];
 
   const handleLanguageChange = (langCode: 'ru' | 'en' | 'uz') => {
-    document.cookie = 'lang=' + langCode + ';path=/;max-age=31536000';
-    location.reload();
+    // Client-side switch (no reload): <I18nProvider> persists the cookie and swaps
+    // the dictionary so the statically-served page re-renders in the new language.
+    setLang(langCode);
   };
 
   const isActive = (href: string) => pathname === href;
