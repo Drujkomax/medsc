@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getDict } from "~/shared/i18n/dict";
 import { SITE_URL, type Lang } from "~/shared/config/site";
+import { socialMeta } from "~/shared/config/seo";
 import { ServicesView } from "~/widgets/services/services-view";
 
 const baseUrl = SITE_URL;
@@ -9,10 +10,9 @@ const canonicalUrl = `${baseUrl}/services`;
 // SEO source strings copied verbatim from the original Services page's <SEOHead>.
 const SEO: Record<Lang, { title: string; description: string; keywords: string }> = {
   ru: {
-    title:
-      "Услуги по монтажу, сервису 24/7 и аренде медоборудования — Ташкент, Узбекистан",
+    title: "Сервис, монтаж и аренда медоборудования — Med Service Centre",
     description:
-      "Монтаж и пуско-наладка, обучение медперсонала, сервис 24/7 и аренда медицинского оборудования для клиник и лабораторий. Выезд по Ташкенту и регионам Узбекистана, договор и документы.",
+      "Монтаж и пуско-наладка, обучение персонала, сервис 24/7 и аренда медоборудования для клиник. Выезд по Ташкенту и регионам Узбекистана.",
     keywords:
       "сервис медицинского оборудования Ташкент, монтаж медоборудования Узбекистан, пуско-наладка медтехники, обучение медперсонала, ремонт медоборудования 24/7, аренда медицинского оборудования Ташкент, сервисный центр медтехники",
   },
@@ -142,6 +142,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seo.description,
     keywords: seo.keywords,
     alternates: { canonical: canonicalUrl },
+    ...socialMeta({ title: seo.title, description: seo.description, url: canonicalUrl }),
   };
 }
 
@@ -182,11 +183,20 @@ export default async function ServicesPage() {
     })),
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: seo.title, item: canonicalUrl },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify([pageSchema, servicesSchema]) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([pageSchema, servicesSchema, breadcrumbSchema]) }}
       />
       <ServicesView />
     </>

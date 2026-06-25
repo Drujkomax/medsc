@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -239,9 +240,11 @@ const RegisterWithInvite = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <div className="flex justify-center mb-4">
-            <img 
-              src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.webp" 
-              alt="Med Service Centre" 
+            <Image
+              src="/images/logo.webp"
+              alt="Med Service Centre"
+              width={382}
+              height={441}
               className="h-16 w-auto object-contain"
             />
           </div>

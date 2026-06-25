@@ -1,6 +1,7 @@
 "use client";
 
-import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import Image from 'next/image';
+import { Mail, MapPin, Send } from 'lucide-react';
 import { useT } from "~/shared/i18n/i18n-provider";
 
 export function SiteFooter() {
@@ -16,9 +17,11 @@ export function SiteFooter() {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center justify-center md:justify-start space-x-3 mb-4">
-              <img
-                src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.webp"
+              <Image
+                src="/images/logo.webp"
                 alt="MSC Logo"
+                width={382}
+                height={441}
                 className="w-16 h-16 object-contain"
               />
               <div>

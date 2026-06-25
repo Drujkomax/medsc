@@ -212,7 +212,7 @@ export function LeadForm({ onClose }: { onClose: () => void }) {
               </div>
 
               {/* Submit Button */}
-              <Button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-msc-primary to-msc-accent hover:from-msc-primary/90 hover:to-msc-accent/90 text-white font-semibold py-5 text-base transition-all duration-300 shadow-lg mt-4">
+              <Button type="submit" disabled={isSubmitting} className="w-full bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold py-5 text-base transition-colors duration-300 shadow-lg mt-4">
                 {isSubmitting ? <div className="flex items-center gap-2">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     {language === 'ru' ? 'Отправка...' : language === 'en' ? 'Sending...' : 'Jo\'natilmoqda...'}

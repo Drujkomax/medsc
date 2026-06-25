@@ -1,7 +1,7 @@
 "use client";
 // Admin chrome (ported from web/features/admin/components/AdminLayout.tsx).
 // Outlet -> children, useLocation -> usePathname. Design unchanged.
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,14 @@ export function AdminChrome({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "";
   const { t, i18n } = useTranslation();
   const { role } = useUserPermissions();
+
+  // Radix menus/selects/popovers portal to <body>, escaping the `.theme-admin`
+  // wrapper below. Apply the admin theme to <body> while the panel is mounted so
+  // those portaled surfaces inherit the dark-blue accent (instead of the root theme).
+  useEffect(() => {
+    document.body.classList.add("theme-admin");
+    return () => document.body.classList.remove("theme-admin");
+  }, []);
 
   const navigation = [
     { name: t("admin.dashboard", "Дашборд"), href: "/admin" },

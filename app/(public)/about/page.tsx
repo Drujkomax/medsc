@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getDict } from "~/shared/i18n/dict";
 import { SITE_URL, type Lang } from "~/shared/config/site";
+import { socialMeta } from "~/shared/config/seo";
 import { AboutView } from "~/widgets/about/about-view";
 
 const baseUrl = SITE_URL;
@@ -9,7 +10,7 @@ const canonicalUrl = `${baseUrl}/about`;
 // SEO source strings copied verbatim from the original About page's <SEOHead>.
 const SEO: Record<Lang, { title: string; description: string; keywords: string }> = {
   ru: {
-    title: "О компании Med Service Centre",
+    title: "О компании Med Service Centre — 8 лет на рынке Узбекистана",
     description:
       "Med Service Centre — поставщик медицинского оборудования в Узбекистане. Поставка, аренда, сервис, обучение персонала и подбор техники для клиник.",
     keywords:
@@ -39,6 +40,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seo.description,
     keywords: seo.keywords,
     alternates: { canonical: canonicalUrl },
+    ...socialMeta({ title: seo.title, description: seo.description, url: canonicalUrl }),
   };
 }
 
@@ -54,12 +56,7 @@ export default async function AboutPage() {
     description: seo.description,
     url: canonicalUrl,
     inLanguage: lang,
-    about: {
-      "@type": "Organization",
-      name: "Med Service Centre",
-      url: baseUrl,
-      areaServed: "UZ",
-    },
+    about: { "@id": `${baseUrl}/#organization` },
   };
 
   const breadcrumbSchema = {

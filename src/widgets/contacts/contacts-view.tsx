@@ -234,7 +234,14 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
         {/* Contact Methods Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {/* Email */}
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleEmailClick}>
+          <Card
+            role="button"
+            tabIndex={0}
+            aria-label="Написать на email"
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleEmailClick(); } }}
+            className="hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+            onClick={handleEmailClick}
+          >
             <CardContent className="p-8 text-center">
               <div className="w-12 h-12 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <Mail className="w-5 h-5 text-white" />
@@ -256,7 +263,14 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
           </Card>
 
           {/* Telegram */}
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleTelegramClick}>
+          <Card
+            role="button"
+            tabIndex={0}
+            aria-label="Открыть Telegram"
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleTelegramClick(); } }}
+            className="hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+            onClick={handleTelegramClick}
+          >
             <CardContent className="p-8 text-center">
               <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-8 h-8 text-white" />
@@ -267,7 +281,14 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
           </Card>
 
           {/* WhatsApp */}
-          <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer" onClick={handleWhatsAppClick}>
+          <Card
+            role="button"
+            tabIndex={0}
+            aria-label="Открыть WhatsApp"
+            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleWhatsAppClick(); } }}
+            className="hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+            onClick={handleWhatsAppClick}
+          >
             <CardContent className="p-8 text-center">
               <div className="w-16 h-16 bg-msc-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageCircle className="w-8 h-8 text-white" />
@@ -411,7 +432,7 @@ export function ContactsView({ siteContacts }: { siteContacts: any }) {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-msc-primary hover:bg-msc-accent text-lg py-3"
+                  className="w-full bg-msc-primary hover:bg-msc-primary/90 text-lg py-3"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Отправка...' : currentContent.send}

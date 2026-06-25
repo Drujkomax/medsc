@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ import { useT, useLang, useSetLang } from "~/shared/i18n/i18n-provider";
 
 export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const t = useT();
   const currentLang = useLang();
@@ -43,15 +45,35 @@ export function SiteHeader() {
 
   const isActive = (href: string) => pathname === href;
 
+  // Borderless/transparent at the very top of the home hero; solid white + border once
+  // scrolled or on inner pages. Text stays dark — the hero is light.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const transparentTop = pathname === '/' && !scrolled && !isMenuOpen;
+
   return (
-    <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+    <header
+      className={`sticky top-0 z-50 transition-colors duration-300 ${
+        transparentTop
+          ? 'bg-transparent border-b border-transparent'
+          : 'bg-background/95 backdrop-blur-sm border-b border-border'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <img
-              src="/lovable-uploads/cebee8f0-cb8b-4449-8cdc-3cf173144e75.webp"
+            <Image
+              src="/images/logo.webp"
               alt="Med Service Centre"
+              width={382}
+              height={441}
+              priority
               className="h-12 w-auto object-contain"
             />
           </Link>
@@ -111,6 +133,8 @@ export function SiteHeader() {
             <Button
               variant="ghost"
               size="sm"
+              aria-label="Меню"
+              aria-expanded={isMenuOpen}
               className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >

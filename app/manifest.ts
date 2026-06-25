@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const LOGO = "/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png";
+const LOGO = "/images/logo-icon.png";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -14,8 +14,9 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#0C1139",
     lang: "ru",
     icons: [
-      { src: LOGO, sizes: "any", type: "image/png" },
+      { src: LOGO, sizes: "192x192", type: "image/png", purpose: "any" },
       { src: LOGO, sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: LOGO, sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }

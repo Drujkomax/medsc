@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { imageUrl, BLUR_DATA_URL } from "~/shared/config/site";
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, CheckCircle, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, FileText, Truck, Settings, GraduationCap, Wrench, TrendingUp, ChevronDown, ChevronUp, Loader2, Package } from 'lucide-react';
+import { ArrowRight, Zap, Shield, Headphones, Globe, Stethoscope, Scissors, Heart, TestTube, Smile, Eye, ChevronDown, ChevronUp, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,32 +13,29 @@ import { LeadForm } from '~/features/lead-form/lead-form';
 import { useT, useLang } from '~/shared/i18n/i18n-provider';
 import { toUrlSlug } from '@/lib/slugify';
 
+// Shared button/card styles derived from the hero. Calm UI: only subtle color/shadow
+// feedback on hover — no entrance, float, lift or slide animations.
+const PRIMARY_BTN =
+  'inline-flex items-center justify-center gap-2 rounded-xl bg-msc-primary px-7 py-3.5 text-base font-semibold text-white shadow-[0_12px_32px_-14px_rgba(12,17,57,0.5)] transition-colors hover:bg-msc-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary focus-visible:ring-offset-2';
+const OUTLINE_BTN =
+  'inline-flex items-center justify-center gap-2 rounded-xl border border-msc-primary/20 bg-white px-7 py-3.5 text-base font-semibold text-msc-primary transition-colors hover:border-msc-primary/40 hover:bg-msc-primary/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-msc-primary/40';
+const CARD =
+  'group flex h-full flex-col rounded-2xl border border-msc-primary/10 bg-white shadow-[0_16px_48px_-30px_rgba(12,17,57,0.35)] transition-shadow duration-200 hover:shadow-[0_22px_56px_-30px_rgba(12,17,57,0.42)]';
+
 export function HomeView({ products, categories, manufacturers }: { products: any[]; categories: any[]; manufacturers: any[] }) {
-  const router = useRouter();
-  const [isVisible, setIsVisible] = useState(false);
   const [showConsultationForm, setShowConsultationForm] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [orbitRadius, setOrbitRadius] = useState(180);
   const t = useT();
 
   const currentLanguage = useLang();
   const dbCategories = categories;
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
-  useEffect(() => {
-    const updateRadius = () => setOrbitRadius(window.innerWidth < 768 ? 120 : 180);
-    updateRadius();
-    window.addEventListener('resize', updateRadius);
-    return () => window.removeEventListener('resize', updateRadius);
-  }, []);
-
   const faqItems = t('home.faq.items', { returnObjects: true }) as Array<{
     question: string;
     answer: string;
   }>;
+
+  const heroTags = (t('home.hero.tags', { returnObjects: true }) as string[]) ?? [];
 
   const fallbackCategories = {
     all: { ru: 'Все категории', en: 'All categories', uz: 'Barcha kategoriyalar' }
@@ -76,158 +72,123 @@ export function HomeView({ products, categories, manufacturers }: { products: an
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section — pulled under the transparent header, sized to one viewport */}
       <section
-        className="relative text-white py-20 lg:py-32 overflow-hidden"
+        aria-labelledby="hero-heading"
+        className="relative -mt-16 flex min-h-[100svh] items-center overflow-hidden"
         style={{
-          backgroundImage: 'url(/lovable-uploads/41f0d478-2266-4aba-bc99-7b40bd7b049e.webp)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          background:
+            'radial-gradient(60% 55% at 82% 26%, rgba(102,153,255,0.13), transparent 60%), ' +
+            'radial-gradient(45% 45% at 0% 100%, rgba(59,130,246,0.06), transparent 60%), ' +
+            'linear-gradient(180deg, #ffffff 0%, #f5f8fd 100%)',
         }}
       >
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Hero Content */}
-            <div className={`max-w-2xl space-y-8 ${isVisible ? 'animate-reveal' : ''}`}>
-              <div className="space-y-4">
-                <h1 className="font-heading text-5xl lg:text-6xl font-bold leading-tight">{t('home.hero.headline')}</h1>
-                <p className="text-xl lg:text-2xl text-white/90 font-medium">
-                  {t('home.hero.subtitle')}
-                </p>
-                <p className="text-lg text-white/80 whitespace-pre-line">
-                  {t('home.hero.description')}
-                </p>
+        <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-8">
+            {/* Left: copy */}
+            <div className="max-w-2xl">
+              {/* Eyebrow */}
+              <div className="flex items-center gap-3">
+                <span className="h-px w-8 bg-[#2563eb]/60" />
+                <span className="text-[13px] sm:text-sm font-semibold uppercase tracking-[0.22em] text-[#2563eb]">
+                  {t('home.hero.eyebrow')}
+                </span>
               </div>
+
+              {/* Headline */}
+              <h1
+                id="hero-heading"
+                className="mt-5 font-display text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.08] tracking-tight text-msc-primary"
+              >
+                {t('home.hero.headline')}
+              </h1>
+
+              {/* Subtitle */}
+              <p className="mt-5 max-w-md text-lg leading-relaxed text-msc-text-light">
+                {t('home.hero.subtitle')}
+              </p>
+
+              {/* Service tags */}
+              <ul className="mt-6 flex flex-wrap gap-2.5">
+                {heroTags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full border border-msc-primary/15 bg-white px-4 py-2 text-sm font-medium text-msc-primary/80 shadow-sm transition-colors hover:border-msc-primary/30 hover:bg-msc-primary/[0.04]"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-                <div className="text-center">
-                  <div className="text-2xl lg:text-3xl font-bold text-white">8+</div>
-                  <div className="text-sm text-white/90 font-medium">{t('home.hero.experience')}</div>
+              <div className="mt-7 grid max-w-lg grid-cols-3 divide-x divide-msc-primary/10 rounded-2xl border border-msc-primary/10 bg-white p-5 sm:p-6 shadow-[0_14px_44px_-18px_rgba(12,17,57,0.30)]">
+                <div className="px-1.5 text-center sm:px-4">
+                  <div className="font-display text-2xl font-bold sm:text-3xl lg:text-4xl text-msc-primary">8+</div>
+                  <div className="mt-1 text-[11px] leading-tight text-msc-text-light sm:text-sm">{t('home.hero.experience')}</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl lg:text-3xl font-bold text-white">300+</div>
-                  <div className="text-sm text-white/90 font-medium">{t('home.hero.projects')}</div>
+                <div className="px-1.5 text-center sm:px-4">
+                  <div className="font-display text-2xl font-bold sm:text-3xl lg:text-4xl text-msc-primary">300+</div>
+                  <div className="mt-1 text-[11px] leading-tight text-msc-text-light sm:text-sm">{t('home.hero.projects')}</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl lg:text-3xl font-bold text-white">100%</div>
-                  <div className="text-sm text-white/90 font-medium">{t('home.hero.clients')}</div>
+                <div className="px-1.5 text-center sm:px-4">
+                  <div className="font-display text-2xl font-bold sm:text-3xl lg:text-4xl text-teal-600">100%</div>
+                  <div className="mt-1 text-[11px] leading-tight text-msc-text-light sm:text-sm">{t('home.hero.clients')}</div>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Button
-                  size="lg"
-                  className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
+              {/* CTAs */}
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <button
                   onClick={() => {
-                    const calculatorSection = document.querySelector('#roi-calculator-section');
-                    calculatorSection?.scrollIntoView({ behavior: 'smooth' });
+                    document.querySelector('#roi-calculator-section')?.scrollIntoView({ behavior: 'smooth' });
                   }}
+                  className={`${PRIMARY_BTN} focus-visible:ring-offset-white`}
                 >
                   {t('home.hero.cta')}
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-                <Button
-                  size="lg"
-                  className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg flex-1 sm:flex-none sm:min-w-[240px]"
-                  onClick={() => setShowConsultationForm(true)}
-                >
+                  <ArrowRight className="h-5 w-5" />
+                </button>
+                <button onClick={() => setShowConsultationForm(true)} className={`${OUTLINE_BTN} focus-visible:ring-offset-white`}>
                   {t('home.hero.getConsultation')}
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
+                  <ArrowRight className="h-5 w-5" />
+                </button>
               </div>
             </div>
 
-            {/* Process Cluster */}
-            <div className="flex justify-center">
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-[28rem] lg:h-[28rem]">
-                {/* Central Logo */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-52 h-52 lg:w-60 lg:h-60 flex items-center justify-center z-10 pointer-events-none">
-                  <Image
-                    src="/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png"
-                    alt={t('home.hero.logoAlt')}
-                    width={208}
-                    height={208}
-                    priority
-                    className="w-44 h-44 lg:w-52 lg:h-52 object-contain select-none"
-                  />
-                </div>
-
-                {/* Rotating Orbit Container */}
-                <div className="absolute inset-0 animate-[spin_20s_linear_infinite]">
-                  {[
-                    { icon: FileText, label: t('home.process.quote'), angle: 0, path: '/catalog' },
-                    { icon: Truck, label: t('home.process.supply'), angle: 60, path: '/catalog' },
-                    { icon: Settings, label: t('home.process.installation'), angle: 120, path: '/services' },
-                    { icon: GraduationCap, label: t('home.process.training'), angle: 180, path: '/services' },
-                    { icon: Wrench, label: t('home.process.service'), angle: 240, path: '/services' },
-                    { icon: TrendingUp, label: t('home.process.roi'), angle: 300, path: '/#roi-calculator-section' }
-                  ].map((item, index) => {
-                    const IconComponent = item.icon;
-                    const radius = orbitRadius;
-                    const x = Math.cos((item.angle - 90) * Math.PI / 180) * radius;
-                    const y = Math.sin((item.angle - 90) * Math.PI / 180) * radius;
-
-                    return (
-                      <div
-                        key={index}
-                        className="absolute top-1/2 left-1/2"
-                        style={{
-                          transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`
-                        }}
-                      >
-                        <div className="text-center animate-[counter-rotate_20s_linear_infinite]">
-                          <div className="relative">
-                             <div
-                               className="w-10 h-10 sm:w-14 sm:h-14 lg:w-20 lg:h-20 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto shadow-lg hover:scale-110 transition-transform cursor-pointer relative overflow-hidden group"
-                               onClick={() => {
-                                 if (item.path.startsWith('/#')) {
-                                   const section = document.querySelector(item.path.substring(1));
-                                   section?.scrollIntoView({ behavior: 'smooth' });
-                                 } else {
-                                   router.push(item.path);
-                                 }
-                               }}
-                             >
-                               <div className="absolute inset-0 rounded-full bg-white/30 animate-ping opacity-75"
-                                    style={{ animationDuration: '3s', animationDelay: `${index * 0.5}s` }} />
-                               <div className="absolute inset-0 rounded-full bg-white/0 group-hover:bg-white/20 transition-all duration-300" />
-                               <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-white relative z-10" />
-                            </div>
-                            <span className="text-white text-xs sm:text-sm font-medium block whitespace-nowrap absolute top-full left-1/2 transform -translate-x-1/2 mt-1 sm:mt-2 pointer-events-none">
-                              {item.label}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+            {/* Right: ornate brand hexagon */}
+            <div className="relative flex justify-center lg:justify-end">
+              {/* soft radial glow behind mark */}
+              <div className="pointer-events-none absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-msc-accent/15 blur-[80px] sm:h-[400px] sm:w-[400px] lg:h-[480px] lg:w-[480px] lg:blur-[90px]" />
+              <Image
+                src="/images/logo.webp"
+                alt="Med Service Centre"
+                width={382}
+                height={441}
+                priority
+                className="relative animate-float w-[230px] select-none drop-shadow-[0_20px_45px_rgba(12,17,57,0.20)] sm:w-[300px] lg:w-[420px]"
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Equipment Section - SEO Content */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-10 text-center">{t('home.equipment.title')}</h2>
+      <section className="bg-white py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-5xl">
+            <div className="mb-12 text-center">
+              <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#2563eb]/30" />
+              <h2 className="font-display text-3xl lg:text-4xl font-semibold text-msc-primary">{t('home.equipment.title')}</h2>
+            </div>
 
             {featuredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+              <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-3">
                 {featuredProducts.map((product) => {
                   const productPath = buildProductPath(product);
                   return (
-                    <Card
-                      key={product.id}
-                      className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col h-full"
-                    >
+                    <Card key={product.id} className={CARD}>
                       <Link
                         href={productPath}
-                        className="relative overflow-hidden rounded-t-lg aspect-[1080/1350] block"
+                        className="relative block aspect-[1080/1350] overflow-hidden rounded-t-2xl"
                         aria-label={`${t('common.view')}: ${product.name[currentLanguage]}`}
                       >
                         {product.images?.cover ? (
@@ -238,14 +199,14 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                             sizes="(max-width: 768px) 50vw, 25vw"
                             placeholder="blur"
                             blurDataURL={BLUR_DATA_URL}
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                         ) : (
-                          <div className="w-full h-full bg-muted flex items-center justify-center">
-                            <Package className="w-16 h-16 text-muted-foreground" />
+                          <div className="flex h-full w-full items-center justify-center bg-muted">
+                            <Package className="h-16 w-16 text-muted-foreground" />
                           </div>
                         )}
-                        <div className="absolute top-4 left-4">
+                        <div className="absolute left-4 top-4">
                           <Badge variant="default">
                             {getCategoryTag(product.category)}
                           </Badge>
@@ -253,7 +214,7 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                       </Link>
 
                       <CardHeader className="flex-grow">
-                        <CardTitle className="text-lg line-clamp-2">
+                        <CardTitle className="line-clamp-2 text-lg">
                           <Link href={productPath} className="hover:underline">
                             {product.name[currentLanguage]}
                           </Link>
@@ -264,10 +225,10 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                       </CardHeader>
 
                       <CardContent className="mt-auto">
-                        <Button asChild className="w-full">
+                        <Button asChild className="w-full rounded-xl">
                           <Link href={productPath}>
                             {t('common.view')}
-                            <ArrowRight className="ml-2 w-4 h-4" />
+                            <ArrowRight className="ml-2 h-4 w-4" />
                           </Link>
                         </Button>
                       </CardContent>
@@ -276,44 +237,44 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                 })}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div className="bg-msc-bg/30 rounded-lg p-6">
-                  <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">{t('home.equipment.cards.diagnostic.title')}</h3>
-                  <p className="text-msc-text-light mb-4">{t('home.equipment.cards.diagnostic.body')}</p>
-                  <Link href="/catalog?category=diagnostic" className="text-msc-accent hover:underline font-medium inline-flex items-center">{t('home.equipment.cards.diagnostic.link')} <ArrowRight className="ml-1 w-4 h-4" />
+              <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-3">
+                <div className="rounded-2xl border border-msc-primary/10 bg-white p-6 shadow-[0_16px_48px_-30px_rgba(12,17,57,0.35)]">
+                  <h3 className="mb-3 font-display text-xl font-semibold text-msc-primary">{t('home.equipment.cards.diagnostic.title')}</h3>
+                  <p className="mb-4 text-msc-text-light">{t('home.equipment.cards.diagnostic.body')}</p>
+                  <Link href="/catalog/category/diagnostic" className="inline-flex items-center font-medium text-[#2563eb] hover:text-[#1e54d6]">{t('home.equipment.cards.diagnostic.link')} <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </div>
 
-                <div className="bg-msc-bg/30 rounded-lg p-6">
-                  <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">{t('home.equipment.cards.laboratory.title')}</h3>
-                  <p className="text-msc-text-light mb-4">
+                <div className="rounded-2xl border border-msc-primary/10 bg-white p-6 shadow-[0_16px_48px_-30px_rgba(12,17,57,0.35)]">
+                  <h3 className="mb-3 font-display text-xl font-semibold text-msc-primary">{t('home.equipment.cards.laboratory.title')}</h3>
+                  <p className="mb-4 text-msc-text-light">
                     {t('home.equipment.cards.laboratory.bodyPrefix')}{' '}
-                    <a href="https://www.radiometer.com/en/products/blood-gas-testing/abl800-flex" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
+                    <a href="https://www.radiometer.com/en/products/blood-gas-testing/abl800-flex" target="_blank" rel="noopener noreferrer" className="text-[#2563eb] hover:underline">
                       ABL800 Flex, Radiometer
                     </a>{' '}
                     {t('home.equipment.cards.laboratory.bodySuffix')}
                   </p>
-                  <Link href="/catalog?category=laboratory" className="text-msc-accent hover:underline font-medium inline-flex items-center">{t('home.equipment.cards.laboratory.link')} <ArrowRight className="ml-1 w-4 h-4" />
+                  <Link href="/catalog/category/laboratory" className="inline-flex items-center font-medium text-[#2563eb] hover:text-[#1e54d6]">{t('home.equipment.cards.laboratory.link')} <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </div>
 
-                <div className="bg-msc-bg/30 rounded-lg p-6">
-                  <h3 className="font-heading text-xl font-bold text-msc-primary mb-3">{t('home.equipment.cards.surgical.title')}</h3>
-                  <p className="text-msc-text-light mb-4">
+                <div className="rounded-2xl border border-msc-primary/10 bg-white p-6 shadow-[0_16px_48px_-30px_rgba(12,17,57,0.35)]">
+                  <h3 className="mb-3 font-display text-xl font-semibold text-msc-primary">{t('home.equipment.cards.surgical.title')}</h3>
+                  <p className="mb-4 text-msc-text-light">
                     {t('home.equipment.cards.surgical.bodyPrefix')}{' '}
-                    <a href="https://www.bowa-medical.com/" target="_blank" rel="noopener noreferrer" className="text-msc-accent hover:underline">
+                    <a href="https://www.bowa-medical.com/" target="_blank" rel="noopener noreferrer" className="text-[#2563eb] hover:underline">
                       BOWA ARC 400
                     </a>{' '}
                     {t('home.equipment.cards.surgical.bodySuffix')}
                   </p>
-                  <Link href="/catalog?category=surgical" className="text-msc-accent hover:underline font-medium inline-flex items-center">{t('home.equipment.cards.surgical.link')} <ArrowRight className="ml-1 w-4 h-4" />
+                  <Link href="/catalog/category/surgical" className="inline-flex items-center font-medium text-[#2563eb] hover:text-[#1e54d6]">{t('home.equipment.cards.surgical.link')} <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </div>
               </div>
             )}
 
             <div className="text-center">
-              <Link href="/catalog" className="inline-flex items-center bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">{t('home.equipment.cta')} <ArrowRight className="ml-2 w-5 h-5" />
+              <Link href="/catalog" className={PRIMARY_BTN}>{t('home.equipment.cta')} <ArrowRight className="h-5 w-5" />
               </Link>
             </div>
           </div>
@@ -321,11 +282,14 @@ export function HomeView({ products, categories, manufacturers }: { products: an
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-16 bg-gradient-to-br from-msc-primary/5 to-msc-accent/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6 text-center">{t('home.whyChoose.title')}</h2>
-            <div className="prose prose-lg max-w-none text-msc-text-light space-y-4">
+      <section className="bg-[#f7f9fd] py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-8 text-center">
+              <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#2563eb]/30" />
+              <h2 className="font-display text-3xl lg:text-4xl font-semibold text-msc-primary">{t('home.whyChoose.title')}</h2>
+            </div>
+            <div className="prose prose-lg max-w-none space-y-4 text-msc-text-light">
               <p>{t('home.whyChoose.paragraph1')}</p>
               <p>{t('home.whyChoose.paragraph2')}</p>
             </div>
@@ -334,15 +298,16 @@ export function HomeView({ products, categories, manufacturers }: { products: an
       </section>
 
       {/* Services Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-6">{t('home.servicesSection.title')}</h2>
-            <p className="text-lg text-msc-text-light mb-8">{t('home.servicesSection.description')}</p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/services" className="inline-flex items-center bg-msc-primary hover:bg-msc-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors">{t('home.servicesSection.primaryCta')} <ArrowRight className="ml-2 w-5 h-5" />
+      <section className="bg-white py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl text-center">
+            <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#2563eb]/30" />
+            <h2 className="font-display text-3xl lg:text-4xl font-semibold text-msc-primary">{t('home.servicesSection.title')}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-msc-text-light">{t('home.servicesSection.description')}</p>
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <Link href="/services" className={PRIMARY_BTN}>{t('home.servicesSection.primaryCta')} <ArrowRight className="h-5 w-5" />
               </Link>
-              <Link href="/contacts" className="inline-flex items-center border-2 border-msc-primary text-msc-primary hover:bg-msc-primary hover:text-white font-semibold px-6 py-3 rounded-lg transition-colors">{t('home.servicesSection.secondaryCta')} <ArrowRight className="ml-2 w-5 h-5" />
+              <Link href="/contacts" className={OUTLINE_BTN}>{t('home.servicesSection.secondaryCta')} <ArrowRight className="h-5 w-5" />
               </Link>
             </div>
           </div>
@@ -350,11 +315,12 @@ export function HomeView({ products, categories, manufacturers }: { products: an
       </section>
 
       {/* ROI Calculator Section */}
-      <section id="roi-calculator-section" className="py-20 bg-gradient-to-br from-msc-bg to-msc-accent/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">{t('home.roiCalculator.title')}</h2>
-            <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
+      <section id="roi-calculator-section" className="bg-[#f7f9fd] py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#2563eb]/30" />
+            <h2 className="font-display text-3xl lg:text-4xl font-semibold text-msc-primary">{t('home.roiCalculator.title')}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-msc-text-light">
               {t('home.roiCalculator.description')}
             </p>
           </div>
@@ -363,16 +329,12 @@ export function HomeView({ products, categories, manufacturers }: { products: an
             <RoiCalculator lang={currentLanguage} />
           </div>
 
-          <div className="text-center mt-12">
-            <Button
-              size="lg"
-              className="bg-msc-accent hover:bg-msc-accent/90 text-white font-semibold px-8 py-4 text-lg shadow-lg"
-              onClick={() => setShowConsultationForm(true)}
-            >
+          <div className="mt-12 text-center">
+            <button onClick={() => setShowConsultationForm(true)} className={PRIMARY_BTN}>
               {t('home.roiCalculator.contactUs')}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <p className="text-lg font-semibold text-msc-primary mt-3 leading-relaxed">
+              <ArrowRight className="h-5 w-5" />
+            </button>
+            <p className="mt-3 text-lg font-semibold leading-relaxed text-msc-primary">
               {t('home.roiCalculator.consultationOffer')}
             </p>
           </div>
@@ -380,16 +342,17 @@ export function HomeView({ products, categories, manufacturers }: { products: an
       </section>
 
       {/* Equipment Categories */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">{t('home.categories.title')}</h2>
-            <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
+      <section className="bg-white py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-14 text-center">
+            <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#2563eb]/30" />
+            <h2 className="font-display text-3xl lg:text-4xl font-semibold text-msc-primary">{t('home.categories.title')}</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-msc-text-light">
               {t('home.categories.description')}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
               { name: t('home.categories.diagnostic'), icon: Stethoscope, category: 'diagnostic' },
               { name: t('home.categories.surgical'), icon: Scissors, category: 'surgical' },
@@ -398,41 +361,40 @@ export function HomeView({ products, categories, manufacturers }: { products: an
               { name: t('home.categories.dental'), icon: Smile, category: 'dental' },
               { name: t('home.categories.ophthalmology'), icon: Eye, category: 'ophthalmology' },
             ].map((category, index) => (
-              <Card
-                key={index}
-                className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-msc-accent/20 cursor-pointer"
-                onClick={() => router.push(`/catalog?category=${category.category}`)}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                    <category.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-lg text-msc-primary mb-2">{category.name}</h3>
-                </CardContent>
-              </Card>
+              <Link key={index} href={`/catalog/category/${category.category}`} className="block">
+                <Card className={`${CARD} cursor-pointer`}>
+                  <CardContent className="flex items-center gap-4 p-6">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#2563eb]/10 text-[#2563eb]">
+                      <category.icon className="h-7 w-7" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-msc-primary">{category.name}</h3>
+                  </CardContent>
+                </Card>
+              </Link>
             ))}
           </div>
 
-          <div className="text-center mt-8">
-            <Link href="/catalog" className="inline-flex items-center text-msc-accent hover:underline font-medium text-lg">{t('home.categories.cta')} <ArrowRight className="ml-2 w-5 h-5" />
+          <div className="mt-10 text-center">
+            <Link href="/catalog" className="inline-flex items-center text-lg font-medium text-[#2563eb] hover:text-[#1e54d6]">{t('home.categories.cta')} <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </div>
         </div>
       </section>
 
       {/* Advantages */}
-      <section className="py-20 bg-gradient-to-br from-msc-primary/5 to-msc-accent/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">
+      <section className="bg-[#f7f9fd] py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-14 text-center">
+            <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#2563eb]/30" />
+            <h2 className="font-display text-3xl lg:text-4xl font-semibold text-msc-primary">
               {t('home.advantages.title')}
             </h2>
-            <p className="text-lg text-msc-text-light max-w-2xl mx-auto">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-msc-text-light">
               {t('home.advantages.description')}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 icon: Shield,
@@ -455,11 +417,11 @@ export function HomeView({ products, categories, manufacturers }: { products: an
                 description: t('home.advantages.globalExperience.description')
               }
             ].map((advantage, index) => (
-              <div key={index} className="text-center group">
-                <div className="w-16 h-16 bg-gradient-to-br from-msc-accent to-msc-primary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <advantage.icon className="w-8 h-8 text-white" />
+              <div key={index} className="rounded-2xl border border-msc-primary/10 bg-white p-6 shadow-[0_16px_48px_-30px_rgba(12,17,57,0.35)] transition-shadow duration-200 hover:shadow-[0_22px_56px_-30px_rgba(12,17,57,0.42)]">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#2563eb]/10 text-[#2563eb]">
+                  <advantage.icon className="h-7 w-7" />
                 </div>
-                <h3 className="font-semibold text-lg text-msc-primary mb-2">{advantage.title}</h3>
+                <h3 className="mb-2 text-lg font-semibold text-msc-primary">{advantage.title}</h3>
                 <p className="text-msc-text-light">{advantage.description}</p>
               </div>
             ))}
@@ -468,37 +430,41 @@ export function HomeView({ products, categories, manufacturers }: { products: an
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-white min-h-[800px]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="font-heading text-3xl lg:text-4xl font-bold text-msc-primary mb-4">{t('home.faq.title')}</h2>
-            <p className="text-lg text-msc-text-light">{t('home.faq.subtitle')}</p>
+      <section className="bg-white py-20 lg:py-24">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <div className="mx-auto mb-5 h-1 w-12 rounded-full bg-[#2563eb]/30" />
+            <h2 className="font-display text-3xl lg:text-4xl font-semibold text-msc-primary">{t('home.faq.title')}</h2>
+            <p className="mt-4 text-lg text-msc-text-light">{t('home.faq.subtitle')}</p>
           </div>
 
           <div className="space-y-4">
             {faqItems.map((item, index) => (
               <div
                 key={index}
-                className="border border-msc-accent/20 rounded-lg overflow-hidden"
+                className="overflow-hidden rounded-2xl border border-msc-primary/10 bg-white shadow-[0_10px_36px_-28px_rgba(12,17,57,0.4)]"
               >
                 <button
-                  className="w-full px-6 py-4 text-left flex items-center justify-between bg-white hover:bg-msc-bg/50 transition-colors"
+                  className="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-msc-primary/[0.02]"
+                  aria-expanded={openFaq === index}
+                  aria-controls={`faq-panel-${index}`}
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
                 >
-                  <h3 className="font-semibold text-msc-primary pr-4">{item.question}</h3>
+                  <h3 className="pr-4 font-semibold text-msc-primary">{item.question}</h3>
                   {openFaq === index ? (
-                    <ChevronUp className="w-5 h-5 text-msc-accent flex-shrink-0" />
+                    <ChevronUp className="h-5 w-5 flex-shrink-0 text-[#2563eb]" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-msc-accent flex-shrink-0" />
+                    <ChevronDown className="h-5 w-5 flex-shrink-0 text-[#2563eb]" />
                   )}
                 </button>
                 <div
+                  id={`faq-panel-${index}`}
                   className={`grid transition-all duration-300 ease-in-out ${
                     openFaq === index ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <div className="px-6 py-4 bg-msc-bg/30 border-t border-msc-accent/10">
+                    <div className="border-t border-msc-primary/10 px-6 py-4">
                       <p className="text-msc-text-light">{item.answer}</p>
                     </div>
                   </div>
@@ -510,32 +476,26 @@ export function HomeView({ products, categories, manufacturers }: { products: an
       </section>
 
       {/* Final Call to Action */}
-      <section className="py-20 bg-gradient-to-br from-msc-primary to-msc-accent text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="font-heading text-3xl lg:text-4xl font-bold mb-4">
-            {t('home.finalCta.title')}
-          </h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            {t('home.finalCta.description')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="bg-white text-msc-primary hover:bg-white/90 font-semibold px-8 py-4 text-lg"
-              onClick={() => setShowConsultationForm(true)}
-            >
-              {t('home.finalCta.requestButton')}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-black hover:bg-white hover:text-msc-primary px-8 py-4 text-lg transition-all duration-300"
-              onClick={() => setShowConsultationForm(true)}
-            >
-              {t('home.finalCta.managerButton')}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
+      <section className="bg-white py-20 lg:py-24">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-3xl border border-msc-primary/10 bg-gradient-to-br from-[#f3f7fe] to-[#eaf0fd] px-6 py-14 text-center shadow-[0_30px_80px_-40px_rgba(12,17,57,0.35)] sm:px-12 lg:py-20">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-[#2563eb]/10 blur-[80px]" />
+            <h2 className="relative font-display text-3xl lg:text-4xl font-semibold text-msc-primary">
+              {t('home.finalCta.title')}
+            </h2>
+            <p className="relative mx-auto mt-4 max-w-2xl text-lg text-msc-text-light">
+              {t('home.finalCta.description')}
+            </p>
+            <div className="relative mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <button onClick={() => setShowConsultationForm(true)} className={PRIMARY_BTN}>
+                {t('home.finalCta.requestButton')}
+                <ArrowRight className="h-5 w-5" />
+              </button>
+              <button onClick={() => setShowConsultationForm(true)} className={OUTLINE_BTN}>
+                {t('home.finalCta.managerButton')}
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
       </section>

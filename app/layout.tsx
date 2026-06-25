@@ -1,12 +1,21 @@
 import "../src/index.css";
 import type { Metadata, Viewport } from "next";
+import { Source_Serif_4 } from "next/font/google";
 import { SITE_URL, SITE_NAME } from "~/shared/config/site";
 
-const OG_IMAGE = "/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
-const LOGO = "/lovable-uploads/acdce942-978c-4243-9068-38f2c5bb0284.png";
+// Display serif for headlines (Latin + Cyrillic), self-hosted via next/font.
+const display = Source_Serif_4({
+  subsets: ["latin", "cyrillic"],
+  weight: ["500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const OG_IMAGE = "/images/og-image.png";
+const LOGO = "/images/logo-icon.png";
 
 const DESCRIPTION =
-  "Med Service Centre — поставка, сервис и аренда медицинского оборудования в Узбекистане: УЗИ, анализаторы, электрохирургия, лабораторные системы. 8 лет опыта, 300+ проектов оснащения клиник.";
+  "Med Service Centre — поставка, сервис и аренда медицинского оборудования в Узбекистане: УЗИ, анализаторы, лабораторные системы. 8 лет опыта, 300+ проектов.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -35,11 +44,10 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE_NAME,
     locale: "ru_RU",
-    alternateLocale: ["en_US", "uz_UZ"],
     url: SITE_URL,
     title: "Med Service Centre — медицинское оборудование в Узбекистане",
     description: DESCRIPTION,
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: SITE_NAME }],
+    images: [{ url: OG_IMAGE, width: 770, height: 820, alt: SITE_NAME }],
   },
   twitter: {
     card: "summary_large_image",
@@ -71,7 +79,7 @@ export const viewport: Viewport = {
 // Global Organization / medical-equipment business — brand + local SEO signal.
 const orgJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": ["Organization", "MedicalBusiness"],
   "@id": `${SITE_URL}/#organization`,
   name: SITE_NAME,
   legalName: "Med Service Centre",
@@ -80,21 +88,40 @@ const orgJsonLd = {
   image: `${SITE_URL}${OG_IMAGE}`,
   description: DESCRIPTION,
   email: "info@medsc.uz",
+  telephone: "+998909443482",
   foundingDate: "2016",
+  priceRange: "$$$",
   areaServed: { "@type": "Country", name: "Uzbekistan" },
   address: {
     "@type": "PostalAddress",
-    addressCountry: "UZ",
+    streetAddress: "ул. Асака, 32",
     addressLocality: "Ташкент",
+    addressRegion: "Tashkent",
+    addressCountry: "UZ",
   },
+  geo: { "@type": "GeoCoordinates", latitude: 41.311081, longitude: 69.279737 },
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "09:00",
+      closes: "18:00",
+    },
+  ],
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "sales",
     email: "info@medsc.uz",
+    telephone: "+998909443482",
     areaServed: "UZ",
     availableLanguage: ["ru", "uz", "en"],
   },
-  sameAs: ["https://t.me/medservice_centre"],
+  sameAs: [
+    "https://t.me/medservice_centre",
+    "https://www.facebook.com/profile.php?id=61576982724139",
+    "https://www.instagram.com/medservicecentreuz/",
+    "https://www.youtube.com/@MedService_centre/shorts",
+  ],
   knowsAbout: [
     "Медицинское оборудование",
     "УЗИ-аппараты",
@@ -109,7 +136,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // hydration based on the `lang` cookie. Not reading cookies() here is what keeps
   // every page statically prerenderable / CDN-cacheable.
   return (
-    <html lang="ru">
+    <html lang="ru" className={display.variable}>
       <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         {children}

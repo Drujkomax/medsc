@@ -4,6 +4,7 @@ import { getActiveProducts } from "~/entities/product/api";
 import { getCategories } from "~/entities/category/api";
 import { getManufacturers } from "~/entities/manufacturer/api";
 import { SITE_URL } from "~/shared/config/site";
+import { socialMeta } from "~/shared/config/seo";
 import { toUrlSlug } from "@/lib/slugify";
 import { CatalogView } from "~/widgets/catalog/catalog-view";
 
@@ -14,7 +15,7 @@ import { CatalogView } from "~/widgets/catalog/catalog-view";
 // catalog text — the language a crawler sees, applied client-side for visitors.
 export const revalidate = 300;
 
-const SEO_TITLE = "Каталог медицинского оборудования в Узбекистане";
+const SEO_TITLE = "Каталог медицинского оборудования — Med Service Centre";
 const SEO_DESCRIPTION =
   "Продажа и аренда медицинского оборудования: УЗИ, анализаторы, хирургические системы. Поставка по Узбекистану и Ташкенту.";
 const SEO_KEYWORDS = [
@@ -33,12 +34,7 @@ export const metadata: Metadata = {
   description: SEO_DESCRIPTION,
   keywords: SEO_KEYWORDS.join(", "),
   alternates: { canonical: CANONICAL },
-  openGraph: {
-    title: SEO_TITLE,
-    description: SEO_DESCRIPTION,
-    url: CANONICAL,
-    type: "website",
-  },
+  ...socialMeta({ title: SEO_TITLE, description: SEO_DESCRIPTION, url: CANONICAL }),
 };
 
 export default async function CatalogPage() {
@@ -62,6 +58,7 @@ export default async function CatalogPage() {
     name: SEO_TITLE,
     description: SEO_DESCRIPTION,
     url: CANONICAL,
+    numberOfItems: products.length,
     isPartOf: {
       "@type": "WebSite",
       name: "Med Service Centre",
@@ -86,7 +83,7 @@ export default async function CatalogPage() {
             "@type": "ListItem",
             position: i + 1,
             item: {
-              "@type": "WebPage",
+              "@type": "Product",
               name: p.name.ru,
               url: `${SITE_URL}${pathOf(p)}`,
               image: cover

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getDict } from "~/shared/i18n/dict";
 import { SITE_URL } from "~/shared/config/site";
 import { getSiteContacts } from "~/entities/site-contacts/api";
+import { socialMeta } from "~/shared/config/seo";
 import { ContactsView } from "~/widgets/contacts/contacts-view";
 
 const baseUrl = SITE_URL;
@@ -9,7 +10,7 @@ const canonicalUrl = `${baseUrl}/contacts`;
 
 // SEO source strings copied verbatim from the original Contacts page's <SEOHead>.
 const SEO = {
-  title: "Контакты Med Service Centre",
+  title: "Контакты Med Service Centre — Ташкент, Узбекистан",
   description:
     "Контакты Med Service Centre™: офис в Ташкенте, телефон, e-mail, карта и онлайн-форма для закупки и аренды медтехники, сервисных заявок и консультаций.",
   keywords:
@@ -22,6 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
     description: SEO.description,
     keywords: SEO.keywords,
     alternates: { canonical: canonicalUrl },
+    ...socialMeta({ title: SEO.title, description: SEO.description, url: canonicalUrl }),
   };
 }
 
@@ -78,17 +80,27 @@ export default async function ContactsPage() {
     url: canonicalUrl,
     inLanguage: lang,
     mainEntity: {
-      "@type": "Organization",
+      "@type": ["Organization", "MedicalBusiness"],
       name: "Med Service Centre",
       url: baseUrl,
       email: contactData.email,
       telephone: phoneValue || contactData.phone,
+      priceRange: "$$$",
       address: {
         "@type": "PostalAddress",
         streetAddress: addressValue,
         addressLocality: "Tashkent",
         addressCountry: "UZ",
       },
+      geo: { "@type": "GeoCoordinates", latitude: 41.311081, longitude: 69.279737 },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          opens: "09:00",
+          closes: "18:00",
+        },
+      ],
       contactPoint: [
         {
           "@type": "ContactPoint",
@@ -108,11 +120,20 @@ export default async function ContactsPage() {
     },
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Главная", item: `${baseUrl}/` },
+      { "@type": "ListItem", position: 2, name: SEO.title, item: canonicalUrl },
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify([contactSchema, breadcrumbSchema]) }}
       />
       <ContactsView siteContacts={siteContacts} />
     </>

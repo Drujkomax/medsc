@@ -101,10 +101,14 @@ export function CatalogView({
   products,
   categories,
   manufacturers,
+  initialCategory,
+  initialManufacturer,
 }: {
   products: any[];
   categories: any[];
   manufacturers: any[];
+  initialCategory?: string;
+  initialManufacturer?: string;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -112,10 +116,10 @@ export function CatalogView({
     searchParams.get("search") || "",
   );
   const [selectedCategory, setSelectedCategory] = useState(
-    searchParams.get("category") || "all",
+    initialCategory ?? searchParams.get("category") ?? "all",
   );
   const [selectedManufacturer, setSelectedManufacturer] = useState(
-    searchParams.get("manufacturer") || "all",
+    initialManufacturer ?? searchParams.get("manufacturer") ?? "all",
   );
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -146,11 +150,12 @@ export function CatalogView({
 
   // Update selected category when URL changes
   useEffect(() => {
+    if (initialCategory) return; // dedicated /catalog/category/[slug] page owns the filter
     const categoryFromUrl = searchParams.get("category") || "all";
     if (categoryFromUrl !== selectedCategory) {
       setSelectedCategory(categoryFromUrl);
     }
-  }, [searchParams, selectedCategory]);
+  }, [searchParams, selectedCategory, initialCategory]);
 
   useEffect(() => {
     const searchFromUrl = searchParams.get("search") || "";
@@ -158,11 +163,12 @@ export function CatalogView({
   }, [searchParams]);
 
   useEffect(() => {
+    if (initialManufacturer) return; // dedicated /catalog/manufacturer/[slug] page owns the filter
     const manufacturerFromUrl = searchParams.get("manufacturer") || "all";
     if (manufacturerFromUrl !== selectedManufacturer) {
       setSelectedManufacturer(manufacturerFromUrl);
     }
-  }, [searchParams, selectedManufacturer]);
+  }, [searchParams, selectedManufacturer, initialManufacturer]);
 
   const language = useLang() as "ru" | "en" | "uz";
 
@@ -293,12 +299,15 @@ export function CatalogView({
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
-      <div
-        className="relative py-16 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('/lovable-uploads/4c70d2a2-2735-43a5-904b-62be351fa867.webp')`,
-        }}
-      >
+      <div className="relative py-16">
+        <Image
+          src="/images/hero-catalog.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="container mx-auto px-4 text-center relative z-10">
           <h1 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4">
@@ -318,6 +327,35 @@ export function CatalogView({
         </div>
       </div>
 
+      {/* Breadcrumb */}
+      <nav aria-label="Хлебные крошки" className="container mx-auto px-4 pt-4 text-sm text-muted-foreground">
+        <ol className="flex flex-wrap items-center gap-1.5">
+          <li>
+            <Link href="/" className="hover:underline">
+              {language === "ru" ? "Главная" : language === "en" ? "Home" : "Bosh sahifa"}
+            </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li>
+            <Link href="/catalog" className="hover:underline">
+              {language === "ru" ? "Каталог" : language === "en" ? "Catalog" : "Katalog"}
+            </Link>
+          </li>
+          {selectedCategory !== "all" && (
+            <>
+              <li aria-hidden="true">/</li>
+              <li className="text-foreground">{categoryName}</li>
+            </>
+          )}
+          {manufacturerName && (
+            <>
+              <li aria-hidden="true">/</li>
+              <li className="text-foreground">{manufacturerName}</li>
+            </>
+          )}
+        </ol>
+      </nav>
+
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -327,7 +365,7 @@ export function CatalogView({
               <h3 className="font-semibold text-lg mb-4">
                 {translations.category[language]}
               </h3>
-              <nav className="space-y-2">
+              <nav aria-label="Категории оборудования" className="space-y-2">
                 {(
                   Object.entries(allCategories) as [
                     string,
@@ -339,7 +377,7 @@ export function CatalogView({
                     href={
                       key === "all"
                         ? "/catalog"
-                        : `/catalog?category=${encodeURIComponent(key)}`
+                        : `/catalog/category/${encodeURIComponent(key)}`
                     }
                     onClick={() => setSelectedCategory(key)}
                     className={`block w-full text-left px-3 py-2 rounded-md text-sm leading-snug transition-colors ${
@@ -363,6 +401,7 @@ export function CatalogView({
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                 <Input
                   placeholder={translations.search[language]}
+                  aria-label={translations.search[language]}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -383,7 +422,7 @@ export function CatalogView({
                       <h3 className="font-semibold text-lg mb-4">
                         {translations.category[language]}
                       </h3>
-                      <nav className="space-y-2">
+                      <nav aria-label="Категории оборудования" className="space-y-2">
                         {(
                   Object.entries(allCategories) as [
                     string,
@@ -395,7 +434,7 @@ export function CatalogView({
                             href={
                               key === "all"
                                 ? "/catalog"
-                                : `/catalog?category=${encodeURIComponent(key)}`
+                                : `/catalog/category/${encodeURIComponent(key)}`
                             }
                             onClick={() => {
                               setSelectedCategory(key);

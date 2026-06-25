@@ -1,17 +1,48 @@
 import type { Metadata } from "next";
 import { SITE_URL } from "~/shared/config/site";
+import { socialMeta } from "~/shared/config/seo";
 
 export const metadata: Metadata = {
   title: "Политика конфиденциальности — Med Service Centre",
   description:
     "Политика конфиденциальности Med Service Centre. Информация о сборе, обработке и защите персональных данных пользователей.",
   alternates: { canonical: `${SITE_URL}/privacy-policy` },
-  robots: { index: false, follow: true },
+  robots: { index: true, follow: true },
+  ...socialMeta({
+    title: "Политика конфиденциальности — Med Service Centre",
+    description:
+      "Политика конфиденциальности Med Service Centre. Информация о сборе, обработке и защите персональных данных пользователей.",
+    url: `${SITE_URL}/privacy-policy`,
+  }),
 };
 
 export default function PrivacyPolicyPage() {
+  const canonical = `${SITE_URL}/privacy-policy`;
+  const schema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: "Политика конфиденциальности — Med Service Centre",
+      description:
+        "Политика конфиденциальности Med Service Centre. Информация о сборе, обработке и защите персональных данных пользователей.",
+      url: canonical,
+      inLanguage: "ru",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Главная", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Политика конфиденциальности", item: canonical },
+      ],
+    },
+  ];
   return (
     <div className="bg-background py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <h1 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl">
           Политика конфиденциальности Med Service Centre

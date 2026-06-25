@@ -7,7 +7,7 @@ import { createT } from "~/shared/i18n/t";
 import { SITE_URL } from "~/shared/config/site";
 import { HomeView } from "~/widgets/home/home-view";
 
-const OG_IMAGE = "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
+const OG_IMAGE = "https://medsc.uz/images/og-image.png";
 
 // Prerender + revalidate (ISR) so the page is CDN/browser cacheable instead of
 // fully re-rendered per request.
@@ -26,7 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: t("home.seo.ogDescription"),
       url: `${SITE_URL}/`,
       type: "website",
-      images: [OG_IMAGE],
+      siteName: "Med Service Centre",
+      locale: "ru_RU",
+      images: [{ url: OG_IMAGE, width: 770, height: 820, alt: "Med Service Centre" }],
     },
     twitter: {
       card: "summary_large_image",
@@ -78,7 +80,7 @@ export default async function HomePage() {
                 "@type": "ListItem",
                 position: i + 1,
                 item: {
-                  "@type": "WebPage",
+                  "@type": "Product",
                   name: p.name[lang],
                   url: `${SITE_URL}${pathOf(p)}`,
                   image: cover ? (cover.startsWith("http") ? cover : `${SITE_URL}${cover}`) : undefined,

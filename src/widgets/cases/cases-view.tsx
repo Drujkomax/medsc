@@ -20,7 +20,7 @@ export function CasesView() {
         <p className="text-lg text-muted-foreground mb-8">{t("pages.cases.description")}</p>
         <Link
           href="/catalog"
-          className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-msc-accent text-white font-semibold hover:bg-msc-accent/90 transition-colors"
+          className="inline-flex items-center justify-center px-6 py-3 rounded-md bg-msc-primary text-white font-semibold hover:bg-msc-primary/90 transition-colors"
         >
           {t("pages.cases.cta")}
         </Link>

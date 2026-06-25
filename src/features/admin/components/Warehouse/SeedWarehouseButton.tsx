@@ -24,7 +24,7 @@ export const SeedWarehouseButton = () => {
             uz: "Diagnostika uchun zamonaviy yuqori aniqlikdagi ultratovush skaneri"
           },
           images: {
-            cover: "/lovable-uploads/ultrasound-machine.jpg",
+            cover: "/images/ultrasound-machine.jpg",
             gallery: []
           },
           quantity: 3,

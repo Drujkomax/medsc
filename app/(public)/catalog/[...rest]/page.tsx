@@ -7,7 +7,7 @@ import { toUrlSlug } from "@/lib/slugify";
 import { ProductDetailView } from "~/widgets/product-detail/product-detail-view";
 
 const FALLBACK_IMAGE =
-  "https://medsc.uz/lovable-uploads/ea1f50a2-d3d1-418f-b6ce-f6e08a722162.png";
+  "https://medsc.uz/images/og-image.png";
 
 // Prerender every product page at build + revalidate (ISR) so they are CDN/browser
 // cacheable instead of fully re-rendered per visit. A catch-all route with no
@@ -129,10 +129,17 @@ export async function generateMetadata({
     .filter(Boolean)
     .join(", ");
 
-  const canonicalUrl = `${SITE_URL}/catalog/${encodeURIComponent(
-    product.slug || product.id,
-  )}`;
+  const ms = toUrlSlug(manufacturer?.slug);
+  const productPath =
+    ms && ms !== "unknown"
+      ? `/catalog/${ms}/${encodeURIComponent(product.slug || product.id)}`
+      : `/catalog/${encodeURIComponent(product.slug || product.id)}`;
+  const canonicalUrl = `${SITE_URL}${productPath}`;
   const image = ogImage(product.images?.cover);
+  // Product covers render at a 1080×1350 aspect; the fallback OG asset is 770×820.
+  const ogDims = product.images?.cover
+    ? { width: 1080, height: 1350 }
+    : { width: 770, height: 820 };
 
   return {
     title: `${productName} — купить в Узбекистане | Med Service Centre`,
@@ -143,9 +150,13 @@ export async function generateMetadata({
       title: `${productName} — медицинское оборудование`,
       description: `${productName}. Официальная поставка, сервис и аренда медицинского оборудования в Узбекистане от Med Service Centre.`,
       url: canonicalUrl,
-      images: [{ url: image }],
+      type: "website",
+      siteName: SITE_NAME,
+      locale: "ru_RU",
+      images: [{ url: image, ...ogDims, alt: productName }],
     },
     twitter: {
+      card: "summary_large_image",
       title: productName,
       description: `${productName} — ${categoryLabel} оборудование. Купить или арендовать в Med Service Centre.`,
       images: [image],
@@ -182,11 +193,18 @@ export default async function ProductDetailPage({
   const description = localized(product.description, lang, productName);
   const manufacturer = manufacturers.find((m) => m.id === product.manufacturer_id);
   const brandName = localized(manufacturer?.name, lang) || SITE_NAME;
-  const canonicalUrl = `${SITE_URL}/catalog/${encodeURIComponent(product.slug || product.id)}`;
+  const ms = toUrlSlug(manufacturer?.slug);
+  const canonicalUrl =
+    ms && ms !== "unknown"
+      ? `${SITE_URL}/catalog/${ms}/${encodeURIComponent(product.slug || product.id)}`
+      : `${SITE_URL}/catalog/${encodeURIComponent(product.slug || product.id)}`;
   const images = [product.images?.cover, ...(product.images?.gallery || [])]
     .filter(Boolean)
     .map((c) => ogImage(c));
   const priceNum = product.price ? Number(String(product.price).replace(/[^\d.]/g, "")) : NaN;
+  const priceValidUntil = new Date(Date.now() + 180 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 10);
 
   const productSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
@@ -205,6 +223,8 @@ export default async function ProductDetailPage({
             price: priceNum,
             priceCurrency: product.currency || "USD",
             availability: "https://schema.org/InStock",
+            itemCondition: "https://schema.org/NewCondition",
+            priceValidUntil,
             url: canonicalUrl,
             seller: { "@type": "Organization", name: SITE_NAME },
           },
@@ -213,6 +233,7 @@ export default async function ProductDetailPage({
           offers: {
             "@type": "Offer",
             availability: "https://schema.org/InStock",
+            itemCondition: "https://schema.org/NewCondition",
             url: canonicalUrl,
             seller: { "@type": "Organization", name: SITE_NAME },
           },

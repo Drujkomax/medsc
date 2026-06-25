@@ -20,6 +20,7 @@ export default {
 				'heading': ['OmniglotFont', 'Inter', 'sans-serif'],
 				'body': ['OmniglotFont', 'Inter', 'sans-serif'],
 				'sans': ['OmniglotFont', 'Inter', 'system-ui', 'sans-serif'],
+				'display': ['var(--font-display)', 'Georgia', 'serif'],
 			},
 			colors: {
 				// MSC Brand Colors

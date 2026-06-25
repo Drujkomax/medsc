@@ -234,7 +234,7 @@ export function ProductDetailView({
 
   const manufacturerSlugSafe = toUrlSlug(manufacturer?.slug);
   const categoryLabel = getCategoryLabel(product.category, language);
-  const categoryPath = `/catalog?category=${encodeURIComponent(
+  const categoryPath = `/catalog/category/${encodeURIComponent(
     product.category,
   )}`;
 
@@ -247,6 +247,13 @@ export function ProductDetailView({
 
   const coverUrl = toImageUrl(product.images?.cover);
   const selectedImageUrl = toImageUrl(selectedImage);
+
+  const relatedPath = (p: any) => {
+    const m = manufacturers.find((x) => x.id === p.manufacturer_id);
+    const ms = toUrlSlug(m?.slug);
+    const ps = p.slug || p.id;
+    return ms && ms !== "unknown" ? `/catalog/${ms}/${ps}` : `/catalog/${ps}`;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -284,7 +291,7 @@ export function ProductDetailView({
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       <div className="container mx-auto px-4 py-8">
-        <nav className="text-sm text-muted-foreground mb-4">
+        <nav aria-label="Хлебные крошки" className="text-sm text-muted-foreground mb-4">
           <Link href="/catalog" className="hover:underline">
             {language === "ru"
               ? "Каталог"
@@ -318,6 +325,7 @@ export function ProductDetailView({
                   src={(selectedImageUrl || coverUrl)!}
                   alt={productName}
                   fill
+                  priority
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   placeholder="blur"
                   blurDataURL={BLUR_DATA_URL}
@@ -333,6 +341,8 @@ export function ProductDetailView({
                   size="sm"
                   variant="outline"
                   className="bg-background/80 backdrop-blur-sm"
+                  aria-label={isFavorite ? "Убрать из избранного" : "Добавить в избранное"}
+                  aria-pressed={isFavorite}
                   onClick={() => setIsFavorite(!isFavorite)}
                 >
                   <Heart
@@ -347,8 +357,10 @@ export function ProductDetailView({
               <div className="grid grid-cols-4 gap-2">
                 {/* Cover as first thumbnail */}
                 {product.images.cover && (
-                  <div
-                    className={`relative aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
+                  <button
+                    type="button"
+                    aria-label={`${productName} — основное изображение`}
+                    className={`relative aspect-square w-full rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
                       !selectedImage
                         ? "border-primary"
                         : "border-transparent hover:border-primary/50"
@@ -364,14 +376,16 @@ export function ProductDetailView({
                         className="object-cover"
                       />
                     )}
-                  </div>
+                  </button>
                 )}
 
                 {/* Gallery images */}
                 {product.images.gallery.map((image: string, index: number) => (
-                  <div
+                  <button
+                    type="button"
                     key={index}
-                    className={`relative aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
+                    aria-label={`${productName} — изображение ${index + 1}`}
+                    className={`relative aspect-square w-full rounded-lg overflow-hidden bg-muted cursor-pointer border-2 transition-colors ${
                       selectedImage === image
                         ? "border-primary"
                         : "border-transparent hover:border-primary/50"
@@ -387,7 +401,7 @@ export function ProductDetailView({
                         className="object-cover"
                       />
                     )}
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -495,6 +509,9 @@ export function ProductDetailView({
                           <img
                             src={manufacturer.logo_url}
                             alt={`${manufacturer.name} logo`}
+                            height={48}
+                            loading="lazy"
+                            decoding="async"
                             className="h-12 w-auto object-contain"
                             onError={(e) => {
                               e.currentTarget.style.display = "none";
@@ -506,7 +523,7 @@ export function ProductDetailView({
                         <div className="font-medium text-lg">
                           {manufacturerSlugSafe ? (
                             <Link
-                              href={`/catalog?manufacturer=${encodeURIComponent(
+                              href={`/catalog/manufacturer/${encodeURIComponent(
                                 manufacturerSlugSafe,
                               )}`}
                               className="hover:underline"
@@ -676,6 +693,61 @@ export function ProductDetailView({
             </Dialog>
           </div>
         </div>
+
+        {/* Related products — internal links for crawlability + UX */}
+        {related && related.length > 0 && (
+          <section aria-labelledby="related-heading" className="mt-12">
+            <h2 id="related-heading" className="mb-6 text-2xl font-bold text-foreground">
+              {language === "ru"
+                ? "Похожие товары"
+                : language === "en"
+                  ? "Related products"
+                  : "O'xshash mahsulotlar"}
+            </h2>
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {related.map((p: any) => {
+                const cover = toImageUrl(p.images?.cover);
+                const name =
+                  typeof p.name === "object" && p.name
+                    ? p.name[language] || p.name.ru
+                    : String(p.name);
+                return (
+                  <Link
+                    key={p.id}
+                    href={relatedPath(p)}
+                    className="group block overflow-hidden rounded-xl border bg-card transition-shadow hover:shadow-md"
+                  >
+                    <div className="relative aspect-square bg-muted">
+                      {cover ? (
+                        <Image
+                          src={cover}
+                          alt={name}
+                          fill
+                          sizes="(max-width: 1024px) 50vw, 25vw"
+                          placeholder="blur"
+                          blurDataURL={BLUR_DATA_URL}
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center">
+                          <Package className="h-10 w-10 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3">
+                      <div className="mb-1 text-xs text-muted-foreground">
+                        {getCategoryLabel(p.category, language)}
+                      </div>
+                      <div className="line-clamp-2 text-sm font-medium group-hover:underline">
+                        {name}
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
